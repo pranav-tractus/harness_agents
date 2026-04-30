@@ -1,0 +1,505 @@
+{
+  "row_index": 6,
+  "whatsapp_group_id": "120363421131250401@g.us",
+  "customer_id": "e05574ec-b110-4554-9fc3-3abb4f9011a8",
+  "created_at": "2026-01-06 04:16:22.843372",
+  "created_date": "2026-01-06",
+  "field_data": {
+    "items": [
+      {
+        "sr_no": 1,
+        "total": 6300.0,
+        "loading": "LCL",
+        "packing": "",
+        "quantity": 1800.0,
+        "ship_term": "EXW",
+        "unit_price": 3500.0,
+        "description": "GIIOFINE - P - S",
+        "pricing_unit": "usd/mt",
+        "quantity_unit": "kg"
+      }
+    ],
+    "do_date": "2026-02-28",
+    "po_date": "2026-01-06",
+    "po_ref_no": "GIIOFINE - P - S-2026-2",
+    "vendor_name": "GIIAVA Singapore Pte Ltd",
+    "payment_date": "Advanced payment",
+    "delivery_terms": "EXW",
+    "billing_address": "Epic Chemicals Sdn Bhd, 17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia",
+    "shipping_method": "",
+    "shipping_address": "17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia"
+  },
+  "s3_matches": [
+    {
+      "bucket": "tractuslabs-data-sources",
+      "key": "messages/120363421131250401@g.us/2026-01-06.json",
+      "last_modified": "2026-01-06T09:17:35+00:00",
+      "size": 16048,
+      "presigned_url": "https://tractuslabs-data-sources.s3.amazonaws.com/messages/120363421131250401%40g.us/2026-01-06.json?AWSAccessKeyId=AKIAYQYUBA34VECEKVJT&Signature=xvYxUu0ET9eG8tdCbT3WusDdQYQ%3D&Expires=1776066107"
+    }
+  ],
+  "chats": [
+    [
+      {
+        "id": "O3gpr2C0xR1rGA-goMBq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767672938,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "Hi @135639529947208 just spoke to the developers - we have to regenerate the contract - will do so now."
+        },
+        "context": {
+          "mentions": [
+            "60125872711"
+          ]
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "O4HsVjCtpmlKOQ-groBq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767672944,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "@135639529947208 we confirm having sold 1.8 MT of GIIOFINE-P-S to you at USD 3.5/kg EXW cargo ready by February 2026"
+        },
+        "context": {
+          "mentions": [
+            "60125872711"
+          ]
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "O_nXsC_vIYfxvg-gsQBq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767673003,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "@135639529947208 - you may sign the new contract"
+        },
+        "context": {
+          "mentions": [
+            "60125872711"
+          ]
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "PrDhkI0lGacBYUM-gkkBq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767673412,
+        "source": "web",
+        "device_id": 2,
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "alright"
+        },
+        "from": "60125872711",
+        "from_name": "Jelene"
+      },
+      {
+        "id": "PrCnLM7O3XMViPs-gscBq53k0Hqa4Q",
+        "from_me": false,
+        "type": "document",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767689852,
+        "source": "web",
+        "device_id": 3,
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "document": {
+          "id": "pdf-3eb0a72ccecedd731588fb-82c701ab9de4d07a9ae1",
+          "mime_type": "application/pdf",
+          "file_size": 46734,
+          "sha256": "LpjvIsx9CRN+bqfH+Fp+TbHDQPxISxtmWIj0+ewVveY=",
+          "file_name": "SC-OPO-250126 [GIIOFINE PS].pdf",
+          "link": "https://tractuslabs-data-sources.s3.us-east-1.amazonaws.com/messages/120363421131250401@g.us/2026-01-06/ae7c1510-7430-412b-8f32-612ba4a86227_pdf-3eb0a72ccecedd731588fb-82c701ab9de4d07a9ae1.pdf",
+          "caption": "SC-OPO-250126 [GIIOFINE PS].pdf",
+          "filename": "SC-OPO-250126 [GIIOFINE PS].pdf",
+          "page_count": 1,
+          "preview": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCAAaABIDASIAAhEBAxEB/8QAGwABAAICAwAAAAAAAAAAAAAAAAMFAgQGBwn/xAAnEAACAgEDBAIBBQAAAAAAAAABAgMRBAAFEgYHITETQWEVIkJRgf/EABQBAQAAAAAAAAAAAAAAAAAAAAD/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwD1OUZIkkLtE0ZI+NQpBUV5s2b8/gf7qk2/dnj3abZYsvFyir5EpqVuUZLqwjbk7NYDnwBQHHxGCitxvfehuiMzdMqeXtN0vnvPKXmysjaz80sjEmRywxms355ciWJJsezVzdv+2onMp7PdNiSaJIGj/RpAnuyVAxDTANL+5aLUt/XAO11LFQWABryAbF6a19sxsLC23Ew9txVxsOCCOLHgWMxiKNVAVAhA4gAAVQqq00ErwJJNHOzSBouXELIwU37tQab8WDX1rF8PFkyos54VORArJHJ/JVauS3/RKqSPRKqfoVNpoGmmmg//2Q==",
+          "s3_info": {
+            "bucket": "tractuslabs-data-sources",
+            "key": "messages/120363421131250401@g.us/2026-01-06/ae7c1510-7430-412b-8f32-612ba4a86227_pdf-3eb0a72ccecedd731588fb-82c701ab9de4d07a9ae1.pdf"
+          }
+        },
+        "from": "60125872711",
+        "from_name": "Jelene"
+      },
+      {
+        "id": "O75G5RSMH6ZuPg-ghUBq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767689944,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "Dear @135639529947208  - thanks! possible to trouble you to click the docusign to mark as signed? thank you"
+        },
+        "context": {
+          "mentions": [
+            "60125872711"
+          ]
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "PrAIEBr1BdQuyMg-gu8Bq53k0Hqa4Q",
+        "from_me": false,
+        "type": "image",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767690278,
+        "source": "web",
+        "device_id": 3,
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "image": {
+          "id": "jpeg-3eb008101af505d42ec8c8-82ef01ab9de4d07a9ae1",
+          "mime_type": "image/jpeg",
+          "file_size": 210140,
+          "sha256": "3oXUAK2lwXakBedttgEEP3fPKHPbSrmAplktTsc/uao=",
+          "link": "https://tractuslabs-data-sources.s3.us-east-1.amazonaws.com/messages/120363421131250401@g.us/2026-01-06/e29f2fa1-1366-4b47-ba52-f2bb53b14176_jpeg-3eb008101af505d42ec8c8-82ef01ab9de4d07a9ae1.jpeg",
+          "caption": "this one?",
+          "width": 1489,
+          "height": 865,
+          "preview": "data:image/jpeg;base64,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",
+          "s3_info": {
+            "bucket": "tractuslabs-data-sources",
+            "key": "messages/120363421131250401@g.us/2026-01-06/e29f2fa1-1366-4b47-ba52-f2bb53b14176_jpeg-3eb008101af505d42ec8c8-82ef01ab9de4d07a9ae1.jpeg"
+          }
+        },
+        "from": "60125872711",
+        "from_name": "Jelene"
+      },
+      {
+        "id": "Oi7FPWIwC733TQ-gtUBq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767690296,
+        "source": "mobile",
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "Thanks!"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "PrCaItEf4JzfCyI-gvEBq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767690343,
+        "source": "web",
+        "device_id": 3,
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "so next time I no need to sign on this? just sign the Documenso will do?"
+        },
+        "context": {
+          "quoted_id": "PsoYJLOVihocqu8-wqkBq53k0Hqa4Q",
+          "quoted_author": "919123097519",
+          "quoted_content": {
+            "id": "media_init",
+            "mime_type": "application/pdf",
+            "file_size": 274482,
+            "sha256": "I6ryA/lyeooathcc5HTm6NPRiLtUUn4OSNMGwsUrVC0=",
+            "caption": "contract_GIIOFINE - P \u2014 S-2026-2.pdf"
+          },
+          "quoted_type": "documentWithCaption"
+        },
+        "from": "60125872711",
+        "from_name": "Jelene"
+      },
+      {
+        "id": "OhAdo_VGt.O0Jw-ghsBq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767690353,
+        "source": "mobile",
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "Yes exactly"
+        },
+        "context": {
+          "quoted_id": "PrCaItEf4JzfCyI-gvEBq53k0Hqa4Q",
+          "quoted_author": "60125872711",
+          "quoted_content": {
+            "body": "so next time I no need to sign on this? just sign the Documenso will do?"
+          },
+          "quoted_type": "text"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "Oh32YMRBrWCkzw-gq4Bq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767690361,
+        "source": "mobile",
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "We are moving everything digital now \ud83d\udc4d\ud83c\udffc"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "PrBy4aPkc871BtE-gqEBq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767690364,
+        "source": "web",
+        "device_id": 3,
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "then this copy will email to us?"
+        },
+        "from": "60125872711",
+        "from_name": "Jelene"
+      },
+      {
+        "id": "OtrClEYyTdR5TA-grABq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767690376,
+        "source": "mobile",
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "Yes once you complete the sign you will automatically receive a copy"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "PrCvTQGvv2_dKwU-gloBq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767690400,
+        "source": "web",
+        "device_id": 3,
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "I see... so your side can save many manual works?"
+        },
+        "from": "60125872711",
+        "from_name": "Jelene"
+      },
+      {
+        "id": "On3ziBj9s_vjKw-gpEBq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767690446,
+        "source": "mobile",
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "Yes exactly"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "OkcpIPGYqJgxwA-gn8Bq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767690459,
+        "source": "mobile",
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "That\u2019s why we moved to this system."
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "PrAtrtL0txNz7f0-gvsBq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767690488,
+        "source": "web",
+        "device_id": 3,
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "But documents request still manual request right?"
+        },
+        "from": "60125872711",
+        "from_name": "Jelene"
+      },
+      {
+        "id": "OlxDq96ttHnNVg-gh4Bq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767690501,
+        "source": "mobile",
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "We are using this for 3 of our group companies - makes sales order tracking much faster"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "Or_eXgMCRa4gmQ-goUBq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767690506,
+        "source": "mobile",
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "Which document requests?"
+        },
+        "context": {
+          "quoted_id": "PrAtrtL0txNz7f0-gvsBq53k0Hqa4Q",
+          "quoted_author": "60125872711",
+          "quoted_content": {
+            "body": "But documents request still manual request right?"
+          },
+          "quoted_type": "text"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "PrBTHo8jaeoB9EQ-gu4Bq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767690567,
+        "source": "web",
+        "device_id": 3,
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "Like Kosher, Halal etc"
+        },
+        "context": {
+          "quoted_id": "Or_eXgMCRa4gmQ-goUBq53k0Hqa4Q",
+          "quoted_author": "6594240709",
+          "quoted_content": {
+            "body": "Which document requests?"
+          },
+          "quoted_type": "text"
+        },
+        "from": "60125872711",
+        "from_name": "Jelene"
+      },
+      {
+        "id": "OlnnFBu05gSjow-gqYBq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767690665,
+        "source": "mobile",
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "Ah yeah for now this is still manual"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "OuMGjrBOWGCkDw-ghgBq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767690683,
+        "source": "mobile",
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "But the software provider will slowly add more and more of this"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "Op9CvsJqE8OwMQ-ggwBq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767690697,
+        "source": "mobile",
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "If you all are keen, I can introduce you to the software company"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "PrBdCGGkmpfPUwM-gukBq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767690928,
+        "source": "web",
+        "device_id": 3,
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "Sounds interesting"
+        },
+        "from": "60125872711",
+        "from_name": "Jelene"
+      },
+      {
+        "id": "PrD0hMJBs5Yp318-gmIBq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767690938,
+        "source": "web",
+        "device_id": 3,
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "if interested, we\u2019ll reach out to you for an introduction. Thanks!"
+        },
+        "from": "60125872711",
+        "from_name": "Jelene"
+      },
+      {
+        "id": "OnmzQuA7_dsZyg-gh8Bq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1767691053,
+        "source": "mobile",
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "Let me know"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      }
+    ]
+  ],
+  "error": "Expecting value: line 1 column 1 (char 0)"
+}

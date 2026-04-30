@@ -1,0 +1,219 @@
+{
+  "messages": [
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Hi. We need a large order but want it split across multiple delivery dates and multiple products.",
+      "timestamp": 1760100000
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "We can do multiple shipments. What do you need?",
+      "timestamp": 1760100040
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "KNM Coffee, Assam tea, copy paper, and Red Balloons.",
+      "timestamp": 1760100080
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Quantities?",
+      "timestamp": 1760100120
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "12 bags coffee, 30 boxes tea, 50 reams paper, 3000 balloons.",
+      "timestamp": 1760100160
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Coffee $300, tea $360, paper $200, balloons $9k (3x1000). Total $9860.",
+      "timestamp": 1760100200
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Can we do three shipments? Coffee first, then tea and paper, then balloons.",
+      "timestamp": 1760100240
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Yes. When for shipment 1?",
+      "timestamp": 1760100280
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "feb 28 — 12 bags coffee only.",
+      "timestamp": 1760100320
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Shipment 2?",
+      "timestamp": 1760100360
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "march 5 — 30 tea, 50 paper. Same address.",
+      "timestamp": 1760100400
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Shipment 3?",
+      "timestamp": 1760100440
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "march 12 — 3000 balloons. But that one goes to Changi Hospital Way Singapore 700339.",
+      "timestamp": 1760100480
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "So shipments 1 and 2 to one address, shipment 3 to Changi. Correct?",
+      "timestamp": 1760100520
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Yes. First two to 100 Finance Ave. Balloons to Changi.",
+      "timestamp": 1760100560
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Noted. Can we discuss payment terms — Net 30 from first or last delivery?",
+      "timestamp": 1760100600
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "From first delivery — feb 28. We're also hoping for a volume discount on the whole order.",
+      "timestamp": 1760100640
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "For orders above $5k we can do 6%. That would bring total to $9268.40.",
+      "timestamp": 1760100680
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "What about 8%? We're a long-standing customer and might have more events next year.",
+      "timestamp": 1760100720
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "I'd need to check. For now I can confirm 6%. I'll come back on 8% by tomorrow.",
+      "timestamp": 1760100760
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Okay. Let's lock 6% and you can confirm 8% later. If you can do 8% we might add sanitizer to shipment 2.",
+      "timestamp": 1760100800
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Noted. PO number for the main order?",
+      "timestamp": 1760100840
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "PO-2025-11-301. Invoice to accounts@company.com, copy to procurement.",
+      "timestamp": 1760100880
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Noted. Balloons — any specific colour mix or standard mix?",
+      "timestamp": 1760101000
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Standard mix is fine. Actually — can we get 1500 red and 1500 white instead?",
+      "timestamp": 1760101040
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Yes, we can do that. Same price. I'll note 1500 red, 1500 white.",
+      "timestamp": 1760101080
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "One more thing — for shipment 2, we might need the paper earlier. Can we move march 5 to march 3?",
+      "timestamp": 1760101120
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "I'll check warehouse. If we can, I'll confirm and update the DO.",
+      "timestamp": 1760101160
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "If march 3 doesn't work, keep march 5. Don't split tea and paper.",
+      "timestamp": 1760101200
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Understood. One more question — FOB Singapore, our delivery to both addresses. Correct?",
+      "timestamp": 1760101240
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Yes. And last time we had a delay on the delivery note for shipment 2. Can you send it on the day?",
+      "timestamp": 1760101280
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "We've updated our process — you'll get electronic delivery notes on the day for each shipment.",
+      "timestamp": 1760101320
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "We might add a fourth shipment in april — more coffee and maybe sanitizer. Would the 6% still apply?",
+      "timestamp": 1760101360
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "We'd look at combined volume. If you place it before march ends we can try to align. We can confirm when you have numbers.",
+      "timestamp": 1760101400
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Thanks. And please confirm 8% by tomorrow — if we get it we'll add the sanitizer to shipment 2.",
+      "timestamp": 1760101520
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "I'll revert on 8% and sanitizer pricing. Good day.",
+      "timestamp": 1760101560
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Good day.",
+      "timestamp": 1760101600
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "8% is available. I'll confirm the sanitizer pricing shortly.",
+      "timestamp": 1760101640
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Thanks. I'll add the sanitizer to shipment 3. And let's lock 8% for the whole order.",
+      "timestamp": 1760101680
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Pricing for sanitizer is $10 per box.",
+      "timestamp": 1760101720
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Confirmed, add 100 boxes to shipment 3.",
+      "timestamp": 1760101840
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Noted. I'll send the SO shortly.",
+      "timestamp": 1760101880
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Thanks.",
+      "timestamp": 1760101920
+    }
+  ]
+}

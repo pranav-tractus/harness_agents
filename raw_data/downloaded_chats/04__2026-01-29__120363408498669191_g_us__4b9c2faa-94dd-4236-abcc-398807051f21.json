@@ -1,0 +1,115 @@
+{
+  "row_index": 4,
+  "whatsapp_group_id": "120363408498669191@g.us",
+  "customer_id": "4b9c2faa-94dd-4236-abcc-398807051f21",
+  "created_at": "2026-01-29 10:22:23.071417",
+  "created_date": "2026-01-29",
+  "field_data": {
+    "items": [
+      {
+        "sr_no": 1,
+        "total": 29250.0,
+        "loading": "25kg bags in carton",
+        "packing": "25kg bags in carton",
+        "quantity": 9000.0,
+        "ship_term": "CIF Jakarta",
+        "unit_price": 3.25,
+        "description": "GIIOFINE - P - S",
+        "pricing_unit": "USD/KG",
+        "quantity_unit": "KG"
+      }
+    ],
+    "do_date": "2026-02-28",
+    "po_date": "2026-01-29",
+    "po_ref_no": "GIIOFINE - P - S-2026-4",
+    "vendor_name": "GIIAVA Singapore Pte Ltd",
+    "payment_date": "CAD",
+    "delivery_terms": "CIF Jakarta",
+    "billing_address": "PT Bright International, Plaza Niaga 1 Blok B No 50 Sentul City - Bogor Indonesia",
+    "shipping_method": "against PO-IMP-BIB-2601-017",
+    "shipping_address": "Plaza Niaga 1 Blok B No 50 Sentul City - Bogor Indonesia"
+  },
+  "s3_matches": [
+    {
+      "bucket": "tractuslabs-data-sources",
+      "key": "messages/120363408498669191@g.us/2026-01-29.json",
+      "last_modified": "2026-01-29T10:22:34+00:00",
+      "size": 1385,
+      "presigned_url": "https://tractuslabs-data-sources.s3.amazonaws.com/messages/120363408498669191%40g.us/2026-01-29.json?AWSAccessKeyId=AKIAYQYUBA34VECEKVJT&Signature=CsWh0VT2jADmzAxYFotjvAEs0tw%3D&Expires=1776066103"
+    }
+  ],
+  "chats": [
+    [
+      {
+        "id": "O8aqjY0GVcq0uA-gtYBq53h34S2hw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363408498669191@g.us",
+        "timestamp": 1769680884,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "PTBI-GIIAVA Lecithin",
+        "text": {
+          "body": "2"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "O0lxMpY38fBMYg-gu0Bq53h34S2hw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363408498669191@g.us",
+        "timestamp": 1769682011,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "PTBI-GIIAVA Lecithin",
+        "text": {
+          "body": "Dear Mr. Deni, we confirm having sold to you 9 MT of GIIOFINE-P-S @ USD 3.25 / kg CIF Jakarta with dispatch date end february 2026."
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "O63HskCsIm3eMw-gjEBq53h34S2hw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363408498669191@g.us",
+        "timestamp": 1769682099,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "PTBI-GIIAVA Lecithin",
+        "text": {
+          "body": "@125379322851493 change Shipping method to against PO-IMP-BIB-2601-017"
+        },
+        "context": {
+          "mentions": [
+            "919123097519"
+          ]
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "O9yB3zCDxJ0pxw-gigBq53h34S2hw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363408498669191@g.us",
+        "timestamp": 1769682152,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "PTBI-GIIAVA Lecithin",
+        "text": {
+          "body": "@59627198759048 you will receive a documenso signing request for the contract generated here."
+        },
+        "context": {
+          "mentions": [
+            "6285720346956"
+          ]
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      }
+    ]
+  ]
+}

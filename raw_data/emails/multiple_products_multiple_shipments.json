@@ -1,0 +1,59 @@
+{
+  "messages": [
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Subject: Quote – BP102 and DOL-97\n\nHi,\n\nWe are looking to restock. Do you have availability for BP102 and DOL-97? We need around 23 MT of each, with shipment in march this year.\n\nThanks.",
+      "timestamp": 1760302000
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Subject: Re: Quote – BP102 and DOL-97\n\nHi,\n\nWe can do both. For BP102 we can offer 23 MT in one lot. For DOL-97 we cannot fit 23 MT in a 40' FCL; we can do 18 MT per 40'. Would 18 MT work for DOL-97, or do you need the full 23 MT in two shipments?",
+      "timestamp": 1760302100
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Subject: Re: Quote – BP102 and DOL-97\n\nWe need the full 23 MT of DOL-97. Can we do 18 MT in the first shipment and 5 MT in a second shipment in may?",
+      "timestamp": 1760302200
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Subject: Re: Quote – BP102 and DOL-97\n\nYes. So we would have: BP102 – 23 MT, single shipment march; DOL-97 – 18 MT + 5 MT, two shipments may. Correct?",
+      "timestamp": 1760302300
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Subject: Re: Quote – BP102 and DOL-97\n\nYes, that works. Please send prices for both products.",
+      "timestamp": 1760302400
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Subject: Re: Quote – BP102 and DOL-97\n\nBP102: USD 1325/MT CIF Busan for 23 MT, march.\nDOL-97 (lecithin): USD 4.20/kg CIF Busan for 23 MT (18 MT + 5 MT), may. DOL-97 offer valid till 2026-03-15.",
+      "timestamp": 1760302500
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Subject: Re: Quote – BP102 and DOL-97\n\nCan you do USD 4.00/kg for DOL-97?",
+      "timestamp": 1760302600
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Subject: Re: Quote – BP102 and DOL-97\n\nWe can do USD 4.10/kg for DOL-97; below that is not workable at current market.",
+      "timestamp": 1760302700
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Subject: Re: Quote – BP102 and DOL-97\n\nOK. We confirm both: BP102 23 MT at USD 1325/MT, DOL-97 23 MT (18+5) at USD 4.10/kg, all CIF Busan, November. Vendor name for both: AG Lipids Pte Ltd.",
+      "timestamp": 1760302800
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Subject: Re: Quote – BP102 and DOL-97\n\nConfirmed. We will issue one contract covering BP102 and DOL-97 with three shipment lines (BP102 23 MT; DOL-97 18 MT; DOL-97 5 MT), vendor AG Lipids Pte Ltd. You will receive it by end of day.\n\nBest regards.",
+      "timestamp": 1760302900
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Subject: Re: Quote – BP102 and DOL-97\n\nThank you.",
+      "timestamp": 1760303000
+    }
+  ]
+}

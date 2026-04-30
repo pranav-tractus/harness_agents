@@ -1,0 +1,239 @@
+{
+  "messages": [
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Good morning. We need to place an order for KNM Coffee.",
+      "timestamp": 1760000000
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Good morning. What quantity are you looking at?",
+      "timestamp": 1760000040
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "We're thinking 10 bags.",
+      "timestamp": 1760000080
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "I have that on record. Current list price is $25 per bag.",
+      "timestamp": 1760000120
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Could we also get a quote for Assam tea? We might add it to this order.",
+      "timestamp": 1760000160
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Assam tea is $12 per box, 50 sachets. How many boxes?",
+      "timestamp": 1760000200
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Actually hold on — we're still checking on tea. Let's just do the coffee for now.",
+      "timestamp": 1760000240
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Understood. So 10 bags KNM Coffee only. Any discount discussion?",
+      "timestamp": 1760000280
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Given our volume we were hoping for something better than list. 8% off?",
+      "timestamp": 1760000320
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "For 10 bags we can do 5% — $23.75 per bag. 8% I'd need to check.",
+      "timestamp": 1760000360
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "What about if we add paper and sanitizer to the same delivery? Then it's a bigger order.",
+      "timestamp": 1760000400
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Paper $4/ream, sanitizer $8/bottle min 24. If combined order is above $500 we could look at 6% on the whole thing.",
+      "timestamp": 1760000440
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "We might need 20 reams and 24 sanitizer. Can you run the total?",
+      "timestamp": 1760000480
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "10 coffee $250, 20 paper $80, 24 sanitizer $192. Total $522. At 6% that would be $490.68.",
+      "timestamp": 1760000520
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Scratch the paper and sanitizer. Budget got cut. Just the 10 bags coffee, and we'll take the 5% if that's still on the table.",
+      "timestamp": 1760000560
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Yes. 10 bags at $23.75 = $237.50. Delivery date?",
+      "timestamp": 1760000600
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "November 28. address 352 Indiana Jones St.",
+      "timestamp": 1760000640
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Noted. PO reference?",
+      "timestamp": 1760000680
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "PO-2025-11-501. Net 30 from delivery.",
+      "timestamp": 1760000720
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Wait — can we move delivery to November 30? Our receiving is closed on the 28th.",
+      "timestamp": 1760000760
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "We can do Nov 30. I'll note that.",
+      "timestamp": 1760000800
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Actually the 28th might work after all. Our facilities team said they can open. Keep it Nov 28.",
+      "timestamp": 1760000840
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Reverting to Nov 28. Got it.",
+      "timestamp": 1760000880
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Do you have Red Balloons? We have an event in December and might need a separate order.",
+      "timestamp": 1760000920
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Yes, $3000 per 1000. We can quote when you're ready.",
+      "timestamp": 1760000960
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Don't need it for this order. Just asking for later.",
+      "timestamp": 1760001000
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Will do.",
+      "timestamp": 1760001120
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "One more thing — last October the delivery note came late. Can you send it on the day this time?",
+      "timestamp": 1760001160
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "We've changed our process; you'll get it electronically on the day.",
+      "timestamp": 1760001200
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "And the October order — we had one bag with a torn corner. We didn't claim. Can you just be a bit careful with packaging?",
+      "timestamp": 1760001240
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Noted. I'll flag it for the warehouse.",
+      "timestamp": 1760001280
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "We might need 12 bags in January. Would the 5% still apply?",
+      "timestamp": 1760001320
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "For 12 bags we could do 5% or possibly 6%. We can confirm when you place the January order.",
+      "timestamp": 1760001360
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "FOB Singapore, right? We use your delivery.",
+      "timestamp": 1760001560
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Yes. FOB Singapore, our delivery included.",
+      "timestamp": 1760001600
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Receiving contact is +65 9123 4567. Gate B.",
+      "timestamp": 1760001640
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Noted on the order.",
+      "timestamp": 1760001680
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "If we need to reschedule Nov 28, how much notice do you need?",
+      "timestamp": 1760001720
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "At least 48 hours so we can adjust the route.",
+      "timestamp": 1760001760
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Do you have decaf in the same KNM range? We might want a couple of bags for the staff room.",
+      "timestamp": 1760001800
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "We have KNM Decaf at $26 per bag. Min order 2 bags.",
+      "timestamp": 1760001840
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "We'll skip it for November. Maybe add it to the January order.",
+      "timestamp": 1760001880
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Just let us know when you're ready.",
+      "timestamp": 1760001920
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "And the 5% — is it off list before or after we apply early payment discount?",
+      "timestamp": 1760001960
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "5% is off list. If you take early payment discount that's on top of the net amount.",
+      "timestamp": 1760002000
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Thanks. We're done — thanks for your patience with all the back and forth.",
+      "timestamp": 1760002280
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Understood. Good day.",
+      "timestamp": 1760002320
+    }
+  ]
+}

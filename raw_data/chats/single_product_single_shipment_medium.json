@@ -1,0 +1,94 @@
+{
+  "messages": [
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Good morning. We need to restock KNM Coffee.",
+      "timestamp": 1760000000
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Good morning. How many bags do you need?",
+      "timestamp": 1760000040
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "8 bags. Is the rate still $25 per bag?",
+      "timestamp": 1760000080
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Yes, $25 per bag. Total $200.",
+      "timestamp": 1760000120
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Can we get a small discount for 8 bags?",
+      "timestamp": 1760000160
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "We can do 5% off for 8 bags — $23.75 per bag, total $190.",
+      "timestamp": 1760000200
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "That works. Delivery to 100 Finance Ave Singapore 018989.",
+      "timestamp": 1760000240
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Preferred date?",
+      "timestamp": 1760000280
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "end of this month.",
+      "timestamp": 1760000320
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "8 bags KNM Coffee, Nov 28, 100 Finance Ave. I'll raise the SO.",
+      "timestamp": 1760000360
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Our PO is PO-2025-11-101. Payment Net 30 from delivery.",
+      "timestamp": 1760000400
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Noted. SO will reference PO-2025-11-101. Net 30 from delivery.",
+      "timestamp": 1760000440
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Do you need a contact for receiving?",
+      "timestamp": 1760000480
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Yes, please — for the delivery team to call on the day.",
+      "timestamp": 1760000520
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "+65 9123 4567, ask for Receiving. Gate B.",
+      "timestamp": 1760000560
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Noted. SO will be with you by end of day.",
+      "timestamp": 1760000600
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Thank you.",
+      "timestamp": 1760000640
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "You're welcome.",
+      "timestamp": 1760000680
+    }
+  ]
+}

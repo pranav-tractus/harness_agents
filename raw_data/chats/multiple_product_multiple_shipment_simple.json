@@ -1,0 +1,44 @@
+{
+  "messages": [
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Hi. We need coffee and tea, split into two deliveries.",
+      "timestamp": 1760100000
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Sure. Quantities and dates?",
+      "timestamp": 1760100040
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "10 bags KNM Coffee end of this month, 20 boxes Assam tea end of next month. Same address: 100 Finance Ave. CIF Singapore.",
+      "timestamp": 1760100080
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Coffee $250, tea $240. Total $490. One PO?",
+      "timestamp": 1760100120
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Yes. PO-2025-11-200. Net 30 from last delivery.",
+      "timestamp": 1760100160
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Noted. I'll raise one SO.",
+      "timestamp": 1760100200
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Thanks. Good day.",
+      "timestamp": 1760100240
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Good day.",
+      "timestamp": 1760100280
+    }
+  ]
+}

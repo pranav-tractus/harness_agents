@@ -1,0 +1,167 @@
+{
+  "row_index": 7,
+  "whatsapp_group_id": "120363403074656566@g.us",
+  "customer_id": "8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f",
+  "created_at": "2025-12-23 05:53:36.411843",
+  "created_date": "2025-12-23",
+  "field_data": {
+    "items": [
+      {
+        "sr_no": 1,
+        "total": 32550.0,
+        "loading": "10.5MT / 20'",
+        "packing": "standard packaging",
+        "quantity": 10500.0,
+        "ship_term": "EXW",
+        "unit_price": 3100.0,
+        "description": "BergaPur",
+        "pricing_unit": "usd/mt",
+        "quantity_unit": "kg"
+      }
+    ],
+    "do_date": "2026-01-31",
+    "po_date": "2025-12-23",
+    "po_ref_no": "BergaPur-2025-4",
+    "vendor_name": "GIIAVA Singapore Pte Ltd",
+    "payment_date": "7D",
+    "delivery_terms": "EXW",
+    "billing_address": "Berg + Schmidt Asia Pte Ltd, 1 North Buona Vista Link #10-06 Elementum Singapore 139691",
+    "shipping_method": "",
+    "shipping_address": "NA"
+  },
+  "s3_matches": [
+    {
+      "bucket": "tractuslabs-data-sources",
+      "key": "messages/120363403074656566@g.us/2025-12-23.json",
+      "last_modified": "2025-12-23T06:15:26+00:00",
+      "size": 2504,
+      "presigned_url": "https://tractuslabs-data-sources.s3.amazonaws.com/messages/120363403074656566%40g.us/2025-12-23.json?AWSAccessKeyId=AKIAYQYUBA34VECEKVJT&Signature=N3nL6OXqchP25THPJ5w%2Bl0zTgBc%3D&Expires=1776066110"
+    }
+  ],
+  "chats": [
+    [
+      {
+        "id": "OxxYF3PqbwxAMg-gkgBq53gnDjZNg",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403074656566@g.us",
+        "timestamp": 1766467690,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "GIIAVA-BSA",
+        "text": {
+          "body": "@248193291935791 Hi - can yo uconfirm this? I will be issuing the SO for the 10.5 MT followed by the SO for the next containers as sent by Mr Reimer on email"
+        },
+        "context": {
+          "mentions": [
+            "6598555318"
+          ],
+          "quoted_id": "O8iIH6ZGRIVrag-gksBq53gnDjZNg",
+          "quoted_author": "6594240709",
+          "quoted_content": {
+            "body": "Confirm your order for 10.5 MT of Bergapur in standard packaging for Jan 2026 @ USD 3100/MT EXW"
+          },
+          "quoted_type": "text"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "PrDjzGWJsDK8anI-gvYBq53gnDjZNg",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403074656566@g.us",
+        "timestamp": 1766467943,
+        "source": "web",
+        "device_id": 1,
+        "chat_name": "GIIAVA-BSA",
+        "text": {
+          "body": "Hi Mr. Yash, yes, it's confirmed."
+        },
+        "context": {
+          "quoted_id": "O8iIH6ZGRIVrag-gksBq53gnDjZNg",
+          "quoted_author": "6594240709",
+          "quoted_content": {
+            "body": "Confirm your order for 10.5 MT of Bergapur in standard packaging for Jan 2026 @ USD 3100/MT EXW"
+          },
+          "quoted_type": "text"
+        },
+        "from": "6598555318",
+        "from_name": "Ng"
+      },
+      {
+        "id": "O3wYdu7petzcVw-gmABq53gnDjZNg",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403074656566@g.us",
+        "timestamp": 1766470259,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "GIIAVA-BSA",
+        "text": {
+          "body": "@248193291935791 can you sign the SO that should be in your inbox? thanks"
+        },
+        "context": {
+          "mentions": [
+            "6598555318"
+          ]
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "PrChMqkp0Bj7Pr4-gnkBq53gnDjZNg",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403074656566@g.us",
+        "timestamp": 1766470368,
+        "source": "web",
+        "device_id": 1,
+        "chat_name": "GIIAVA-BSA",
+        "text": {
+          "body": "Ok, it's signed."
+        },
+        "context": {
+          "quoted_id": "O3wYdu7petzcVw-gmABq53gnDjZNg",
+          "quoted_author": "6594240709",
+          "quoted_content": {
+            "body": "@248193291935791 can you sign the SO that should be in your inbox? thanks"
+          },
+          "quoted_type": "text"
+        },
+        "from": "6598555318",
+        "from_name": "Ng"
+      },
+      {
+        "id": "O4lERUHXTVdUTQ-gpwBq53gnDjZNg",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403074656566@g.us",
+        "timestamp": 1766470510,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "GIIAVA-BSA",
+        "text": {
+          "body": "will send for the next few containers shortly"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "PrArGdZ0et9Q2V0-ghABq53gnDjZNg",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403074656566@g.us",
+        "timestamp": 1766470523,
+        "source": "web",
+        "device_id": 1,
+        "chat_name": "GIIAVA-BSA",
+        "text": {
+          "body": "SURE"
+        },
+        "from": "6598555318",
+        "from_name": "Ng"
+      }
+    ]
+  ]
+}

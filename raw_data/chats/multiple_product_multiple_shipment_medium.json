@@ -1,0 +1,94 @@
+{
+  "messages": [
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Hi. We need a larger order but want it split across multiple delivery dates.",
+      "timestamp": 1760100000
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "We can do multiple shipments. What do you need?",
+      "timestamp": 1760100040
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "KNM Coffee, Assam tea, and copy paper.",
+      "timestamp": 1760100080
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Quantities for each?",
+      "timestamp": 1760100120
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "12 bags coffee, 30 boxes tea, 50 reams paper.",
+      "timestamp": 1760100160
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Coffee $300, tea $360, paper $200. Total $860. How do you want the shipments?",
+      "timestamp": 1760100200
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Coffee first — Feb 28. Tea and paper together — march 5.",
+      "timestamp": 1760100240
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Same delivery address for both?",
+      "timestamp": 1760100280
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Yes. 100 Finance Ave Singapore 018989. EXW Singapore.",
+      "timestamp": 1760100320
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Shipment 1: 12 bags coffee Feb 28. Shipment 2: 30 tea, 50 paper march 5.",
+      "timestamp": 1760100360
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Can we get a discount on the total order?",
+      "timestamp": 1760100400
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "For orders above $800 we can do 5% — total $817.",
+      "timestamp": 1760100440
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Done. PO-2025-11-250. Payment Net 30 from last delivery.",
+      "timestamp": 1760100480
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Noted. SO will reference PO-2025-11-250. Payment due april 30. I'll send the SO shortly.",
+      "timestamp": 1760100520
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Receiving contact +65 9123 4567, Gate B. Same for both deliveries.",
+      "timestamp": 1760100560
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Noted on both DOs. Anything else?",
+      "timestamp": 1760100600
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "No. Thanks.",
+      "timestamp": 1760100640
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "You're welcome.",
+      "timestamp": 1760100680
+    }
+  ]
+}

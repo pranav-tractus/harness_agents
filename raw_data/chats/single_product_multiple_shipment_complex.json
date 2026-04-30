@@ -1,0 +1,164 @@
+{
+  "messages": [
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Hi. We need a large quantity of KNM Coffee but we want it in three separate deliveries to different locations.",
+      "timestamp": 1760200000
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "We can do multiple shipments of the same product. How many bags in total and how do you want to split?",
+      "timestamp": 1760200040
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "30 bags total. We have three sites — main office, warehouse, and the new branch.",
+      "timestamp": 1760200080
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Quantities and addresses for each?",
+      "timestamp": 1760200120
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "12 bags to 100 Finance Ave, 10 bags to 200 Warehouse Lane, 8 bags to 15 New Branch Rd.",
+      "timestamp": 1760200160
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Delivery dates?",
+      "timestamp": 1760200200
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "We'd like Finance Ave Feb 28, Warehouse march 4, New Branch march 10. Can we get a volume discount?",
+      "timestamp": 1760200240
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "For 30 bags we can do 6% — $23.50 per bag, total $705.",
+      "timestamp": 1760200280
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "What about 8%? We might have repeat orders every quarter across these sites.",
+      "timestamp": 1760200320
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "I can do 7% for 30 bags — $22.75 per bag, total $682.50. 8% I'd need to confirm with pricing.",
+      "timestamp": 1760200360
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Let's lock 7%. PO-2025-11-280. Payment Net 30 from last delivery.",
+      "timestamp": 1760200400
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Noted. 12 bags Feb 28 Finance Ave, 10 bags march 4 Warehouse Lane, 8 bags march 10 New Branch Rd. Payment due april 8.",
+      "timestamp": 1760200440
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Correct. We might need to move the New Branch delivery to march 12 — they're still setting up receiving. Can we keep that flexible?",
+      "timestamp": 1760200480
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "I'll put march 10 for now. If you need to shift to march 12, give us at least 48 hours notice.",
+      "timestamp": 1760200520
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Also — can we add 2 extra bags to the Finance Ave shipment? So 14 bags Feb 28, 10 Warehouse, 8 New Branch. Total 32.",
+      "timestamp": 1760200640
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Yes. 32 bags at $22.75 = $728. I'll update the orders. Same 7% applies.",
+      "timestamp": 1760200680
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Invoice to accounts@company.com. Cost centre CC-301 for this order — please put on SO and all DOs.",
+      "timestamp": 1760200720
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Will do. FOB Singapore, our delivery to all three addresses. Correct?",
+      "timestamp": 1760200760
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Yes. Last time we had an issue with one shipment — the delivery note had the wrong quantity. Can you double-check each DO?",
+      "timestamp": 1760200800
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "We've tightened our checks. Each DO will show the correct quantity and address. You'll get the note on the day of each delivery.",
+      "timestamp": 1760200840
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "We might add a fourth site in Q1. Would the 7% hold if we do another 30 bags then?",
+      "timestamp": 1760200880
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "We'd look at cumulative volume. If you're doing 30+ every quarter we can discuss a standing discount. We can revisit when you have Q1 numbers.",
+      "timestamp": 1760200920
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Do you have KNM Decaf? We might want a few bags for the staff room at Finance Ave — could we add 2 bags to that shipment?",
+      "timestamp": 1760200960
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "We have KNM Decaf at $26 per bag. So shipment 1 would be 14 regular + 2 decaf, total 16 bags. Decaf doesn't get the 7% — it would be 2 x $26 = $52 on top.",
+      "timestamp": 1760201000
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Skip the decaf for now. Keep it 14 + 10 + 8 = 32 bags as we said.",
+      "timestamp": 1760201040
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Understood. 32 bags KNM Coffee only, three shipments as per above.",
+      "timestamp": 1760201080
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "If we need to reschedule any of the three dates, how much notice?",
+      "timestamp": 1760201120
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "At least 48 hours so we can adjust routes. The more notice the better.",
+      "timestamp": 1760201160
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Origin — can you put coffee origin on the packing list for each shipment? Quality wants to track it.",
+      "timestamp": 1760201200
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Yes. Same origin for all — we'll include it on each packing list.",
+      "timestamp": 1760201240
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "That's all. Thanks for your patience with the back and forth.",
+      "timestamp": 1760201280
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "No problem. SO will be with you by end of day. Good day.",
+      "timestamp": 1760201320
+    }
+  ]
+}

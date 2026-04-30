@@ -1,0 +1,79 @@
+{
+  "row_index": 5,
+  "whatsapp_group_id": "120363407382355715@g.us",
+  "customer_id": "12a4f3a7-d506-4d32-ae06-3f76508c6abd",
+  "created_at": "2026-01-20 10:01:21.929676",
+  "created_date": "2026-01-20",
+  "field_data": {
+    "items": [
+      {
+        "sr_no": 1,
+        "total": 74100.0,
+        "loading": "",
+        "packing": "",
+        "quantity": 26000.0,
+        "ship_term": "CIF NHAVA SHEVA",
+        "unit_price": 2850.0,
+        "description": "GIIOFINE - P - S",
+        "pricing_unit": "USD/MT",
+        "quantity_unit": "KG"
+      }
+    ],
+    "do_date": "2026-01-31",
+    "po_date": "2026-01-20",
+    "po_ref_no": "GIIOFINE - P - S-2026-3",
+    "vendor_name": "GIIAVA Singapore Pte Ltd",
+    "payment_date": "Net 30D",
+    "delivery_terms": "CIF NHAVA SHEVA",
+    "billing_address": "GIIAVA India Pvt Ltd, 70/21A Law College Road Pune 411004 India",
+    "shipping_method": "",
+    "shipping_address": "C3 MIDC Wai Dist Satara 412803 India"
+  },
+  "s3_matches": [
+    {
+      "bucket": "tractuslabs-data-sources",
+      "key": "messages/120363407382355715@g.us/2026-01-20.json",
+      "last_modified": "2026-01-20T10:00:21+00:00",
+      "size": 439,
+      "presigned_url": "https://tractuslabs-data-sources.s3.amazonaws.com/messages/120363407382355715%40g.us/2026-01-20.json?AWSAccessKeyId=AKIAYQYUBA34VECEKVJT&Signature=hIDCZWU1tNzy8rIkj6yg255Hbzo%3D&Expires=1776066105"
+    },
+    {
+      "bucket": "tractuslabs-data-sources",
+      "key": "messages/120363407382355715@g.us/llm_msg.json",
+      "last_modified": "2026-01-20T10:00:21+00:00",
+      "size": 211,
+      "presigned_url": "https://tractuslabs-data-sources.s3.amazonaws.com/messages/120363407382355715%40g.us/llm_msg.json?AWSAccessKeyId=AKIAYQYUBA34VECEKVJT&Signature=%2FHbsmMnprKzDaV6C%2FQrudJHqeic%3D&Expires=1776066105"
+    }
+  ],
+  "chats": [
+    [
+      {
+        "id": "Ox8ro2G9s6vDSQ-gkYBq53hnPsfAw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363407382355715@g.us",
+        "timestamp": 1768903215,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "GS sale to GI",
+        "text": {
+          "body": "@203100530958363 confirming your Purchase of 2 * 20\u2019 FCL of 13MT each of GIIOIFNE-P-S @ USD 2850 CIF Nhava Sheva with shipment method against PO2526102"
+        },
+        "context": {
+          "mentions": [
+            "919970778485"
+          ]
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      }
+    ],
+    [
+      {
+        "from_whom": "(TEAM1)",
+        "body": "@203100530958363 confirming your Purchase of 2 * 20\u2019 FCL of 13MT each of GIIOIFNE-P-S @ USD 2850 CIF Nhava Sheva with shipment method against PO2526102",
+        "timestamp": 1768903215
+      }
+    ]
+  ]
+}

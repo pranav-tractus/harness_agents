@@ -1,0 +1,44 @@
+{
+    "messages": [
+        {
+            "from_whom": "(TEAM2)",
+            "body": "Subject: Quote request – BP102\n\nHi,\n\nCould you please send us a quote for BP102? We are looking to order 23 MT for March this year.\n\nThanks.",
+            "timestamp": 1760300000
+        },
+        {
+            "from_whom": "(TEAM1)",
+            "body": "Subject: Re: Quote request – BP102\n\nHi,\n\nThanks for your enquiry. We can supply 23 MT for March. Our mid-day price today is USD 1350/MT CIF Busan. Offer valid for 24h till 1400 SGT on 2026-02-09.\n\nBest regards.",
+            "timestamp": 1760300100
+        },
+        {
+            "from_whom": "(TEAM2)",
+            "body": "Subject: Re: Quote request – BP102\n\nThanks for the quote. Any chance you could do USD 1300/MT?",
+            "timestamp": 1760300200
+        },
+        {
+            "from_whom": "(TEAM1)",
+            "body": "Subject: Re: Quote request – BP102\n\nLet me check with our team and revert.",
+            "timestamp": 1760300250
+        },
+        {
+            "from_whom": "(TEAM1)",
+            "body": "Subject: Re: Quote request – BP102\n\nWe can meet in the middle at USD 1325/MT CIF Busan. Can you confirm?",
+            "timestamp": 1760300400
+        },
+        {
+            "from_whom": "(TEAM2)",
+            "body": "Subject: Re: Quote request – BP102\n\nWe can work with that. Please confirm the trade for 23 MT BP102 at USD 1325/MT CIF Busan for march shipment.",
+            "timestamp": 1760300500
+        },
+        {
+            "from_whom": "(TEAM1)",
+            "body": "Subject: Re: Quote request – BP102\n\nConfirmed. 23 MT BP102 at USD 1325/MT CIF Busan, march shipment. We will send the contract shortly. Please note vendor name to be used: AG Lipids Pte Ltd.\n\nBest regards.",
+            "timestamp": 1760300600
+        },
+        {
+            "from_whom": "(TEAM2)",
+            "body": "Subject: Re: Quote request – BP102\n\nNoted on AG Lipids Pte Ltd. Thanks.",
+            "timestamp": 1760300700
+        }
+    ]
+}

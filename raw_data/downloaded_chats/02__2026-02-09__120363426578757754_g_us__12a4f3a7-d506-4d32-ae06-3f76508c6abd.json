@@ -1,0 +1,74 @@
+{
+  "row_index": 2,
+  "whatsapp_group_id": "120363426578757754@g.us",
+  "customer_id": "12a4f3a7-d506-4d32-ae06-3f76508c6abd",
+  "created_at": "2026-02-09 09:06:12.897619",
+  "created_date": "2026-02-09",
+  "field_data": {
+    "items": [
+      {
+        "sr_no": 1,
+        "total": 111150.0,
+        "loading": "",
+        "packing": "25 kgs in PP bags",
+        "quantity": 39000.0,
+        "ship_term": "CIF Nhava Sheva",
+        "unit_price": 2850.0,
+        "description": "GIIOFINE - P - S",
+        "pricing_unit": "usd/mt",
+        "quantity_unit": "kg"
+      }
+    ],
+    "do_date": "2026-02-29",
+    "po_date": "2026-02-09",
+    "po_ref_no": "GIIOFINE - P - S-2026-5",
+    "vendor_name": "GIIAVA Singapore Pte Ltd",
+    "payment_date": "Net 30D",
+    "delivery_terms": "CIF Nhava Sheva",
+    "billing_address": "GIIAVA India Pvt Ltd, 70/21A Law College Road Pune 411004 India",
+    "shipping_method": "",
+    "shipping_address": "C3 MIDC Wai Dist Satara 412803 India"
+  },
+  "s3_matches": [
+    {
+      "bucket": "tractuslabs-data-sources",
+      "key": "messages/120363426578757754@g.us/2026-02-09.json",
+      "last_modified": "2026-02-09T09:04:44+00:00",
+      "size": 848,
+      "presigned_url": "https://tractuslabs-data-sources.s3.amazonaws.com/messages/120363426578757754%40g.us/2026-02-09.json?AWSAccessKeyId=AKIAYQYUBA34VECEKVJT&Signature=Qet%2FqA9swDrR5EgY0r3MPK38blU%3D&Expires=1776066099"
+    },
+    {
+      "bucket": "tractuslabs-data-sources",
+      "key": "messages/120363426578757754@g.us/llm_msg.json",
+      "last_modified": "2026-02-09T09:04:44+00:00",
+      "size": 663,
+      "presigned_url": "https://tractuslabs-data-sources.s3.amazonaws.com/messages/120363426578757754%40g.us/llm_msg.json?AWSAccessKeyId=AKIAYQYUBA34VECEKVJT&Signature=mG9QRuLe06eGybCGSG8qTEtUzWg%3D&Expires=1776066100"
+    }
+  ],
+  "chats": [
+    [
+      {
+        "id": "PrDfG80sXUA3drc-ghQBq53mFSz4eg",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363426578757754@g.us",
+        "timestamp": 1770627882,
+        "source": "web",
+        "device_id": 25,
+        "chat_name": "GIPL_ GSPL",
+        "text": {
+          "body": "Order No: 2526116\nProduct: Soya Lecithin Powder\nQuantity: 39 MT\nPacking: 25 kgs in PP bags\nPrice: USD 2850/MT, CIF Nhava Sheva\nPayment Terms Against Scan copies of documents\nSpecification: As per Standard specification of GIIOFINE-P-S\nDelivery: In Feb 2026\nRemarks:\n1.\nThe Material to be supplied as per specification sheet\n2.\nCertificate of analysis for supply to be given with respective tank. as per Specification Sheet\n3.\nMaterial should be invoiced to: GIIAVA (India) Pvt. Ltd., Plot No. C3, Wai MIDC, Dist \u2013 Satara, Maharashtra \u2013 412803\n4.\nSmall Labels to be pasted on every bags"
+        },
+        "from": "919325002887",
+        "from_name": "RK"
+      }
+    ],
+    [
+      {
+        "from_whom": "(TEAM1)",
+        "body": "Order No: 2526116\nProduct: Soya Lecithin Powder\nQuantity: 39 MT\nPacking: 25 kgs in PP bags\nPrice: USD 2850/MT, CIF Nhava Sheva\nPayment Terms Against Scan copies of documents\nSpecification: As per Standard specification of GIIOFINE-P-S\nDelivery: In Feb 2026\nRemarks:\n1.\nThe Material to be supplied as per specification sheet\n2.\nCertificate of analysis for supply to be given with respective tank. as per Specification Sheet\n3.\nMaterial should be invoiced to: GIIAVA (India) Pvt. Ltd., Plot No. C3, Wai MIDC, Dist \u2013 Satara, Maharashtra \u2013 412803\n4.\nSmall Labels to be pasted on every bags",
+        "timestamp": 1770627882
+      }
+    ]
+  ]
+}

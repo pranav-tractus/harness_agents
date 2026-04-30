@@ -1,0 +1,49 @@
+{
+  "messages": [
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Subject: Availability – lecithin fat powder\n\nHi,\n\nCould you please quote availability and price for lecithin fat powder? We need two batches: 10 MT by November this year and the remainder in January next year.\n\nThanks.",
+      "timestamp": 1760301000
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Subject: Re: Availability – lecithin fat powder\n\nHi,\n\nWe can support that schedule. Checking stock and will revert with a formal quote shortly.",
+      "timestamp": 1760301100
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Subject: Re: Availability – lecithin fat powder\n\nWe can offer USD 12.50 per kg for the total quantity, split across the two shipment dates as you specified.",
+      "timestamp": 1760301200
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Subject: Re: Availability – lecithin fat powder\n\nThat is higher than our budget. Can you do USD 11/kg?",
+      "timestamp": 1760301300
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Subject: Re: Availability – lecithin fat powder\n\nWe need to check internally. Will revert within 24 hours.",
+      "timestamp": 1760301350
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Subject: Re: Availability – lecithin fat powder\n\nOur best offer is USD 12/kg. This offer expires by mid-day tomorrow.",
+      "timestamp": 1760301500
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Subject: Re: Availability – lecithin fat powder\n\nOK, we confirm. Total 20 MT. Please confirm split: 8 MT in april and the remaining 12 MT in may.",
+      "timestamp": 1760301600
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Subject: Re: Availability – lecithin fat powder\n\nConfirmed. 20 MT lecithin fat powder at USD 12/kg: 8 MT april shipment, 12 MT may shipment. We are generating the contract and will send it shortly.\n\nBest regards.",
+      "timestamp": 1760301700
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Subject: Re: Availability – lecithin fat powder\n\nThanks.",
+      "timestamp": 1760301800
+    }
+  ]
+}

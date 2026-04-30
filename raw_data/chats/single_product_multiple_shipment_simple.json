@@ -1,0 +1,44 @@
+{
+  "messages": [
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Hi. We need 15 bags of KNM Coffee but in two deliveries.",
+      "timestamp": 1760200000
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Sure. How do you want to split?",
+      "timestamp": 1760200040
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "8 bags end of this month, 7 bags end of next month. Same address: 100 Finance Ave.",
+      "timestamp": 1760200080
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "$25 per bag, total $375. One PO?",
+      "timestamp": 1760200120
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Yes. PO-2025-11-150. Net 30 from last delivery.",
+      "timestamp": 1760200160
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Noted.",
+      "timestamp": 1760200200
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Thanks.",
+      "timestamp": 1760200240
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "You're welcome.",
+      "timestamp": 1760200280
+    }
+  ]
+}

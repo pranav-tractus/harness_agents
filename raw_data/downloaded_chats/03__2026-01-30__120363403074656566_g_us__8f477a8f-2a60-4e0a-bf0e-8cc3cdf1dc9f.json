@@ -1,0 +1,382 @@
+{
+  "row_index": 3,
+  "whatsapp_group_id": "120363403074656566@g.us",
+  "customer_id": "8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f",
+  "created_at": "2026-01-30 08:24:50.654808",
+  "created_date": "2026-01-30",
+  "field_data": {
+    "items": [
+      {
+        "sr_no": 1,
+        "total": 19215.0,
+        "loading": "10.5MT / 20'",
+        "packing": "25kg bags in carton",
+        "quantity": 6300.0,
+        "ship_term": "EXW",
+        "unit_price": 3050.0,
+        "description": "BergaPur",
+        "pricing_unit": "usd/mt",
+        "quantity_unit": "kg"
+      }
+    ],
+    "do_date": "2026-03-31",
+    "po_date": "2026-01-30",
+    "po_ref_no": "BergaPur-2026-6",
+    "vendor_name": "GIIAVA Singapore Pte Ltd",
+    "payment_date": "7D",
+    "delivery_terms": "EXW",
+    "billing_address": "Berg + Schmidt Asia Pte Ltd, 1 North Buona Vista Link #10-06 Elementum Singapore 139691",
+    "shipping_method": "collection",
+    "shipping_address": "Unknown"
+  },
+  "s3_matches": [
+    {
+      "bucket": "tractuslabs-data-sources",
+      "key": "messages/120363403074656566@g.us/2026-01-30.json",
+      "last_modified": "2026-01-30T08:27:17+00:00",
+      "size": 3500,
+      "presigned_url": "https://tractuslabs-data-sources.s3.amazonaws.com/messages/120363403074656566%40g.us/2026-01-30.json?AWSAccessKeyId=AKIAYQYUBA34VECEKVJT&Signature=dg0PMcrxjnFEgUo5fN8ixpvhZOE%3D&Expires=1776066101"
+    },
+    {
+      "bucket": "tractuslabs-data-sources",
+      "key": "messages/120363403074656566@g.us/llm_msg.json",
+      "last_modified": "2026-01-30T08:27:17+00:00",
+      "size": 4244,
+      "presigned_url": "https://tractuslabs-data-sources.s3.amazonaws.com/messages/120363403074656566%40g.us/llm_msg.json?AWSAccessKeyId=AKIAYQYUBA34VECEKVJT&Signature=8VCOWbcNvG7Z1IiWSVKRYdOVrEE%3D&Expires=1776066102"
+    }
+  ],
+  "chats": [
+    [
+      {
+        "id": "O.cEqQauFWZmRQ-glEBq53gnDjZNg",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403074656566@g.us",
+        "timestamp": 1769753055,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "GIIAVA-BSA",
+        "text": {
+          "body": "Good day ms @248193291935791 - confirming the Sales orders for march here:"
+        },
+        "context": {
+          "mentions": [
+            "6598555318"
+          ]
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "OxidcqezYkJSlg-grYBq53gnDjZNg",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403074656566@g.us",
+        "timestamp": 1769753317,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "GIIAVA-BSA",
+        "text": {
+          "body": "We confirm having sold\n\n10.5MT of Bergapur @ USD 3.05/kg EXW \nDispatch by March 2026\nPackaging in 25kg bags in carton"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "PrCn2NA4ULjPEF4-gr8Bq53gnDjZNg",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403074656566@g.us",
+        "timestamp": 1769753384,
+        "source": "web",
+        "device_id": 18,
+        "chat_name": "GIIAVA-BSA",
+        "text": {
+          "body": "Yes, the USD 3.05/kg including the packaging cost. It's for Japan shipment to ETD: Mid March."
+        },
+        "context": {
+          "quoted_id": "OxidcqezYkJSlg-grYBq53gnDjZNg",
+          "quoted_author": "6594240709",
+          "quoted_content": {
+            "body": "We confirm having sold\n\n10.5MT of Bergapur @ USD 3.05/kg EXW \nDispatch by March 2026\nPackaging in 25kg bags in carton"
+          },
+          "quoted_type": "text"
+        },
+        "from": "6598555318",
+        "from_name": "Ng"
+      },
+      {
+        "id": "Ozblr_rB5TdEdw-gvoBq53gnDjZNg",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403074656566@g.us",
+        "timestamp": 1769753514,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "GIIAVA-BSA",
+        "text": {
+          "body": "@125379322851493 update Shipping method to collection against 4520000875"
+        },
+        "context": {
+          "mentions": [
+            "919123097519"
+          ]
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "OyQMcnA9tZJQhA-gk0Bq53gnDjZNg",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403074656566@g.us",
+        "timestamp": 1769753652,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "GIIAVA-BSA",
+        "text": {
+          "body": "We confirm having sold\n\n6.3MT of Bergapur @ USD 3.05/kg EXW \nDispatch by March 2026\nPackaging in 25kg bags in carton\nShipment method Collection against 4520000875"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "O2nS6JUbtafnRQ-gi0Bq53gnDjZNg",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403074656566@g.us",
+        "timestamp": 1769753697,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "GIIAVA-BSA",
+        "text": {
+          "body": "@125379322851493 update Shipping method to collection against 4520000875"
+        },
+        "context": {
+          "mentions": [
+            "919123097519"
+          ]
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "OwQrAsnB4HLGrQ-glIBq53gnDjZNg",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403074656566@g.us",
+        "timestamp": 1769761424,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "GIIAVA-BSA",
+        "text": {
+          "body": "@125379322851493 update Shipping method to collection against 4520000875"
+        },
+        "context": {
+          "mentions": [
+            "919123097519"
+          ]
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "O06WLWhs8Db6ww-ggoBq53gnDjZNg",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403074656566@g.us",
+        "timestamp": 1769761571,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "GIIAVA-BSA",
+        "text": {
+          "body": "We confirm having sold\n\n4.2 MT of Bergapur @ USD 3.3/kg EXW \nDispatch by March 2026\nPackaging in 25 *1kg bags in carton"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "O0kQfAQv9bUCXQ-gmUBq53gnDjZNg",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403074656566@g.us",
+        "timestamp": 1769761634,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "GIIAVA-BSA",
+        "text": {
+          "body": "@125379322851493 change Shipping Method to Collection against PO 4520000944"
+        },
+        "context": {
+          "mentions": [
+            "919123097519"
+          ]
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      }
+    ],
+    [
+      {
+        "from_whom": "(TEAM2)",
+        "body": "1",
+        "timestamp": 1765177175
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "043012",
+        "timestamp": 1765177478
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "@248193291935791 I've added the chatbot - now will try to run the contracts mentioned above",
+        "timestamp": 1765177554
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "Creating the contract for 24 MT of Bergapur packed in 25kg bag in 40\u2019 FCL at USD 3150/MT EX Factory - @248193291935791 Can you confirm?",
+        "timestamp": 1765177618
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "yes, please create.",
+        "timestamp": 1765178023
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "Thank you",
+        "timestamp": 1765178030
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "@125379322851493 change loading to 24MT / 40' HC",
+        "timestamp": 1765178194
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "Sr No : 1\nDescription : Bergapur\nQuantity : 24.0\nQuantity Unit : MT\nUnit Price : 3150.0\nPricing Unit : USD/MT\nShip Term : EXW\nPacking : 25kg bag\nLoading : 24MT / 40' HC\nTotal : USD 75600.0\n\n\nSO Date : 2025-12-08\nSO Ref No : Bergapur-2025-1\nSeller : GIIAVA Singapore Pte Ltd\nPayment Terms : 7D\nBill To : Berg + Schmidt Asia Pte Ltd,1 North Buona Vista Link #10-06 Elementum Singapore 139691\nShipping Method : Unknown\nShip To : Unknown\nDelivery Date : Unknown",
+        "timestamp": 1765454305
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "@248193291935791 can I trouble you to check if the contract has come out correct based on the terms in your email?",
+        "timestamp": 1765454464
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "@76952929099988 received",
+        "timestamp": 1765503796
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "Dear @sharon",
+        "timestamp": 1765975303
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "we are switching to using the system for actual sales contracts - so raising the contract for JAn 2026 now:",
+        "timestamp": 1765975325
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "Confirm your order for 10.5 MT of Bergapur in standard packaging for Jan 2026 @ USD 3100/MT EXW",
+        "timestamp": 1765975352
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "@248193291935791 Hi - can yo uconfirm this? I will be issuing the SO for the 10.5 MT followed by the SO for the next containers as sent by Mr Reimer on email",
+        "timestamp": 1766467690
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "Hi Mr. Yash, yes, it's confirmed.",
+        "timestamp": 1766467943
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "@248193291935791 can you sign the SO that should be in your inbox? thanks",
+        "timestamp": 1766470259
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "Ok, it's signed.",
+        "timestamp": 1766470368
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "will send for the next few containers shortly",
+        "timestamp": 1766470510
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "SURE",
+        "timestamp": 1766470523
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "@248193291935791  I\u2019m in the lobby",
+        "timestamp": 1769065344
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "Coming",
+        "timestamp": 1769065353
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "Thanks",
+        "timestamp": 1769065357
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "Your security person is very strict",
+        "timestamp": 1769065370
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "Good day ms @248193291935791 - confirming the Sales orders for march here:",
+        "timestamp": 1769753055
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "We confirm having sold\n\n10.5MT of Bergapur @ USD 3.05/kg EXW \nDispatch by March 2026\nPackaging in 25kg bags in carton",
+        "timestamp": 1769753317
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "Yes, the USD 3.05/kg including the packaging cost. It's for Japan shipment to ETD: Mid March.",
+        "timestamp": 1769753384
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "@125379322851493 update Shipping method to collection against 4520000875",
+        "timestamp": 1769753514
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "We confirm having sold\n\n6.3MT of Bergapur @ USD 3.05/kg EXW \nDispatch by March 2026\nPackaging in 25kg bags in carton\nShipment method Collection against 4520000875",
+        "timestamp": 1769753652
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "@125379322851493 update Shipping method to collection against 4520000875",
+        "timestamp": 1769753697
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "@125379322851493 update Shipping method to collection against 4520000875",
+        "timestamp": 1769761424
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "We confirm having sold\n\n4.2 MT of Bergapur @ USD 3.3/kg EXW \nDispatch by March 2026\nPackaging in 25 *1kg bags in carton",
+        "timestamp": 1769761571
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "@125379322851493 change Shipping Method to Collection against PO 4520000944",
+        "timestamp": 1769761634
+      }
+    ]
+  ]
+}

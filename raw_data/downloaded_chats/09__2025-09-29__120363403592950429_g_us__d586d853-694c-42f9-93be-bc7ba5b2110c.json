@@ -1,0 +1,490 @@
+{
+  "row_index": 9,
+  "whatsapp_group_id": "120363403592950429@g.us",
+  "customer_id": "d586d853-694c-42f9-93be-bc7ba5b2110c",
+  "created_at": "2025-09-29 04:30:46.008579",
+  "created_date": "2025-09-29",
+  "field_data": {
+    "items": [
+      {
+        "sr_no": 1,
+        "total": 32430.0,
+        "loading": "23 MT / 40' FCL",
+        "packing": "25kg printed paper bag",
+        "quantity": 23000.0,
+        "ship_term": "CIF",
+        "unit_price": 1410.0,
+        "description": "TG - BP102",
+        "pricing_unit": "usd/mt",
+        "quantity_unit": "kg"
+      }
+    ],
+    "do_date": "2025-11-15",
+    "po_date": "2025-09-29",
+    "po_ref_no": "TG - BP102-2025-1",
+    "vendor_name": "AG Lipids Pte Ltd",
+    "payment_date": "Net 14 Days",
+    "delivery_terms": "CIF",
+    "billing_address": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea",
+    "shipping_method": "Unknown",
+    "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea"
+  },
+  "s3_matches": [
+    {
+      "bucket": "tractuslabs-data-sources",
+      "key": "messages/120363403592950429@g.us/2025-09-29.json",
+      "last_modified": "2025-09-29T04:49:30+00:00",
+      "size": 9468,
+      "presigned_url": "https://tractuslabs-data-sources.s3.amazonaws.com/messages/120363403592950429%40g.us/2025-09-29.json?AWSAccessKeyId=AKIAYQYUBA34VECEKVJT&Signature=nIteTzBZuTY1yRiCuCKrhwRAvt0%3D&Expires=1776066113"
+    }
+  ],
+  "chats": [
+    [
+      {
+        "id": "O4wnVuCxA142gA-giwBq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759119098,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "@143902896050305  - I noticed that your supply level of BP102 is low"
+        },
+        "context": {
+          "mentions": [
+            "18572336857"
+          ]
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "O0SnWf_5.QA9FQ-gmABq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759119101,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "Would you like to place another order?"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "OiaAi30tOzTTIQ-gk8Bq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759119113,
+        "source": "mobile",
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "Hey Yasho great to hear"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "OnEDsF.52kw7yQ-gt8Bq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759119116,
+        "source": "mobile",
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "You guess correct"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "OnepVOfuAtMlww-gqUBq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759119133,
+        "source": "mobile",
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "Let\u2019s go for 20 MT"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "Ov_bJoDdWgjwvA-glEBq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759119149,
+        "source": "mobile",
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "Delivery mid-November this year"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "O8oK4QxGFuc3gg-ggwBq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759119152,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "your standard order is 23 MT / 40\u2019 FCL OR we can offer you 12 MT / 20\u2019 FCL - which would you like?"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "OhN10sIdx6_ULA-gooBq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759119168,
+        "source": "mobile",
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "23MT is good"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "O0TiRTe_SirTng-gs4Bq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759119185,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "The current price is USD 1425 CIF Busan for 23 MT / 40\u2019 FCL, price valid till 2025-09-29 1400 SGT"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "Oh430jRrJ.seNA-ggkBq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759119206,
+        "source": "mobile",
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "Can you go lower? $1425 is a too high"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "Oz0fUz1R2HmMIA-ghEBq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759119241,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "with today\u2019s underlying stearin price the lowest I can do is 1410"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "OmhGNKlOPOMfSQ-gqcBq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759119248,
+        "source": "mobile",
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "Alright that works"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "OsQKtGKm8offXw-gocBq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759119252,
+        "source": "mobile",
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "Confirming"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "O4YBSDufwtfIlQ-gjcBq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759119646,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "Change loading to 23MT / 40\u2019 FCL and packing to 25kg printed paper bag"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "O3VjHySC0R6iSw-gkkBq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759119666,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "Change seller to AG Lipids Pte Ltd"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "O1CZWhimweMIMQ-giYBq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759119965,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "@143902896050305  - I noticed that your supply level of BP102 is low"
+        },
+        "context": {
+          "mentions": [
+            "18572336857"
+          ]
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "OwPFRojh1yHG7Q-ggABq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759119971,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "Would you like to purchase any more?"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "OksMjpxPVWe5rA-gpEBq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759119996,
+        "source": "mobile",
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "Alright let\u2019s go with 20 MT of BP102"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "OpZT.hrN41oV4g-gmsBq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759120021,
+        "source": "mobile",
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "Delivery mid-November this year"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "O67KJaSsipyWMA-gv0Bq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759120027,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "your standard order is 23 MT / 40\u2019 FCL OR we can offer you 12 MT / 20\u2019 FCL - which would you like?"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "OoLFH5fpbdyMEw-grcBq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759120037,
+        "source": "mobile",
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "23MT is good"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "O8m6klzRp7nWAA-gh0Bq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759120041,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "The current price is USD 1425 CIF Busan for 23 MT / 40\u2019 FCL, price valid till 2025-09-29 1400 SGT"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "OsHcOzhZUrag9A-glcBq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759120050,
+        "source": "mobile",
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "Can you go lower? $1425 is a too high"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "O1yT_9HvkGMi3w-gvQBq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759120065,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "with today\u2019s underlying stearin price the lowest I can do is 1410"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "Oqn3GXlnf09bmQ-gvsBq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759120070,
+        "source": "mobile",
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "Alright that works"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "OpZrsTYwDjU5Gg-glYBq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759120073,
+        "source": "mobile",
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "Confirming"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "O0UeO_Os6iS_Gg-gngBq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759120140,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "Change the Packing to 25kg printed paper bag. Change the loading to 23 MT / 40\u2019 FCL. Change the Seller to AG Lipids Pte Ltd"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "OyGGg3qfgwYm.A-gnkBq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759120183,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "1"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "OrI1EyLDjQGPVQ-gtMBq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759121297,
+        "source": "mobile",
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "These are the key terms of the trade you have just negotiated \n\n\n\nSr No : *1*\nDescription : *BP102*\nQuantity : *23.0*\nQuantity Unit : *MT*\nUnit Price : *1410.0*\nPricing Unit : *USD*\nShip Term : *CIF*\nPacking : *25kg printed paper bag*\nLoading : *23 MT / 40\u2019 FCL*\nTotal : *USD 32430.0*\n\n\nSO Date : *2025-09-29*\nSO Ref No : *BP102-2025-1*\nSeller : *AG Lipids Pte Ltd*\nPayment Terms : *Net 14 Days*\nBill To : *FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea*\nShipping Method : *Unknown*\nShip To : *Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea*\nDelivery Date : *2025-11-15*"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "O2mokzHL5tSC1Q-gqsBq53gux1inQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403592950429@g.us",
+        "timestamp": 1759121368,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "Tractus Test Group",
+        "text": {
+          "body": "Update packing to 25kg printed paper bags; loading to 23 MT / 40\u2019 FCL and seller to AG Lipids Pte Ltd"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      }
+    ]
+  ]
+}

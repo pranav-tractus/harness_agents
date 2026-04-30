@@ -1,0 +1,329 @@
+{
+  "row_index": 1,
+  "whatsapp_group_id": "120363421131250401@g.us",
+  "customer_id": "e05574ec-b110-4554-9fc3-3abb4f9011a8",
+  "created_at": "2026-02-24 01:13:15.602732",
+  "created_date": "2026-02-24",
+  "field_data": {
+    "items": [
+      {
+        "sr_no": 1,
+        "total": 5850.0,
+        "loading": "Unknown",
+        "packing": "Unknown",
+        "quantity": 1800.0,
+        "ship_term": "EXW",
+        "unit_price": 3250.0,
+        "description": "GIIOFINE - P - S",
+        "pricing_unit": "usd/mt",
+        "quantity_unit": "kg"
+      }
+    ],
+    "do_date": "2026-03-31",
+    "po_date": "2026-02-24",
+    "po_ref_no": "GIIOFINE - P - S-2026-6",
+    "vendor_name": "GIIAVA Singapore Pte Ltd",
+    "payment_date": "Advanced payment",
+    "delivery_terms": "EXW",
+    "billing_address": "Epic Chemicals Sdn Bhd, 17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia",
+    "shipping_method": "Collection Against OPO 260012/EC",
+    "shipping_address": "17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia"
+  },
+  "s3_matches": [
+    {
+      "bucket": "tractuslabs-data-sources",
+      "key": "messages/120363421131250401@g.us/2026-02-24.json",
+      "last_modified": "2026-02-24T10:42:10+00:00",
+      "size": 2651,
+      "presigned_url": "https://tractuslabs-data-sources.s3.amazonaws.com/messages/120363421131250401%40g.us/2026-02-24.json?AWSAccessKeyId=AKIAYQYUBA34VECEKVJT&Signature=dHnnNgjob1TuwWctdT0B4o7Ilc0%3D&Expires=1776066096"
+    },
+    {
+      "bucket": "tractuslabs-data-sources",
+      "key": "messages/120363421131250401@g.us/llm_msg.json",
+      "last_modified": "2026-02-24T10:42:09+00:00",
+      "size": 3773,
+      "presigned_url": "https://tractuslabs-data-sources.s3.amazonaws.com/messages/120363421131250401%40g.us/llm_msg.json?AWSAccessKeyId=AKIAYQYUBA34VECEKVJT&Signature=Riqb0VLBinduoRRWkKrrQeiCJN4%3D&Expires=1776066097"
+    }
+  ],
+  "chats": [
+    [
+      {
+        "id": "O7HU7j4lg_v.4g-gk4Bq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1771895403,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "Good morning Ms Jelene. Refering to your PO on email."
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "O2XjHVsX1kKeZQ-giIBq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1771895444,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "@135639529947208 we confirm having sold 1.8 MT of GIIOFINE-P-S to you at USD 3.25/kg EXW cargo ready by March 2026"
+        },
+        "context": {
+          "mentions": [
+            "60125872711"
+          ]
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "O8kTxAwm4qJaUg-gpwBq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1771895531,
+        "source": "mobile",
+        "device_id": 59,
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "@125379322851493  change Shipping Method to: Collection Against OPO 260012/EC"
+        },
+        "context": {
+          "mentions": [
+            "919123097519"
+          ]
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "PrCUUxm6sbaQUhg-gtwBq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1771896589,
+        "source": "web",
+        "device_id": 79,
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "we will arrange collection early March, not end March ya"
+        },
+        "context": {
+          "quoted_id": "PsoRUBijviB_gEA-wi8Bq53k0Hqa4Q",
+          "quoted_author": "919123097519",
+          "quoted_content": {
+            "body": "Please confirm if the details below have been detected correctly: \n\n\n\nSr No : *1*\nDescription : *GIIOFINE-P-S*\nQuantity : *1.8*\nQuantity Unit : *MT*\nUnit Price : *3.25*\nPricing Unit : *USD/KG*\nShip Term : *EXW*\nPacking : *Unknown*\nLoading : *Unknown*\nTotal : *USD 5850.0*\n\n\nSO Date : *2026-02-24*\nSeller : *GIIAVA Singapore Pte Ltd*\nPayment Terms : *Advanced payment*\nBill To : *Epic Chemicals Sdn Bhd, 17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia*\nShipping Method : *Collection Against OPO 260012/EC*\nShip To : *17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia*\nDelivery Date : *2026-03-31*"
+          },
+          "quoted_type": "text"
+        },
+        "from": "60125872711",
+        "from_name": "Jelene"
+      },
+      {
+        "id": "OpefoDxuApyEMg-gsABq53k0Hqa4Q",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363421131250401@g.us",
+        "timestamp": 1771929725,
+        "source": "mobile",
+        "chat_name": "Lecithin Epic / GIIAVA",
+        "text": {
+          "body": "Noted Ms jelene"
+        },
+        "context": {
+          "quoted_id": "PrCUUxm6sbaQUhg-gtwBq53k0Hqa4Q",
+          "quoted_author": "60125872711",
+          "quoted_content": {
+            "body": "we will arrange collection early March, not end March ya"
+          },
+          "quoted_type": "text"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      }
+    ],
+    [
+      {
+        "from_whom": "(TEAM2)",
+        "body": "2",
+        "timestamp": 1767586842
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "@135639529947208 we confirm having sold 1.8 MT of GIIOFINE-P-S to you at USD 3.5/kg EXW cargo ready by February 2026",
+        "timestamp": 1767587795
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "@125379322851493 change packing to 25kg bags in box. Change loading to 900kg pallets",
+        "timestamp": 1767587898
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "oh yes let me correct it - this was my mistake - is it Epic Chemicals Sdn Bhd?",
+        "timestamp": 1767597230
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "yes correct",
+        "timestamp": 1767597263
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "ok, let me change",
+        "timestamp": 1767597286
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "Hi @135639529947208 just spoke to the developers - we have to regenerate the contract - will do so now.",
+        "timestamp": 1767672938
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "@135639529947208 we confirm having sold 1.8 MT of GIIOFINE-P-S to you at USD 3.5/kg EXW cargo ready by February 2026",
+        "timestamp": 1767672944
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "@135639529947208 - you may sign the new contract",
+        "timestamp": 1767673003
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "alright",
+        "timestamp": 1767673412
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "Dear @135639529947208  - thanks! possible to trouble you to click the docusign to mark as signed? thank you",
+        "timestamp": 1767689944
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "Thanks!",
+        "timestamp": 1767690296
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "so next time I no need to sign on this? just sign the Documenso will do?",
+        "timestamp": 1767690343
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "Yes exactly",
+        "timestamp": 1767690353
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "We are moving everything digital now \ud83d\udc4d\ud83c\udffc",
+        "timestamp": 1767690361
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "then this copy will email to us?",
+        "timestamp": 1767690364
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "Yes once you complete the sign you will automatically receive a copy",
+        "timestamp": 1767690376
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "I see... so your side can save many manual works?",
+        "timestamp": 1767690400
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "Yes exactly",
+        "timestamp": 1767690446
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "That\u2019s why we moved to this system.",
+        "timestamp": 1767690459
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "But documents request still manual request right?",
+        "timestamp": 1767690488
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "We are using this for 3 of our group companies - makes sales order tracking much faster",
+        "timestamp": 1767690501
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "Which document requests?",
+        "timestamp": 1767690506
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "Like Kosher, Halal etc",
+        "timestamp": 1767690567
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "Ah yeah for now this is still manual",
+        "timestamp": 1767690665
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "But the software provider will slowly add more and more of this",
+        "timestamp": 1767690683
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "If you all are keen, I can introduce you to the software company",
+        "timestamp": 1767690697
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "Sounds interesting",
+        "timestamp": 1767690928
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "if interested, we\u2019ll reach out to you for an introduction. Thanks!",
+        "timestamp": 1767690938
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "Let me know",
+        "timestamp": 1767691053
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "Good morning Ms Jelene. Refering to your PO on email.",
+        "timestamp": 1771895403
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "@135639529947208 we confirm having sold 1.8 MT of GIIOFINE-P-S to you at USD 3.25/kg EXW cargo ready by March 2026",
+        "timestamp": 1771895444
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "@125379322851493  change Shipping Method to: Collection Against OPO 260012/EC",
+        "timestamp": 1771895531
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "we will arrange collection early March, not end March ya",
+        "timestamp": 1771896589
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "Noted Ms jelene",
+        "timestamp": 1771929725
+      }
+    ]
+  ]
+}

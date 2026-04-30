@@ -1,0 +1,109 @@
+{
+  "messages": [
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Good morning. We need a larger quantity of KNM Coffee but split across two delivery dates.",
+      "timestamp": 1760200000
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Same KNM blend as last order, or different?",
+      "timestamp": 1760200010
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Good morning. How many bags in total and how do you want to split?",
+      "timestamp": 1760200040
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "20 bags total. 12 bags first delivery, 8 bags second. We're restocking two sites.",
+      "timestamp": 1760200080
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "same product for both btw",
+      "timestamp": 1760200090
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "1kg bags still, or do you need 500g?",
+      "timestamp": 1760200100
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Same address or different for each?",
+      "timestamp": 1760200120
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "First delivery to 100 Finance Ave, second to 50 Changi Business Park. CIF Singapore.",
+      "timestamp": 1760200160
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "or was it 50 Changi North... let me check",
+      "timestamp": 1760200170
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "yes 50 Changi Business Park",
+      "timestamp": 1760200180
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "is that the medium roast — we only want that one",
+      "timestamp": 1760200190
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "$25 per bag, total $500. For 20 bags we can do 5% — $23.75 per bag, total $475.",
+      "timestamp": 1760200200
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "that's per bag right",
+      "timestamp": 1760200210
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "That works.",
+      "timestamp": 1760200240
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "what's shelf life on this batch btw",
+      "timestamp": 1760200250
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Preferred dates for each delivery?",
+      "timestamp": 1760200280
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "end of this month for Finance Ave, march 12 for Changi.",
+      "timestamp": 1760200320
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Need any other SKUs or just KNM for now?",
+      "timestamp": 1760200340
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Noted. SO will be sent today. Anything else?",
+      "timestamp": 1760200520
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "No. Thanks.",
+      "timestamp": 1760200560
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "You're welcome.",
+      "timestamp": 1760200600
+    }
+  ]
+}

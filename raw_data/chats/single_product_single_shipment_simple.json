@@ -1,0 +1,34 @@
+{
+  "messages": [
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Hi. We need 5 bags of KNM Coffee.",
+      "timestamp": 1760000000
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Sure. $25 per bag, total $125. Delivery address?",
+      "timestamp": 1760000040
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "100 Finance Ave Singapore 018989. November 25.",
+      "timestamp": 1760000080
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Noted. SO will be sent today.",
+      "timestamp": 1760000200
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Thanks.",
+      "timestamp": 1760000240
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "You're welcome.",
+      "timestamp": 1760000280
+    }
+  ]
+}
