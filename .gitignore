@@ -15,3 +15,7 @@ venv/
 
 # pycache
 __pycache__/
+
+
+# DB Files
+*.db

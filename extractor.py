@@ -86,13 +86,14 @@ def _extract_with_retry_tracked(
     iso_date: str | None = None,
     organization_info: dict | None = None,
     customer_info: dict | None = None,
-) -> tuple[T, int]:
+) -> tuple[T, int, str]:
     """Run prompt → LLM → validated model, retrying up to _MAX_ATTEMPTS times.
 
     Returns:
-        (result, total_attempts_used) tuple.
+        (result, total_attempts_used, last_prompt) tuple.
     """
     attempts_used = 0
+    last_prompt = ""
 
     @retry(
         retry=retry_if_exception_type((ValidationError, ValueError, json.JSONDecodeError)),
@@ -102,7 +103,7 @@ def _extract_with_retry_tracked(
         reraise=True,
     )
     def _attempt() -> T:
-        nonlocal attempts_used
+        nonlocal attempts_used, last_prompt
         attempts_used += 1
         current_attempt = attempts_used
 
@@ -118,6 +119,7 @@ def _extract_with_retry_tracked(
             organization_info=organization_info,
             customer_info=customer_info,
         )
+        last_prompt = prompt
         logger.debug("Prompt (attempt=%d):\n%s", current_attempt, textwrap.indent(prompt, "  "))
 
         result = call_bedrock(prompt, schema, model_key=model_key, system_prompt=system_prompt)
@@ -126,7 +128,7 @@ def _extract_with_retry_tracked(
         return result
 
     result = _attempt()
-    return result, attempts_used
+    return result, attempts_used, last_prompt
 
 
 # Public API
@@ -176,7 +178,7 @@ class ExtractionEngine:
         logger.info("Starting extraction: schema=%s chars=%d", schema.__name__, len(text_to_extract))
 
         try:
-            result_model, attempts_used = _extract_with_retry_tracked(
+            result_model, attempts_used, final_prompt = _extract_with_retry_tracked(
                 text_to_extract,
                 schema,
                 self.model_key,
@@ -190,6 +192,7 @@ class ExtractionEngine:
 
             db_result = ExtractionResult(
                 input_text=input_text,
+                prompt_text=final_prompt,
                 schema_name=schema.__name__,
                 output_json=output_json,
                 status="success",
@@ -203,6 +206,7 @@ class ExtractionEngine:
 
             db_result = ExtractionResult(
                 input_text=input_text,
+                prompt_text=None,
                 schema_name=schema.__name__,
                 output_json=None,
                 status="failed",

@@ -17,6 +17,17 @@ BEDROCK_ANTHROPIC_MODELS = {
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+team_info = {
+    "name": "Für Elise",
+    "email": "van@beethonven.com",
+    "phone": "+000000000000",
+    "contact_point": "Van Beethoven",
+}
+customer_info = {
+    "name": "Da Vinci",
+    "email": "da@vinci.com",
+    "id": "432eef62-3867-46b7-abf0-cdb2a09183d6",
+}
 
 def create_boto3_client(name: str, region: str = AWS_REGION):
     if os.getenv("IS_LOCAL", "") == "true":

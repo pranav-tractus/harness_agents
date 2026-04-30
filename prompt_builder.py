@@ -6,6 +6,8 @@ from typing import Type
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 from pydantic import BaseModel
 
+from db import get_recent_success_examples
+
 logger = logging.getLogger(__name__)
 
 _TEMPLATES_DIR = Path(__file__).parent / "templates"
@@ -70,10 +72,12 @@ def build_prompt(
         raise FileNotFoundError(f"extraction.j2 not found in {_TEMPLATES_DIR}")
 
     schema_json = json.dumps(schema.model_json_schema(), indent=2)
+    recent_examples = get_recent_success_examples(limit=5, schema_name=schema.__name__)
 
     prompt = template.render(
         input_text=input_text.strip(),
         schema_json=schema_json,
+        few_shot_examples=recent_examples,
         attempt=attempt,
         iso_date=iso_date,
         organization_info=organization_info,

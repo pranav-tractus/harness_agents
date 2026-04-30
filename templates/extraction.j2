@@ -2,6 +2,25 @@
 
 {% include "anti_hallucination.j2" %}
 
+{% if few_shot_examples %}
+## Few-shot examples (recent successful generations)
+Use these as behavioral references only. Prioritize the current Input Text and schema.
+
+{% for ex in few_shot_examples %}
+### Example {{ loop.index }}
+User:
+Input:
+{{ ex.input_text }}
+
+Prompt:
+{{ ex.prompt_text }}
+
+Assistant:
+{{ ex.output_json }}
+
+{% endfor %}
+{% endif %}
+
 ## Output requirements
 - Valid JSON matching the target schema exactly.
 - No text, explanation, or markdown before or after the JSON.
