@@ -1,0 +1,21 @@
+{% include "extraction_rules.j2" %}
+
+{% include "anti_hallucination.j2" %}
+
+## Output requirements
+- Valid JSON matching the target schema exactly.
+- No text, explanation, or markdown before or after the JSON.
+- Preserve units (e.g. MT, kg, USD/MT, USD/kg) and currencies exactly as stated in the conversation.
+
+## Target schema
+```json
+{{ schema_json }}
+```
+
+## Input text
+
+{{ input_text }}
+
+---
+
+Extract the structured data from the Input Text above. Your response must be valid JSON that strictly conforms to the schema.

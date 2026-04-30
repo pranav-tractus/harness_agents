@@ -1,0 +1,18 @@
+## Extraction rules
+{% if iso_date %}
+1. **Agreement principle:** Extract only data where both parties have reached explicit consensus. Proposals, counter-offers, or silence are not agreement. Look for confirmation signals (e.g. "confirmed", "ok", "let's go", "agreed", "deal").
+2. **Sequence:** Each message is prefixed with `[seq=N]` where seq=0 is the oldest message and higher seq means more recent. Use `seq` to determine ordering — when a value (e.g. price, quantity) is revised in a higher-seq message, the higher-seq agreed value wins.
+3. **Dates:** Use {{ iso_date }} as today's reference date. For partial dates (e.g. "November 2026"), use the last day of that month (e.g. "2026-11-30"). Assume the same year as the reference date unless explicitly stated otherwise.
+4. **Packing and loading defaults:** If missing from the conversation, apply: "Fat Powder" → loading `23MT/40'FCL`; "Feeds" → loading `12MT/20'FCL`. "Packing" refers to physical packaging only (e.g. "25kg bags").
+5. **Shipping terms:** Format as `[INCOTERM] [PORT/LOCATION]`. Valid incoterms: EXW, FOB, CIF, DDP. Example: "CIF Busan".
+6. **Strictness:** Do not add fields or values not stated or agreed in the chat. Use `null` or omit when unknown.
+7. **Pricing:** Use the final agreed price and total only — not initial quotes or counter-offers that were not accepted.
+8. **Field normalization:** Normalize dates to ISO 8601 (YYYY-MM-DD). Parse numeric values as numbers (int or float), never strings. Preserve units (e.g. MT, kg, USD/MT) exactly as stated.
+{% else %}
+1. **Agreement principle:** Extract only data where both parties have reached explicit consensus. Proposals, counter-offers, or silence are not agreement.
+2. **Sequence:** Each message is prefixed with `[seq=N]` where seq=0 is the oldest message and higher seq means more recent. Use `seq` to determine ordering — when a value is revised in a higher-seq message, the higher-seq agreed value wins.
+3. **Dates:** Normalize all dates to ISO 8601 format (YYYY-MM-DD). For partial dates, infer the last day of the mentioned period.
+4. **Strictness:** Do not add fields or values not stated or agreed in the chat. Use `null` or omit when unknown.
+5. **Pricing:** Use the final agreed price and total only — not initial quotes or counter-offers that were not accepted.
+6. **Field normalization:** Parse numeric values as numbers (int or float), never strings. Preserve units exactly as stated.
+{% endif %}

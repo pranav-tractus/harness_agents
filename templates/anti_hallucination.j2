@@ -1,0 +1,22 @@
+## Anti-hallucination instructions
+- Extract ONLY fields that are explicitly present in the input text.
+- For any field not found in the text, return `null` or an empty string as the schema specifies — never guess.
+- Do NOT infer, assume, or fabricate values from context, common knowledge, or reference data.
+- Proposals, counter-offers, or unanswered messages are NOT agreements — do not treat them as confirmed data.
+- Reference context (vendor/counterparty info) is for interpretation only; never copy it into output fields unless the conversation explicitly confirms it.
+- When a value is ambiguous or unclear, prefer `null` over any guess.
+- Preserve units, currencies, and numeric precision exactly as written in the conversation.
+{% if attempt > 1 %}
+
+## Retry notice (attempt {{ attempt }})
+A previous extraction attempt failed schema validation. Before responding:
+- Re-read the input text carefully from the beginning.
+- Ensure every required field is present — set it to `null` or empty string if not found.
+- Do not omit any required field from your response.
+- Double-check that all values match the types the schema expects (string vs number vs array).
+{% endif %}
+{% if attempt > 2 %}
+
+## Critical reminder (attempt {{ attempt }})
+Strict accuracy is required. If a field's value is ambiguous or not clearly stated in the text, return `null`. Do not attempt to fill gaps. A partial but correct extraction is better than a complete but hallucinated one.
+{% endif %}
