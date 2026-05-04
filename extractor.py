@@ -1,14 +1,24 @@
 """Extraction Engine — orchestrates the full pipeline:
 
-    normalize → build_prompt → call_bedrock (instructor) → store result
+    normalize → build_prompt → call_bedrock (instructor) → return result
 
-Retry logic (Tenacity) wraps the LLM call so transient validation or
-parsing failures automatically re-run with a progressively clarified prompt.
+Schemas are locked:
+- initial extraction always uses ``SOExtractContractList``
+- summary updates always use ``SOUpdateContractList``
+
+The engine no longer writes to the database. Persistence is the caller's
+responsibility (typically the Streamlit UI's "Save" button via
+:func:`db.save_summary`).
+
+Retry logic (Tenacity) wraps the LLM call so transient validation or parsing
+failures automatically re-run with a progressively clarified prompt.
 """
 
 import json
 import logging
 import textwrap
+from datetime import date
+from pathlib import Path
 from typing import Type, TypeVar
 
 from pydantic import BaseModel, ValidationError
@@ -21,9 +31,16 @@ from tenacity import (
     wait_fixed,
 )
 
-from db import ExtractionResult, init_db, save_result
+from chat_loader import load_synthetic_update_few_shot_examples
+from db import ExtractionResult, init_db
 from llm_client import call_bedrock
-from prompt_builder import build_prompt, build_system_prompt
+from models import SOExtractContractList, SOUpdateContractList
+from prompt_builder import (
+    INITIAL_FEW_SHOT_DB_LIMIT_DEFAULT,
+    build_prompt,
+    build_system_prompt,
+    build_update_prompt,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -76,21 +93,20 @@ def _chunk_text(text: str, max_chars: int = _CHUNK_THRESHOLD) -> list[str]:
     return chunks
 
 
-# Core extraction with Tenacity retry
+# Core LLM calls with Tenacity retry
 
-def _extract_with_retry_tracked(
-    text: str,
+def _call_with_retry(
     schema: Type[T],
     model_key: str,
-    system_prompt: str | None = None,
-    iso_date: str | None = None,
-    organization_info: dict | None = None,
-    customer_info: dict | None = None,
+    prompt_factory,
+    system_prompt: str | None,
 ) -> tuple[T, int, str]:
-    """Run prompt → LLM → validated model, retrying up to _MAX_ATTEMPTS times.
+    """Run prompt → LLM → validated model, retrying up to ``_MAX_ATTEMPTS`` times.
 
-    Returns:
-        (result, total_attempts_used, last_prompt) tuple.
+    ``prompt_factory`` is a callable taking the current 1-indexed ``attempt``
+    and returning the rendered prompt string. This keeps retry-aware prompts
+    (e.g. "Retry notice" blocks) wired up uniformly for both initial extraction
+    and update flows.
     """
     attempts_used = 0
     last_prompt = ""
@@ -108,17 +124,10 @@ def _extract_with_retry_tracked(
         current_attempt = attempts_used
 
         logger.info(
-            "Extraction attempt %d/%d for schema=%s",
+            "LLM attempt %d/%d for schema=%s",
             current_attempt, _MAX_ATTEMPTS, schema.__name__,
         )
-        prompt = build_prompt(
-            text,
-            schema,
-            attempt=current_attempt,
-            iso_date=iso_date,
-            organization_info=organization_info,
-            customer_info=customer_info,
-        )
+        prompt = prompt_factory(current_attempt)
         last_prompt = prompt
         logger.debug("Prompt (attempt=%d):\n%s", current_attempt, textwrap.indent(prompt, "  "))
 
@@ -134,7 +143,18 @@ def _extract_with_retry_tracked(
 # Public API
 
 class ExtractionEngine:
-    """Orchestrates the complete extraction pipeline for a given Pydantic schema."""
+    """Orchestrates the locked initial-extraction and summary-update flows.
+
+    Schema selection is fixed:
+    - :meth:`run` -> ``SOExtractContractList``
+    - :meth:`update` -> ``SOUpdateContractList``
+
+    Neither method writes to the DB. Callers persist via :func:`db.save_summary`
+    when (and only when) the human reviewer clicks "Save" in the UI.
+    """
+
+    INITIAL_SCHEMA: Type[BaseModel] = SOExtractContractList
+    UPDATE_SCHEMA: Type[BaseModel] = SOUpdateContractList
 
     def __init__(
         self,
@@ -146,54 +166,64 @@ class ExtractionEngine:
         self.model_key = model_key
         self.organization_info = organization_info
         self.customer_info = customer_info
-        self.iso_date = iso_date
+        self.iso_date = iso_date if iso_date is not None else date.today().isoformat()
         init_db()
 
-    def run(self, input_text: str, schema: Type[T]) -> ExtractionResult:
-        """Run the full extraction pipeline and persist the result to SQLite.
+    def run(
+        self,
+        input_text: str,
+        schema: Type[BaseModel] | None = None,
+        *,
+        extra_few_shot_examples: list[dict] | None = None,
+        db_few_shot_limit: int = INITIAL_FEW_SHOT_DB_LIMIT_DEFAULT,
+    ) -> ExtractionResult:
+        """Run the initial extraction pipeline and return the (un-persisted) result.
 
-        Args:
-            input_text: Raw unstructured text to extract from.
-            schema: Pydantic model class describing the target structure.
+        ``schema`` is accepted for backwards compatibility but ignored — the
+        initial flow always uses ``SOExtractContractList``.
 
-        Returns:
-            ExtractionResult with status, output_json, error, and attempt count.
+        Pass ``extra_few_shot_examples`` (e.g. from
+        :func:`chat_loader.build_extraction_few_shot_from_paths`) to prepend raw-data
+        few-shot pairs. Use ``db_few_shot_limit=0`` to disable examples from the DB.
         """
+        target_schema = self.INITIAL_SCHEMA
         normalized = _normalize(input_text)
         chunks = _chunk_text(normalized)
 
         if len(chunks) > 1:
             logger.info("Input split into %d chunks (total chars=%d)", len(chunks), len(normalized))
 
-        # For now, extract from the first chunk (or the whole text if no splitting needed).
-        # Multi-chunk merging can be added per schema requirements.
         text_to_extract = chunks[0] if chunks else normalized
 
         system_prompt = build_system_prompt(
             organization_info=self.organization_info,
             customer_info=self.customer_info,
-            iso_date=self.iso_date,
         )
 
-        logger.info("Starting extraction: schema=%s chars=%d", schema.__name__, len(text_to_extract))
+        logger.info("Starting initial extraction: schema=%s chars=%d",
+                    target_schema.__name__, len(text_to_extract))
 
-        try:
-            result_model, attempts_used, final_prompt = _extract_with_retry_tracked(
+        def _factory(attempt: int) -> str:
+            return build_prompt(
                 text_to_extract,
-                schema,
-                self.model_key,
-                system_prompt=system_prompt,
+                attempt=attempt,
                 iso_date=self.iso_date,
                 organization_info=self.organization_info,
                 customer_info=self.customer_info,
+                extra_few_shot_examples=extra_few_shot_examples,
+                db_few_shot_limit=db_few_shot_limit,
+            )
+
+        try:
+            result_model, attempts_used, final_prompt = _call_with_retry(
+                target_schema, self.model_key, _factory, system_prompt,
             )
             output_json = result_model.model_dump_json(indent=2)
-            logger.info("Extraction succeeded after %d attempt(s)", attempts_used)
-
-            db_result = ExtractionResult(
+            logger.info("Initial extraction succeeded after %d attempt(s)", attempts_used)
+            return ExtractionResult(
                 input_text=input_text,
                 prompt_text=final_prompt,
-                schema_name=schema.__name__,
+                schema_name=target_schema.__name__,
                 output_json=output_json,
                 status="success",
                 error=None,
@@ -202,18 +232,98 @@ class ExtractionEngine:
 
         except (ValidationError, ValueError, json.JSONDecodeError, RetryError, Exception) as exc:
             error_msg = str(exc)
-            logger.error("Extraction failed after %d attempt(s): %s", _MAX_ATTEMPTS, error_msg)
-
-            db_result = ExtractionResult(
+            logger.error("Initial extraction failed after %d attempt(s): %s", _MAX_ATTEMPTS, error_msg)
+            return ExtractionResult(
                 input_text=input_text,
                 prompt_text=None,
-                schema_name=schema.__name__,
+                schema_name=target_schema.__name__,
                 output_json=None,
                 status="failed",
                 error=error_msg,
                 attempts=_MAX_ATTEMPTS,
             )
 
-        row_id = save_result(db_result)
-        logger.info("Result persisted to DB id=%d status=%s", row_id, db_result.status)
-        return db_result
+    def update(
+        self,
+        previous_summary: dict,
+        update_instruction: str,
+        original_input_text: str | None = None,
+        *,
+        include_synthetic_update_few_shot: bool = False,
+        synthetic_update_few_shot_paths: list[Path] | None = None,
+    ) -> ExtractionResult:
+        """Apply a human update instruction to an existing summary.
+
+        Always uses ``SOUpdateContractList``. Returns an :class:`ExtractionResult`
+        whose ``input_text`` field carries the original chat text (for traceability)
+        and whose ``output_json`` is the revised summary JSON.
+
+        Set ``include_synthetic_update_few_shot=True`` to add ``raw_data/chats/updates/``
+        scenarios to the few-shot section of the update prompt (alongside DB examples).
+        When ``synthetic_update_few_shot_paths`` is ``None``, every ``*.json`` under
+        ``updates/`` is used. Pass an empty list for none, or specific paths to
+        restrict which scenarios are included.
+        """
+        target_schema = self.UPDATE_SCHEMA
+
+        system_prompt = build_system_prompt(
+            organization_info=self.organization_info,
+            customer_info=self.customer_info,
+        )
+
+        normalized_chat = _normalize(original_input_text) if original_input_text else None
+
+        logger.info(
+            "Starting summary update: schema=%s previous_keys=%d instruction_chars=%d synthetic_few_shot=%s",
+            target_schema.__name__,
+            len(previous_summary or {}),
+            len(update_instruction or ""),
+            include_synthetic_update_few_shot,
+        )
+
+        synthetic_examples = (
+            load_synthetic_update_few_shot_examples(paths=synthetic_update_few_shot_paths)
+            if include_synthetic_update_few_shot
+            else None
+        )
+
+        def _factory(attempt: int) -> str:
+            return build_update_prompt(
+                previous_summary=previous_summary,
+                update_instruction=update_instruction,
+                original_input_text=normalized_chat,
+                attempt=attempt,
+                iso_date=self.iso_date,
+                organization_info=self.organization_info,
+                customer_info=self.customer_info,
+                synthetic_few_shot_examples=synthetic_examples,
+            )
+
+        try:
+            result_model, attempts_used, final_prompt = _call_with_retry(
+                target_schema, self.model_key, _factory, system_prompt,
+            )
+            output_json = result_model.model_dump_json(indent=2)
+            logger.info("Summary update succeeded after %d attempt(s)", attempts_used)
+            return ExtractionResult(
+                input_text=original_input_text or "",
+                prompt_text=final_prompt,
+                schema_name=target_schema.__name__,
+                output_json=output_json,
+                status="success",
+                error=None,
+                attempts=attempts_used,
+            )
+
+        except (ValidationError, ValueError, json.JSONDecodeError, RetryError, Exception) as exc:
+            error_msg = str(exc)
+            logger.error("Summary update failed after %d attempt(s): %s", _MAX_ATTEMPTS, error_msg)
+            return ExtractionResult(
+                input_text=original_input_text or "",
+                prompt_text=None,
+                schema_name=target_schema.__name__,
+                output_json=None,
+                status="failed",
+                error=error_msg,
+                attempts=_MAX_ATTEMPTS,
+            )

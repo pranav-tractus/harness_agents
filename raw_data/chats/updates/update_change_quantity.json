@@ -1,0 +1,79 @@
+{
+  "source_chat": "single_product_single_shipment_simple.json",
+  "description": "Buyer originally orders 5 bags; reviewer corrects the quantity to 8 bags after re-reading the chat.",
+  "messages": [
+    {"from_whom": "(TEAM2)", "body": "Hi. We need 5 bags of KNM Coffee.", "timestamp": 1760000000},
+    {"from_whom": "(TEAM1)", "body": "Sure. $25 per bag, total $125. Delivery address?", "timestamp": 1760000040},
+    {"from_whom": "(TEAM2)", "body": "100 Finance Ave Singapore 018989. November 25.", "timestamp": 1760000080},
+    {"from_whom": "(TEAM1)", "body": "Noted. SO will be sent today.", "timestamp": 1760000200}
+  ],
+  "generated_summary": {
+    "data": [
+      {
+        "items": [
+          {
+            "sr_no": 1,
+            "description": "KNM Coffee",
+            "quantity": 5.0,
+            "quantity_unit": "BAGS",
+            "unit_price": 25.0,
+            "pricing_unit": "USD/BAG",
+            "ship_term": "",
+            "delivery_terms": "",
+            "shipment_date": "2026-11-25",
+            "shipping_address": "100 Finance Ave Singapore 018989",
+            "packing": "",
+            "loading": "",
+            "total": 125.0
+          }
+        ],
+        "do_date": "2026-11-25",
+        "po_date": "",
+        "po_ref_no": "",
+        "vendor_name": "flamingos",
+        "payment_date": "Net 30 Days",
+        "delivery_terms": "",
+        "billing_address": "",
+        "shipping_method": "",
+        "shipping_address": "100 Finance Ave Singapore 018989"
+      }
+    ]
+  },
+  "updates": [
+    {
+      "instruction": "The buyer actually agreed to 8 bags, not 5. Update the KNM Coffee quantity to 8 and recompute the total.",
+      "expected_summary": {
+        "data": [
+          {
+            "items": [
+              {
+                "sr_no": 1,
+                "description": "KNM Coffee",
+                "quantity": 8.0,
+                "quantity_unit": "BAGS",
+                "unit_price": 25.0,
+                "pricing_unit": "USD/BAG",
+                "ship_term": "",
+                "delivery_terms": "",
+                "shipment_date": "2026-11-25",
+                "shipping_address": "100 Finance Ave Singapore 018989",
+                "packing": "",
+                "loading": "",
+                "total": 200.0
+              }
+            ],
+            "do_date": "2026-11-25",
+            "po_date": "",
+            "po_ref_no": "",
+            "vendor_name": "flamingos",
+            "payment_date": "Net 30 Days",
+            "delivery_terms": "",
+            "billing_address": "",
+            "shipping_method": "",
+            "shipping_address": "100 Finance Ave Singapore 018989"
+          }
+        ]
+      }
+    }
+  ]
+}

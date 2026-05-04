@@ -1,0 +1,56 @@
+{% include "update_rules.j2" %}
+
+{% include "anti_hallucination.j2" %}
+
+{% if few_shot_examples %}
+## Few-shot examples (recent successful updates)
+Use these as behavioral references only. Prioritize the current Previous summary, Update instruction, and schema.
+
+{% for ex in few_shot_examples %}
+### Example {{ loop.index }}
+User:
+Previous summary:
+{{ ex.previous_summary_json }}
+
+Update instruction:
+{{ ex.update_instruction }}
+
+{% if ex.recent_chat_messages %}
+Recent chat messages:
+{{ ex.recent_chat_messages }}
+{% endif %}
+
+Assistant:
+{{ ex.updated_summary_json }}
+
+{% endfor %}
+{% endif %}
+
+## Output requirements
+- Valid JSON matching the target schema exactly.
+- No text, explanation, or markdown before or after the JSON.
+- Preserve all unchanged fields from the Previous summary verbatim.
+- Only apply the changes explicitly requested in the Update instruction.
+
+## Target schema
+```json
+{{ schema_json }}
+```
+
+## Previous summary
+```json
+{{ previous_summary_json }}
+```
+
+## Update instruction (from human reviewer)
+{{ update_instruction }}
+
+{% if original_input_text %}
+## Original chat messages (reference only)
+
+{{ original_input_text }}
+{% endif %}
+
+---
+
+Apply the human's update instruction to the Previous summary and return the complete updated JSON that conforms to the target schema. Your response must be JSON only.

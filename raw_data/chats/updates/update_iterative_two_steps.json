@@ -1,0 +1,196 @@
+{
+  "source_chat": "single_product_multiple_shipment_simple.json",
+  "description": "Two consecutive update queries: first fix the unit price, then fix shipping address on shipment #2.",
+  "messages": [
+    {"from_whom": "(TEAM2)", "body": "Order: 8 bags KNM Coffee end of Feb, 7 bags end of March. Same address, $25 each.", "timestamp": 1764000000},
+    {"from_whom": "(TEAM1)", "body": "Confirmed. PO-2024-11-150. Net 30 from last delivery.", "timestamp": 1764000060}
+  ],
+  "generated_summary": {
+    "data": [
+      {
+        "items": [
+          {
+            "sr_no": 1,
+            "description": "KNM Coffee",
+            "quantity": 8.0,
+            "quantity_unit": "BAGS",
+            "unit_price": 25.0,
+            "pricing_unit": "USD/BAG",
+            "ship_term": "",
+            "delivery_terms": "",
+            "shipment_date": "2026-02-28",
+            "shipping_address": "100 Finance Ave Singapore 018989",
+            "packing": "",
+            "loading": "",
+            "total": 200.0
+          }
+        ],
+        "do_date": "2026-02-28",
+        "po_date": "",
+        "po_ref_no": "PO-2024-11-150",
+        "vendor_name": "flamingos",
+        "payment_date": "Net 30 from last delivery",
+        "delivery_terms": "",
+        "billing_address": "",
+        "shipping_method": "",
+        "shipping_address": "100 Finance Ave Singapore 018989"
+      },
+      {
+        "items": [
+          {
+            "sr_no": 1,
+            "description": "KNM Coffee",
+            "quantity": 7.0,
+            "quantity_unit": "BAGS",
+            "unit_price": 25.0,
+            "pricing_unit": "USD/BAG",
+            "ship_term": "",
+            "delivery_terms": "",
+            "shipment_date": "2026-03-31",
+            "shipping_address": "100 Finance Ave Singapore 018989",
+            "packing": "",
+            "loading": "",
+            "total": 175.0
+          }
+        ],
+        "do_date": "2026-03-31",
+        "po_date": "",
+        "po_ref_no": "PO-2024-11-150",
+        "vendor_name": "flamingos",
+        "payment_date": "Net 30 from last delivery",
+        "delivery_terms": "",
+        "billing_address": "",
+        "shipping_method": "",
+        "shipping_address": "100 Finance Ave Singapore 018989"
+      }
+    ]
+  },
+  "updates": [
+    {
+      "instruction": "Drop the unit price on both shipments to 23.50 USD/bag and recompute totals.",
+      "expected_summary": {
+        "data": [
+          {
+            "items": [
+              {
+                "sr_no": 1,
+                "description": "KNM Coffee",
+                "quantity": 8.0,
+                "quantity_unit": "BAGS",
+                "unit_price": 23.5,
+                "pricing_unit": "USD/BAG",
+                "ship_term": "",
+                "delivery_terms": "",
+                "shipment_date": "2026-02-28",
+                "shipping_address": "100 Finance Ave Singapore 018989",
+                "packing": "",
+                "loading": "",
+                "total": 188.0
+              }
+            ],
+            "do_date": "2026-02-28",
+            "po_date": "",
+            "po_ref_no": "PO-2024-11-150",
+            "vendor_name": "flamingos",
+            "payment_date": "Net 30 from last delivery",
+            "delivery_terms": "",
+            "billing_address": "",
+            "shipping_method": "",
+            "shipping_address": "100 Finance Ave Singapore 018989"
+          },
+          {
+            "items": [
+              {
+                "sr_no": 1,
+                "description": "KNM Coffee",
+                "quantity": 7.0,
+                "quantity_unit": "BAGS",
+                "unit_price": 23.5,
+                "pricing_unit": "USD/BAG",
+                "ship_term": "",
+                "delivery_terms": "",
+                "shipment_date": "2026-03-31",
+                "shipping_address": "100 Finance Ave Singapore 018989",
+                "packing": "",
+                "loading": "",
+                "total": 164.5
+              }
+            ],
+            "do_date": "2026-03-31",
+            "po_date": "",
+            "po_ref_no": "PO-2024-11-150",
+            "vendor_name": "flamingos",
+            "payment_date": "Net 30 from last delivery",
+            "delivery_terms": "",
+            "billing_address": "",
+            "shipping_method": "",
+            "shipping_address": "100 Finance Ave Singapore 018989"
+          }
+        ]
+      }
+    },
+    {
+      "instruction": "For the second shipment (March), change the shipping address to '50 Changi Business Park'.",
+      "expected_summary": {
+        "data": [
+          {
+            "items": [
+              {
+                "sr_no": 1,
+                "description": "KNM Coffee",
+                "quantity": 8.0,
+                "quantity_unit": "BAGS",
+                "unit_price": 23.5,
+                "pricing_unit": "USD/BAG",
+                "ship_term": "",
+                "delivery_terms": "",
+                "shipment_date": "2026-02-28",
+                "shipping_address": "100 Finance Ave Singapore 018989",
+                "packing": "",
+                "loading": "",
+                "total": 188.0
+              }
+            ],
+            "do_date": "2026-02-28",
+            "po_date": "",
+            "po_ref_no": "PO-2024-11-150",
+            "vendor_name": "flamingos",
+            "payment_date": "Net 30 from last delivery",
+            "delivery_terms": "",
+            "billing_address": "",
+            "shipping_method": "",
+            "shipping_address": "100 Finance Ave Singapore 018989"
+          },
+          {
+            "items": [
+              {
+                "sr_no": 1,
+                "description": "KNM Coffee",
+                "quantity": 7.0,
+                "quantity_unit": "BAGS",
+                "unit_price": 23.5,
+                "pricing_unit": "USD/BAG",
+                "ship_term": "",
+                "delivery_terms": "",
+                "shipment_date": "2026-03-31",
+                "shipping_address": "50 Changi Business Park",
+                "packing": "",
+                "loading": "",
+                "total": 164.5
+              }
+            ],
+            "do_date": "2026-03-31",
+            "po_date": "",
+            "po_ref_no": "PO-2024-11-150",
+            "vendor_name": "flamingos",
+            "payment_date": "Net 30 from last delivery",
+            "delivery_terms": "",
+            "billing_address": "",
+            "shipping_method": "",
+            "shipping_address": "50 Changi Business Park"
+          }
+        ]
+      }
+    }
+  ]
+}

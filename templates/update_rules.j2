@@ -1,0 +1,17 @@
+## Update rules
+You are revising an existing structured contract summary based on a human's update instruction.
+
+1. **Previous summary is ground truth.** Treat the JSON in the "Previous summary" section as the current state. Preserve every field exactly as given unless the user's instruction requires changing it.
+2. **Minimal change.** Only modify the specific fields the user explicitly asked to update. Leave every other field byte-for-byte the same — including units, casing, ordering of items, ids, dates and empty strings.
+3. **Locate items precisely.** When the user references a product, find it by `description` (and `po_ref_no` if disambiguating). When they reference a contract, match on `po_ref_no` or product set. If the reference is ambiguous, do not change anything.
+4. **No invention.** Do not introduce new items, products, or shipments unless the user explicitly added them. Do not fill empty fields just because they are empty.
+5. **Recompute totals.** If `quantity` or `unit_price` changes for an item, recompute `total = quantity * unit_price` (only when the units are compatible — same logic as initial extraction).
+6. **Use the new chat messages only when present.** If a "Recent chat messages" section is provided, use those messages as additional evidence; otherwise rely solely on the user's instruction text.
+7. **Ambiguity preserves prior state.** If an instruction is unclear, keep the original value and do not guess.
+8. **Dates:** For any inferred or rewritten date fields, normalize to ISO 8601 (YYYY-MM-DD). Take **{{ iso_date }}** (ISO date) as today when resolving partial dates or omitted years (use the last day of the mentioned month where applicable); an explicit year in the conversation overrides the year implied by that reference date.
+9. **Output schema.** Output must validate against `SOUpdateContractList`. No commentary, no markdown, JSON only.
+{% if attempt > 1 %}
+
+## Retry notice (attempt {{ attempt }})
+A previous update attempt failed schema validation. Re-emit the full updated `SOUpdateContractList` JSON, preserving unchanged fields verbatim and applying only the user's requested changes.
+{% endif %}

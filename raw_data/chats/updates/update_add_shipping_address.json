@@ -1,0 +1,79 @@
+{
+  "source_chat": "real_world_msgs_test_v1.json",
+  "description": "Reviewer adds an explicit shipping address that the LLM left blank.",
+  "messages": [
+    {"from_whom": "(TEAM2)", "body": "We need 24 MT of soy lecithin powder.", "timestamp": 1762000000},
+    {"from_whom": "(TEAM1)", "body": "USD 4.10/kg, CIF Busan. Total USD 98,400.", "timestamp": 1762000060},
+    {"from_whom": "(TEAM2)", "body": "Agreed. Please confirm.", "timestamp": 1762000120},
+    {"from_whom": "(TEAM1)", "body": "Confirmed.", "timestamp": 1762000180}
+  ],
+  "generated_summary": {
+    "data": [
+      {
+        "items": [
+          {
+            "sr_no": 1,
+            "description": "soy lecithin powder",
+            "quantity": 24.0,
+            "quantity_unit": "MT",
+            "unit_price": 4.1,
+            "pricing_unit": "USD/KG",
+            "ship_term": "CIF",
+            "delivery_terms": "CIF Busan",
+            "shipment_date": "",
+            "shipping_address": "Busan",
+            "packing": "",
+            "loading": "23MT/40'FCL",
+            "total": 98400.0
+          }
+        ],
+        "do_date": "",
+        "po_date": "",
+        "po_ref_no": "",
+        "vendor_name": "",
+        "payment_date": "",
+        "delivery_terms": "CIF Busan",
+        "billing_address": "",
+        "shipping_method": "",
+        "shipping_address": "Busan"
+      }
+    ]
+  },
+  "updates": [
+    {
+      "instruction": "Set the contract-level shipping address to 'Busan New Port, Pier 3, South Korea' for this contract; keep everything else the same.",
+      "expected_summary": {
+        "data": [
+          {
+            "items": [
+              {
+                "sr_no": 1,
+                "description": "soy lecithin powder",
+                "quantity": 24.0,
+                "quantity_unit": "MT",
+                "unit_price": 4.1,
+                "pricing_unit": "USD/KG",
+                "ship_term": "CIF",
+                "delivery_terms": "CIF Busan",
+                "shipment_date": "",
+                "shipping_address": "Busan",
+                "packing": "",
+                "loading": "23MT/40'FCL",
+                "total": 98400.0
+              }
+            ],
+            "do_date": "",
+            "po_date": "",
+            "po_ref_no": "",
+            "vendor_name": "",
+            "payment_date": "",
+            "delivery_terms": "CIF Busan",
+            "billing_address": "",
+            "shipping_method": "",
+            "shipping_address": "Busan New Port, Pier 3, South Korea"
+          }
+        ]
+      }
+    }
+  ]
+}

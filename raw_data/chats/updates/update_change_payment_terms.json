@@ -1,0 +1,134 @@
+{
+  "source_chat": "multiple_product_multiple_shipment_simple.json",
+  "description": "Reviewer overrides payment terms for both contracts in the list.",
+  "messages": [
+    {"from_whom": "(TEAM2)", "body": "Standing order: 10 bags KNM coffee + 20 boxes Assam tea.", "timestamp": 1763000000},
+    {"from_whom": "(TEAM1)", "body": "$25/bag coffee, $12/box tea. CIF Singapore on both. Coffee end-Apr, tea end-May. PO-2024-11-200.", "timestamp": 1763000060},
+    {"from_whom": "(TEAM2)", "body": "Confirmed.", "timestamp": 1763000120}
+  ],
+  "generated_summary": {
+    "data": [
+      {
+        "items": [
+          {
+            "sr_no": 1,
+            "description": "KNM Coffee",
+            "quantity": 10.0,
+            "quantity_unit": "BAGS",
+            "unit_price": 25.0,
+            "pricing_unit": "USD/BAG",
+            "ship_term": "CIF",
+            "delivery_terms": "CIF Singapore",
+            "shipment_date": "2026-04-30",
+            "shipping_address": "100 Finance Ave Singapore 018989",
+            "packing": "",
+            "loading": "",
+            "total": 250.0
+          }
+        ],
+        "do_date": "2026-04-30",
+        "po_date": "",
+        "po_ref_no": "PO-2024-11-200",
+        "vendor_name": "flamingos",
+        "payment_date": "Net 30 Days",
+        "delivery_terms": "CIF",
+        "billing_address": "",
+        "shipping_method": "",
+        "shipping_address": "100 Finance Ave Singapore 018989"
+      },
+      {
+        "items": [
+          {
+            "sr_no": 1,
+            "description": "Assam tea",
+            "quantity": 20.0,
+            "quantity_unit": "BOXES",
+            "unit_price": 12.0,
+            "pricing_unit": "USD/BOX",
+            "ship_term": "CIF",
+            "delivery_terms": "CIF Singapore",
+            "shipment_date": "2026-05-31",
+            "shipping_address": "100 Finance Ave Singapore 018989",
+            "packing": "",
+            "loading": "",
+            "total": 240.0
+          }
+        ],
+        "do_date": "2026-05-31",
+        "po_date": "",
+        "po_ref_no": "PO-2024-11-200",
+        "vendor_name": "flamingos",
+        "payment_date": "Net 30 Days",
+        "delivery_terms": "CIF",
+        "billing_address": "",
+        "shipping_method": "",
+        "shipping_address": "100 Finance Ave Singapore 018989"
+      }
+    ]
+  },
+  "updates": [
+    {
+      "instruction": "Change the payment terms on both contracts to '50% Advance, 50% Net 30 from delivery'.",
+      "expected_summary": {
+        "data": [
+          {
+            "items": [
+              {
+                "sr_no": 1,
+                "description": "KNM Coffee",
+                "quantity": 10.0,
+                "quantity_unit": "BAGS",
+                "unit_price": 25.0,
+                "pricing_unit": "USD/BAG",
+                "ship_term": "CIF",
+                "delivery_terms": "CIF Singapore",
+                "shipment_date": "2026-04-30",
+                "shipping_address": "100 Finance Ave Singapore 018989",
+                "packing": "",
+                "loading": "",
+                "total": 250.0
+              }
+            ],
+            "do_date": "2026-04-30",
+            "po_date": "",
+            "po_ref_no": "PO-2024-11-200",
+            "vendor_name": "flamingos",
+            "payment_date": "50% Advance, 50% Net 30 from delivery",
+            "delivery_terms": "CIF",
+            "billing_address": "",
+            "shipping_method": "",
+            "shipping_address": "100 Finance Ave Singapore 018989"
+          },
+          {
+            "items": [
+              {
+                "sr_no": 1,
+                "description": "Assam tea",
+                "quantity": 20.0,
+                "quantity_unit": "BOXES",
+                "unit_price": 12.0,
+                "pricing_unit": "USD/BOX",
+                "ship_term": "CIF",
+                "delivery_terms": "CIF Singapore",
+                "shipment_date": "2026-05-31",
+                "shipping_address": "100 Finance Ave Singapore 018989",
+                "packing": "",
+                "loading": "",
+                "total": 240.0
+              }
+            ],
+            "do_date": "2026-05-31",
+            "po_date": "",
+            "po_ref_no": "PO-2024-11-200",
+            "vendor_name": "flamingos",
+            "payment_date": "50% Advance, 50% Net 30 from delivery",
+            "delivery_terms": "CIF",
+            "billing_address": "",
+            "shipping_method": "",
+            "shipping_address": "100 Finance Ave Singapore 018989"
+          }
+        ]
+      }
+    }
+  ]
+}
