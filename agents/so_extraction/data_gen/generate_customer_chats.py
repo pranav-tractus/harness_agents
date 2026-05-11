@@ -1,22 +1,23 @@
 """Generate synthetic customer-specific chats for harness simulations.
 
 Usage:
-    python tests/generate_customer_chats.py --harness-config configs/customers.sample.json
+    python -m agents.so_extraction.data_gen.generate_customer_chats \
+        --config configs/agents.json
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
-import sys
 
-ROOT_DIR = Path(__file__).resolve().parents[1]
+ROOT_DIR = Path(__file__).resolve().parents[3]
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-from harness_config import load_harness_config
+from agents.config import load_config
 
 ORDER_SCENARIOS = [
     {
@@ -83,16 +84,12 @@ ORDER_SCENARIOS = [
 
 
 def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Generate synthetic chats per customer.")
-    parser.add_argument("--harness-config", required=True, help="Path to harness JSON config.")
-    parser.add_argument("--seed", type=int, default=42)
-    parser.add_argument(
-        "--count-per-customer",
-        type=int,
-        default=10,
-        help="How many chats to generate per customer.",
-    )
-    return parser.parse_args()
+    p = argparse.ArgumentParser(description="Generate synthetic chats per customer dataset.")
+    p.add_argument("--config", default="", help="Path to agents.json (default: configs/agents.json).")
+    p.add_argument("--agent", default="so_extraction", help="Agent id whose customer datasets to populate.")
+    p.add_argument("--seed", type=int, default=42)
+    p.add_argument("--count-per-customer", type=int, default=10)
+    return p.parse_args()
 
 
 def _build_chat(
@@ -110,7 +107,7 @@ def _build_chat(
     delivery_note = scenario["delivery_note"]
     payment_terms = scenario["payment_terms"]
     shipping_address = f"{100 + idx} Market Street, Customer Hub"
-    lines = [
+    msgs = [
         {
             "from_whom": "(BUYER)",
             "body": f"Hi {customer_name}, we need this {order_type} order: {item_lines}.",
@@ -139,30 +136,37 @@ def _build_chat(
         "scenario_tags": sorted(set(tags + [order_type])),
         "complexity_tier": tier,
         "order_type": order_type,
-        "messages": lines,
+        "messages": msgs,
     }
 
 
 def main() -> None:
     args = _parse_args()
-    cfg = load_harness_config(args.harness_config)
-    root = Path(__file__).resolve().parents[1]
+    cfg = load_config(args.config or None)
+    agent = cfg.get_agent(args.agent)
+    customer_like = [
+        ds for ds in agent.datasets()
+        if ds.id not in {"core", "downloaded"} and ds.customer_info
+    ]
+    if not customer_like:
+        raise SystemExit("No customer-style datasets found in this agent's config.")
     generated = 0
-    for customer in cfg.customers:
-        configured_total = customer.synthetic_generation.chats_to_generate
-        total = max(configured_total, args.count_per_customer)
-        if total <= 0:
-            continue
-        tiers = customer.synthetic_generation.complexity_tiers or ["simple"]
-        tags = customer.synthetic_generation.scenario_tags
-        customer_root = (root / customer.dataset_root).resolve()
-        chats_dir = customer_root / "chats"
+    for ds in customer_like:
+        customer_name = ds.customer_info.get("name") if ds.customer_info else ds.id
+        customer_id = ds.id
+        chats_dir = (agent.repo_root / f"raw_data/customers/{customer_id}/chats").resolve()
         chats_dir.mkdir(parents=True, exist_ok=True)
-        for idx in range(1, total + 1):
-            tier = tiers[(idx - 1) % len(tiers)]
+        for idx in range(1, args.count_per_customer + 1):
             scenario = ORDER_SCENARIOS[(idx - 1) % len(ORDER_SCENARIOS)]
-            payload = _build_chat(customer.id, customer.name, idx, tier, tags, scenario)
-            out_path = chats_dir / f"generated_{customer.id}_{idx:03d}.json"
+            payload = _build_chat(
+                customer_id=customer_id,
+                customer_name=customer_name,
+                idx=idx,
+                tier="simple" if idx % 2 == 1 else "medium",
+                tags=[],
+                scenario=scenario,
+            )
+            out_path = chats_dir / f"generated_{customer_id}_{idx:03d}.json"
             out_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
             generated += 1
     print(f"Generated chats: {generated}")

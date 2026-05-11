@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "default_agent_id": "so_extraction",
+  "agents": [
+    {
+      "id": "so_extraction",
+      "display_name": "Sales-order Extraction",
+      "module": "agents.so_extraction.agent:SOExtractionAgent",
+      "db_path": "extractions.db",
+      "datasets": [
+        {
+          "id": "core",
+          "chat_globs": ["raw_data/chats/*.json"]
+        },
+        {
+          "id": "downloaded",
+          "chat_globs": ["raw_data/downloaded_chats/*.json"]
+        },
+        {
+          "id": "acme_foods",
+          "chat_globs": ["raw_data/customers/acme_foods/chats/*.json"],
+          "db_path": "customer_dbs/acme_foods.db",
+          "customer_info": {
+            "name": "Acme Foods",
+            "id": "cust-acme-foods"
+          }
+        },
+        {
+          "id": "nova_exports",
+          "chat_globs": ["raw_data/customers/nova_exports/chats/*.json"],
+          "db_path": "customer_dbs/nova_exports.db",
+          "customer_info": {
+            "name": "Nova Exports",
+            "id": "cust-nova-exports"
+          }
+        }
+      ],
+      "few_shot_globs": [
+        "raw_data/chats/*.json",
+        "raw_data/chats/updates/*.json",
+        "raw_data/downloaded_chats/*.json",
+        "raw_data/customers/*/chats/*.json"
+      ]
+    },
+    {
+      "id": "product_retrieval",
+      "display_name": "Product Spec Retrieval (scaffold)",
+      "module": "agents.product_retrieval.agent:ProductRetrievalAgent",
+      "db_path": "product_specs.db",
+      "consumes_output_of": "so_extraction",
+      "datasets": [
+        {
+          "id": "specs",
+          "doc_globs": [
+            "raw_data/product_specs/*.pdf",
+            "raw_data/product_specs/*.md"
+          ]
+        }
+      ],
+      "few_shot_globs": []
+    }
+  ],
+  "pipelines": [
+    {
+      "id": "so_then_retrieval",
+      "steps": ["so_extraction", "product_retrieval"]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
-"""Generate operationally-realistic customer chats for harness testing.
+"""Generate operationally-realistic customer chats.
 
-Adds realism that the simple synthetic generator does not cover:
+Adds realism the simple synthetic generator does not cover:
 
 - ``long_thread``        : 20+ messages with off-topic banter and status checks
 - ``noisy_text``         : typos, emojis, voice-to-text artifacts, partial duplicates
@@ -12,9 +12,8 @@ Each generated chat carries top-level ``realism_flags`` so dashboards and
 filters can segment by realism type without re-parsing message bodies.
 
 Usage:
-    python tests/generate_realistic_chats.py \
-        --harness-config configs/customers.sample.json \
-        --count-per-customer 10
+    python -m agents.so_extraction.data_gen.generate_realistic_chats \\
+        --config configs/agents.json --count-per-customer 10
 """
 
 from __future__ import annotations
@@ -27,11 +26,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable
 
-ROOT_DIR = Path(__file__).resolve().parents[1]
+ROOT_DIR = Path(__file__).resolve().parents[3]
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-from harness_config import load_harness_config
+from agents.config import load_config
 
 
 BASE_ITEMS = [
@@ -58,12 +57,7 @@ ADDRESSES = [
 PAYMENT_TERMS = ["Net 15", "Net 30", "Net 45", "50% advance", "Immediate transfer"]
 
 
-# Realism flavor implementations - each returns a list of extra message dicts
-# that will be merged into the base thread, possibly with timestamp offsets.
-
-
 def _flavor_long_thread(rng: random.Random, base_msgs: list[dict]) -> list[dict]:
-    """Add 20+ extra small-talk / status-check messages around the order."""
     extras: list[dict] = []
     fillers = [
         ("(BUYER)", "By the way, how was the trade fair last week?"),
@@ -92,18 +86,11 @@ def _flavor_long_thread(rng: random.Random, base_msgs: list[dict]) -> list[dict]
     base_ts = max(m["timestamp"] for m in base_msgs)
     rng.shuffle(fillers)
     for offset, (who, text) in enumerate(fillers, start=1):
-        extras.append(
-            {
-                "from_whom": who,
-                "body": text,
-                "timestamp": base_ts + offset,
-            }
-        )
+        extras.append({"from_whom": who, "body": text, "timestamp": base_ts + offset})
     return extras
 
 
 def _flavor_noisy_text(rng: random.Random, base_msgs: list[dict]) -> list[dict]:
-    """Mutate existing base messages to add typos, emojis, partial duplicates."""
     emoji_pool = ["😅", "👍", "🙏", "🚚", "📦", "✅", "❗", "..."]
     typo_map = {
         "the": "teh",
@@ -125,26 +112,13 @@ def _flavor_noisy_text(rng: random.Random, base_msgs: list[dict]) -> list[dict]:
             body = body + " " + rng.choice(emoji_pool)
         new_msgs.append({**msg, "body": body})
         if rng.random() < 0.25:
-            new_msgs.append(
-                {
-                    "from_whom": msg["from_whom"],
-                    "body": "(typing...)",
-                    "timestamp": msg["timestamp"] + 1,
-                }
-            )
+            new_msgs.append({"from_whom": msg["from_whom"], "body": "(typing...)", "timestamp": msg["timestamp"] + 1})
         if rng.random() < 0.2:
-            new_msgs.append(
-                {
-                    "from_whom": msg["from_whom"],
-                    "body": body[: max(5, len(body) // 2)] + "—",
-                    "timestamp": msg["timestamp"] + 2,
-                }
-            )
+            new_msgs.append({"from_whom": msg["from_whom"], "body": body[: max(5, len(body) // 2)] + "—", "timestamp": msg["timestamp"] + 2})
     return new_msgs
 
 
 def _flavor_missing_prices(rng: random.Random, base_msgs: list[dict]) -> list[dict]:
-    """Replace explicit prices with vague references."""
     replacements = [
         "usual rate",
         "same as last time",
@@ -156,12 +130,7 @@ def _flavor_missing_prices(rng: random.Random, base_msgs: list[dict]) -> list[di
     for msg in base_msgs:
         body = msg["body"]
         if "USD" in body or "$" in body or "@ " in body:
-            body = (
-                body.split("@")[0].strip()
-                + " @ "
-                + rng.choice(replacements)
-                + "."
-            )
+            body = body.split("@")[0].strip() + " @ " + rng.choice(replacements) + "."
         new_msgs.append({**msg, "body": body})
     new_msgs.append(
         {
@@ -174,51 +143,30 @@ def _flavor_missing_prices(rng: random.Random, base_msgs: list[dict]) -> list[di
 
 
 def _flavor_contradictory(rng: random.Random, base_msgs: list[dict]) -> list[dict]:
-    """Buyer flips quantity / price / address mid-thread."""
     base_ts = max(m["timestamp"] for m in base_msgs)
     flips = [
-        (
-            "(BUYER)",
-            "Actually scratch that, double the quantity on the first line item.",
-        ),
-        (
-            "(BUYER)",
-            "Wait sorry - keep original qty but change unit price down by 2 USD.",
-        ),
-        (
-            "(BUYER)",
-            "Hmm, on second thought, ship to 9 Harbor Plaza instead of the address I gave.",
-        ),
+        ("(BUYER)", "Actually scratch that, double the quantity on the first line item."),
+        ("(BUYER)", "Wait sorry - keep original qty but change unit price down by 2 USD."),
+        ("(BUYER)", "Hmm, on second thought, ship to 9 Harbor Plaza instead of the address I gave."),
         ("(SELLER)", "Just to confirm - which version is final?"),
-        (
-            "(BUYER)",
-            "Final: original qty, original price, deliver to 9 Harbor Plaza.",
-        ),
-        (
-            "(BUYER)",
-            "Actually one more change - split the delivery into two equal shipments.",
-        ),
+        ("(BUYER)", "Final: original qty, original price, deliver to 9 Harbor Plaza."),
+        ("(BUYER)", "Actually one more change - split the delivery into two equal shipments."),
     ]
     return [
-        {
-            "from_whom": who,
-            "body": text,
-            "timestamp": base_ts + offset,
-        }
+        {"from_whom": who, "body": text, "timestamp": base_ts + offset}
         for offset, (who, text) in enumerate(flips, start=1)
     ]
 
 
 def _flavor_multilingual(rng: random.Random, base_msgs: list[dict]) -> list[dict]:
-    """Inject foreign-language snippets representative of WhatsApp B2B traffic."""
     pool = [
-        ("(BUYER)", "Hola, mismo pedido por favor confirmar el total."),  # Spanish
-        ("(SELLER)", "Bonjour, je vous envoie la confirmation tout de suite."),  # French
-        ("(BUYER)", "Bhai ek minute, total kitna ban raha hai exactly?"),  # Hindi
-        ("(SELLER)", "Ji bilkul, abhi calculate karke share karta hu."),  # Hindi
-        ("(BUYER)", "请问什么时候发货？"),  # Mandarin
+        ("(BUYER)", "Hola, mismo pedido por favor confirmar el total."),
+        ("(SELLER)", "Bonjour, je vous envoie la confirmation tout de suite."),
+        ("(BUYER)", "Bhai ek minute, total kitna ban raha hai exactly?"),
+        ("(SELLER)", "Ji bilkul, abhi calculate karke share karta hu."),
+        ("(BUYER)", "请问什么时候发货？"),
         ("(SELLER)", "明天上午发货，单号稍后发您。"),
-        ("(BUYER)", "Obrigado, qualquer atualização me avise."),  # Portuguese
+        ("(BUYER)", "Obrigado, qualquer atualização me avise."),
     ]
     base_ts = max(m["timestamp"] for m in base_msgs)
     rng.shuffle(pool)
@@ -237,9 +185,7 @@ FLAVOR_REGISTRY: dict[str, Callable[[random.Random, list[dict]], list[dict]]] = 
 }
 
 
-def _build_base_messages(
-    rng: random.Random, customer_name: str, idx: int
-) -> tuple[list[dict], dict]:
+def _build_base_messages(rng: random.Random, customer_name: str, idx: int) -> tuple[list[dict], dict]:
     item = rng.choice(BASE_ITEMS)
     name, qty, price = item
     address = rng.choice(ADDRESSES)
@@ -248,10 +194,7 @@ def _build_base_messages(
     messages = [
         {
             "from_whom": "(BUYER)",
-            "body": (
-                f"Hi {customer_name}, please raise an SO for {qty} x {name} "
-                f"@ {price} USD. Thanks."
-            ),
+            "body": f"Hi {customer_name}, please raise an SO for {qty} x {name} @ {price} USD. Thanks.",
             "timestamp": idx * 100 + 1,
         },
         {
@@ -281,18 +224,12 @@ def _build_base_messages(
     return messages, meta
 
 
-def _apply_flavors(
-    rng: random.Random,
-    base_msgs: list[dict],
-    flavors: list[str],
-) -> list[dict]:
+def _apply_flavors(rng: random.Random, base_msgs: list[dict], flavors: list[str]) -> list[dict]:
     msgs = list(base_msgs)
     for flavor in flavors:
         fn = FLAVOR_REGISTRY[flavor]
         result = fn(rng, msgs)
-        if flavor == "noisy_text":
-            msgs = result
-        elif flavor == "missing_prices":
+        if flavor in ("noisy_text", "missing_prices"):
             msgs = result
         else:
             msgs.extend(result)
@@ -306,61 +243,61 @@ def _choose_flavors(rng: random.Random, allowed: list[str]) -> list[str]:
 
 
 def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Generate operationally-realistic customer chats for harness testing."
-    )
-    parser.add_argument("--harness-config", required=True)
-    parser.add_argument("--count-per-customer", type=int, default=10)
-    parser.add_argument("--seed", type=int, default=42)
-    parser.add_argument(
+    p = argparse.ArgumentParser(description="Generate realistic customer chats for harness testing.")
+    p.add_argument("--config", default="", help="Path to agents.json (default: configs/agents.json).")
+    p.add_argument("--agent", default="so_extraction")
+    p.add_argument("--count-per-customer", type=int, default=10)
+    p.add_argument("--seed", type=int, default=42)
+    p.add_argument(
         "--flavors",
         nargs="*",
         default=list(FLAVOR_REGISTRY.keys()),
         choices=list(FLAVOR_REGISTRY.keys()),
-        help="Subset of realism flavors to draw from.",
     )
-    parser.add_argument(
-        "--prefix",
-        default="realistic",
-        help="Filename prefix and chat_name prefix for generated chats.",
-    )
-    return parser.parse_args()
+    p.add_argument("--prefix", default="realistic")
+    return p.parse_args()
 
 
 def main() -> None:
     args = _parse_args()
-    cfg = load_harness_config(args.harness_config)
+    cfg = load_config(args.config or None)
+    agent = cfg.get_agent(args.agent)
+    customer_like = [
+        ds for ds in agent.datasets()
+        if ds.id not in {"core", "downloaded"} and ds.customer_info
+    ]
+    if not customer_like:
+        raise SystemExit("No customer-style datasets found in this agent's config.")
+
     generated = 0
     summary: dict[str, int] = {flavor: 0 for flavor in args.flavors}
 
-    for customer in cfg.customers:
-        customer_root = (ROOT_DIR / customer.dataset_root).resolve()
-        chats_dir = customer_root / "chats"
+    for ds in customer_like:
+        customer_name = ds.customer_info.get("name") if ds.customer_info else ds.id
+        customer_id = ds.id
+        chats_dir = (agent.repo_root / f"raw_data/customers/{customer_id}/chats").resolve()
         chats_dir.mkdir(parents=True, exist_ok=True)
 
-        customer_seed = args.seed + sum(ord(c) for c in customer.id)
+        customer_seed = args.seed + sum(ord(c) for c in customer_id)
         for idx in range(1, args.count_per_customer + 1):
             rng = random.Random(customer_seed + idx)
-            base_msgs, meta = _build_base_messages(rng, customer.name, idx)
+            base_msgs, meta = _build_base_messages(rng, customer_name, idx)
             flavors = _choose_flavors(rng, args.flavors)
             messages = _apply_flavors(rng, base_msgs, flavors)
             for flavor in flavors:
                 summary[flavor] += 1
 
             payload = {
-                "customer_id": customer.id,
-                "chat_name": f"{customer.id}_{args.prefix}_{idx:03d}",
+                "customer_id": customer_id,
+                "chat_name": f"{customer_id}_{args.prefix}_{idx:03d}",
                 "created_at": datetime.now(timezone.utc).isoformat(),
                 "realism_flags": sorted(flavors),
                 "complexity_tier": "realistic",
                 "ground_truth_meta": meta,
                 "messages": messages,
             }
-            out_path = chats_dir / f"{args.prefix}_{customer.id}_{idx:03d}.json"
-            out_path.write_text(
-                json.dumps(payload, indent=2, ensure_ascii=False),
-                encoding="utf-8",
-            )
+            out_path = chats_dir / f"{args.prefix}_{customer_id}_{idx:03d}.json"
+            out_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
             generated += 1
 
     print(f"Generated realistic chats: {generated}")
