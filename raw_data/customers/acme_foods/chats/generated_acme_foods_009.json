@@ -1,0 +1,34 @@
+{
+  "customer_id": "acme_foods",
+  "chat_name": "acme_foods_synthetic_partial_cancellation_009",
+  "created_at": "2026-05-07T18:29:00.378580+00:00",
+  "scenario_tags": [
+    "coffee",
+    "domestic",
+    "partial_cancellation"
+  ],
+  "complexity_tier": "simple",
+  "order_type": "partial_cancellation",
+  "messages": [
+    {
+      "from_whom": "(BUYER)",
+      "body": "Hi Acme Foods, we need this partial_cancellation order: 30 x Herbal tea boxes @ 11 USD.",
+      "timestamp": 91
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Confirmed. Subtotal is 330 USD. We'll process as partial cancellation after first shipment.",
+      "timestamp": 92
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Shipping address is 109 Market Street, Customer Hub. Payment terms: Net 30.",
+      "timestamp": 93
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Noted. Sales order draft will be shared today.",
+      "timestamp": 94
+    }
+  ]
+}

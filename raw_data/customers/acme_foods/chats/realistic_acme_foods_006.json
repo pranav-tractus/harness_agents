@@ -1,0 +1,85 @@
+{
+  "customer_id": "acme_foods",
+  "chat_name": "acme_foods_realistic_006",
+  "created_at": "2026-05-11T18:10:38.811206+00:00",
+  "realism_flags": [
+    "contradictory",
+    "noisy_text"
+  ],
+  "complexity_tier": "realistic",
+  "ground_truth_meta": {
+    "item_name": "Specialty sample kits",
+    "quantity": 3,
+    "unit_price": 55,
+    "currency": "USD",
+    "address": "300 Innovation Park, Block C",
+    "payment_terms": "50% advance"
+  },
+  "messages": [
+    {
+      "from_whom": "(BUYER)",
+      "body": "Hi Acme Foods, please raise an SO for 3 x Specialty sample kits @ 55 USD. Thx. ✅",
+      "timestamp": 601
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Got it - subtotal 165 USD. Confirm address and payment terms?",
+      "timestamp": 602
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Address: 300 Innovation Park, Block C. Payment: 50% advance.",
+      "timestamp": 603
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Got it - subtotal 165 USD. Con—",
+      "timestamp": 604
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Noted, sending SO draft today.",
+      "timestamp": 604
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Address: 300 Innovation Park, —",
+      "timestamp": 605
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Actually scratch that, double the quantity on the first line item. ✅",
+      "timestamp": 605
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Wait sorry - keep original qty but change unit price down by 2 USD. 🚚",
+      "timestamp": 606
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Hmm, on second thought, ship to 9 Harbor Plaza instead of the address I gave. 😅",
+      "timestamp": 607
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "(typing...)",
+      "timestamp": 608
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Just to confirm - which version is final?",
+      "timestamp": 608
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Final: original qty, original price, deliver to 9 Harbor Plaza. ✅",
+      "timestamp": 609
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Actually one more change - split teh delvery into two equal shipments. 🚚",
+      "timestamp": 610
+    }
+  ]
+}

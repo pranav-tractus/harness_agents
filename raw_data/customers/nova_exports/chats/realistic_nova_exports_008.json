@@ -1,0 +1,155 @@
+{
+  "customer_id": "nova_exports",
+  "chat_name": "nova_exports_realistic_008",
+  "created_at": "2026-05-11T18:10:38.812316+00:00",
+  "realism_flags": [
+    "long_thread",
+    "missing_prices"
+  ],
+  "complexity_tier": "realistic",
+  "ground_truth_meta": {
+    "item_name": "Filter paper packs",
+    "quantity": 10,
+    "unit_price": 6,
+    "currency": "USD",
+    "address": "9 Harbor Plaza, Pier 4",
+    "payment_terms": "Net 15"
+  },
+  "messages": [
+    {
+      "from_whom": "(BUYER)",
+      "body": "Hi Nova Exports, please raise an SO for 10 x Filter paper packs @ let's go with last month's rate.",
+      "timestamp": 801
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Got it - subtotal 60 USD. Confirm address and payment terms? @ same as last time.",
+      "timestamp": 802
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Address: 9 Harbor Plaza, Pier 4. Payment: Net 15.",
+      "timestamp": 803
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Noted, sending SO draft today.",
+      "timestamp": 804
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Will use the rate we discussed last cycle unless you confirm otherwise.",
+      "timestamp": 805
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Sure, expecting confirmation from logistics in an hour.",
+      "timestamp": 806
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Yes received, accounts team is processing it.",
+      "timestamp": 807
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Quick check - is the warehouse still closed Sundays?",
+      "timestamp": 808
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Yes a fresh lot landed Tuesday, will share photos.",
+      "timestamp": 809
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "OK, talk soon.",
+      "timestamp": 810
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Also, share the test report for the new lot when ready.",
+      "timestamp": 811
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Great. One more thing - any new arrivals on Robusta?",
+      "timestamp": 812
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "GST is unchanged, same as last invoice.",
+      "timestamp": 813
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Please share. We may add it to next month's order.",
+      "timestamp": 814
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Talk soon.",
+      "timestamp": 815
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Send the AWB once generated.",
+      "timestamp": 816
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Perfect.",
+      "timestamp": 817
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "By the way, how was the trade fair last week?",
+      "timestamp": 818
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Will do later today after the inspection.",
+      "timestamp": 819
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Will share by EOD.",
+      "timestamp": 820
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Noted. Also, did you receive the previous invoice copy?",
+      "timestamp": 821
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Good. Forward the dispatch ETA once available.",
+      "timestamp": 822
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Update - logistics confirmed dispatch slot.",
+      "timestamp": 823
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Thanks. Also confirm the GST number we have on file.",
+      "timestamp": 824
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Yes Sundays closed, Saturdays half day until 1pm.",
+      "timestamp": 825
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Yes, lab results due by Friday.",
+      "timestamp": 826
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "It was good, picked up a few new SKUs to share next call.",
+      "timestamp": 827
+    }
+  ]
+}

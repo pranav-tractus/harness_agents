@@ -1,0 +1,34 @@
+{
+  "customer_id": "nova_exports",
+  "chat_name": "nova_exports_synthetic_new_product_addon_010",
+  "created_at": "2026-05-07T18:29:00.380007+00:00",
+  "scenario_tags": [
+    "export",
+    "new_product_addon",
+    "spices"
+  ],
+  "complexity_tier": "complex",
+  "order_type": "new_product_addon",
+  "messages": [
+    {
+      "from_whom": "(BUYER)",
+      "body": "Hi Nova Exports, we need this new_product_addon order: 18 x Black tea cartons @ 17 USD, 10 x Filter paper packs @ 6 USD.",
+      "timestamp": 101
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Confirmed. Subtotal is 366 USD. We'll process as addon item requested after initial quote.",
+      "timestamp": 102
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Shipping address is 110 Market Street, Customer Hub. Payment terms: Net 30.",
+      "timestamp": 103
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Noted. Sales order draft will be shared today.",
+      "timestamp": 104
+    }
+  ]
+}

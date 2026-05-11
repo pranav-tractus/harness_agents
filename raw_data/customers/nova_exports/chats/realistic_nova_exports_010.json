@@ -1,0 +1,70 @@
+{
+  "customer_id": "nova_exports",
+  "chat_name": "nova_exports_realistic_010",
+  "created_at": "2026-05-11T18:10:38.812464+00:00",
+  "realism_flags": [
+    "missing_prices",
+    "multilingual"
+  ],
+  "complexity_tier": "realistic",
+  "ground_truth_meta": {
+    "item_name": "Robusta coffee bags",
+    "quantity": 12,
+    "unit_price": 21,
+    "currency": "USD",
+    "address": "9 Harbor Plaza, Pier 4",
+    "payment_terms": "Immediate transfer"
+  },
+  "messages": [
+    {
+      "from_whom": "(BUYER)",
+      "body": "Hi Nova Exports, please raise an SO for 12 x Robusta coffee bags @ you know our standard pricing.",
+      "timestamp": 1001
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Got it - subtotal 252 USD. Confirm address and payment terms? @ price as previously agreed.",
+      "timestamp": 1002
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Address: 9 Harbor Plaza, Pier 4. Payment: Immediate transfer.",
+      "timestamp": 1003
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Noted, sending SO draft today.",
+      "timestamp": 1004
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Hola, mismo pedido por favor confirmar el total.",
+      "timestamp": 1005
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Bonjour, je vous envoie la confirmation tout de suite.",
+      "timestamp": 1006
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "明天上午发货，单号稍后发您。",
+      "timestamp": 1007
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Ji bilkul, abhi calculate karke share karta hu.",
+      "timestamp": 1008
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Bhai ek minute, total kitna ban raha hai exactly?",
+      "timestamp": 1009
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Will use the rate we discussed last cycle unless you confirm otherwise.",
+      "timestamp": 1010
+    }
+  ]
+}

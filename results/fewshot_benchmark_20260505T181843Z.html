@@ -1,0 +1,3131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Few-shot Benchmark Report 20260505T181843Z</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; color: #1f2937; }
+    h1, h2 { margin-bottom: 8px; }
+    .meta { margin-bottom: 16px; color: #4b5563; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 20px; font-size: 13px; }
+    th, td { border: 1px solid #d1d5db; padding: 8px; vertical-align: top; text-align: left; }
+    th { background: #f3f4f6; }
+    pre { margin: 0; white-space: pre-wrap; }
+    .card { background: #f9fafb; border: 1px solid #e5e7eb; padding: 10px; margin-bottom: 16px; }
+  </style>
+</head>
+<body>
+  <h1>Few-shot Benchmark Report</h1>
+  <div class="meta">Run ID: <code>20260505T181843Z</code> | Generated UTC: <code>2026-05-05T18:21:48.786233+00:00</code></div>
+
+  <div class="card">
+    <h2>Configuration</h2>
+    <pre>{
+  &quot;models&quot;: [
+    &quot;opus-4-5&quot;,
+    &quot;opus-4-6&quot;,
+    &quot;sonnet-4-5&quot;,
+    &quot;sonnet-4-6&quot;
+  ],
+  &quot;fewshot_strategies&quot;: [
+    &quot;db_only&quot;,
+    &quot;db_plus_raw&quot;,
+    &quot;raw_only&quot;,
+    &quot;zero_shot&quot;
+  ],
+  &quot;chat_count&quot;: 21,
+  &quot;runs_per_chat&quot;: 1,
+  &quot;max_workers&quot;: 15,
+  &quot;raw_fewshot_count&quot;: 26,
+  &quot;raw_fewshot_labels_filter&quot;: []
+}</pre>
+  </div>
+
+  <h2>Model + Strategy Summary</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th><th>Strategy</th><th>Runs</th><th>Success rate</th><th>Avg attempts</th>
+        <th>Avg elapsed (s)</th><th>Avg mismatch/expected run</th><th>Field match rate</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>opus-4-5</td><td>db_only</td><td>21</td><td>1.0000</td><td>1.0000</td><td>8.5433</td><td>7.6190</td><td>0.6825</td></tr>
+<tr><td>opus-4-5</td><td>db_plus_raw</td><td>21</td><td>1.0000</td><td>1.0000</td><td>8.4424</td><td>8.6667</td><td>0.6546</td></tr>
+<tr><td>opus-4-5</td><td>raw_only</td><td>21</td><td>1.0000</td><td>1.0000</td><td>18.7446</td><td>8.2381</td><td>0.6717</td></tr>
+<tr><td>opus-4-5</td><td>zero_shot</td><td>21</td><td>1.0000</td><td>1.0000</td><td>7.2798</td><td>7.0000</td><td>0.7474</td></tr>
+<tr><td>opus-4-6</td><td>db_only</td><td>21</td><td>1.0000</td><td>1.0000</td><td>7.8629</td><td>9.2381</td><td>0.6572</td></tr>
+<tr><td>opus-4-6</td><td>db_plus_raw</td><td>21</td><td>1.0000</td><td>1.0000</td><td>8.7017</td><td>8.5238</td><td>0.6603</td></tr>
+<tr><td>opus-4-6</td><td>raw_only</td><td>21</td><td>1.0000</td><td>1.0000</td><td>6.4485</td><td>8.0000</td><td>0.6812</td></tr>
+<tr><td>opus-4-6</td><td>zero_shot</td><td>21</td><td>1.0000</td><td>1.0000</td><td>5.6740</td><td>6.1429</td><td>0.8045</td></tr>
+<tr><td>sonnet-4-5</td><td>db_only</td><td>21</td><td>1.0000</td><td>1.0000</td><td>7.7986</td><td>7.7143</td><td>0.6867</td></tr>
+<tr><td>sonnet-4-5</td><td>db_plus_raw</td><td>21</td><td>1.0000</td><td>1.0000</td><td>7.9757</td><td>7.9524</td><td>0.6687</td></tr>
+<tr><td>sonnet-4-5</td><td>raw_only</td><td>21</td><td>1.0000</td><td>1.0000</td><td>7.0987</td><td>8.7143</td><td>0.6528</td></tr>
+<tr><td>sonnet-4-5</td><td>zero_shot</td><td>21</td><td>1.0000</td><td>1.0000</td><td>6.0658</td><td>8.8095</td><td>0.7082</td></tr>
+<tr><td>sonnet-4-6</td><td>db_only</td><td>21</td><td>1.0000</td><td>1.0000</td><td>6.9770</td><td>9.6190</td><td>0.6167</td></tr>
+<tr><td>sonnet-4-6</td><td>db_plus_raw</td><td>21</td><td>1.0000</td><td>1.0000</td><td>9.5087</td><td>8.8571</td><td>0.6471</td></tr>
+<tr><td>sonnet-4-6</td><td>raw_only</td><td>21</td><td>1.0000</td><td>1.0000</td><td>6.5341</td><td>8.3810</td><td>0.6660</td></tr>
+<tr><td>sonnet-4-6</td><td>zero_shot</td><td>21</td><td>1.0000</td><td>1.0000</td><td>6.3680</td><td>8.6190</td><td>0.6943</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Per-chat Breakdown</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Chat</th><th>Model</th><th>Strategy</th><th>Runs</th>
+        <th>Success rate</th><th>Avg elapsed (s)</th><th>Mismatch counts</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>7.7978</td><td>[15]</td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>7.0853</td><td>[15]</td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>24.1299</td><td>[15]</td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.8588</td><td>[15]</td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.4233</td><td>[15]</td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>7.0704</td><td>[15]</td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>4.9494</td><td>[14]</td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>4.9043</td><td>[15]</td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>7.7478</td><td>[15]</td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.7182</td><td>[14]</td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.3144</td><td>[13]</td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.2814</td><td>[15]</td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>5.4053</td><td>[15]</td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>11.9693</td><td>[15]</td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>4.9705</td><td>[16]</td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>4.4847</td><td>[15]</td></tr>
+<tr><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>7.5812</td><td>[14]</td></tr>
+<tr><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.3277</td><td>[15]</td></tr>
+<tr><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>36.8433</td><td>[14]</td></tr>
+<tr><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.5772</td><td>[14]</td></tr>
+<tr><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.8242</td><td>[15]</td></tr>
+<tr><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>7.0935</td><td>[14]</td></tr>
+<tr><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.0888</td><td>[14]</td></tr>
+<tr><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>4.8696</td><td>[14]</td></tr>
+<tr><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.5448</td><td>[14]</td></tr>
+<tr><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.2405</td><td>[14]</td></tr>
+<tr><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.0286</td><td>[13]</td></tr>
+<tr><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.7057</td><td>[14]</td></tr>
+<tr><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>8.1873</td><td>[14]</td></tr>
+<tr><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>13.1192</td><td>[15]</td></tr>
+<tr><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>6.4834</td><td>[15]</td></tr>
+<tr><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>9.7462</td><td>[15]</td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>10.2789</td><td>[17]</td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>8.4137</td><td>[17]</td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>16.2404</td><td>[17]</td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>9.2448</td><td>[17]</td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>8.8351</td><td>[16]</td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>10.5065</td><td>[17]</td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>8.9427</td><td>[17]</td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>6.9384</td><td>[16]</td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>10.6220</td><td>[17]</td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>11.3037</td><td>[17]</td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>9.1418</td><td>[16]</td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>8.8018</td><td>[17]</td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>8.3721</td><td>[17]</td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>10.7353</td><td>[17]</td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>9.1441</td><td>[18]</td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>6.6795</td><td>[16]</td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.0217</td><td>[14]</td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.5016</td><td>[14]</td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.6084</td><td>[14]</td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>4.8310</td><td>[15]</td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.6959</td><td>[15]</td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.9577</td><td>[14]</td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>opus-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.1176</td><td>[14]</td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>opus-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.0645</td><td>[15]</td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>8.6198</td><td>[14]</td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.7137</td><td>[14]</td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>sonnet-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.4114</td><td>[12]</td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>4.8157</td><td>[16]</td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.1352</td><td>[14]</td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>18.4370</td><td>[15]</td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.3292</td><td>[13]</td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>4.3817</td><td>[18]</td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.9010</td><td>[14]</td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.2877</td><td>[15]</td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.7034</td><td>[15]</td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.0730</td><td>[14]</td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>7.4538</td><td>[13]</td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>8.8038</td><td>[14]</td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.5405</td><td>[15]</td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.0031</td><td>[13]</td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>7.4256</td><td>[14]</td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.7737</td><td>[14]</td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.2603</td><td>[12]</td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.3230</td><td>[13]</td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>5.6681</td><td>[14]</td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.3477</td><td>[15]</td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.1549</td><td>[15]</td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>4.6234</td><td>[14]</td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.7210</td><td>[14]</td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.7340</td><td>[14]</td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.4206</td><td>[14]</td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>4.9127</td><td>[14]</td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.5684</td><td>[14]</td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.9537</td><td>[14]</td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.2512</td><td>[13]</td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>4.8988</td><td>[14]</td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.0317</td><td>[14]</td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.0662</td><td>[13]</td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.0284</td><td>[13]</td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.1464</td><td>[14]</td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>5.6211</td><td>[14]</td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>9.9350</td><td>[14]</td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>4.8295</td><td>[13]</td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>4.5296</td><td>[13]</td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.2858</td><td>[1]</td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.5685</td><td>[17]</td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>4.4782</td><td>[17]</td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>2.5649</td><td>[1]</td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.1288</td><td>[17]</td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>8.9531</td><td>[19]</td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>4.6804</td><td>[17]</td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>2.5292</td><td>[1]</td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>4.4219</td><td>[1]</td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>5.6431</td><td>[1]</td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.0054</td><td>[17]</td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>3.0747</td><td>[1]</td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>4.7528</td><td>[17]</td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.3440</td><td>[17]</td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>4.2338</td><td>[17]</td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>3.9791</td><td>[17]</td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.3090</td><td>[17]</td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.6022</td><td>[17]</td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.6837</td><td>[10]</td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.2415</td><td>[14]</td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>8.2271</td><td>[20]</td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>7.0444</td><td>[15]</td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.7848</td><td>[11]</td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.3247</td><td>[12]</td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.7570</td><td>[15]</td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.4338</td><td>[16]</td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>8.2128</td><td>[11]</td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.3753</td><td>[19]</td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>5.9355</td><td>[17]</td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>7.1856</td><td>[15]</td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.3204</td><td>[11]</td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.6384</td><td>[15]</td></tr>
+<tr><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.5105</td><td>[15]</td></tr>
+<tr><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>26.7842</td><td>[15]</td></tr>
+<tr><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>6.4909</td><td>[10]</td></tr>
+<tr><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.2616</td><td>[12]</td></tr>
+<tr><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>8.0422</td><td>[20]</td></tr>
+<tr><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>10.7803</td><td>[15]</td></tr>
+<tr><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.5738</td><td>[11]</td></tr>
+<tr><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.2122</td><td>[10]</td></tr>
+<tr><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.2280</td><td>[15]</td></tr>
+<tr><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.8198</td><td>[15]</td></tr>
+<tr><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>7.9559</td><td>[10]</td></tr>
+<tr><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.5881</td><td>[17]</td></tr>
+<tr><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>5.5759</td><td>[16]</td></tr>
+<tr><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.3609</td><td>[15]</td></tr>
+<tr><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>6.2904</td><td>[11]</td></tr>
+<tr><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.0627</td><td>[13]</td></tr>
+<tr><td>multiple_product_multiple_shipment_complex.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>16.0715</td><td>[5]</td></tr>
+<tr><td>multiple_product_multiple_shipment_complex.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>11.3479</td><td>[6]</td></tr>
+<tr><td>multiple_product_multiple_shipment_complex.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>12.9087</td><td>[7]</td></tr>
+<tr><td>multiple_product_multiple_shipment_complex.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>12.6850</td><td>[4]</td></tr>
+<tr><td>multiple_product_multiple_shipment_complex.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>13.2585</td><td>[5]</td></tr>
+<tr><td>multiple_product_multiple_shipment_complex.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>12.6782</td><td>[6]</td></tr>
+<tr><td>multiple_product_multiple_shipment_complex.json</td><td>opus-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>10.9548</td><td>[5]</td></tr>
+<tr><td>multiple_product_multiple_shipment_complex.json</td><td>opus-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>9.5077</td><td>[0]</td></tr>
+<tr><td>multiple_product_multiple_shipment_complex.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>12.5446</td><td>[6]</td></tr>
+<tr><td>multiple_product_multiple_shipment_complex.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>12.4740</td><td>[6]</td></tr>
+<tr><td>multiple_product_multiple_shipment_complex.json</td><td>sonnet-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>12.6567</td><td>[7]</td></tr>
+<tr><td>multiple_product_multiple_shipment_complex.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>9.7879</td><td>[21]</td></tr>
+<tr><td>multiple_product_multiple_shipment_complex.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>10.5450</td><td>[5]</td></tr>
+<tr><td>multiple_product_multiple_shipment_complex.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>13.4019</td><td>[7]</td></tr>
+<tr><td>multiple_product_multiple_shipment_complex.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>11.1374</td><td>[5]</td></tr>
+<tr><td>multiple_product_multiple_shipment_complex.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>11.3678</td><td>[7]</td></tr>
+<tr><td>multiple_product_multiple_shipment_medium.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>10.3140</td><td>[7]</td></tr>
+<tr><td>multiple_product_multiple_shipment_medium.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>10.4044</td><td>[8]</td></tr>
+<tr><td>multiple_product_multiple_shipment_medium.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>34.8145</td><td>[8]</td></tr>
+<tr><td>multiple_product_multiple_shipment_medium.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>7.8371</td><td>[7]</td></tr>
+<tr><td>multiple_product_multiple_shipment_medium.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>9.2891</td><td>[7]</td></tr>
+<tr><td>multiple_product_multiple_shipment_medium.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>10.5483</td><td>[7]</td></tr>
+<tr><td>multiple_product_multiple_shipment_medium.json</td><td>opus-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>8.4393</td><td>[8]</td></tr>
+<tr><td>multiple_product_multiple_shipment_medium.json</td><td>opus-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>6.6737</td><td>[0]</td></tr>
+<tr><td>multiple_product_multiple_shipment_medium.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>8.7758</td><td>[7]</td></tr>
+<tr><td>multiple_product_multiple_shipment_medium.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>9.9930</td><td>[7]</td></tr>
+<tr><td>multiple_product_multiple_shipment_medium.json</td><td>sonnet-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>8.7901</td><td>[9]</td></tr>
+<tr><td>multiple_product_multiple_shipment_medium.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>7.8483</td><td>[8]</td></tr>
+<tr><td>multiple_product_multiple_shipment_medium.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>8.9151</td><td>[7]</td></tr>
+<tr><td>multiple_product_multiple_shipment_medium.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>9.5254</td><td>[7]</td></tr>
+<tr><td>multiple_product_multiple_shipment_medium.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>7.9204</td><td>[7]</td></tr>
+<tr><td>multiple_product_multiple_shipment_medium.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>7.5363</td><td>[7]</td></tr>
+<tr><td>multiple_product_multiple_shipment_simple.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>9.0913</td><td>[3]</td></tr>
+<tr><td>multiple_product_multiple_shipment_simple.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>8.9143</td><td>[3]</td></tr>
+<tr><td>multiple_product_multiple_shipment_simple.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>25.9565</td><td>[4]</td></tr>
+<tr><td>multiple_product_multiple_shipment_simple.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>10.6499</td><td>[6]</td></tr>
+<tr><td>multiple_product_multiple_shipment_simple.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>7.5350</td><td>[5]</td></tr>
+<tr><td>multiple_product_multiple_shipment_simple.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>8.9789</td><td>[5]</td></tr>
+<tr><td>multiple_product_multiple_shipment_simple.json</td><td>opus-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>7.8721</td><td>[4]</td></tr>
+<tr><td>multiple_product_multiple_shipment_simple.json</td><td>opus-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>6.1409</td><td>[6]</td></tr>
+<tr><td>multiple_product_multiple_shipment_simple.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>7.6163</td><td>[1]</td></tr>
+<tr><td>multiple_product_multiple_shipment_simple.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>8.3078</td><td>[5]</td></tr>
+<tr><td>multiple_product_multiple_shipment_simple.json</td><td>sonnet-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>8.0564</td><td>[6]</td></tr>
+<tr><td>multiple_product_multiple_shipment_simple.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.9383</td><td>[7]</td></tr>
+<tr><td>multiple_product_multiple_shipment_simple.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>7.8850</td><td>[6]</td></tr>
+<tr><td>multiple_product_multiple_shipment_simple.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>8.3081</td><td>[3]</td></tr>
+<tr><td>multiple_product_multiple_shipment_simple.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>6.8336</td><td>[3]</td></tr>
+<tr><td>multiple_product_multiple_shipment_simple.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>8.1147</td><td>[7]</td></tr>
+<tr><td>real_world_msgs_test_v1.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>8.3186</td><td>[0]</td></tr>
+<tr><td>real_world_msgs_test_v1.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.9379</td><td>[1]</td></tr>
+<tr><td>real_world_msgs_test_v1.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>25.9336</td><td>[1]</td></tr>
+<tr><td>real_world_msgs_test_v1.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.9894</td><td>[0]</td></tr>
+<tr><td>real_world_msgs_test_v1.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.2971</td><td>[0]</td></tr>
+<tr><td>real_world_msgs_test_v1.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.8210</td><td>[0]</td></tr>
+<tr><td>real_world_msgs_test_v1.json</td><td>opus-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.3569</td><td>[1]</td></tr>
+<tr><td>real_world_msgs_test_v1.json</td><td>opus-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.0713</td><td>[3]</td></tr>
+<tr><td>real_world_msgs_test_v1.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>7.8192</td><td>[3]</td></tr>
+<tr><td>real_world_msgs_test_v1.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>9.0627</td><td>[3]</td></tr>
+<tr><td>real_world_msgs_test_v1.json</td><td>sonnet-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>7.9241</td><td>[4]</td></tr>
+<tr><td>real_world_msgs_test_v1.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>6.1579</td><td>[3]</td></tr>
+<tr><td>real_world_msgs_test_v1.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>7.8122</td><td>[3]</td></tr>
+<tr><td>real_world_msgs_test_v1.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>7.3667</td><td>[3]</td></tr>
+<tr><td>real_world_msgs_test_v1.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.1861</td><td>[4]</td></tr>
+<tr><td>real_world_msgs_test_v1.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.3736</td><td>[6]</td></tr>
+<tr><td>real_world_msgs_test_v2.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>8.3792</td><td>[4]</td></tr>
+<tr><td>real_world_msgs_test_v2.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>7.0715</td><td>[4]</td></tr>
+<tr><td>real_world_msgs_test_v2.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>22.9605</td><td>[5]</td></tr>
+<tr><td>real_world_msgs_test_v2.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>12.2644</td><td>[4]</td></tr>
+<tr><td>real_world_msgs_test_v2.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>7.8168</td><td>[4]</td></tr>
+<tr><td>real_world_msgs_test_v2.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>8.2556</td><td>[4]</td></tr>
+<tr><td>real_world_msgs_test_v2.json</td><td>opus-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>7.0224</td><td>[5]</td></tr>
+<tr><td>real_world_msgs_test_v2.json</td><td>opus-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>6.5707</td><td>[1]</td></tr>
+<tr><td>real_world_msgs_test_v2.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>7.3369</td><td>[4]</td></tr>
+<tr><td>real_world_msgs_test_v2.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>7.6004</td><td>[6]</td></tr>
+<tr><td>real_world_msgs_test_v2.json</td><td>sonnet-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>7.7079</td><td>[10]</td></tr>
+<tr><td>real_world_msgs_test_v2.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>6.7791</td><td>[4]</td></tr>
+<tr><td>real_world_msgs_test_v2.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>7.4030</td><td>[6]</td></tr>
+<tr><td>real_world_msgs_test_v2.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>7.3668</td><td>[6]</td></tr>
+<tr><td>real_world_msgs_test_v2.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>7.3119</td><td>[6]</td></tr>
+<tr><td>real_world_msgs_test_v2.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>8.3625</td><td>[3]</td></tr>
+<tr><td>real_world_msgs_test_v3.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>8.6902</td><td>[3]</td></tr>
+<tr><td>real_world_msgs_test_v3.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>7.0972</td><td>[3]</td></tr>
+<tr><td>real_world_msgs_test_v3.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>23.7314</td><td>[3]</td></tr>
+<tr><td>real_world_msgs_test_v3.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>10.7949</td><td>[0]</td></tr>
+<tr><td>real_world_msgs_test_v3.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>9.1579</td><td>[3]</td></tr>
+<tr><td>real_world_msgs_test_v3.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>8.4501</td><td>[3]</td></tr>
+<tr><td>real_world_msgs_test_v3.json</td><td>opus-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>6.7960</td><td>[3]</td></tr>
+<tr><td>real_world_msgs_test_v3.json</td><td>opus-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>6.3371</td><td>[3]</td></tr>
+<tr><td>real_world_msgs_test_v3.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>7.9646</td><td>[3]</td></tr>
+<tr><td>real_world_msgs_test_v3.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>9.1159</td><td>[3]</td></tr>
+<tr><td>real_world_msgs_test_v3.json</td><td>sonnet-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>8.4864</td><td>[6]</td></tr>
+<tr><td>real_world_msgs_test_v3.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.5904</td><td>[0]</td></tr>
+<tr><td>real_world_msgs_test_v3.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.9338</td><td>[3]</td></tr>
+<tr><td>real_world_msgs_test_v3.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>8.4382</td><td>[3]</td></tr>
+<tr><td>real_world_msgs_test_v3.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>7.1819</td><td>[3]</td></tr>
+<tr><td>real_world_msgs_test_v3.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>6.2591</td><td>[4]</td></tr>
+<tr><td>single_product_multiple_shipment_complex.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>10.8782</td><td>[4]</td></tr>
+<tr><td>single_product_multiple_shipment_complex.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>8.9548</td><td>[5]</td></tr>
+<tr><td>single_product_multiple_shipment_complex.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>27.7049</td><td>[5]</td></tr>
+<tr><td>single_product_multiple_shipment_complex.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>9.9238</td><td>[0]</td></tr>
+<tr><td>single_product_multiple_shipment_complex.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>8.8681</td><td>[1]</td></tr>
+<tr><td>single_product_multiple_shipment_complex.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>10.3277</td><td>[4]</td></tr>
+<tr><td>single_product_multiple_shipment_complex.json</td><td>opus-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>8.6917</td><td>[3]</td></tr>
+<tr><td>single_product_multiple_shipment_complex.json</td><td>opus-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>7.1207</td><td>[0]</td></tr>
+<tr><td>single_product_multiple_shipment_complex.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>10.3388</td><td>[4]</td></tr>
+<tr><td>single_product_multiple_shipment_complex.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>12.2838</td><td>[4]</td></tr>
+<tr><td>single_product_multiple_shipment_complex.json</td><td>sonnet-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>9.9719</td><td>[6]</td></tr>
+<tr><td>single_product_multiple_shipment_complex.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>7.4448</td><td>[1]</td></tr>
+<tr><td>single_product_multiple_shipment_complex.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>8.8977</td><td>[4]</td></tr>
+<tr><td>single_product_multiple_shipment_complex.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>11.9766</td><td>[4]</td></tr>
+<tr><td>single_product_multiple_shipment_complex.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>9.6924</td><td>[4]</td></tr>
+<tr><td>single_product_multiple_shipment_complex.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>7.5174</td><td>[0]</td></tr>
+<tr><td>single_product_multiple_shipment_medium.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>9.0966</td><td>[3]</td></tr>
+<tr><td>single_product_multiple_shipment_medium.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>8.5394</td><td>[3]</td></tr>
+<tr><td>single_product_multiple_shipment_medium.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>22.3543</td><td>[3]</td></tr>
+<tr><td>single_product_multiple_shipment_medium.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>9.1793</td><td>[1]</td></tr>
+<tr><td>single_product_multiple_shipment_medium.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>8.4056</td><td>[2]</td></tr>
+<tr><td>single_product_multiple_shipment_medium.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>10.3520</td><td>[3]</td></tr>
+<tr><td>single_product_multiple_shipment_medium.json</td><td>opus-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>6.9889</td><td>[3]</td></tr>
+<tr><td>single_product_multiple_shipment_medium.json</td><td>opus-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>6.0001</td><td>[0]</td></tr>
+<tr><td>single_product_multiple_shipment_medium.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>9.4677</td><td>[3]</td></tr>
+<tr><td>single_product_multiple_shipment_medium.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>7.8498</td><td>[3]</td></tr>
+<tr><td>single_product_multiple_shipment_medium.json</td><td>sonnet-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>7.2117</td><td>[5]</td></tr>
+<tr><td>single_product_multiple_shipment_medium.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>6.6741</td><td>[1]</td></tr>
+<tr><td>single_product_multiple_shipment_medium.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.6728</td><td>[3]</td></tr>
+<tr><td>single_product_multiple_shipment_medium.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>8.3305</td><td>[3]</td></tr>
+<tr><td>single_product_multiple_shipment_medium.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>6.6118</td><td>[3]</td></tr>
+<tr><td>single_product_multiple_shipment_medium.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>7.4008</td><td>[4]</td></tr>
+<tr><td>single_product_multiple_shipment_simple.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>9.0824</td><td>[3]</td></tr>
+<tr><td>single_product_multiple_shipment_simple.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>7.5320</td><td>[3]</td></tr>
+<tr><td>single_product_multiple_shipment_simple.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>28.1662</td><td>[4]</td></tr>
+<tr><td>single_product_multiple_shipment_simple.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>7.4948</td><td>[4]</td></tr>
+<tr><td>single_product_multiple_shipment_simple.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>8.3154</td><td>[13]</td></tr>
+<tr><td>single_product_multiple_shipment_simple.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>10.2154</td><td>[3]</td></tr>
+<tr><td>single_product_multiple_shipment_simple.json</td><td>opus-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>6.8777</td><td>[3]</td></tr>
+<tr><td>single_product_multiple_shipment_simple.json</td><td>opus-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.9368</td><td>[1]</td></tr>
+<tr><td>single_product_multiple_shipment_simple.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>8.0143</td><td>[3]</td></tr>
+<tr><td>single_product_multiple_shipment_simple.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>8.5885</td><td>[3]</td></tr>
+<tr><td>single_product_multiple_shipment_simple.json</td><td>sonnet-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>6.7301</td><td>[3]</td></tr>
+<tr><td>single_product_multiple_shipment_simple.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.9569</td><td>[1]</td></tr>
+<tr><td>single_product_multiple_shipment_simple.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>7.0443</td><td>[3]</td></tr>
+<tr><td>single_product_multiple_shipment_simple.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>10.1632</td><td>[3]</td></tr>
+<tr><td>single_product_multiple_shipment_simple.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>7.6634</td><td>[3]</td></tr>
+<tr><td>single_product_multiple_shipment_simple.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.6089</td><td>[0]</td></tr>
+<tr><td>single_product_single_shipment_complex.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>8.2430</td><td>[4]</td></tr>
+<tr><td>single_product_single_shipment_complex.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.4775</td><td>[4]</td></tr>
+<tr><td>single_product_single_shipment_complex.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>20.3950</td><td>[5]</td></tr>
+<tr><td>single_product_single_shipment_complex.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>6.9078</td><td>[4]</td></tr>
+<tr><td>single_product_single_shipment_complex.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.7621</td><td>[5]</td></tr>
+<tr><td>single_product_single_shipment_complex.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>7.6525</td><td>[4]</td></tr>
+<tr><td>single_product_single_shipment_complex.json</td><td>opus-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.6598</td><td>[4]</td></tr>
+<tr><td>single_product_single_shipment_complex.json</td><td>opus-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.1428</td><td>[4]</td></tr>
+<tr><td>single_product_single_shipment_complex.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.4033</td><td>[6]</td></tr>
+<tr><td>single_product_single_shipment_complex.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.5115</td><td>[6]</td></tr>
+<tr><td>single_product_single_shipment_complex.json</td><td>sonnet-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.6168</td><td>[8]</td></tr>
+<tr><td>single_product_single_shipment_complex.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.7477</td><td>[6]</td></tr>
+<tr><td>single_product_single_shipment_complex.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.6317</td><td>[6]</td></tr>
+<tr><td>single_product_single_shipment_complex.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>7.1440</td><td>[6]</td></tr>
+<tr><td>single_product_single_shipment_complex.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.9534</td><td>[6]</td></tr>
+<tr><td>single_product_single_shipment_complex.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>7.5932</td><td>[4]</td></tr>
+<tr><td>single_product_single_shipment_medium.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>8.6304</td><td>[3]</td></tr>
+<tr><td>single_product_single_shipment_medium.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.2610</td><td>[3]</td></tr>
+<tr><td>single_product_single_shipment_medium.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>19.5976</td><td>[2]</td></tr>
+<tr><td>single_product_single_shipment_medium.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>4.9974</td><td>[1]</td></tr>
+<tr><td>single_product_single_shipment_medium.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>7.8182</td><td>[4]</td></tr>
+<tr><td>single_product_single_shipment_medium.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>7.0910</td><td>[3]</td></tr>
+<tr><td>single_product_single_shipment_medium.json</td><td>opus-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.0971</td><td>[3]</td></tr>
+<tr><td>single_product_single_shipment_medium.json</td><td>opus-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.2821</td><td>[1]</td></tr>
+<tr><td>single_product_single_shipment_medium.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.6754</td><td>[3]</td></tr>
+<tr><td>single_product_single_shipment_medium.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.8331</td><td>[3]</td></tr>
+<tr><td>single_product_single_shipment_medium.json</td><td>sonnet-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.0267</td><td>[2]</td></tr>
+<tr><td>single_product_single_shipment_medium.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.3599</td><td>[4]</td></tr>
+<tr><td>single_product_single_shipment_medium.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.2800</td><td>[3]</td></tr>
+<tr><td>single_product_single_shipment_medium.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>9.1710</td><td>[3]</td></tr>
+<tr><td>single_product_single_shipment_medium.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>5.2559</td><td>[3]</td></tr>
+<tr><td>single_product_single_shipment_medium.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>4.6565</td><td>[3]</td></tr>
+<tr><td>single_product_single_shipment_simple.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>8.2063</td><td>[0]</td></tr>
+<tr><td>single_product_single_shipment_simple.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.4471</td><td>[0]</td></tr>
+<tr><td>single_product_single_shipment_simple.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>18.5153</td><td>[0]</td></tr>
+<tr><td>single_product_single_shipment_simple.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>5.5874</td><td>[0]</td></tr>
+<tr><td>single_product_single_shipment_simple.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.3977</td><td>[0]</td></tr>
+<tr><td>single_product_single_shipment_simple.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>7.2009</td><td>[0]</td></tr>
+<tr><td>single_product_single_shipment_simple.json</td><td>opus-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>4.7336</td><td>[0]</td></tr>
+<tr><td>single_product_single_shipment_simple.json</td><td>opus-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>4.6261</td><td>[0]</td></tr>
+<tr><td>single_product_single_shipment_simple.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>1.0000</td><td>6.4154</td><td>[0]</td></tr>
+<tr><td>single_product_single_shipment_simple.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>6.1572</td><td>[0]</td></tr>
+<tr><td>single_product_single_shipment_simple.json</td><td>sonnet-4-5</td><td>raw_only</td><td>1</td><td>1.0000</td><td>4.5352</td><td>[0]</td></tr>
+<tr><td>single_product_single_shipment_simple.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>4.9849</td><td>[3]</td></tr>
+<tr><td>single_product_single_shipment_simple.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>1.0000</td><td>5.8431</td><td>[15]</td></tr>
+<tr><td>single_product_single_shipment_simple.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>1.0000</td><td>8.0557</td><td>[0]</td></tr>
+<tr><td>single_product_single_shipment_simple.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>1.0000</td><td>4.7110</td><td>[0]</td></tr>
+<tr><td>single_product_single_shipment_simple.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>1.0000</td><td>4.8118</td><td>[0]</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Top Mismatches (up to 100 runs)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Chat</th><th>Model</th><th>Strategy</th><th>Run</th><th>Mismatch count</th><th>Sample mismatches</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>multiple_product_multiple_shipment_complex.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>21</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;bags&quot;,
+    &quot;actual&quot;: &quot;BAGS&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;USD/bag&quot;,
+    &quot;actual&quot;: &quot;USD/BAG&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].total&quot;,
+    &quot;expected&quot;: 300.0,
+    &quot;actual&quot;: 276.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[1].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;boxes&quot;,
+    &quot;actual&quot;: &quot;BOXES&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[1].unit_price&quot;,
+    &quot;expected&quot;: 12.0,
+    &quot;actual&quot;: 11.04
+  }
+]</pre></td></tr>
+<tr><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>20</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 2
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;lecithin fat powder&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 23000.0,
+    &quot;actual&quot;: 8.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 1410.0,
+    &quot;actual&quot;: 12.0
+  }
+]</pre></td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>20</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 2
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;lecithin fat powder&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 46000.0,
+    &quot;actual&quot;: 8.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 1410.0,
+    &quot;actual&quot;: 12.0
+  }
+]</pre></td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>19</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 46000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>19</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 2
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;lecithin fat powder&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 10500.0,
+    &quot;actual&quot;: 8.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3100.0,
+    &quot;actual&quot;: 12.0
+  }
+]</pre></td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>18</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 9000.0,
+    &quot;actual&quot;: 9.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3.25,
+    &quot;actual&quot;: 3250.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;USD/KG&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  }
+]</pre></td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>18</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 3
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3050.0,
+    &quot;actual&quot;: 3.05
+  }
+]</pre></td></tr>
+<tr><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 23000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 46000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 46000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 46000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 10500.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3100.0,
+    &quot;actual&quot;: null
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  }
+]</pre></td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 10500.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3100.0,
+    &quot;actual&quot;: null
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  }
+]</pre></td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 10500.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3100.0,
+    &quot;actual&quot;: null
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  }
+]</pre></td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 10500.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3100.0,
+    &quot;actual&quot;: null
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  }
+]</pre></td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-5</td><td>raw_only</td><td>1</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 10500.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3100.0,
+    &quot;actual&quot;: null
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  }
+]</pre></td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-6</td><td>raw_only</td><td>1</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 10500.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3100.0,
+    &quot;actual&quot;: null
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  }
+]</pre></td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 10500.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3100.0,
+    &quot;actual&quot;: null
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  }
+]</pre></td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 10500.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3100.0,
+    &quot;actual&quot;: null
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  }
+]</pre></td></tr>
+<tr><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 10500.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3100.0,
+    &quot;actual&quot;: null
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  }
+]</pre></td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 3
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3050.0,
+    &quot;actual&quot;: 3.05
+  }
+]</pre></td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 3
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3050.0,
+    &quot;actual&quot;: 3.05
+  }
+]</pre></td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 3
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3050.0,
+    &quot;actual&quot;: 3.05
+  }
+]</pre></td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 3
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 10500.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;KG&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3050.0,
+    &quot;actual&quot;: 3.05
+  }
+]</pre></td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 3
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3050.0,
+    &quot;actual&quot;: 3.05
+  }
+]</pre></td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-6</td><td>raw_only</td><td>1</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 3
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 10500.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;KG&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3050.0,
+    &quot;actual&quot;: 3.05
+  }
+]</pre></td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 3
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3050.0,
+    &quot;actual&quot;: 3.05
+  }
+]</pre></td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 3
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3050.0,
+    &quot;actual&quot;: 3.05
+  }
+]</pre></td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 3
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3050.0,
+    &quot;actual&quot;: 3.05
+  }
+]</pre></td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 3
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3050.0,
+    &quot;actual&quot;: 3.05
+  }
+]</pre></td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 3
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3050.0,
+    &quot;actual&quot;: 3.05
+  }
+]</pre></td></tr>
+<tr><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>16</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 23000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>16</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 46000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>16</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 9000.0,
+    &quot;actual&quot;: 9.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Jakarta&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Jakarta&quot;
+  }
+]</pre></td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>16</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 2
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 6.3
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3050.0,
+    &quot;actual&quot;: 3.05
+  }
+]</pre></td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-5</td><td>raw_only</td><td>1</td><td>16</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 3
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 10500.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;KG&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3050.0,
+    &quot;actual&quot;: 3.05
+  }
+]</pre></td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-6</td><td>zero_shot</td><td>1</td><td>16</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 2
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 6.3
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3050.0,
+    &quot;actual&quot;: 3.05
+  }
+]</pre></td></tr>
+<tr><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>16</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 2
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 6.3
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3050.0,
+    &quot;actual&quot;: 3.05
+  }
+]</pre></td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>16</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3250.0,
+    &quot;actual&quot;: 3.25
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>single_product_single_shipment_simple.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;KNM Coffee&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 5.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;BAGS&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 25.0,
+    &quot;actual&quot;: 1410.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;USD/BAG&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  }
+]</pre></td></tr>
+<tr><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 23000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 23000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 23000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 23000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 23000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 23000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 46000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 46000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 46000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 46000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOIFNE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 26000.0,
+    &quot;actual&quot;: 26.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF NHAVA SHEVA&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Nhava Sheva&quot;
+  }
+]</pre></td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOIFNE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 26000.0,
+    &quot;actual&quot;: 26.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF NHAVA SHEVA&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Nhava Sheva&quot;
+  }
+]</pre></td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-6</td><td>raw_only</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 26000.0,
+    &quot;actual&quot;: 26.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF NHAVA SHEVA&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Nhava Sheva&quot;
+  }
+]</pre></td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOIFNE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 26000.0,
+    &quot;actual&quot;: 26.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF NHAVA SHEVA&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Nhava Sheva&quot;
+  }
+]</pre></td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOIFNE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 26000.0,
+    &quot;actual&quot;: 26.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF NHAVA SHEVA&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Nhava Sheva&quot;
+  }
+]</pre></td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 9000.0,
+    &quot;actual&quot;: 9.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Jakarta&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Jakarta&quot;
+  }
+]</pre></td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>opus-4-6</td><td>zero_shot</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 9000.0,
+    &quot;actual&quot;: 9.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Jakarta&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Jakarta&quot;
+  }
+]</pre></td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 9000.0,
+    &quot;actual&quot;: 9.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Jakarta&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Jakarta&quot;
+  }
+]</pre></td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 9000.0,
+    &quot;actual&quot;: 9.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Jakarta&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Jakarta&quot;
+  }
+]</pre></td></tr>
+<tr><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;Soya Lecithin Powder&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 39000.0,
+    &quot;actual&quot;: 39.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Nhava Sheva&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  }
+]</pre></td></tr>
+<tr><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-6</td><td>raw_only</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;Soya Lecithin Powder&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 39000.0,
+    &quot;actual&quot;: 39.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Nhava Sheva&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  }
+]</pre></td></tr>
+<tr><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;Soya Lecithin Powder&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 39000.0,
+    &quot;actual&quot;: 39.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Nhava Sheva&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  }
+]</pre></td></tr>
+<tr><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;Soya Lecithin Powder&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 39000.0,
+    &quot;actual&quot;: 39.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Nhava Sheva&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  }
+]</pre></td></tr>
+<tr><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;Soya Lecithin Powder&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 39000.0,
+    &quot;actual&quot;: 39.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Nhava Sheva&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  }
+]</pre></td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;EXW&quot;
+  }
+]</pre></td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3250.0,
+    &quot;actual&quot;: 3.25
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3250.0,
+    &quot;actual&quot;: 3.25
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3250.0,
+    &quot;actual&quot;: 3.25
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3250.0,
+    &quot;actual&quot;: 3.25
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-6</td><td>zero_shot</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3250.0,
+    &quot;actual&quot;: 3.25
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3250.0,
+    &quot;actual&quot;: 3.25
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3250.0,
+    &quot;actual&quot;: 3.25
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3250.0,
+    &quot;actual&quot;: 3.25
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3250.0,
+    &quot;actual&quot;: 3.25
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3250.0,
+    &quot;actual&quot;: 3.25
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3250.0,
+    &quot;actual&quot;: 3.25
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 46000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-6</td><td>db_plus_raw</td><td>1</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3500.0,
+    &quot;actual&quot;: 3.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3500.0,
+    &quot;actual&quot;: 3.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-5</td><td>zero_shot</td><td>1</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3500.0,
+    &quot;actual&quot;: 3.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3500.0,
+    &quot;actual&quot;: 3.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-6</td><td>zero_shot</td><td>1</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3500.0,
+    &quot;actual&quot;: 3.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3500.0,
+    &quot;actual&quot;: 3.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-6</td><td>db_only</td><td>1</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3500.0,
+    &quot;actual&quot;: 3.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3500.0,
+    &quot;actual&quot;: 3.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-5</td><td>raw_only</td><td>1</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3500.0,
+    &quot;actual&quot;: 3.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-5</td><td>db_plus_raw</td><td>1</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3500.0,
+    &quot;actual&quot;: 3.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3500.0,
+    &quot;actual&quot;: 3.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOIFNE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 26000.0,
+    &quot;actual&quot;: 26.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF NHAVA SHEVA&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Nhava Sheva&quot;
+  }
+]</pre></td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOIFNE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 26000.0,
+    &quot;actual&quot;: 26.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF NHAVA SHEVA&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Nhava Sheva&quot;
+  }
+]</pre></td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOIFNE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 26000.0,
+    &quot;actual&quot;: 26.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF NHAVA SHEVA&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Nhava Sheva&quot;
+  }
+]</pre></td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOIFNE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 26000.0,
+    &quot;actual&quot;: 26.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF NHAVA SHEVA&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Nhava Sheva&quot;
+  }
+]</pre></td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOIFNE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 26000.0,
+    &quot;actual&quot;: 26.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF NHAVA SHEVA&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Nhava Sheva&quot;
+  }
+]</pre></td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-5</td><td>zero_shot</td><td>1</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOIFNE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 26000.0,
+    &quot;actual&quot;: 26.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF NHAVA SHEVA&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Nhava Sheva&quot;
+  }
+]</pre></td></tr>
+<tr><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-5</td><td>db_only</td><td>1</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOIFNE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 26000.0,
+    &quot;actual&quot;: 26.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF NHAVA SHEVA&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Nhava Sheva&quot;
+  }
+]</pre></td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>sonnet-4-6</td><td>db_only</td><td>1</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 9000.0,
+    &quot;actual&quot;: 9.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Jakarta&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Jakarta&quot;
+  }
+]</pre></td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>sonnet-4-5</td><td>db_plus_raw</td><td>1</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 9000.0,
+    &quot;actual&quot;: 9.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Jakarta&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Jakarta&quot;
+  }
+]</pre></td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>sonnet-4-5</td><td>db_only</td><td>1</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 9000.0,
+    &quot;actual&quot;: 9.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Jakarta&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Jakarta&quot;
+  }
+]</pre></td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>opus-4-6</td><td>raw_only</td><td>1</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 9000.0,
+    &quot;actual&quot;: 9.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Jakarta&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Jakarta&quot;
+  }
+]</pre></td></tr>
+<tr><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>opus-4-6</td><td>db_plus_raw</td><td>1</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 9000.0,
+    &quot;actual&quot;: 9.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Jakarta&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Jakarta&quot;
+  }
+]</pre></td></tr>
+    </tbody>
+  </table>
+</body>
+</html>

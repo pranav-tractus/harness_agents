@@ -1,0 +1,69 @@
+{
+  "customer_id": "nova_exports",
+  "chat_name": "nova_exports_realistic_009",
+  "created_at": "2026-05-11T18:10:38.812394+00:00",
+  "realism_flags": [
+    "contradictory"
+  ],
+  "complexity_tier": "realistic",
+  "ground_truth_meta": {
+    "item_name": "Premium cocoa packs",
+    "quantity": 25,
+    "unit_price": 14,
+    "currency": "USD",
+    "address": "9 Harbor Plaza, Pier 4",
+    "payment_terms": "Immediate transfer"
+  },
+  "messages": [
+    {
+      "from_whom": "(BUYER)",
+      "body": "Hi Nova Exports, please raise an SO for 25 x Premium cocoa packs @ 14 USD. Thanks.",
+      "timestamp": 901
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Got it - subtotal 350 USD. Confirm address and payment terms?",
+      "timestamp": 902
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Address: 9 Harbor Plaza, Pier 4. Payment: Immediate transfer.",
+      "timestamp": 903
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Noted, sending SO draft today.",
+      "timestamp": 904
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Actually scratch that, double the quantity on the first line item.",
+      "timestamp": 905
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Wait sorry - keep original qty but change unit price down by 2 USD.",
+      "timestamp": 906
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Hmm, on second thought, ship to 9 Harbor Plaza instead of the address I gave.",
+      "timestamp": 907
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Just to confirm - which version is final?",
+      "timestamp": 908
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Final: original qty, original price, deliver to 9 Harbor Plaza.",
+      "timestamp": 909
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Actually one more change - split the delivery into two equal shipments.",
+      "timestamp": 910
+    }
+  ]
+}

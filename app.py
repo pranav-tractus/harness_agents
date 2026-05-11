@@ -23,8 +23,9 @@ from db import (
     save_summary,
 )
 from extractor import ExtractionEngine
+from harness_config import get_customer_context, load_harness_config
 from models import SOExtractContractList, SOUpdateContractList
-from utils import BEDROCK_ANTHROPIC_MODELS, setup_streamlit_console_logfile
+from utils import MODEL_CATALOG, DEFAULT_MODEL_KEY, setup_streamlit_console_logfile
 
 setup_streamlit_console_logfile()
 
@@ -65,6 +66,8 @@ _ss_default("draft_source_chat", None)        # filename or 'pasted'
 _ss_default("draft_parent_summary_id", None)  # the saved id of the previous version (if any)
 _ss_default("draft_update_instruction", None) # the instruction that produced the current draft
 _ss_default("draft_history", [])              # list of dicts shown to the user as a timeline
+_ss_default("active_customer_id", "default")
+_ss_default("active_customer_db_path", None)
 
 
 # Sidebar
@@ -72,8 +75,39 @@ _ss_default("draft_history", [])              # list of dicts shown to the user 
 with st.sidebar:
     st.header("Configuration")
 
-    model_options = list(BEDROCK_ANTHROPIC_MODELS.keys())
-    selected_model = st.selectbox("Bedrock Model", model_options, index=0)
+    model_options = list(MODEL_CATALOG.keys())
+    default_index = model_options.index(DEFAULT_MODEL_KEY) if DEFAULT_MODEL_KEY in model_options else 0
+    selected_model = st.selectbox(
+        "LLM Model",
+        model_options,
+        index=default_index,
+        format_func=lambda key: MODEL_CATALOG[key]["display_name"],
+    )
+    st.divider()
+    harness_cfg_path = st.text_input(
+        "Harness config (JSON, optional)",
+        value="",
+        help="Load multi-customer config to scope DB and dataset behavior.",
+    )
+    active_customer_context = None
+    if harness_cfg_path.strip():
+        try:
+            cfg = load_harness_config(harness_cfg_path.strip())
+            ids = [c.id for c in cfg.customers]
+            selected_customer = st.selectbox(
+                "Customer",
+                options=ids,
+                index=0,
+            )
+            active_customer_context = get_customer_context(
+                cfg, Path(__file__).resolve().parent, selected_customer
+            )
+            st.session_state.active_customer_id = active_customer_context.customer.id
+            st.session_state.active_customer_db_path = str(active_customer_context.db_path)
+            st.caption(f"DB: `{active_customer_context.db_path}`")
+            st.caption(f"Dataset: `{active_customer_context.dataset_root}`")
+        except Exception as exc:
+            st.warning(f"Could not load harness config: {exc}")
 
     st.divider()
     st.subheader("Locked schemas")
@@ -211,6 +245,8 @@ def _persist_current_draft() -> int | None:
         prompt_text=st.session_state.draft_prompt_text,
         update_instruction=st.session_state.draft_update_instruction,
         attempts=st.session_state.draft_attempts or 1,
+        model_key=engine.model_key,
+        model_provider=engine.model_provider,
     )
     new_id = save_summary(summary)
 
@@ -390,7 +426,10 @@ with tab_file:
                 st.warning("Selected chat file produced no text — cannot extract.")
             else:
                 with st.spinner(f"Extracting from {selected_path.name}…"):
-                    engine = ExtractionEngine(model_key=selected_model)
+                    engine_kwargs = {"model_key": selected_model}
+                    if st.session_state.get("active_customer_db_path"):
+                        engine_kwargs["db_path"] = Path(st.session_state["active_customer_db_path"])
+                    engine = ExtractionEngine(**engine_kwargs)
                     label_to_p = dict(labeled_raw_chat_paths())
                     chosen = st.session_state.get("fs_initial_raw_paths") or []
                     fs_paths = [label_to_p[x] for x in chosen if x in label_to_p]
@@ -483,7 +522,10 @@ with tab_updates:
 
 # Active draft panel
 
-engine_for_draft = ExtractionEngine(model_key=selected_model)
+engine_for_draft_kwargs = {"model_key": selected_model}
+if st.session_state.get("active_customer_db_path"):
+    engine_for_draft_kwargs["db_path"] = Path(st.session_state["active_customer_db_path"])
+engine_for_draft = ExtractionEngine(**engine_for_draft_kwargs)
 _render_draft_panel(engine_for_draft)
 
 
@@ -510,6 +552,8 @@ else:
             "Kind": r["kind"],
             "Schema": r["schema_name"],
             "Attempts": r["attempts"],
+            "Provider": r.get("model_provider", "unknown"),
+            "Model": r.get("model_key", "unknown"),
             "Source": (r["source_chat"] or "pasted")[:40],
             "Created": r["created_at"],
             "Instruction (preview)": (r["update_instruction"] or "")[:80].replace("\n", " "),

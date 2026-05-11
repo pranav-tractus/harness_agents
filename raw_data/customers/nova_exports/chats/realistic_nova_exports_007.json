@@ -1,0 +1,44 @@
+{
+  "customer_id": "nova_exports",
+  "chat_name": "nova_exports_realistic_007",
+  "created_at": "2026-05-11T18:10:38.812243+00:00",
+  "realism_flags": [
+    "missing_prices"
+  ],
+  "complexity_tier": "realistic",
+  "ground_truth_meta": {
+    "item_name": "Filter paper packs",
+    "quantity": 10,
+    "unit_price": 6,
+    "currency": "USD",
+    "address": "9 Harbor Plaza, Pier 4",
+    "payment_terms": "Net 45"
+  },
+  "messages": [
+    {
+      "from_whom": "(BUYER)",
+      "body": "Hi Nova Exports, please raise an SO for 10 x Filter paper packs @ let's go with last month's rate.",
+      "timestamp": 701
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Got it - subtotal 60 USD. Confirm address and payment terms? @ usual rate.",
+      "timestamp": 702
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Address: 9 Harbor Plaza, Pier 4. Payment: Net 45.",
+      "timestamp": 703
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Noted, sending SO draft today.",
+      "timestamp": 704
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Will use the rate we discussed last cycle unless you confirm otherwise.",
+      "timestamp": 705
+    }
+  ]
+}

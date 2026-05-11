@@ -20,6 +20,8 @@ CREATE TABLE IF NOT EXISTS extractions (
     status      TEXT    NOT NULL CHECK(status IN ('success', 'failed')),
     error       TEXT,
     attempts    INTEGER NOT NULL DEFAULT 1,
+    model_key   TEXT    NOT NULL DEFAULT 'unknown',
+    model_provider TEXT NOT NULL DEFAULT 'unknown',
     created_at  TEXT    NOT NULL
 );
 """
@@ -36,6 +38,8 @@ CREATE TABLE IF NOT EXISTS summaries (
     update_instruction TEXT,
     output_json        TEXT    NOT NULL,
     attempts           INTEGER NOT NULL DEFAULT 1,
+    model_key          TEXT    NOT NULL DEFAULT 'unknown',
+    model_provider     TEXT    NOT NULL DEFAULT 'unknown',
     created_at         TEXT    NOT NULL
 );
 """
@@ -50,6 +54,8 @@ class ExtractionResult:
     attempts: int
     output_json: Optional[str] = None
     error: Optional[str] = None
+    model_key: str = "unknown"
+    model_provider: str = "unknown"
     created_at: str = ""
 
     def __post_init__(self) -> None:
@@ -74,6 +80,8 @@ class SavedSummary:
     prompt_text: Optional[str] = None
     update_instruction: Optional[str] = None
     attempts: int = 1
+    model_key: str = "unknown"
+    model_provider: str = "unknown"
     created_at: str = ""
 
     def __post_init__(self) -> None:
@@ -85,14 +93,25 @@ class SavedSummary:
 
 def init_db(db_path: Path = DB_PATH) -> None:
     """Create the tables if they do not already exist (additive migrations only)."""
+    db_path.parent.mkdir(parents=True, exist_ok=True)
     with sqlite3.connect(db_path) as conn:
         conn.execute(_DDL_EXTRACTIONS)
         cols = conn.execute("PRAGMA table_info(extractions)").fetchall()
         col_names = {c[1] for c in cols}
         if "prompt_text" not in col_names:
             conn.execute("ALTER TABLE extractions ADD COLUMN prompt_text TEXT")
+        if "model_key" not in col_names:
+            conn.execute("ALTER TABLE extractions ADD COLUMN model_key TEXT NOT NULL DEFAULT 'unknown'")
+        if "model_provider" not in col_names:
+            conn.execute("ALTER TABLE extractions ADD COLUMN model_provider TEXT NOT NULL DEFAULT 'unknown'")
 
         conn.execute(_DDL_SUMMARIES)
+        summary_cols = conn.execute("PRAGMA table_info(summaries)").fetchall()
+        summary_col_names = {c[1] for c in summary_cols}
+        if "model_key" not in summary_col_names:
+            conn.execute("ALTER TABLE summaries ADD COLUMN model_key TEXT NOT NULL DEFAULT 'unknown'")
+        if "model_provider" not in summary_col_names:
+            conn.execute("ALTER TABLE summaries ADD COLUMN model_provider TEXT NOT NULL DEFAULT 'unknown'")
         conn.commit()
     logger.debug("DB initialised at %s", db_path)
 
@@ -107,8 +126,8 @@ def save_result(result: ExtractionResult, db_path: Path = DB_PATH) -> int:
     with sqlite3.connect(db_path) as conn:
         cur = conn.execute(
             """
-            INSERT INTO extractions (input_text, prompt_text, schema_name, output_json, status, error, attempts, created_at)
-            VALUES (:input_text, :prompt_text, :schema_name, :output_json, :status, :error, :attempts, :created_at)
+            INSERT INTO extractions (input_text, prompt_text, schema_name, output_json, status, error, attempts, model_key, model_provider, created_at)
+            VALUES (:input_text, :prompt_text, :schema_name, :output_json, :status, :error, :attempts, :model_key, :model_provider, :created_at)
             """,
             row,
         )
@@ -127,10 +146,10 @@ def save_summary(summary: SavedSummary, db_path: Path = DB_PATH) -> int:
             """
             INSERT INTO summaries (
                 parent_summary_id, kind, schema_name, source_chat, input_text,
-                prompt_text, update_instruction, output_json, attempts, created_at
+                prompt_text, update_instruction, output_json, attempts, model_key, model_provider, created_at
             ) VALUES (
                 :parent_summary_id, :kind, :schema_name, :source_chat, :input_text,
-                :prompt_text, :update_instruction, :output_json, :attempts, :created_at
+                :prompt_text, :update_instruction, :output_json, :attempts, :model_key, :model_provider, :created_at
             )
             """,
             row,

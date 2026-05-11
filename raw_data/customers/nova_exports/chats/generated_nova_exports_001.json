@@ -1,0 +1,34 @@
+{
+  "customer_id": "nova_exports",
+  "chat_name": "nova_exports_synthetic_single_item_spot_001",
+  "created_at": "2026-05-07T18:29:00.378869+00:00",
+  "scenario_tags": [
+    "export",
+    "single_item_spot",
+    "spices"
+  ],
+  "complexity_tier": "simple",
+  "order_type": "single_item_spot",
+  "messages": [
+    {
+      "from_whom": "(BUYER)",
+      "body": "Hi Nova Exports, we need this single_item_spot order: 8 x Arabica coffee bags @ 24 USD.",
+      "timestamp": 11
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Confirmed. Subtotal is 192 USD. We'll process as single delivery next Friday.",
+      "timestamp": 12
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Shipping address is 101 Market Street, Customer Hub. Payment terms: Net 15.",
+      "timestamp": 13
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Noted. Sales order draft will be shared today.",
+      "timestamp": 14
+    }
+  ]
+}

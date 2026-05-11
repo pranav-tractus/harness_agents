@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Few-shot Benchmark Report 20260511T181327Z</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; color: #1f2937; }
+    h1, h2 { margin-bottom: 8px; }
+    .meta { margin-bottom: 16px; color: #4b5563; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 20px; font-size: 13px; }
+    th, td { border: 1px solid #d1d5db; padding: 8px; vertical-align: top; text-align: left; }
+    th { background: #f3f4f6; }
+    pre { margin: 0; white-space: pre-wrap; }
+    .card { background: #f9fafb; border: 1px solid #e5e7eb; padding: 10px; margin-bottom: 16px; }
+  </style>
+</head>
+<body>
+  <h1>Few-shot Benchmark Report</h1>
+  <div class="meta">Run ID: <code>20260511T181327Z</code> | Generated UTC: <code>2026-05-11T18:13:41.788736+00:00</code></div>
+
+  <div class="card">
+    <h2>Configuration</h2>
+    <pre>{
+  &quot;models&quot;: [
+    &quot;sonnet-4-6&quot;
+  ],
+  &quot;fewshot_strategies&quot;: [
+    &quot;zero_shot&quot;
+  ],
+  &quot;chat_count&quot;: 20,
+  &quot;runs_per_chat&quot;: 1,
+  &quot;max_workers&quot;: 15,
+  &quot;raw_fewshot_count&quot;: 6,
+  &quot;raw_fewshot_labels_filter&quot;: [
+    &quot;[chats] multiple_product_multiple_shipment_complex.json&quot;,
+    &quot;[chats] single_product_multiple_shipment_complex.json&quot;,
+    &quot;[chats] single_product_single_shipment_complex.json&quot;,
+    &quot;[updates] update_change_quantity.json&quot;,
+    &quot;[updates] update_change_unit_price.json&quot;
+  ]
+}</pre>
+  </div>
+
+  <h2>Model + Strategy Summary</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th><th>Strategy</th><th>Runs</th><th>Success rate</th><th>Avg attempts</th>
+        <th>Avg elapsed (s)</th><th>Avg mismatch/expected run</th><th>Field match rate</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>sonnet-4-6</td><td>zero_shot</td><td>20</td><td>1.0000</td><td>1.0000</td><td>6.7646</td><td>3.7000</td><td>0.8915</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Per-chat Breakdown</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Chat</th><th>Model</th><th>Strategy</th><th>Runs</th>
+        <th>Success rate</th><th>Avg elapsed (s)</th><th>Mismatch counts</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>multiple_product_multiple_shipment_medium.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>2</td><td>1.0000</td><td>8.0443</td><td>[7, 7]</td></tr>
+<tr><td>multiple_product_multiple_shipment_simple.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>2</td><td>1.0000</td><td>6.3093</td><td>[7, 7]</td></tr>
+<tr><td>real_world_msgs_test_v1.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>2</td><td>1.0000</td><td>6.0402</td><td>[6, 5]</td></tr>
+<tr><td>real_world_msgs_test_v2.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>2</td><td>1.0000</td><td>7.4459</td><td>[2, 2]</td></tr>
+<tr><td>real_world_msgs_test_v3.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>2</td><td>1.0000</td><td>7.2405</td><td>[4, 5]</td></tr>
+<tr><td>single_product_multiple_shipment_complex.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>2</td><td>1.0000</td><td>7.9752</td><td>[0, 0]</td></tr>
+<tr><td>single_product_multiple_shipment_medium.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>2</td><td>1.0000</td><td>6.2752</td><td>[0, 0]</td></tr>
+<tr><td>single_product_multiple_shipment_simple.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>2</td><td>1.0000</td><td>6.0840</td><td>[4, 4]</td></tr>
+<tr><td>single_product_single_shipment_complex.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>2</td><td>1.0000</td><td>7.0364</td><td>[4, 4]</td></tr>
+<tr><td>single_product_single_shipment_medium.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>2</td><td>1.0000</td><td>5.1951</td><td>[3, 3]</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Top Mismatches (up to 100 runs)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Chat</th><th>Model</th><th>Strategy</th><th>Run</th><th>Mismatch count</th><th>Sample mismatches</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>multiple_product_multiple_shipment_simple.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>7</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 25.0,
+    &quot;actual&quot;: 250.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;USD/BAG&quot;,
+    &quot;actual&quot;: &quot;USD/BAGS&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].total&quot;,
+    &quot;expected&quot;: 250.0,
+    &quot;actual&quot;: 2500.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[1].description&quot;,
+    &quot;expected&quot;: &quot;Assam tea&quot;,
+    &quot;actual&quot;: &quot;Assam Tea&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[1].unit_price&quot;,
+    &quot;expected&quot;: 12.0,
+    &quot;actual&quot;: 240.0
+  }
+]</pre></td></tr>
+<tr><td>multiple_product_multiple_shipment_simple.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>7</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 25.0,
+    &quot;actual&quot;: 250.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;USD/BAG&quot;,
+    &quot;actual&quot;: &quot;USD/BAGS&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].total&quot;,
+    &quot;expected&quot;: 250.0,
+    &quot;actual&quot;: 2500.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[1].description&quot;,
+    &quot;expected&quot;: &quot;Assam tea&quot;,
+    &quot;actual&quot;: &quot;Assam Tea&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[1].unit_price&quot;,
+    &quot;expected&quot;: 12.0,
+    &quot;actual&quot;: 240.0
+  }
+]</pre></td></tr>
+<tr><td>multiple_product_multiple_shipment_medium.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>7</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 2
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items&quot;,
+    &quot;expected_len&quot;: 3,
+    &quot;actual_len&quot;: 1
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;bags&quot;,
+    &quot;actual&quot;: &quot;BAGS&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: null,
+    &quot;actual&quot;: 300.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;USD/BAGS&quot;
+  }
+]</pre></td></tr>
+<tr><td>multiple_product_multiple_shipment_medium.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>7</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 2
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items&quot;,
+    &quot;expected_len&quot;: 3,
+    &quot;actual_len&quot;: 1
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;bags&quot;,
+    &quot;actual&quot;: &quot;BAGS&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: null,
+    &quot;actual&quot;: 300.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;USD/BAGS&quot;
+  }
+]</pre></td></tr>
+<tr><td>real_world_msgs_test_v1.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>6</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;soy lecithin powder&quot;,
+    &quot;actual&quot;: &quot;Soy Lecithin Powder&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 4.1,
+    &quot;actual&quot;: 4100.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;USD/KG&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].shipping_address&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;Busan&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].loading&quot;,
+    &quot;expected&quot;: &quot;12MT/20&#x27;FCL&quot;,
+    &quot;actual&quot;: &quot;2x 12MT/20&#x27;FCL&quot;
+  }
+]</pre></td></tr>
+<tr><td>real_world_msgs_test_v3.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>5</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;lecithin fat powder&quot;,
+    &quot;actual&quot;: &quot;Lecithin Fat Powder&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].total&quot;,
+    &quot;expected&quot;: 96000.0,
+    &quot;actual&quot;: null
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[1].description&quot;,
+    &quot;expected&quot;: &quot;lecithin fat powder&quot;,
+    &quot;actual&quot;: &quot;Lecithin Fat Powder&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[1].total&quot;,
+    &quot;expected&quot;: 144000.0,
+    &quot;actual&quot;: null
+  },
+  {
+    &quot;path&quot;: &quot;data[0].do_date&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;2026-03-31&quot;
+  }
+]</pre></td></tr>
+<tr><td>real_world_msgs_test_v1.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>5</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;soy lecithin powder&quot;,
+    &quot;actual&quot;: &quot;Soy Lecithin Powder&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].shipping_address&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;Busan&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].loading&quot;,
+    &quot;expected&quot;: &quot;12MT/20&#x27;FCL&quot;,
+    &quot;actual&quot;: &quot;2x 12MT/20&#x27;FCL&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].total&quot;,
+    &quot;expected&quot;: 98400.0,
+    &quot;actual&quot;: null
+  },
+  {
+    &quot;path&quot;: &quot;data[0].shipping_method&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;by sea&quot;
+  }
+]</pre></td></tr>
+<tr><td>single_product_single_shipment_complex.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>4</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].shipment_date&quot;,
+    &quot;expected&quot;: &quot;2025-11-28&quot;,
+    &quot;actual&quot;: &quot;2026-11-28&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].shipping_address&quot;,
+    &quot;expected&quot;: &quot;352 Indiana Jones St.&quot;,
+    &quot;actual&quot;: &quot;352 Indiana Jones St&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].do_date&quot;,
+    &quot;expected&quot;: &quot;2025-11-28&quot;,
+    &quot;actual&quot;: &quot;2026-11-28&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].shipping_address&quot;,
+    &quot;expected&quot;: &quot;352 Indiana Jones St.&quot;,
+    &quot;actual&quot;: &quot;352 Indiana Jones St&quot;
+  }
+]</pre></td></tr>
+<tr><td>single_product_single_shipment_complex.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>4</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].shipment_date&quot;,
+    &quot;expected&quot;: &quot;2025-11-28&quot;,
+    &quot;actual&quot;: &quot;2026-11-28&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].shipping_address&quot;,
+    &quot;expected&quot;: &quot;352 Indiana Jones St.&quot;,
+    &quot;actual&quot;: &quot;352 Indiana Jones St&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].do_date&quot;,
+    &quot;expected&quot;: &quot;2025-11-28&quot;,
+    &quot;actual&quot;: &quot;2026-11-28&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].shipping_address&quot;,
+    &quot;expected&quot;: &quot;352 Indiana Jones St.&quot;,
+    &quot;actual&quot;: &quot;352 Indiana Jones St&quot;
+  }
+]</pre></td></tr>
+<tr><td>single_product_multiple_shipment_simple.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>4</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;BAGS&quot;,
+    &quot;actual&quot;: &quot;bags&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;USD/BAG&quot;,
+    &quot;actual&quot;: &quot;USD/bag&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[1].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;BAGS&quot;,
+    &quot;actual&quot;: &quot;bags&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[1].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;USD/BAG&quot;,
+    &quot;actual&quot;: &quot;USD/bag&quot;
+  }
+]</pre></td></tr>
+<tr><td>single_product_multiple_shipment_simple.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>4</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;BAGS&quot;,
+    &quot;actual&quot;: &quot;bags&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;USD/BAG&quot;,
+    &quot;actual&quot;: &quot;USD/bag&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[1].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;BAGS&quot;,
+    &quot;actual&quot;: &quot;bags&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[1].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;USD/BAG&quot;,
+    &quot;actual&quot;: &quot;USD/bag&quot;
+  }
+]</pre></td></tr>
+<tr><td>real_world_msgs_test_v3.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>4</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;lecithin fat powder&quot;,
+    &quot;actual&quot;: &quot;Lecithin Fat Powder&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].total&quot;,
+    &quot;expected&quot;: 96000.0,
+    &quot;actual&quot;: null
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[1].description&quot;,
+    &quot;expected&quot;: &quot;lecithin fat powder&quot;,
+    &quot;actual&quot;: &quot;Lecithin Fat Powder&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[1].total&quot;,
+    &quot;expected&quot;: 144000.0,
+    &quot;actual&quot;: null
+  }
+]</pre></td></tr>
+<tr><td>single_product_single_shipment_medium.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>3</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].shipment_date&quot;,
+    &quot;expected&quot;: &quot;2026-05-28&quot;,
+    &quot;actual&quot;: &quot;2026-05-31&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].do_date&quot;,
+    &quot;expected&quot;: &quot;2026-05-28&quot;,
+    &quot;actual&quot;: &quot;2026-05-31&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].payment_date&quot;,
+    &quot;expected&quot;: &quot;Net 30 from delivery&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  }
+]</pre></td></tr>
+<tr><td>single_product_single_shipment_medium.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>3</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].shipment_date&quot;,
+    &quot;expected&quot;: &quot;2026-05-28&quot;,
+    &quot;actual&quot;: &quot;2026-05-31&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].do_date&quot;,
+    &quot;expected&quot;: &quot;2026-05-28&quot;,
+    &quot;actual&quot;: &quot;2026-05-31&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].payment_date&quot;,
+    &quot;expected&quot;: &quot;Net 30 from delivery&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  }
+]</pre></td></tr>
+<tr><td>real_world_msgs_test_v2.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>2</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[1].items[0].loading&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;18MT/40&#x27;FCL&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[1].items[0].total&quot;,
+    &quot;expected&quot;: 96600.0,
+    &quot;actual&quot;: null
+  }
+]</pre></td></tr>
+<tr><td>real_world_msgs_test_v2.json</td><td>sonnet-4-6</td><td>zero_shot</td><td>1</td><td>2</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[1].items[0].loading&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;18MT/40&#x27;FCL&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[1].items[0].total&quot;,
+    &quot;expected&quot;: 96600.0,
+    &quot;actual&quot;: null
+  }
+]</pre></td></tr>
+    </tbody>
+  </table>
+</body>
+</html>

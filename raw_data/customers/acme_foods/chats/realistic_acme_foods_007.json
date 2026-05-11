@@ -1,0 +1,131 @@
+{
+  "customer_id": "acme_foods",
+  "chat_name": "acme_foods_realistic_007",
+  "created_at": "2026-05-11T18:10:38.811311+00:00",
+  "realism_flags": [
+    "contradictory",
+    "multilingual",
+    "noisy_text"
+  ],
+  "complexity_tier": "realistic",
+  "ground_truth_meta": {
+    "item_name": "Green coffee beans sacks",
+    "quantity": 80,
+    "unit_price": 16,
+    "currency": "USD",
+    "address": "55 Spice Lane, Warehouse District",
+    "payment_terms": "Immediate transfer"
+  },
+  "messages": [
+    {
+      "from_whom": "(BUYER)",
+      "body": "Hi Acme Foods, pls raise an SO for 80 x Green coffee beans sacks @ 16 USD. Thx. 🚚",
+      "timestamp": 701
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Got it - subtotal 1280 USD. Confirm address and paymnt terms? 👍",
+      "timestamp": 702
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Addr: 55 Spice Lane, Warehouse District. Paymnt: Immediate transfer.",
+      "timestamp": 703
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Noted, sending SO draft today.",
+      "timestamp": 704
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Addr: 55 Spice Lane, Warehouse Dis—",
+      "timestamp": 705
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "(typing...)",
+      "timestamp": 705
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Actually scratch that, double the quantity on the first line item.",
+      "timestamp": 705
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Wait sorry - keep original qty but change unit price down by 2 USD. 🚚",
+      "timestamp": 706
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Actually scratch that, double the—",
+      "timestamp": 707
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "(typing...)",
+      "timestamp": 707
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Hmm, on second thought, ship to 9 Harbor Plaza instead of the address I gave.",
+      "timestamp": 707
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Just to confirm - which version is final? ...",
+      "timestamp": 708
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Final: original qty, original price, deliver to 9 Harbor Plaza.",
+      "timestamp": 709
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Actually one more change - split the delvery into two equal shipmnts. 😅",
+      "timestamp": 710
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Obrigado, qualquer atualização me avise.",
+      "timestamp": 711
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Actually one more change - split th—",
+      "timestamp": 712
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "(typing...)",
+      "timestamp": 712
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Ji bilkul, abhi calculate karke share karta hu.",
+      "timestamp": 712
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Obrigado, qualquer a—",
+      "timestamp": 713
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Bhai ek minute, total kitna ban raha hai exactly?",
+      "timestamp": 713
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "请问什么时候发货？ 👍",
+      "timestamp": 714
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "明天上午发货，单号稍后发您。 🙏",
+      "timestamp": 715
+    }
+  ]
+}

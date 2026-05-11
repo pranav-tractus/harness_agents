@@ -32,8 +32,8 @@ from tenacity import (
 )
 
 from chat_loader import load_synthetic_update_few_shot_examples
-from db import ExtractionResult, init_db
-from llm_client import call_bedrock
+from db import DB_PATH, ExtractionResult, init_db
+from llm_client import call_llm
 from models import SOExtractContractList, SOUpdateContractList
 from prompt_builder import (
     INITIAL_FEW_SHOT_DB_LIMIT_DEFAULT,
@@ -41,6 +41,7 @@ from prompt_builder import (
     build_system_prompt,
     build_update_prompt,
 )
+from utils import DEFAULT_MODEL_KEY, resolve_model_selection
 
 logger = logging.getLogger(__name__)
 
@@ -131,7 +132,7 @@ def _call_with_retry(
         last_prompt = prompt
         logger.debug("Prompt (attempt=%d):\n%s", current_attempt, textwrap.indent(prompt, "  "))
 
-        result = call_bedrock(prompt, schema, model_key=model_key, system_prompt=system_prompt)
+        result = call_llm(prompt, schema, model_key=model_key, system_prompt=system_prompt)
 
         logger.info("Attempt %d succeeded", current_attempt)
         return result
@@ -158,16 +159,20 @@ class ExtractionEngine:
 
     def __init__(
         self,
-        model_key: str = "default",
+        model_key: str = DEFAULT_MODEL_KEY,
         organization_info: dict | None = None,
         customer_info: dict | None = None,
         iso_date: str | None = None,
+        db_path: Path = DB_PATH,
     ) -> None:
         self.model_key = model_key
+        resolved = resolve_model_selection(model_key)
+        self.model_provider = resolved["provider"]
         self.organization_info = organization_info
         self.customer_info = customer_info
         self.iso_date = iso_date if iso_date is not None else date.today().isoformat()
-        init_db()
+        self.db_path = Path(db_path).expanduser().resolve()
+        init_db(self.db_path)
 
     def run(
         self,
@@ -212,6 +217,7 @@ class ExtractionEngine:
                 customer_info=self.customer_info,
                 extra_few_shot_examples=extra_few_shot_examples,
                 db_few_shot_limit=db_few_shot_limit,
+                db_path=self.db_path,
             )
 
         try:
@@ -228,6 +234,8 @@ class ExtractionEngine:
                 status="success",
                 error=None,
                 attempts=attempts_used,
+                model_key=self.model_key,
+                model_provider=self.model_provider,
             )
 
         except (ValidationError, ValueError, json.JSONDecodeError, RetryError, Exception) as exc:
@@ -241,6 +249,8 @@ class ExtractionEngine:
                 status="failed",
                 error=error_msg,
                 attempts=_MAX_ATTEMPTS,
+                model_key=self.model_key,
+                model_provider=self.model_provider,
             )
 
     def update(
@@ -297,6 +307,7 @@ class ExtractionEngine:
                 organization_info=self.organization_info,
                 customer_info=self.customer_info,
                 synthetic_few_shot_examples=synthetic_examples,
+                db_path=self.db_path,
             )
 
         try:
@@ -313,6 +324,8 @@ class ExtractionEngine:
                 status="success",
                 error=None,
                 attempts=attempts_used,
+                model_key=self.model_key,
+                model_provider=self.model_provider,
             )
 
         except (ValidationError, ValueError, json.JSONDecodeError, RetryError, Exception) as exc:
@@ -326,4 +339,6 @@ class ExtractionEngine:
                 status="failed",
                 error=error_msg,
                 attempts=_MAX_ATTEMPTS,
+                model_key=self.model_key,
+                model_provider=self.model_provider,
             )

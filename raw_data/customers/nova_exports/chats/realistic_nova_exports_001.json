@@ -1,0 +1,180 @@
+{
+  "customer_id": "nova_exports",
+  "chat_name": "nova_exports_realistic_001",
+  "created_at": "2026-05-11T18:10:38.811681+00:00",
+  "realism_flags": [
+    "long_thread",
+    "noisy_text"
+  ],
+  "complexity_tier": "realistic",
+  "ground_truth_meta": {
+    "item_name": "Assam tea cartons",
+    "quantity": 15,
+    "unit_price": 19,
+    "currency": "USD",
+    "address": "101 Market Street, Customer Hub",
+    "payment_terms": "50% advance"
+  },
+  "messages": [
+    {
+      "from_whom": "(BUYER)",
+      "body": "Hi Nova Exports, please raise an SO for 15 x Assam tea cartons @ 19 USD. Thx. ✅",
+      "timestamp": 101
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "(typing...)",
+      "timestamp": 102
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Got it - subtotal 285 USD. Confirm addr and paymnt terms? 😅",
+      "timestamp": 102
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "(typing...)",
+      "timestamp": 103
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Address: 101 Market Street, Customer Hub. Paymnt: 50% advance. ✅",
+      "timestamp": 103
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "(typing...)",
+      "timestamp": 104
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Noted, sending SO draft today.",
+      "timestamp": 104
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Address: 101 Market Street, Cust—",
+      "timestamp": 105
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "OK, talk soon. 🚚",
+      "timestamp": 105
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Please share. We may add it to next month's order.",
+      "timestamp": 106
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Yes received, accounts team is processing it. 🙏",
+      "timestamp": 107
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Please share. We may add —",
+      "timestamp": 108
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Talk soon.",
+      "timestamp": 108
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Perfect. 📦",
+      "timestamp": 109
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Quick check - is the warehouse still closed Sundays?",
+      "timestamp": 110
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "(typing...)",
+      "timestamp": 111
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Good. Forward the dispatch ETA once available.",
+      "timestamp": 111
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Yes a fresh lot landed Tuesday, will share photos.",
+      "timestamp": 112
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Yes Sundays closed, Saturdays half day until 1pm.",
+      "timestamp": 113
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Thx. Also confirm the GST number we have on file.",
+      "timestamp": 114
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Noted. Also, did you receive teh previous invoice copy? 📦",
+      "timestamp": 115
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Yes, lab results due by Friday.",
+      "timestamp": 116
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Send teh AWB once generated. 😅",
+      "timestamp": 117
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Great. One more thing - any new arrivals on Robusta? 🙏",
+      "timestamp": 118
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "By the way, how was the trade fair last week?",
+      "timestamp": 119
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "GST is unchanged, same as last invoice. 😅",
+      "timestamp": 120
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "It was good, picked up a few new SKUs to share next call. 😅",
+      "timestamp": 121
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Also, share teh test report for teh new lot when ready. 🙏",
+      "timestamp": 122
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Will do later today after teh inspection. 👍",
+      "timestamp": 123
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Will share by EOD. 😅",
+      "timestamp": 124
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Sure, expecting confirmation from logistics in an hour. 👍",
+      "timestamp": 125
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Update - logistics confirmed dispatch slot. 🚚",
+      "timestamp": 126
+    }
+  ]
+}

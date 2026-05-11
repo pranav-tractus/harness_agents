@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "default_customer_id": "acme_foods",
+  "customers": [
+    {
+      "id": "acme_foods",
+      "name": "Acme Foods",
+      "db_path": "customer_dbs/acme_foods.db",
+      "dataset_root": "raw_data/customers/acme_foods",
+      "chat_globs": [
+        "chats/*.json",
+        "downloaded_chats/*.json"
+      ],
+      "few_shot": {
+        "paths": [
+          "raw_data/customers/acme_foods/chats/fs_acme_simple.json"
+        ]
+      },
+      "customer_info": {
+        "name": "Acme Foods",
+        "id": "cust-acme-foods"
+      },
+      "synthetic_generation": {
+        "chats_to_generate": 2,
+        "complexity_tiers": [
+          "simple",
+          "medium"
+        ],
+        "scenario_tags": [
+          "coffee",
+          "domestic"
+        ]
+      }
+    },
+    {
+      "id": "nova_exports",
+      "name": "Nova Exports",
+      "db_path": "customer_dbs/nova_exports.db",
+      "dataset_root": "raw_data/customers/nova_exports",
+      "chat_globs": [
+        "chats/*.json"
+      ],
+      "few_shot": {
+        "paths": [
+          "raw_data/customers/nova_exports/chats/fs_nova_simple.json"
+        ]
+      },
+      "customer_info": {
+        "name": "Nova Exports",
+        "id": "cust-nova-exports"
+      },
+      "synthetic_generation": {
+        "chats_to_generate": 2,
+        "complexity_tiers": [
+          "simple",
+          "complex"
+        ],
+        "scenario_tags": [
+          "spices",
+          "export"
+        ]
+      }
+    }
+  ]
+}

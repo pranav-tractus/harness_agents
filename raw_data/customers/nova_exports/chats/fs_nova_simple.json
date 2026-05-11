@@ -1,0 +1,31 @@
+{
+  "customer_id": "nova_exports",
+  "messages": [
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Please quote 15 cartons of Ceylon tea.",
+      "timestamp": 1760300000
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Quoted at USD 18 per carton. Total USD 270.",
+      "timestamp": 1760300060
+    }
+  ],
+  "field_data": {
+    "data": [
+      {
+        "customer_name": "Nova Exports",
+        "items": [
+          {
+            "name": "Ceylon tea",
+            "quantity": 15,
+            "unit_price": 18
+          }
+        ],
+        "currency": "USD",
+        "total_amount": 270
+      }
+    ]
+  }
+}

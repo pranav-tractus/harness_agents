@@ -27,6 +27,8 @@ from pathlib import Path
 from chat_loader import build_extraction_few_shot_from_paths
 from extractor import ExtractionEngine
 from prompt_builder import INITIAL_FEW_SHOT_DB_LIMIT_DEFAULT
+from utils import DEFAULT_MODEL_KEY, MODEL_CATALOG, resolve_model_selection
+from harness_config import get_customer_context, load_harness_config
 
 logging.basicConfig(
     stream=sys.stderr,
@@ -73,8 +75,11 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--model",
         "-m",
-        default="default",
-        help="Bedrock model key from BEDROCK_ANTHROPIC_MODELS (default: 'default').",
+        default=DEFAULT_MODEL_KEY,
+        help=(
+            "Model key to use. Supports Bedrock keys (e.g. sonnet-4-6) and "
+            f"provider-prefixed keys like openai:* or gemini:*. Available: {', '.join(MODEL_CATALOG.keys())}"
+        ),
     )
     parser.add_argument(
         "--verbose", "-v", action="store_true", help="Enable DEBUG logging."
@@ -95,6 +100,18 @@ def _build_parser() -> argparse.ArgumentParser:
         "--no-db-few-shot",
         action="store_true",
         help="Do not include few-shot examples from the database (only --few-shot-file, if any).",
+    )
+    parser.add_argument(
+        "--harness-config",
+        type=str,
+        default="",
+        help="Optional harness JSON config for customer-scoped runtime.",
+    )
+    parser.add_argument(
+        "--customer",
+        type=str,
+        default="",
+        help="Customer id from harness config.",
     )
     return parser
 
@@ -117,7 +134,19 @@ def main() -> None:
     if args.verbose:
         logging.getLogger().setLevel(logging.DEBUG)
 
-    engine = ExtractionEngine(model_key=args.model)
+    resolve_model_selection(args.model)
+    engine_kwargs: dict = {"model_key": args.model}
+    default_fs_paths: list[Path] = []
+    if args.harness_config:
+        cfg = load_harness_config(args.harness_config)
+        ctx = get_customer_context(cfg, Path(__file__).resolve().parent, args.customer or None)
+        engine_kwargs["db_path"] = ctx.db_path
+        if ctx.customer.organization_info:
+            engine_kwargs["organization_info"] = ctx.customer.organization_info
+        if ctx.customer.customer_info:
+            engine_kwargs["customer_info"] = ctx.customer.customer_info
+        default_fs_paths = [Path(p) for p in ctx.customer.few_shot.paths]
+    engine = ExtractionEngine(**engine_kwargs)
 
     if args.update:
         if not args.previous:
@@ -144,7 +173,8 @@ def main() -> None:
         if not input_text.strip():
             parser.print_help()
             sys.exit(0)
-        extra_fs = build_extraction_few_shot_from_paths([Path(p) for p in args.few_shot_file])
+        configured_paths = [Path(p) for p in args.few_shot_file] or default_fs_paths
+        extra_fs = build_extraction_few_shot_from_paths(configured_paths)
         db_lim = 0 if args.no_db_few_shot else INITIAL_FEW_SHOT_DB_LIMIT_DEFAULT
         result = engine.run(
             input_text,
@@ -157,6 +187,8 @@ def main() -> None:
     print(f"Status   : {result.status.upper()}")
     print(f"Schema   : {result.schema_name}")
     print(f"Attempts : {result.attempts}")
+    print(f"Provider : {result.model_provider}")
+    print(f"Model    : {result.model_key}")
     print("=" * 60)
 
     if result.status == "success" and result.output_json is not None:

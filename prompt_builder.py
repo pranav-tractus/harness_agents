@@ -6,7 +6,7 @@ from typing import Type
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 from pydantic import BaseModel
 
-from db import get_recent_success_examples, get_recent_update_examples
+from db import DB_PATH, get_recent_success_examples, get_recent_update_examples
 from models import SOExtractContractList, SOUpdateContractList
 from utils import customer_info as utils_customer_info, team_info as utils_team_info
 
@@ -55,6 +55,7 @@ def build_prompt(
     customer_info: dict | None = None,
     extra_few_shot_examples: list[dict] | None = None,
     db_few_shot_limit: int = INITIAL_FEW_SHOT_DB_LIMIT_DEFAULT,
+    db_path: Path = DB_PATH,
 ) -> str:
     """Build a Jinja2-rendered initial extraction prompt.
 
@@ -75,7 +76,11 @@ def build_prompt(
     schema_json = json.dumps(target_schema.model_json_schema(), indent=2)
     extra = list(extra_few_shot_examples or [])
     db_examples = (
-        get_recent_success_examples(limit=db_few_shot_limit, schema_name=target_schema.__name__)
+        get_recent_success_examples(
+            limit=db_few_shot_limit,
+            schema_name=target_schema.__name__,
+            db_path=db_path,
+        )
         if db_few_shot_limit > 0
         else []
     )
@@ -113,6 +118,7 @@ def build_update_prompt(
     organization_info: dict | None = None,
     customer_info: dict | None = None,
     synthetic_few_shot_examples: list[dict] | None = None,
+    db_path: Path = DB_PATH,
 ) -> str:
     """Build the human-in-the-loop update prompt.
 
@@ -129,7 +135,7 @@ def build_update_prompt(
 
     schema_json = json.dumps(target_schema.model_json_schema(), indent=2)
     previous_summary_json = json.dumps(previous_summary, indent=2, ensure_ascii=False)
-    db_examples = get_recent_update_examples(limit=UPDATE_FEW_SHOT_DB_LIMIT)
+    db_examples = get_recent_update_examples(limit=UPDATE_FEW_SHOT_DB_LIMIT, db_path=db_path)
     synth = list(synthetic_few_shot_examples or [])
     few_shot_examples = synth + db_examples
     if len(few_shot_examples) > UPDATE_FEW_SHOT_MAX_TOTAL:
