@@ -26,3 +26,6 @@ logs/
 
 # Benchmark artifacts
 tests/artifacts/
+
+# Generated static site (built in CI for GitHub Pages)
+site/
