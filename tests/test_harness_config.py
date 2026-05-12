@@ -1,22 +1,35 @@
+"""Smoke tests for the agent harness configuration loader.
+
+Verifies that ``configs/agents.json`` parses, that both shipped agents resolve,
+and that the SO extraction agent can enumerate its customer datasets.
+"""
+
 from pathlib import Path
 import unittest
 
-from harness_config import get_customer_context, load_harness_config
+from agents.config import load_config
 
 
-class HarnessConfigTests(unittest.TestCase):
-    def test_load_sample_config(self) -> None:
+class AgentsConfigTests(unittest.TestCase):
+    def test_load_default_config(self) -> None:
         root = Path(__file__).resolve().parents[1]
-        cfg = load_harness_config(root / "configs" / "customers.sample.json")
-        self.assertGreaterEqual(len(cfg.customers), 2)
-        self.assertEqual(cfg.default_customer_id, "acme_foods")
+        cfg = load_config(root / "configs" / "agents.json")
+        self.assertIn("so_extraction", cfg.agent_ids())
+        self.assertIn("product_retrieval", cfg.agent_ids())
+        self.assertIn("so_then_retrieval", cfg.pipeline_ids())
 
-    def test_customer_context_resolves_paths(self) -> None:
-        root = Path(__file__).resolve().parents[1]
-        cfg = load_harness_config(root / "configs" / "customers.sample.json")
-        ctx = get_customer_context(cfg, root, "nova_exports")
-        self.assertTrue(str(ctx.db_path).endswith("customer_dbs/nova_exports.db"))
-        self.assertTrue(str(ctx.dataset_root).endswith("raw_data/customers/nova_exports"))
+    def test_so_extraction_datasets(self) -> None:
+        cfg = load_config()
+        agent = cfg.get_agent("so_extraction")
+        dataset_ids = [d.id for d in agent.datasets()]
+        self.assertIn("acme_foods", dataset_ids)
+        self.assertIn("nova_exports", dataset_ids)
+        self.assertGreater(len(agent.few_shot_pool()), 0)
+
+    def test_pipeline_steps(self) -> None:
+        cfg = load_config()
+        pipeline = cfg.build_pipeline("so_then_retrieval")
+        self.assertEqual([a.id for a in pipeline.agents], ["so_extraction", "product_retrieval"])
 
 
 if __name__ == "__main__":

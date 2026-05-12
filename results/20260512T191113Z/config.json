@@ -1,0 +1,111 @@
+{
+  "agent": "so_extraction",
+  "pipeline": null,
+  "models": [
+    "sonnet-4-6",
+    "sonnet-4-5",
+    "opus-4-5",
+    "opus-4-6",
+    "openai:4.1",
+    "openai:5.2",
+    "openai:5-mini",
+    "openai:5.4",
+    "gemini:gemini-2.5-pro",
+    "gemini:gemini-2.5-flash"
+  ],
+  "datasets": [
+    "downloaded",
+    "acme_foods",
+    "nova_exports"
+  ],
+  "chat": null,
+  "chats_glob": null,
+  "bulk": false,
+  "runs_per_chat": 1,
+  "max_workers": 25,
+  "few_shot_explicit": [],
+  "few_shot_walk": [
+    "/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/single_product_single_shipment_simple.json",
+    "/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/single_product_single_shipment_complex.json",
+    "/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/single_product_multiple_shipment_medium.json",
+    "/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/real_world_msgs_test_v2.json",
+    "/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/multiple_product_multiple_shipment_medium.json",
+    "/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/multiple_product_multiple_shipment_complex.json"
+  ],
+  "few_shot_sweep": [],
+  "few_shot_pool_argv": [],
+  "few_shot_seed": 42,
+  "db_few_shot_limit": 0,
+  "skip_without_expected": false,
+  "results_dir": "/Users/tripathipranav/Documents/code/harness_agents/results/20260512T191113Z",
+  "config_file": "configs/agents.json",
+  "few_shot_mode": "walk",
+  "few_shot_pool_size": 68,
+  "few_shot_default_pool_size": 68,
+  "few_shot_pool_override": null,
+  "few_shot_variants": [
+    {
+      "label": "fs0",
+      "count": 0,
+      "paths": []
+    },
+    {
+      "label": "fs1",
+      "count": 1,
+      "paths": [
+        "raw_data/chats/single_product_single_shipment_simple.json"
+      ]
+    },
+    {
+      "label": "fs2",
+      "count": 2,
+      "paths": [
+        "raw_data/chats/single_product_single_shipment_simple.json",
+        "raw_data/chats/single_product_single_shipment_complex.json"
+      ]
+    },
+    {
+      "label": "fs3",
+      "count": 3,
+      "paths": [
+        "raw_data/chats/single_product_single_shipment_simple.json",
+        "raw_data/chats/single_product_single_shipment_complex.json",
+        "raw_data/chats/single_product_multiple_shipment_medium.json"
+      ]
+    },
+    {
+      "label": "fs4",
+      "count": 4,
+      "paths": [
+        "raw_data/chats/single_product_single_shipment_simple.json",
+        "raw_data/chats/single_product_single_shipment_complex.json",
+        "raw_data/chats/single_product_multiple_shipment_medium.json",
+        "raw_data/chats/real_world_msgs_test_v2.json"
+      ]
+    },
+    {
+      "label": "fs5",
+      "count": 5,
+      "paths": [
+        "raw_data/chats/single_product_single_shipment_simple.json",
+        "raw_data/chats/single_product_single_shipment_complex.json",
+        "raw_data/chats/single_product_multiple_shipment_medium.json",
+        "raw_data/chats/real_world_msgs_test_v2.json",
+        "raw_data/chats/multiple_product_multiple_shipment_medium.json"
+      ]
+    },
+    {
+      "label": "fs6",
+      "count": 6,
+      "paths": [
+        "raw_data/chats/single_product_single_shipment_simple.json",
+        "raw_data/chats/single_product_single_shipment_complex.json",
+        "raw_data/chats/single_product_multiple_shipment_medium.json",
+        "raw_data/chats/real_world_msgs_test_v2.json",
+        "raw_data/chats/multiple_product_multiple_shipment_medium.json",
+        "raw_data/chats/multiple_product_multiple_shipment_complex.json"
+      ]
+    }
+  ],
+  "allow_self_fewshot": false
+}
