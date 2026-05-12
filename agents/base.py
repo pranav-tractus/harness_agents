@@ -11,6 +11,7 @@ B's input".
 
 from __future__ import annotations
 
+import importlib
 import logging
 import time
 from abc import ABC, abstractmethod
@@ -207,6 +208,33 @@ class BaseAgent(Generic[I, O], ABC):
             for path in ds.expand(self._repo_root):
                 out[path.name] = self.expected_for(path) is not None
         return out
+
+    def expected_results_path(self) -> Path | None:
+        """Locate the sibling ``expected_results.py`` for this agent.
+
+        The default convention is one expected file per agent package, e.g.
+        ``agents/so_extraction/expected_results.py``. Override in subclasses
+        that need a custom layout.
+        """
+        module_name = type(self).__module__
+        try:
+            module = importlib.import_module(module_name)
+        except Exception:  # pragma: no cover - defensive
+            return None
+        agent_module_file = getattr(module, "__file__", None)
+        if not agent_module_file:
+            return None
+        candidate = Path(agent_module_file).resolve().parent / "expected_results.py"
+        return candidate if candidate.exists() else None
+
+    def expected_from_output(self, output: Any) -> Any:
+        """Project a run output into the shape stored in ``expected_results.py``.
+
+        Default is identity (extraction-style agents). Retrieval-style agents
+        whose run output is richer than the expected fixture (e.g. ``list[dict]``
+        vs ``list[str]``) should override this.
+        """
+        return output
 
 
 class Pipeline:

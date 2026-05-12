@@ -10,6 +10,16 @@
       "from_whom": "(TEAM1)",
       "body": "Confirmed at USD 25 per bag. Total USD 250.",
       "timestamp": 1760200060
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Shipping address is 100 Finance Ave. FOB Singapore.",
+      "timestamp": 1760200100
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "Noted.",
+      "timestamp": 1760200140
     }
   ],
   "field_data": {

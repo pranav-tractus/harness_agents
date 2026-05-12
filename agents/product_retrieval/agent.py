@@ -82,3 +82,13 @@ class ProductRetrievalAgent(BaseAgent[SummaryInput, list[dict[str, Any]]]):
 
     def score(self, expected: list[str] | None, actual: list[dict[str, Any]] | None) -> ScoreResult:
         return retrieval_metrics(expected, actual)
+
+    def expected_from_output(self, output: Any) -> Any:
+        """Reduce ``[{doc_id, score, snippet}, ...]`` to the ordered doc-id list."""
+        if isinstance(output, list):
+            doc_ids: list[str] = []
+            for entry in output:
+                if isinstance(entry, dict) and entry.get("doc_id"):
+                    doc_ids.append(str(entry["doc_id"]))
+            return doc_ids
+        return output

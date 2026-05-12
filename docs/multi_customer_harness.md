@@ -25,7 +25,8 @@ harness/
 ├── runner.py                       unified single + bulk + pipeline runner
 ├── scoring.py                      json_diff + retrieval_metrics
 ├── artifacts.py                    one folder per run (run.jsonl, aggregate.json, report.html, config.json)
-└── seed_expected.py                helper to draft new expected_results entries
+├── seed_expected.py                helper to draft new expected_results entries
+└── auto_expected.py                automatic writer for expected_results.py (best-of-N + AST rewrite)
 
 dashboard/app.py                    Streamlit (Single Run / Bulk / Results / Seed)
 
@@ -85,8 +86,10 @@ across multiple runs is done in the dashboard's Results Browser tab.
 
 ## Seed expected results
 
-`raw_data/expected_results.py` (and each agent's `expected_results.py`) stay
-manually curated. Use the helper to draft entries:
+Each agent owns its own `expected_results.py`. Two helpers cover the two
+typical workflows:
+
+**Manual review (draft only, no writes)** — print paste-ready blocks + diffs:
 
 ```bash
 python -m harness.seed_expected --agent so_extraction \
@@ -94,8 +97,31 @@ python -m harness.seed_expected --agent so_extraction \
   --runs 2
 ```
 
-The helper prints a Python literal ready to paste into `EXPECTED_BY_CHAT` and a
-field-by-field diff against any existing entry. Nothing is auto-written.
+**Automatic apply (best-of-N + AST rewrite)** — write directly into
+`agents/<agent>/expected_results.py`:
+
+```bash
+# Backfill every chat in a dataset that doesn't yet have an expected entry.
+python -m harness.auto_expected --agent so_extraction \
+  --dataset acme_foods --only-missing --runs 3 --backup
+
+# Refresh one chat (replacing the existing entry, with a .py.bak backup).
+python -m harness.auto_expected --agent so_extraction \
+  --source raw_data/chats/single_product_single_shipment_simple.json \
+  --overwrite-existing --backup
+
+# Show what would change without writing anything.
+python -m harness.auto_expected --agent so_extraction --all --dry-run
+
+# Reuse outputs from a prior benchmark instead of re-running the LLM.
+python -m harness.auto_expected --agent so_extraction \
+  --from-jsonl results/<run_id>/run.jsonl --only-missing
+```
+
+The rewriter is AST-based, so it preserves the module docstring, helper
+functions (e.g. `get_expected_for_chat`), and any custom comments outside the
+`EXPECTED_BY_CHAT` assignment. The default policy is conservative: existing
+entries are never overwritten unless you pass `--overwrite-existing`.
 
 ## Generate synthetic chats
 
