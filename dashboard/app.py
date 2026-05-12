@@ -37,6 +37,17 @@ from core.utils import DEFAULT_MODEL_KEY, MODEL_CATALOG, setup_streamlit_console
 from harness import artifacts
 from harness.scoring import normalize_contract_shape
 
+# Reload the few-shot helper on every Streamlit rerun so edits to
+# harness/fewshot.py are picked up without a full server restart. Streamlit's
+# hot-reload only re-executes this script; sibling modules cached in
+# sys.modules would otherwise stay pinned to an older revision (which is how
+# you'd see e.g. ``unexpected keyword argument 'walk_paths'`` after editing the
+# planner while the dashboard is still running).
+import importlib
+from harness import fewshot as _fewshot_module
+importlib.reload(_fewshot_module)
+plan_few_shot_variants = _fewshot_module.plan_few_shot_variants
+
 setup_streamlit_console_logfile()
 logger = logging.getLogger(__name__)
 
@@ -298,25 +309,203 @@ with tab_bulk:
     )
     datasets = [d.id for d in cfg.get_agent(bulk_agent_id).datasets()]
     selected_datasets = st.multiselect("Datasets", datasets, default=datasets, key="bulk_datasets")
-    bulk_models = st.multiselect("Models", list(MODEL_CATALOG.keys()), default=[selected_model], key="bulk_models")
+    bulk_models = st.multiselect(
+        "Models",
+        list(MODEL_CATALOG.keys()),
+        default=[selected_model],
+        key="bulk_models",
+        help=(
+            "Pick one or more models. Every (source × model × few-shot variant × run) combo "
+            "is scheduled on the same thread pool, so models run concurrently."
+        ),
+    )
+    if len(bulk_models) > 1:
+        st.caption(f"Concurrent across {len(bulk_models)} models: {', '.join(bulk_models)}")
     runs_per_chat = st.number_input("Runs per chat", min_value=1, max_value=10, value=1, key="bulk_runs")
     max_workers = st.number_input("Max workers", min_value=1, max_value=32, value=8, key="bulk_workers")
     skip_no_expected = st.checkbox("Skip chats without expected entries", value=True, key="bulk_skip_no_expected")
 
     st.subheader("Few-shot strategy")
+    bulk_agent = cfg.get_agent(bulk_agent_id)
     pool = _agent_pool_labels(bulk_agent_id)
-    explicit = st.multiselect(
-        "Explicit few-shot picks (cap 10)",
-        [label for label, _ in pool],
-        max_selections=10,
-        key="bulk_fs_explicit",
+    label_to_path = {label: path for label, path in pool}
+    st.caption(
+        f"Few-shot pool for `{bulk_agent_id}` contains **{len(pool)}** files "
+        f"(globs: {list(bulk_agent._few_shot_globs)})."
     )
-    sweep_str = st.text_input(
-        "Or sweep over few-shot counts (comma-separated 0..10)",
-        value="",
-        key="bulk_fs_sweep",
-        help="Leave empty to ignore. Example: 0,2,5 will run three variants per chat.",
+
+    # Mode picker: exactly one of {none, explicit, walk, sweep} is active per run.
+    FS_MODES = {
+        "none": "None — every variant has 0 few-shot examples",
+        "explicit": "Explicit — one fixed set applied to every chat",
+        "walk": "Walk — fs0..fsN over a hand-picked, ordered list",
+        "sweep": "Sweep — nested random sampling at the requested counts",
+    }
+    fs_mode = st.radio(
+        "Mode",
+        options=list(FS_MODES.keys()),
+        format_func=lambda k: FS_MODES[k],
+        index=0,
+        key="bulk_fs_mode",
+        horizontal=False,
+        help=(
+            "Pick exactly one strategy. The inputs below switch to match — only the controls "
+            "for the active mode affect this run. Precedence on the CLI mirrors this radio: "
+            "explicit > walk > sweep > none."
+        ),
     )
+
+    explicit: list[str] = []
+    walk_labels: list[str] = []
+    walk_paths: list[Path] = []
+    curated_pool_labels: list[str] = []
+    curated_pool_paths: list[Path] = []
+    sweep_str = ""
+    sweep_counts: list[int] = []
+
+    if fs_mode == "none":
+        st.info(
+            "No few-shot examples will be sent. The run will produce a single `fs0` variant per "
+            "(chat × model × runs-per-chat) combination."
+        )
+
+    elif fs_mode == "explicit":
+        with st.container(border=True):
+            st.markdown("**Explicit picks** — one fixed set, applied to every chat.")
+            explicit = st.multiselect(
+                "Few-shot files (cap 10)",
+                [label for label, _ in pool],
+                max_selections=10,
+                key="bulk_fs_explicit",
+            )
+            if explicit:
+                st.caption(
+                    f"Selected **{len(explicit)}** files. Every chat will see the same few-shot set, "
+                    "yielding a single variant per chat."
+                )
+            else:
+                st.caption("Pick 1–10 files to populate the single variant.")
+
+    elif fs_mode == "walk":
+        with st.container(border=True):
+            st.markdown(
+                "**Walk** — order matters. Picking `[A, B, C]` yields four variants per chat: "
+                "`fs0=[]`, `fs1=[A]`, `fs2=[A,B]`, `fs3=[A,B,C]`."
+            )
+            walk_labels = st.multiselect(
+                "Pick chats in order (cap 10)",
+                [label for label, _ in pool],
+                max_selections=10,
+                key="bulk_fs_walk",
+            )
+            walk_paths = [Path(label_to_path[label]) for label in walk_labels]
+            if walk_labels:
+                st.caption(
+                    f"Walk will produce **{len(walk_labels) + 1}** variants "
+                    f"(fs0..fs{len(walk_labels)}) from the picked chats, in this exact order."
+                )
+            else:
+                st.caption("Pick at least one chat; you'll always also get an `fs0` (empty) variant.")
+
+    elif fs_mode == "sweep":
+        with st.container(border=True):
+            st.markdown(
+                "**Sweep** — nested random sampling from the few-shot pool. "
+                "The pool is shuffled once with the seed below, then each requested count takes "
+                "a prefix of that shuffle (so `count=2` ⊂ `count=5` ⊂ `count=10`)."
+            )
+            sweep_str = st.text_input(
+                "Counts (comma-separated 0..10)",
+                value="",
+                key="bulk_fs_sweep",
+                help="Example: `0,2,5` runs three variants per chat.",
+                placeholder="0,1,3,5,10",
+            )
+            if sweep_str.strip():
+                for token in sweep_str.split(","):
+                    tok = token.strip()
+                    if tok.isdigit():
+                        sweep_counts.append(int(tok))
+            curated_pool_labels = st.multiselect(
+                "Optional: restrict sweep to a curated subset of the pool",
+                [label for label, _ in pool],
+                default=[],
+                key="bulk_fs_pool",
+                help=(
+                    "Leave empty to sample from the agent's full pool of "
+                    f"{len(pool)} files."
+                ),
+            )
+            curated_pool_paths = [Path(label_to_path[label]) for label in curated_pool_labels]
+            if curated_pool_labels:
+                st.caption(
+                    f"Sweep will draw from **{len(curated_pool_labels)}** curated files "
+                    f"instead of the full pool of {len(pool)}."
+                )
+
+    # Seed + self-fewshot only meaningful for sweep mode. Walk mode is deterministic;
+    # explicit/none don't sample. Show seed only when relevant, but keep allow-self
+    # visible across all sampling modes because it still gates leakage in walk/explicit.
+    if fs_mode == "sweep":
+        fs_seed = st.number_input(
+            "Sampling seed",
+            min_value=0,
+            max_value=10_000,
+            value=42,
+            step=1,
+            key="bulk_fs_seed",
+            help="Deterministic seed for the one-time shuffle of the pool.",
+        )
+    else:
+        fs_seed = 42  # unused; kept for the CLI invocation below.
+
+    if fs_mode == "none":
+        allow_self_fewshot = False  # nothing to leak.
+    else:
+        allow_self_fewshot = st.checkbox(
+            "Allow source chat in its own few-shot list",
+            value=False,
+            key="bulk_allow_self_fewshot",
+            help=(
+                "Off by default: the chat being tested is excluded from its own few-shot list "
+                "(applies after pool curation / walk picks). Turn on only when you specifically "
+                "want to measure that case."
+            ),
+        )
+
+    # Live preview of what each variant will actually contain.
+    show_preview = (
+        (fs_mode == "explicit" and explicit)
+        or (fs_mode == "walk" and walk_paths)
+        or (fs_mode == "sweep" and sweep_counts)
+    )
+    if show_preview:
+        with st.expander("Preview few-shot variants", expanded=True):
+            preview_variants = plan_few_shot_variants(
+                bulk_agent,
+                explicit_paths=[label_to_path[label] for label in explicit] if fs_mode == "explicit" else None,
+                walk_paths=walk_paths if fs_mode == "walk" else None,
+                sweep_counts=sweep_counts if fs_mode == "sweep" else None,
+                seed=int(fs_seed),
+                pool_override=curated_pool_paths if (fs_mode == "sweep" and curated_pool_paths) else None,
+            )
+            st.caption(
+                f"Mode: **{fs_mode}** · {len(preview_variants)} variant(s) per (chat × model × run)."
+            )
+            for label, count, paths in preview_variants:
+                rels = []
+                for p in paths:
+                    try:
+                        rels.append(str(p.relative_to(bulk_agent.repo_root)))
+                    except ValueError:
+                        rels.append(str(p))
+                st.write(f"**{label}** (requested count={count}, actual={len(rels)})")
+                if not rels:
+                    st.caption("(no few-shot examples)")
+                else:
+                    st.code("\n".join(rels) or "(empty)", language="text")
+    elif fs_mode != "none":
+        st.caption("Pick at least one input above to see the variant preview.")
 
     if st.button("Launch bulk run", type="primary", key="bulk_run_btn"):
         cmd = [sys.executable, "-m", "harness.runner"]
@@ -333,13 +522,17 @@ with tab_bulk:
         cmd += ["--db-few-shot-limit", str(int(db_lim))]
         if skip_no_expected:
             cmd += ["--skip-without-expected"]
-        if explicit:
-            label_to_path = {label: path for label, path in pool}
+        if fs_mode == "explicit" and explicit:
             cmd += ["--few-shot", *[label_to_path[label] for label in explicit]]
-        if sweep_str.strip():
-            counts = [c.strip() for c in sweep_str.split(",") if c.strip()]
-            if counts:
-                cmd += ["--few-shot-sweep", *counts]
+        elif fs_mode == "walk" and walk_paths:
+            cmd += ["--few-shot-walk", *[str(p) for p in walk_paths]]
+        elif fs_mode == "sweep" and sweep_counts:
+            cmd += ["--few-shot-sweep", *[str(c) for c in sweep_counts]]
+            if curated_pool_paths:
+                cmd += ["--few-shot-pool", *[str(p) for p in curated_pool_paths]]
+            cmd += ["--few-shot-seed", str(int(fs_seed))]
+        if allow_self_fewshot:
+            cmd += ["--allow-self-fewshot"]
         st.code(" ".join(cmd))
         with st.spinner("Running bulk job (this may take a few minutes)..."):
             proc = subprocess.run(cmd, cwd=str(ROOT_DIR), capture_output=True, text=True)

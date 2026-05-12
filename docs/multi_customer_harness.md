@@ -76,13 +76,108 @@ currently fails fast with `not_implemented` so the plumbing is testable.
 python main.py --agent so_extraction --bulk \
   --datasets acme_foods nova_exports \
   --few-shot-sweep 0 1 3 5 10 \
-  --models sonnet-4-6 \
+  --few-shot-seed 42 \
+  --models sonnet-4-6 gpt-5-mini gemini-2-5-pro \
   --runs-per-chat 2 --max-workers 8 \
   --skip-without-expected
 ```
 
 All variants land in **one** results folder per invocation. Comparing variants
 across multiple runs is done in the dashboard's Results Browser tab.
+
+### Multiple models
+
+Pass `--models m1 m2 m3` (or pick several in the dashboard's Models multiselect)
+to test multiple models in the same run. Every `(source × model × few-shot
+variant × run)` combination is submitted as a future on the same
+`ThreadPoolExecutor`, so models run concurrently up to `--max-workers`.
+
+### Few-shot sweep semantics
+
+For each agent the few-shot **pool** is exactly the union of
+`agents[].few_shot_globs` from `configs/agents.json` (for `so_extraction` this
+is every chat JSON under `raw_data/`). When `--few-shot-sweep` is set the
+runner:
+
+1. Calls `agent.few_shot_pool()` to materialise the candidate paths.
+2. Shuffles that pool **once** with `--few-shot-seed` (default `42`).
+3. For each requested count `c`, takes the **prefix of length `c`** of the
+   shuffled pool. This guarantees that the count=2 set is a subset of count=5,
+   which is a subset of count=10 — so sweeps are interpretable.
+4. By default, drops the source-under-test from its own variant to prevent
+   leakage. Pass `--allow-self-fewshot` to disable that guard.
+
+Each run persists the resolved few-shot files into `results/<run_id>/config.json`
+under `few_shot_variants[].paths`, so any artifact can be replayed exactly.
+The dashboard's Bulk Benchmark tab shows a live "Preview few-shot variants"
+panel that renders the same plan before launch.
+
+### Curating the few-shot pool
+
+By default sweep variants are sampled from the agent's full
+`few_shot_pool()`. To restrict sampling to a hand-picked subset for a run,
+pass `--few-shot-pool <path> [<path> ...]`:
+
+```bash
+python main.py --agent so_extraction --bulk \
+  --datasets acme_foods \
+  --few-shot-sweep 0 2 5 \
+  --few-shot-pool \
+    raw_data/customers/acme_foods/chats/realistic_acme_foods_001.json \
+    raw_data/customers/acme_foods/chats/realistic_acme_foods_002.json \
+    raw_data/customers/acme_foods/chats/fs_acme_simple.json
+```
+
+Behaviour:
+
+- Missing paths are warn-and-skipped (same convention as `--few-shot`).
+- The curated pool composes with `--few-shot-sweep` (nested sampling still
+  applies, just over this smaller pool) and with `--allow-self-fewshot`
+  (source-under-test exclusion runs **after** pool curation).
+- `--few-shot` (explicit single variant) still wins over `--few-shot-pool`;
+  the curated pool only affects sweep variants.
+- The resolved curated list lands in `results/<run_id>/config.json` under
+  `few_shot_pool_override` for reproducibility.
+
+The dashboard's Bulk Benchmark tab exposes the same control as a
+**"Curate few-shot pool (optional)"** multiselect right next to the explicit
+picker; the live "Preview few-shot variants" panel re-samples against the
+curated pool so you see exactly what each `fs<count>` variant will use before
+launching.
+
+### Deterministic walk over hand-picked chats
+
+When you want to know exactly which chats contribute to each variant — no
+shuffling, no sampling — use `--few-shot-walk`. Pass an **ordered** list of
+chats and the runner builds variants `fs0=[]`, `fs1=[A]`, `fs2=[A, B]`, …,
+`fs<N>=[A, B, …, N]`:
+
+```bash
+python main.py --agent so_extraction --bulk \
+  --datasets acme_foods \
+  --few-shot-walk \
+    raw_data/customers/acme_foods/chats/fs_acme_simple.json \
+    raw_data/customers/acme_foods/chats/realistic_acme_foods_001.json \
+    raw_data/customers/acme_foods/chats/realistic_acme_foods_002.json
+```
+
+The example above produces four variants per chat (`fs0..fs3`). Behaviour:
+
+- Order is preserved exactly — pick the chats in the order you want them
+  introduced, smallest variant first.
+- Capped at 10 picks (so at most `fs0..fs10`).
+- Duplicates and missing paths are silently dropped (with a warning for
+  missing ones).
+- Wins over `--few-shot-sweep` and `--few-shot-pool`. Still loses to
+  `--few-shot` (single explicit variant).
+- `--allow-self-fewshot` still applies, so a picked chat that happens to be
+  the source-under-test is dropped from that source's run unless you opt in.
+- The persisted plan in `results/<run_id>/config.json` reports
+  `few_shot_mode: "walk"` plus the full `few_shot_variants[].paths` list.
+
+The dashboard's Bulk Benchmark tab exposes this as a **"Walk over selected
+chats (0..N, in order)"** multiselect; the live preview panel renders the
+exact `fs0..fsN` plan before launch.
 
 ## Seed expected results
 

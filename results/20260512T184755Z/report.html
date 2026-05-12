@@ -1,0 +1,3319 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Harness Run 20260512T184755Z</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; color: #1f2937; }
+    h1, h2 { margin-bottom: 8px; }
+    .meta { margin-bottom: 16px; color: #4b5563; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 20px; font-size: 13px; }
+    th, td { border: 1px solid #d1d5db; padding: 8px; vertical-align: top; text-align: left; }
+    th { background: #f3f4f6; }
+    pre { margin: 0; white-space: pre-wrap; }
+    .card { background: #f9fafb; border: 1px solid #e5e7eb; padding: 10px; margin-bottom: 16px; }
+  </style>
+</head>
+<body>
+  <h1>Agent Harness Run</h1>
+  <div class="meta">Run ID: <code>20260512T184755Z</code> · Generated UTC: <code>2026-05-12T18:50:55.602978+00:00</code></div>
+
+  <div class="card">
+    <h2>Configuration</h2>
+    <pre>{
+  &quot;agent&quot;: &quot;so_extraction&quot;,
+  &quot;pipeline&quot;: null,
+  &quot;models&quot;: [
+    &quot;sonnet-4-6&quot;,
+    &quot;sonnet-4-5&quot;,
+    &quot;opus-4-5&quot;,
+    &quot;opus-4-6&quot;,
+    &quot;openai:4.1&quot;,
+    &quot;openai:5.2&quot;,
+    &quot;openai:5-mini&quot;,
+    &quot;openai:5.4&quot;,
+    &quot;gemini:gemini-2.5-pro&quot;,
+    &quot;gemini:gemini-2.5-flash&quot;
+  ],
+  &quot;datasets&quot;: [
+    &quot;downloaded&quot;,
+    &quot;acme_foods&quot;,
+    &quot;nova_exports&quot;
+  ],
+  &quot;chat&quot;: null,
+  &quot;chats_glob&quot;: null,
+  &quot;bulk&quot;: false,
+  &quot;runs_per_chat&quot;: 1,
+  &quot;max_workers&quot;: 25,
+  &quot;few_shot_explicit&quot;: [],
+  &quot;few_shot_sweep&quot;: [],
+  &quot;few_shot_pool_argv&quot;: [
+    &quot;/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/multiple_product_multiple_shipment_medium.json&quot;,
+    &quot;/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/single_product_multiple_shipment_medium.json&quot;,
+    &quot;/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/single_product_single_shipment_medium.json&quot;,
+    &quot;/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/updates/update_change_quantity.json&quot;,
+    &quot;/Users/tripathipranav/Documents/code/harness_agents/raw_data/downloaded_chats/03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json&quot;
+  ],
+  &quot;few_shot_seed&quot;: 42,
+  &quot;db_few_shot_limit&quot;: 0,
+  &quot;skip_without_expected&quot;: true,
+  &quot;results_dir&quot;: &quot;/Users/tripathipranav/Documents/code/harness_agents/results/20260512T184755Z&quot;,
+  &quot;config_file&quot;: &quot;configs/agents.json&quot;,
+  &quot;few_shot_pool_size&quot;: 5,
+  &quot;few_shot_default_pool_size&quot;: 68,
+  &quot;few_shot_pool_override&quot;: [
+    &quot;raw_data/chats/multiple_product_multiple_shipment_medium.json&quot;,
+    &quot;raw_data/chats/single_product_multiple_shipment_medium.json&quot;,
+    &quot;raw_data/chats/single_product_single_shipment_medium.json&quot;,
+    &quot;raw_data/chats/updates/update_change_quantity.json&quot;,
+    &quot;raw_data/downloaded_chats/03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json&quot;
+  ],
+  &quot;few_shot_variants&quot;: [
+    {
+      &quot;label&quot;: &quot;none&quot;,
+      &quot;count&quot;: 0,
+      &quot;paths&quot;: []
+    }
+  ],
+  &quot;allow_self_fewshot&quot;: false
+}</pre>
+  </div>
+
+  <h2>Per-agent Totals</h2>
+  <table><thead><tr><th>Agent</th><th>Runs</th><th>Success</th><th>Avg attempts</th><th>Avg elapsed (s)</th><th>Avg mismatch/expected</th><th>Field match</th></tr></thead><tbody><tr><td>so_extraction</td><td>510</td><td>1.0000</td><td>1.0000</td><td>8.0545</td><td>4.5157</td><td>0.8101</td></tr></tbody></table>
+
+  <h2>Model + Strategy Leaderboard</h2>
+  <table><thead><tr><th>Agent</th><th>Model</th><th>FS count</th><th>Runs</th><th>Success</th><th>Avg attempts</th><th>Avg elapsed (s)</th><th>Avg mismatch/expected</th><th>Field match</th></tr></thead><tbody><tr><td>so_extraction</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>51</td><td>1.0000</td><td>1.0000</td><td>13.2774</td><td>6.0784</td><td>0.7526</td></tr>
+<tr><td>so_extraction</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>51</td><td>1.0000</td><td>1.0000</td><td>19.6445</td><td>5.9216</td><td>0.7590</td></tr>
+<tr><td>so_extraction</td><td>openai:4.1</td><td>0</td><td>51</td><td>1.0000</td><td>1.0000</td><td>1.8013</td><td>4.1569</td><td>0.8308</td></tr>
+<tr><td>so_extraction</td><td>openai:5-mini</td><td>0</td><td>51</td><td>1.0000</td><td>1.0000</td><td>20.9493</td><td>5.6275</td><td>0.7667</td></tr>
+<tr><td>so_extraction</td><td>openai:5.2</td><td>0</td><td>51</td><td>1.0000</td><td>1.0000</td><td>3.2435</td><td>5.5294</td><td>0.7749</td></tr>
+<tr><td>so_extraction</td><td>openai:5.4</td><td>0</td><td>51</td><td>1.0000</td><td>1.0000</td><td>2.4232</td><td>5.3529</td><td>0.7798</td></tr>
+<tr><td>so_extraction</td><td>opus-4-5</td><td>0</td><td>51</td><td>1.0000</td><td>1.0000</td><td>5.0071</td><td>2.9412</td><td>0.8708</td></tr>
+<tr><td>so_extraction</td><td>opus-4-6</td><td>0</td><td>51</td><td>1.0000</td><td>1.0000</td><td>5.0857</td><td>2.9216</td><td>0.8742</td></tr>
+<tr><td>so_extraction</td><td>sonnet-4-5</td><td>0</td><td>51</td><td>1.0000</td><td>1.0000</td><td>4.6297</td><td>3.5882</td><td>0.8250</td></tr>
+<tr><td>so_extraction</td><td>sonnet-4-6</td><td>0</td><td>51</td><td>1.0000</td><td>1.0000</td><td>4.4832</td><td>3.0392</td><td>0.8763</td></tr></tbody></table>
+
+  <h2>Few-shot Count Rollup</h2>
+  <table><thead><tr><th>Agent</th><th>FS count</th><th>Runs</th><th>Success</th><th>Avg mismatch/expected</th><th>Field match</th></tr></thead><tbody><tr><td>so_extraction</td><td>0</td><td>510</td><td>1.0000</td><td>4.5157</td><td>0.8101</td></tr></tbody></table>
+
+  <h2>Per-dataset Breakdown</h2>
+  <table><thead><tr><th>Agent</th><th>Dataset</th><th>Runs</th><th>Success</th><th>Avg elapsed (s)</th><th>Avg mismatch/expected</th><th>Field match</th></tr></thead><tbody><tr><td>so_extraction</td><td>acme_foods</td><td>210</td><td>1.0000</td><td>8.1793</td><td>2.4571</td><td>0.9014</td></tr>
+<tr><td>so_extraction</td><td>downloaded</td><td>90</td><td>1.0000</td><td>9.0965</td><td>14.4444</td><td>0.3783</td></tr>
+<tr><td>so_extraction</td><td>nova_exports</td><td>210</td><td>1.0000</td><td>7.4831</td><td>2.3190</td><td>0.8986</td></tr></tbody></table>
+
+  <h2>Per-chat Breakdown</h2>
+  <table><thead><tr><th>Agent</th><th>Chat</th><th>Model</th><th>FS count</th><th>Runs</th><th>Success</th><th>Avg elapsed (s)</th><th>Avg mismatch/expected</th></tr></thead><tbody><tr><td>so_extraction</td><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>19.6091</td><td>15.0000</td></tr>
+<tr><td>so_extraction</td><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>20.2502</td><td>15.0000</td></tr>
+<tr><td>so_extraction</td><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>3.7683</td><td>17.0000</td></tr>
+<tr><td>so_extraction</td><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>31.6417</td><td>15.0000</td></tr>
+<tr><td>so_extraction</td><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>5.2731</td><td>15.0000</td></tr>
+<tr><td>so_extraction</td><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>4.6332</td><td>16.0000</td></tr>
+<tr><td>so_extraction</td><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>6.7855</td><td>15.0000</td></tr>
+<tr><td>so_extraction</td><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>6.6117</td><td>15.0000</td></tr>
+<tr><td>so_extraction</td><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>7.3822</td><td>15.0000</td></tr>
+<tr><td>so_extraction</td><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>6.0964</td><td>15.0000</td></tr>
+<tr><td>so_extraction</td><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>13.4846</td><td>15.0000</td></tr>
+<tr><td>so_extraction</td><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>14.0097</td><td>15.0000</td></tr>
+<tr><td>so_extraction</td><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>7.5147</td><td>14.0000</td></tr>
+<tr><td>so_extraction</td><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>18.1884</td><td>13.0000</td></tr>
+<tr><td>so_extraction</td><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>7.7245</td><td>14.0000</td></tr>
+<tr><td>so_extraction</td><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>5.0573</td><td>14.0000</td></tr>
+<tr><td>so_extraction</td><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>6.5817</td><td>14.0000</td></tr>
+<tr><td>so_extraction</td><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>6.9395</td><td>14.0000</td></tr>
+<tr><td>so_extraction</td><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>6.2408</td><td>14.0000</td></tr>
+<tr><td>so_extraction</td><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>6.5215</td><td>15.0000</td></tr>
+<tr><td>so_extraction</td><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>20.1109</td><td>20.0000</td></tr>
+<tr><td>so_extraction</td><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>32.2827</td><td>20.0000</td></tr>
+<tr><td>so_extraction</td><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>4.4666</td><td>17.0000</td></tr>
+<tr><td>so_extraction</td><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>23.4266</td><td>18.0000</td></tr>
+<tr><td>so_extraction</td><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>4.0920</td><td>16.0000</td></tr>
+<tr><td>so_extraction</td><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>5.5559</td><td>17.0000</td></tr>
+<tr><td>so_extraction</td><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>8.9394</td><td>16.0000</td></tr>
+<tr><td>so_extraction</td><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>8.7251</td><td>16.0000</td></tr>
+<tr><td>so_extraction</td><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>10.8801</td><td>17.0000</td></tr>
+<tr><td>so_extraction</td><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>7.9129</td><td>16.0000</td></tr>
+<tr><td>so_extraction</td><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>14.6141</td><td>17.0000</td></tr>
+<tr><td>so_extraction</td><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>11.7880</td><td>16.0000</td></tr>
+<tr><td>so_extraction</td><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.7635</td><td>15.0000</td></tr>
+<tr><td>so_extraction</td><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>18.0369</td><td>17.0000</td></tr>
+<tr><td>so_extraction</td><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>3.5854</td><td>16.0000</td></tr>
+<tr><td>so_extraction</td><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>3.9828</td><td>16.0000</td></tr>
+<tr><td>so_extraction</td><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.9230</td><td>15.0000</td></tr>
+<tr><td>so_extraction</td><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>5.0254</td><td>15.0000</td></tr>
+<tr><td>so_extraction</td><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.9733</td><td>16.0000</td></tr>
+<tr><td>so_extraction</td><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.3553</td><td>16.0000</td></tr>
+<tr><td>so_extraction</td><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>10.3316</td><td>15.0000</td></tr>
+<tr><td>so_extraction</td><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>17.9630</td><td>15.0000</td></tr>
+<tr><td>so_extraction</td><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.8150</td><td>13.0000</td></tr>
+<tr><td>so_extraction</td><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>13.4473</td><td>13.0000</td></tr>
+<tr><td>so_extraction</td><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>2.3782</td><td>14.0000</td></tr>
+<tr><td>so_extraction</td><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.5115</td><td>14.0000</td></tr>
+<tr><td>so_extraction</td><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.4960</td><td>14.0000</td></tr>
+<tr><td>so_extraction</td><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>5.0261</td><td>13.0000</td></tr>
+<tr><td>so_extraction</td><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.0597</td><td>13.0000</td></tr>
+<tr><td>so_extraction</td><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.3351</td><td>14.0000</td></tr>
+<tr><td>so_extraction</td><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>8.3897</td><td>14.0000</td></tr>
+<tr><td>so_extraction</td><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>17.8292</td><td>14.0000</td></tr>
+<tr><td>so_extraction</td><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.6348</td><td>16.0000</td></tr>
+<tr><td>so_extraction</td><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>17.9023</td><td>15.0000</td></tr>
+<tr><td>so_extraction</td><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>2.4209</td><td>14.0000</td></tr>
+<tr><td>so_extraction</td><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.8629</td><td>15.0000</td></tr>
+<tr><td>so_extraction</td><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.6257</td><td>14.0000</td></tr>
+<tr><td>so_extraction</td><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>5.3624</td><td>14.0000</td></tr>
+<tr><td>so_extraction</td><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.5365</td><td>14.0000</td></tr>
+<tr><td>so_extraction</td><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.7131</td><td>13.0000</td></tr>
+<tr><td>so_extraction</td><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>10.9964</td><td>17.0000</td></tr>
+<tr><td>so_extraction</td><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>16.9122</td><td>17.0000</td></tr>
+<tr><td>so_extraction</td><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.1180</td><td>17.0000</td></tr>
+<tr><td>so_extraction</td><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>11.0887</td><td>17.0000</td></tr>
+<tr><td>so_extraction</td><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>2.1140</td><td>17.0000</td></tr>
+<tr><td>so_extraction</td><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.7897</td><td>17.0000</td></tr>
+<tr><td>so_extraction</td><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>3.0860</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>2.9306</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>2.8644</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>3.8834</td><td>17.0000</td></tr>
+<tr><td>so_extraction</td><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>27.1891</td><td>16.0000</td></tr>
+<tr><td>so_extraction</td><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>22.9985</td><td>13.0000</td></tr>
+<tr><td>so_extraction</td><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.7815</td><td>14.0000</td></tr>
+<tr><td>so_extraction</td><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>26.4686</td><td>12.0000</td></tr>
+<tr><td>so_extraction</td><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>2.8005</td><td>14.0000</td></tr>
+<tr><td>so_extraction</td><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>3.5191</td><td>15.0000</td></tr>
+<tr><td>so_extraction</td><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.9217</td><td>14.0000</td></tr>
+<tr><td>so_extraction</td><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>5.7270</td><td>12.0000</td></tr>
+<tr><td>so_extraction</td><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.3733</td><td>19.0000</td></tr>
+<tr><td>so_extraction</td><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.4543</td><td>18.0000</td></tr>
+<tr><td>so_extraction</td><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>32.3192</td><td>13.0000</td></tr>
+<tr><td>so_extraction</td><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>23.5488</td><td>11.0000</td></tr>
+<tr><td>so_extraction</td><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.7096</td><td>10.0000</td></tr>
+<tr><td>so_extraction</td><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>27.6829</td><td>9.0000</td></tr>
+<tr><td>so_extraction</td><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>2.4864</td><td>13.0000</td></tr>
+<tr><td>so_extraction</td><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.9683</td><td>14.0000</td></tr>
+<tr><td>so_extraction</td><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.5241</td><td>10.0000</td></tr>
+<tr><td>so_extraction</td><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>6.1518</td><td>10.0000</td></tr>
+<tr><td>so_extraction</td><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.5088</td><td>17.0000</td></tr>
+<tr><td>so_extraction</td><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.3714</td><td>16.0000</td></tr>
+<tr><td>so_extraction</td><td>fs_acme_simple.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>7.9266</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>fs_acme_simple.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>16.0102</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>fs_acme_simple.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.9005</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>fs_acme_simple.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>22.0983</td><td>8.0000</td></tr>
+<tr><td>so_extraction</td><td>fs_acme_simple.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>2.5627</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>fs_acme_simple.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.5284</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>fs_acme_simple.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.3027</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>fs_acme_simple.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>5.0720</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>fs_acme_simple.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.0457</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>fs_acme_simple.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.3257</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>fs_nova_simple.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>2.3495</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>fs_nova_simple.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>9.4151</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>fs_nova_simple.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.1721</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>fs_nova_simple.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>6.3458</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>fs_nova_simple.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>1.8342</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>fs_nova_simple.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>1.6388</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>fs_nova_simple.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>3.2021</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>fs_nova_simple.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>2.9481</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>fs_nova_simple.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>2.2102</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>fs_nova_simple.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>2.2571</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_001.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>7.3799</td><td>6.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_001.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>17.4138</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_001.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.6754</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_001.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>22.8033</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_001.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>1.9828</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_001.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.1982</td><td>10.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_001.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.6399</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_001.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.9475</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_001.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.1543</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_001.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.4829</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_002.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>16.6114</td><td>6.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_002.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>21.6172</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_002.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.6609</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_002.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>23.2564</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_002.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>2.8699</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_002.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>3.0159</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_002.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>6.9093</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_002.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>6.8596</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_002.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.8389</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_002.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>5.0953</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_003.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>14.9582</td><td>7.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_003.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>30.5756</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_003.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.1413</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_003.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>20.3155</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_003.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>2.4039</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_003.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>1.9078</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_003.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.8388</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_003.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.7153</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_003.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.4947</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_003.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.3361</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_004.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>12.2684</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_004.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>26.3929</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_004.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.4863</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_004.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>18.5843</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_004.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>1.9359</td><td>6.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_004.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.3360</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_004.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.7882</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_004.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>5.3375</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_004.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.5308</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_004.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.1569</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_005.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>13.1000</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_005.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>18.9218</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_005.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.8184</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_005.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>17.0029</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_005.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>2.4423</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_005.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>1.9070</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_005.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.4722</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_005.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.6645</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_005.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.0587</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_005.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.8454</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_006.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>11.4413</td><td>6.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_006.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>24.1392</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_006.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.9835</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_006.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>18.6907</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_006.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>3.2016</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_006.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.9571</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_006.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.4893</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_006.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.2869</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_006.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.4302</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_006.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.7480</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_007.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>8.4728</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_007.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>19.3067</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_007.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.3879</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_007.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>17.1148</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_007.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>3.0080</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_007.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.1861</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_007.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.7055</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_007.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.7234</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_007.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.9869</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_007.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>5.4660</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_008.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>13.0931</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_008.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>16.6897</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_008.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.2331</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_008.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>19.3367</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_008.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>2.1675</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_008.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.2745</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_008.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.7570</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_008.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.6774</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_008.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.7546</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_008.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.8862</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_009.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>12.9822</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_009.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>18.1983</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_009.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.5970</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_009.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>15.4396</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_009.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>2.2270</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_009.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>1.9163</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_009.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.6876</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_009.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>5.2735</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_009.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.0860</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_009.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.0713</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_010.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>18.7405</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_010.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>21.4434</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_010.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.4940</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_010.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>14.4249</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_010.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>2.2328</td><td>6.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_010.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.6585</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_010.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.8735</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_010.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>8.4032</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_010.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>6.2274</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_010.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.7543</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_001.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>10.1705</td><td>6.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_001.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>15.9954</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_001.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.7341</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_001.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>23.0455</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_001.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>2.2121</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_001.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.1248</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_001.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.6349</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_001.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.9475</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_001.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.4487</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_001.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.3903</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_002.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>13.3423</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_002.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>19.2992</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_002.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.4286</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_002.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>20.2700</td><td>6.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_002.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>2.2197</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_002.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.5463</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_002.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.9052</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_002.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>5.8852</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_002.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.0715</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_002.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>5.1104</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_003.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>12.2260</td><td>7.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_003.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>17.4064</td><td>9.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_003.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.2030</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_003.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>11.2759</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_003.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>2.1200</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_003.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>1.9867</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_003.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.5789</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_003.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.9207</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_003.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.4431</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_003.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.3251</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_004.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>12.9219</td><td>6.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_004.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>17.7439</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_004.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.8232</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_004.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>18.3899</td><td>6.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_004.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>1.7227</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_004.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>1.8303</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_004.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.9283</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_004.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.8843</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_004.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.8213</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_004.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.0740</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_005.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>10.1177</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_005.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>15.8833</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_005.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.1521</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_005.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>17.9456</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_005.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>3.6980</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_005.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>1.8547</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_005.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.3729</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_005.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>5.4155</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_005.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.2417</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_005.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.2292</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_006.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>5.0896</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_006.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>21.4711</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_006.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.4011</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_006.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>16.7322</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_006.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>2.0074</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_006.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.2382</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_006.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.6257</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_006.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>5.1128</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_006.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.4110</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_006.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.2117</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_007.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>11.0278</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_007.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>12.7048</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_007.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.3488</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_007.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>29.3463</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_007.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>1.6647</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_007.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.1860</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_007.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.8505</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_007.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>5.0850</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_007.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.0717</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_007.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.2295</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_008.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>19.6377</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_008.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>18.3525</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_008.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.7157</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_008.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>26.3901</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_008.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>3.5669</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_008.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>1.8317</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_008.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.4424</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_008.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.8895</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_008.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.4788</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_008.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.1210</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_009.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>9.6482</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_009.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>19.4427</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_009.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.3685</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_009.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>20.1629</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_009.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>2.0380</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_009.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.1798</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_009.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.6709</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_009.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.8325</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_009.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>3.9743</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_009.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.5180</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_010.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>8.3614</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_010.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>14.8309</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_010.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.8049</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_010.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>15.7686</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_010.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>2.4636</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_010.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.2039</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_010.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>6.2910</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_010.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>5.9550</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_010.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.0502</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_010.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.9001</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_001.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>6.1146</td><td>7.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_001.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>18.4731</td><td>6.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_001.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.1193</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_001.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>28.6586</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_001.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>3.0003</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_001.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.0924</td><td>7.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_001.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.7882</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_001.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.6929</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_001.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.8481</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_001.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>3.9593</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_002.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>10.2994</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_002.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>17.8389</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_002.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.2707</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_002.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>26.7388</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_002.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>7.9718</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_002.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.0150</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_002.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.9555</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_002.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>5.2631</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_002.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.5517</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_002.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.3146</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_003.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>12.9914</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_003.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>23.3319</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_003.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.6483</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_003.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>15.4838</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_003.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>11.0126</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_003.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.0606</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_003.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.0083</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_003.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.4763</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_003.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.1627</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_003.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.0330</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_004.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>10.1684</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_004.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>20.4846</td><td>6.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_004.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.2901</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_004.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>23.3948</td><td>6.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_004.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>8.7824</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_004.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.0444</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_004.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.5648</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_004.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.2712</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_004.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>2.6392</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_004.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.1950</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_005.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>20.2311</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_005.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>27.4563</td><td>6.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_005.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.2396</td><td>6.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_005.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>25.6974</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_005.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>12.6323</td><td>6.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_005.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>1.9805</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_005.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.2741</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_005.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>5.0390</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_005.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>2.7638</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_005.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.3875</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_006.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>12.7844</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_006.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>23.9075</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_006.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.2162</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_006.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>1.9610</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_006.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>2.0838</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_006.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>1.7070</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_006.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.1456</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_006.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.9930</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_006.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.8872</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_006.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.1303</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_007.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>17.5073</td><td>8.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_007.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>21.9423</td><td>6.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_007.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.3549</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_007.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>28.0184</td><td>6.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_007.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>3.1587</td><td>6.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_007.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>1.9197</td><td>7.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_007.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.2392</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_007.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>5.6859</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_007.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>3.9871</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_007.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.3239</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_008.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>20.4202</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_008.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>19.4550</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_008.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.3968</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_008.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>23.6305</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_008.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>4.6057</td><td>6.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_008.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.0218</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_008.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.4563</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_008.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.6696</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_008.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.8965</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_008.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.2515</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_009.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>14.9120</td><td>6.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_009.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>24.9335</td><td>7.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_009.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.5470</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_009.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>27.8516</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_009.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>4.3317</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_009.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.0511</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_009.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.5710</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_009.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.4012</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_009.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>2.5007</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_009.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>3.9493</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_010.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>9.1193</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_010.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>26.0655</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_010.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.4657</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_010.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>16.9028</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_010.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>2.4674</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_010.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>1.9987</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_010.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.4720</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_010.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.8886</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_010.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.1570</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_010.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.3430</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_001.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>16.1502</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_001.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>18.2972</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_001.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>5.2296</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_001.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>14.3826</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_001.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>1.8066</td><td>6.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_001.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.0489</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_001.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.1107</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_001.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.8549</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_001.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.9928</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_001.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.6004</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_002.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>13.4630</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_002.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>26.8497</td><td>6.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_002.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.1512</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_002.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>29.6459</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_002.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>1.8544</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_002.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>1.5424</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_002.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.1487</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_002.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>2.9519</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_002.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>3.4218</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_002.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.1242</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_003.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>15.5776</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_003.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>22.7992</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_003.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.5676</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_003.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>41.8010</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_003.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>2.0607</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_003.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.5556</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_003.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.6944</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_003.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.4312</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_003.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.1307</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_003.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>3.8931</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_004.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>8.6169</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_004.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>13.1474</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_004.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.6967</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_004.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>30.6593</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_004.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>2.2076</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_004.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.4508</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_004.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.7815</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_004.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.7699</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_004.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>2.9631</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_004.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.4248</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_005.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>9.5758</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_005.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>22.9153</td><td>7.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_005.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.3192</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_005.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>17.5695</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_005.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>1.9053</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_005.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.4769</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_005.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>3.1442</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_005.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>3.2239</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_005.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.3208</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_005.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.1954</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_006.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>12.5712</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_006.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>20.1784</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_006.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.3690</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_006.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>21.7113</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_006.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>1.8672</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_006.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.1039</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_006.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>5.7154</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_006.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.8042</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_006.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.9521</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_006.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.0719</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_007.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>13.5330</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_007.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>13.9188</td><td>7.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_007.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.3290</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_007.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>27.4265</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_007.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>1.7371</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_007.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>1.8682</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_007.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>3.0017</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_007.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.4278</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_007.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>2.7395</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_007.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.2059</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_008.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>10.5930</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_008.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>11.2706</td><td>5.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_008.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>2.8196</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_008.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>26.7961</td><td>6.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_008.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>2.1278</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_008.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.1011</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_008.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.9878</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_008.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>5.5318</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_008.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>3.3150</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_008.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.1594</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_009.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>17.1132</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_009.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>22.2329</td><td>7.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_009.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.3906</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_009.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>13.2795</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_009.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>2.4449</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_009.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.1407</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_009.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.7577</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_009.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.8655</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_009.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>4.0259</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_009.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.3658</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_010.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>1</td><td>1.0000</td><td>16.4949</td><td>7.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_010.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>1</td><td>1.0000</td><td>15.5362</td><td>6.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_010.json</td><td>openai:4.1</td><td>0</td><td>1</td><td>1.0000</td><td>1.3439</td><td>2.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_010.json</td><td>openai:5-mini</td><td>0</td><td>1</td><td>1.0000</td><td>24.1796</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_010.json</td><td>openai:5.2</td><td>0</td><td>1</td><td>1.0000</td><td>1.9014</td><td>4.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_010.json</td><td>openai:5.4</td><td>0</td><td>1</td><td>1.0000</td><td>2.0181</td><td>3.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_010.json</td><td>opus-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>3.6940</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_010.json</td><td>opus-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.7903</td><td>0.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_010.json</td><td>sonnet-4-5</td><td>0</td><td>1</td><td>1.0000</td><td>3.2096</td><td>1.0000</td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_010.json</td><td>sonnet-4-6</td><td>0</td><td>1</td><td>1.0000</td><td>4.5346</td><td>0.0000</td></tr></tbody></table>
+
+  <h2>Top Mismatches (up to 100 rows)</h2>
+  <table><thead><tr><th>Agent</th><th>Chat</th><th>Model</th><th>FS count</th><th>Mismatches</th><th>Sample</th></tr></thead><tbody><tr><td>so_extraction</td><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>20</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 3
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3050.0,
+    &quot;actual&quot;: 3.05
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>20</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 2
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 2
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-5</td><td>0</td><td>19</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 46000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>openai:5-mini</td><td>0</td><td>18</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3050.0,
+    &quot;actual&quot;: 3.05
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/kg&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-6</td><td>0</td><td>18</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 46000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>openai:4.1</td><td>0</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3250.0,
+    &quot;actual&quot;: 3.25
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>openai:4.1</td><td>0</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 3
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3050.0,
+    &quot;actual&quot;: 3.05
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>openai:5.4</td><td>0</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 3
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3050.0,
+    &quot;actual&quot;: 3.05
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-5</td><td>0</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 3
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3050.0,
+    &quot;actual&quot;: 3.05
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 9000.0,
+    &quot;actual&quot;: 9.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Jakarta&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Jakarta&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>openai:5-mini</td><td>0</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 9000.0,
+    &quot;actual&quot;: 9.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;USD/KG&quot;,
+    &quot;actual&quot;: &quot;USD/kg&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Jakarta&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>openai:4.1</td><td>0</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 10500.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3100.0,
+    &quot;actual&quot;: null
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-6</td><td>0</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 10500.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3100.0,
+    &quot;actual&quot;: null
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>openai:5.2</td><td>0</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 10500.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3100.0,
+    &quot;actual&quot;: null
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>openai:5.4</td><td>0</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 10500.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3100.0,
+    &quot;actual&quot;: null
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>openai:5-mini</td><td>0</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 10500.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3100.0,
+    &quot;actual&quot;: null
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 10500.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3100.0,
+    &quot;actual&quot;: null
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 10500.0,
+    &quot;actual&quot;: 10.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3100.0,
+    &quot;actual&quot;: null
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-5</td><td>0</td><td>17</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 23000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>openai:5.4</td><td>0</td><td>16</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3250.0,
+    &quot;actual&quot;: 3.25
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>openai:5.2</td><td>0</td><td>16</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 2
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 6.3
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3050.0,
+    &quot;actual&quot;: 3.05
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-6</td><td>0</td><td>16</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 2
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 6.3
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3050.0,
+    &quot;actual&quot;: 3.05
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-6</td><td>0</td><td>16</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 2
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 6.3
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3050.0,
+    &quot;actual&quot;: 3.05
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-5</td><td>0</td><td>16</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 2
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;BergaPur&quot;,
+    &quot;actual&quot;: &quot;Bergapur&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 6300.0,
+    &quot;actual&quot;: 6.3
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3050.0,
+    &quot;actual&quot;: 3.05
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>openai:5.2</td><td>0</td><td>16</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 9000.0,
+    &quot;actual&quot;: 9.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Jakarta&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Jakarta&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>sonnet-4-6</td><td>0</td><td>16</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 9000.0,
+    &quot;actual&quot;: 9.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Jakarta&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Jakarta&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>sonnet-4-5</td><td>0</td><td>16</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 9000.0,
+    &quot;actual&quot;: 9.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Jakarta&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Jakarta&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>openai:5.4</td><td>0</td><td>16</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 9000.0,
+    &quot;actual&quot;: 9.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Jakarta&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Jakarta&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].shipment_date&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;2026-02-28&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>16</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 9000.0,
+    &quot;actual&quot;: 9.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Jakarta&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Jakarta&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>openai:4.1</td><td>0</td><td>16</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3500.0,
+    &quot;actual&quot;: 3.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>16</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 46000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-6</td><td>0</td><td>16</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 23000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>openai:5.2</td><td>0</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3250.0,
+    &quot;actual&quot;: 3.25
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-6</td><td>0</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3250.0,
+    &quot;actual&quot;: 3.25
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-6</td><td>0</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3250.0,
+    &quot;actual&quot;: 3.25
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-5</td><td>0</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3250.0,
+    &quot;actual&quot;: 3.25
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-5</td><td>0</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3250.0,
+    &quot;actual&quot;: 3.25
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3250.0,
+    &quot;actual&quot;: 3.25
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/kg&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3250.0,
+    &quot;actual&quot;: 3.25
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>openai:5-mini</td><td>0</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3250.0,
+    &quot;actual&quot;: 3.25
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/kg&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-6</td><td>0</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;Soya Lecithin Powder&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 39000.0,
+    &quot;actual&quot;: 39.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Nhava Sheva&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;Soya Lecithin Powder&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 39000.0,
+    &quot;actual&quot;: 39.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Nhava Sheva&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;Soya Lecithin Powder&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 39000.0,
+    &quot;actual&quot;: 39.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Nhava Sheva&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>openai:4.1</td><td>0</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 9000.0,
+    &quot;actual&quot;: 9.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Jakarta&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Jakarta&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>opus-4-5</td><td>0</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 9000.0,
+    &quot;actual&quot;: 9.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Jakarta&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Jakarta&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>opus-4-6</td><td>0</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 9000.0,
+    &quot;actual&quot;: 9.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Jakarta&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Jakarta&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOIFNE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 26000.0,
+    &quot;actual&quot;: 26.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF NHAVA SHEVA&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Nhava Sheva&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOIFNE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 26000.0,
+    &quot;actual&quot;: 26.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF NHAVA SHEVA&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Nhava Sheva&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>openai:5.4</td><td>0</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3500.0,
+    &quot;actual&quot;: 3.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>openai:5-mini</td><td>0</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3500.0,
+    &quot;actual&quot;: 3.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/kg&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>openai:5.4</td><td>0</td><td>15</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 46000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>openai:5.4</td><td>0</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;Soya Lecithin Powder&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 39000.0,
+    &quot;actual&quot;: 39.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Nhava Sheva&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-5</td><td>0</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;Soya Lecithin Powder&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 39000.0,
+    &quot;actual&quot;: 39.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Nhava Sheva&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-5</td><td>0</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;Soya Lecithin Powder&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 39000.0,
+    &quot;actual&quot;: 39.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Nhava Sheva&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-6</td><td>0</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;Soya Lecithin Powder&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 39000.0,
+    &quot;actual&quot;: 39.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Nhava Sheva&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>openai:4.1</td><td>0</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;Soya Lecithin Powder&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 39000.0,
+    &quot;actual&quot;: 39.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Nhava Sheva&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>openai:5.2</td><td>0</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;Soya Lecithin Powder&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 39000.0,
+    &quot;actual&quot;: 39.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Nhava Sheva&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-6</td><td>0</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOIFNE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 26000.0,
+    &quot;actual&quot;: 26.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF NHAVA SHEVA&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Nhava Sheva&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>openai:5.2</td><td>0</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOIFNE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 26000.0,
+    &quot;actual&quot;: 26.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF NHAVA SHEVA&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Nhava Sheva&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>openai:5.4</td><td>0</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOIFNE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 26000.0,
+    &quot;actual&quot;: 26.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF NHAVA SHEVA&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Nhava Sheva&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-5</td><td>0</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOIFNE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 26000.0,
+    &quot;actual&quot;: 26.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF NHAVA SHEVA&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Nhava Sheva&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>openai:5.2</td><td>0</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3500.0,
+    &quot;actual&quot;: 3.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-5</td><td>0</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3500.0,
+    &quot;actual&quot;: 3.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-6</td><td>0</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3500.0,
+    &quot;actual&quot;: 3.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-5</td><td>0</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3500.0,
+    &quot;actual&quot;: 3.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3500.0,
+    &quot;actual&quot;: 3.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/kg&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 3500.0,
+    &quot;actual&quot;: 3.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/KG&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>openai:4.1</td><td>0</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 46000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>openai:5.2</td><td>0</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 46000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-5</td><td>0</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 46000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>openai:5.4</td><td>0</td><td>14</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 23000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>openai:5-mini</td><td>0</td><td>13</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;Soya Lecithin Powder&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 39000.0,
+    &quot;actual&quot;: 39.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF Nhava Sheva&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>openai:4.1</td><td>0</td><td>13</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOIFNE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 26000.0,
+    &quot;actual&quot;: 26.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF NHAVA SHEVA&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Nhava Sheva&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-5</td><td>0</td><td>13</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOIFNE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 26000.0,
+    &quot;actual&quot;: 26.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF NHAVA SHEVA&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Nhava Sheva&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-6</td><td>0</td><td>13</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOIFNE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 26000.0,
+    &quot;actual&quot;: 26.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF NHAVA SHEVA&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Nhava Sheva&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>openai:5-mini</td><td>0</td><td>13</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOIFNE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 26000.0,
+    &quot;actual&quot;: 26.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;KG&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;CIF NHAVA SHEVA&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Nhava Sheva&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-6</td><td>0</td><td>13</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;GIIOFINE - P - S&quot;,
+    &quot;actual&quot;: &quot;GIIOFINE-P-S&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 1800.0,
+    &quot;actual&quot;: 1.8
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;EXW&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>13</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 46000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>openai:5.2</td><td>0</td><td>13</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 23000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>13</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 23000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-6</td><td>0</td><td>12</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 46000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>openai:5-mini</td><td>0</td><td>12</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 46000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>11</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 23000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>openai:4.1</td><td>0</td><td>10</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 23000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-5</td><td>0</td><td>10</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 23000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-6</td><td>0</td><td>10</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 23000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD/MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF Busan&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_001.json</td><td>openai:5.4</td><td>0</td><td>10</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;Arabica coffee bags&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 8.0,
+    &quot;actual&quot;: null
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: 24.0,
+    &quot;actual&quot;: null
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;USD&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].shipment_date&quot;,
+    &quot;expected&quot;: &quot;2026-05-15&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>openai:5-mini</td><td>0</td><td>9</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;TG - BP102&quot;,
+    &quot;actual&quot;: &quot;BP102&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 23000.0,
+    &quot;actual&quot;: 23.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;kg&quot;,
+    &quot;actual&quot;: &quot;MT&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;usd/mt&quot;,
+    &quot;actual&quot;: &quot;USD&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;CIF&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_003.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>9</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;Espresso blend&quot;,
+    &quot;actual&quot;: &quot;Espresso blend bags&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;BAGS&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;USD&quot;,
+    &quot;actual&quot;: &quot;USD/BAG&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;urgent dispatch within 48 hours&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].shipment_date&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;2026-05-15&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>fs_acme_simple.json</td><td>openai:5-mini</td><td>0</td><td>8</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;BAGS&quot;,
+    &quot;actual&quot;: &quot;bags&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;USD/BAG&quot;,
+    &quot;actual&quot;: &quot;USD/bag&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].ship_term&quot;,
+    &quot;expected&quot;: &quot;FOB&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;FOB Singapore&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].shipping_address&quot;,
+    &quot;expected&quot;: &quot;100 Finance Ave&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_007.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>8</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;Green coffee beans&quot;,
+    &quot;actual&quot;: &quot;Green coffee beans sacks&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;SACKS&quot;,
+    &quot;actual&quot;: &quot;sacks&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;USD/SACK&quot;,
+    &quot;actual&quot;: &quot;USD&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].delivery_terms&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;9 Harbor Plaza&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].shipment_date&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;2026-05-14&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>generated_acme_foods_003.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>7</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;Espresso blend&quot;,
+    &quot;actual&quot;: &quot;Espresso blend bags&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;bags&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].shipment_date&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;2026-05-15&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].do_date&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;2026-05-15&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].po_date&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;2026-05-13&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>generated_nova_exports_003.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>7</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;Espresso blend&quot;,
+    &quot;actual&quot;: &quot;Espresso blend bags&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;bags&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;USD&quot;,
+    &quot;actual&quot;: &quot;USD/bags&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].shipment_date&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;2026-05-15&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].do_date&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;2026-05-15&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_001.json</td><td>openai:5.4</td><td>0</td><td>7</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;Assam tea&quot;,
+    &quot;actual&quot;: &quot;Assam tea cartons&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;cartons&quot;,
+    &quot;actual&quot;: &quot;CARTONS&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: null,
+    &quot;actual&quot;: 19.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;USD/CARTON&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].total&quot;,
+    &quot;expected&quot;: null,
+    &quot;actual&quot;: 285.0
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_001.json</td><td>gemini:gemini-2.5-flash</td><td>0</td><td>7</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;Assam tea&quot;,
+    &quot;actual&quot;: &quot;Assam tea cartons&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: null,
+    &quot;actual&quot;: 19.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;USD/carton&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].total&quot;,
+    &quot;expected&quot;: null,
+    &quot;actual&quot;: 285.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].po_date&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;2026-05-13&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_007.json</td><td>openai:5.4</td><td>0</td><td>7</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;Green coffee beans&quot;,
+    &quot;actual&quot;: &quot;Green coffee beans sacks&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;SACKS&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;USD/SACK&quot;,
+    &quot;actual&quot;: &quot;&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].shipment_date&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;2026-05-14&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].do_date&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;2026-05-14&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>realistic_acme_foods_009.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>7</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].description&quot;,
+    &quot;expected&quot;: &quot;Green coffee beans&quot;,
+    &quot;actual&quot;: &quot;Green coffee beans sacks&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;sacks&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: null,
+    &quot;actual&quot;: 16.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;USD&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].total&quot;,
+    &quot;expected&quot;: null,
+    &quot;actual&quot;: 1280.0
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_005.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>7</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;PACKS&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: null,
+    &quot;actual&quot;: 14.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;USD/PACK&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].total&quot;,
+    &quot;expected&quot;: null,
+    &quot;actual&quot;: 350.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].po_date&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;2026-05-13&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_007.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>7</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;PACKS&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].unit_price&quot;,
+    &quot;expected&quot;: null,
+    &quot;actual&quot;: 6.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;USD/PACK&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].total&quot;,
+    &quot;expected&quot;: null,
+    &quot;actual&quot;: 60.0
+  },
+  {
+    &quot;path&quot;: &quot;data[0].po_date&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;2026-05-13&quot;
+  }
+]</pre></td></tr>
+<tr><td>so_extraction</td><td>realistic_nova_exports_009.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>7</td><td><pre>[
+  {
+    &quot;path&quot;: &quot;data[0].items&quot;,
+    &quot;expected_len&quot;: 1,
+    &quot;actual_len&quot;: 2
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity&quot;,
+    &quot;expected&quot;: 25.0,
+    &quot;actual&quot;: 12.5
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].quantity_unit&quot;,
+    &quot;expected&quot;: &quot;&quot;,
+    &quot;actual&quot;: &quot;PACKS&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].pricing_unit&quot;,
+    &quot;expected&quot;: &quot;USD&quot;,
+    &quot;actual&quot;: &quot;USD/PACK&quot;
+  },
+  {
+    &quot;path&quot;: &quot;data[0].items[0].total&quot;,
+    &quot;expected&quot;: 350.0,
+    &quot;actual&quot;: 175.0
+  }
+]</pre></td></tr></tbody></table>
+</body>
+</html>

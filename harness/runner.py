@@ -17,7 +17,6 @@ from __future__ import annotations
 import argparse
 import json
 import logging
-import random
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import asdict
@@ -34,6 +33,11 @@ from agents.so_extraction.agent import ChatInput
 from agents.product_retrieval.agent import SummaryInput
 from core.utils import DEFAULT_MODEL_KEY, MODEL_CATALOG
 from harness import artifacts
+from harness.fewshot import (
+    plan_few_shot_variants,
+    resolve_fewshot_for_source,
+    summarize_fewshot_variants,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -63,9 +67,41 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--models", nargs="*", default=[], help="Model keys; default is [sonnet-4-6].")
     p.add_argument("--runs-per-chat", type=int, default=1)
     p.add_argument("--max-workers", type=int, default=8)
-    p.add_argument("--few-shot", nargs="*", default=[], help="Explicit few-shot chat paths (capped at 10).")
-    p.add_argument("--few-shot-sweep", nargs="*", type=int, default=[], help="Sweep over few-shot counts (e.g. 0 1 3 5 10).")
+    p.add_argument("--few-shot", nargs="*", default=[], help="Explicit few-shot chat paths (capped at 10). Builds a single variant applied to every chat.")
+    p.add_argument(
+        "--few-shot-walk",
+        nargs="*",
+        default=[],
+        help=(
+            "Hand-pick an ordered list of chats and walk from 0..N few-shot examples over them. "
+            "Picking [A, B, C] yields four variants: fs0=[], fs1=[A], fs2=[A,B], fs3=[A,B,C]. "
+            "Capped at 10 paths. Overrides --few-shot-sweep/--few-shot-pool. "
+            "Loses precedence to --few-shot (single variant)."
+        ),
+    )
+    p.add_argument(
+        "--few-shot-sweep",
+        nargs="*",
+        type=int,
+        default=[],
+        help="Sweep over few-shot counts (e.g. 0 1 3 5 10). Samples are *nested* so count=2 ⊂ count=5 ⊂ count=10.",
+    )
+    p.add_argument(
+        "--few-shot-pool",
+        nargs="*",
+        default=[],
+        help=(
+            "Curate the pool of files eligible as few-shot examples for sweep variants. "
+            "Overrides the agent's default few_shot_pool() for this run. Missing paths are "
+            "warn-and-skipped. Ignored when --few-shot is provided (which already names every variant)."
+        ),
+    )
     p.add_argument("--few-shot-seed", type=int, default=42, help="Deterministic seed for few-shot sampling during sweeps.")
+    p.add_argument(
+        "--allow-self-fewshot",
+        action="store_true",
+        help="By default the chat being tested is excluded from its own few-shot pool. Set this to disable that guard.",
+    )
     p.add_argument("--db-few-shot-limit", type=int, default=0, help="How many DB-backed few-shot examples to include per run.")
     p.add_argument("--results-root", type=str, default="", help="Override results/ root.")
     p.add_argument("--quiet", action="store_true")
@@ -137,29 +173,36 @@ def _models(args: argparse.Namespace) -> list[str]:
     return list(dict.fromkeys(args.models))
 
 
+def _resolve_pool_override(
+    agent: BaseAgent,
+    args: argparse.Namespace,
+) -> list[Path] | None:
+    """Honour ``--few-shot-pool`` (if any), resolving to absolute paths.
+
+    Returns ``None`` when no curation was requested so the planner falls back
+    to ``agent.few_shot_pool()``. Returns an empty list when the user passed
+    paths but none of them resolved — that's a deliberate, observable state.
+    """
+    if not args.few_shot_pool:
+        return None
+    return _resolve_paths(args.few_shot_pool, agent.repo_root)
+
+
 def _few_shot_plan(
     agent: BaseAgent,
     args: argparse.Namespace,
-) -> list[list[Path]]:
-    """Return one or more candidate few-shot path lists (cap 10 each)."""
-    if args.few_shot:
-        explicit = _resolve_paths(args.few_shot, agent.repo_root)[:10]
-        return [explicit]
-    if args.few_shot_sweep:
-        pool = agent.few_shot_pool()
-        if not pool:
-            return [[]]
-        rng = random.Random(args.few_shot_seed)
-        unique_counts = sorted({max(0, min(10, c)) for c in args.few_shot_sweep})
-        plans: list[list[Path]] = []
-        for count in unique_counts:
-            if count == 0:
-                plans.append([])
-                continue
-            sample = pool if count >= len(pool) else rng.sample(pool, count)
-            plans.append(list(sample))
-        return plans
-    return [[]]
+    *,
+    pool_override: list[Path] | None = None,
+) -> list[tuple[str, int, list[Path]]]:
+    """Args-flavoured wrapper around :func:`plan_few_shot_variants`."""
+    return plan_few_shot_variants(
+        agent,
+        explicit_paths=args.few_shot or None,
+        walk_paths=args.few_shot_walk or None,
+        sweep_counts=args.few_shot_sweep or None,
+        seed=args.few_shot_seed,
+        pool_override=pool_override,
+    )
 
 
 def _runtime_payload_for(agent: BaseAgent, source_path: Path) -> Any:
@@ -189,15 +232,63 @@ def _run_bulk(
     sources = _gather_source_paths(agent, args)
     if not sources:
         raise SystemExit("No source paths matched. Check --datasets / --chats-glob / --chat.")
-    fs_plans = _few_shot_plan(agent, args)
+    pool_override = _resolve_pool_override(agent, args)
+    fs_variants = _few_shot_plan(agent, args, pool_override=pool_override)
     models = _models(args)
-    total = len(sources) * len(fs_plans) * len(models) * max(1, args.runs_per_chat)
+    total = len(sources) * len(fs_variants) * len(models) * max(1, args.runs_per_chat)
+
+    fewshot_summary = summarize_fewshot_variants(fs_variants, agent.repo_root)
+    default_pool_size = len(agent.few_shot_pool())
+    mode = (
+        "explicit" if args.few_shot
+        else "walk" if args.few_shot_walk
+        else "sweep" if args.few_shot_sweep
+        else "none"
+    )
+    config["few_shot_mode"] = mode
+    config["few_shot_pool_size"] = (
+        len(pool_override) if pool_override is not None else default_pool_size
+    )
+    config["few_shot_default_pool_size"] = default_pool_size
+    config["few_shot_pool_override"] = (
+        [str(p.relative_to(agent.repo_root)) if p.is_relative_to(agent.repo_root) else str(p)
+         for p in pool_override]
+        if pool_override is not None else None
+    )
+    config["few_shot_variants"] = fewshot_summary
+    config["allow_self_fewshot"] = bool(args.allow_self_fewshot)
+    artifacts.write_config(run_dir, config)
+
     if not args.quiet:
         print(
             f"Bulk run: agent={agent.id} sources={len(sources)} models={len(models)} "
-            f"fs_plans={len(fs_plans)} runs_per_chat={args.runs_per_chat} total={total}",
+            f"fs_variants={len(fs_variants)} runs_per_chat={args.runs_per_chat} total={total}",
             flush=True,
         )
+        print(f"Few-shot mode     : {mode}")
+        if mode == "walk":
+            print(f"Walk over {len(fs_variants) - 1} hand-picked chat(s); variants fs0..fs{len(fs_variants) - 1}")
+        elif pool_override is not None:
+            print(
+                f"Few-shot pool size: {config['few_shot_pool_size']} "
+                f"(curated; agent default has {default_pool_size})"
+            )
+            for entry in config["few_shot_pool_override"][:10]:
+                print(f"  pool> {entry}")
+            if len(config["few_shot_pool_override"]) > 10:
+                print(f"  pool> (+{len(config['few_shot_pool_override']) - 10} more)")
+        else:
+            print(f"Few-shot pool size: {default_pool_size}")
+        if mode == "sweep":
+            print(f"Few-shot seed     : {args.few_shot_seed}  (nested sampling, allow_self={args.allow_self_fewshot})")
+        else:
+            print(f"Allow self-fewshot: {args.allow_self_fewshot}")
+        for entry in fewshot_summary:
+            shown = entry["paths"][:5]
+            tail = "" if len(entry["paths"]) <= 5 else f"  (+{len(entry['paths']) - 5} more)"
+            print(f"  [{entry['label']:>6s} count={entry['count']:>2d}] {shown}{tail}")
+        print(f"Models            : {models}")
+        print(flush=True)
 
     cached_payloads: dict[Path, Any] = {}
     records: list[AgentRunResult] = []
@@ -208,11 +299,14 @@ def _run_bulk(
         for dataset_id, source_path in sources:
             payload = cached_payloads.setdefault(source_path, _runtime_payload_for(agent, source_path))
             for model_key in models:
-                for fs_paths in fs_plans:
+                for _label, _requested_count, fs_paths in fs_variants:
+                    effective_fs = resolve_fewshot_for_source(
+                        fs_paths, source_path, args.allow_self_fewshot,
+                    )
                     for run_idx in range(1, max(1, args.runs_per_chat) + 1):
                         opts = RunOptions(
                             model_key=model_key,
-                            few_shot_paths=list(fs_paths),
+                            few_shot_paths=list(effective_fs),
                             dataset_id=dataset_id,
                             extra={"db_few_shot_limit": args.db_few_shot_limit},
                         )
@@ -254,18 +348,44 @@ def _run_pipeline(
     sources = _gather_source_paths(primary, args)
     if not sources:
         raise SystemExit("No source paths matched for pipeline.")
-    fs_plans = _few_shot_plan(primary, args)
+    pool_override = _resolve_pool_override(primary, args)
+    fs_variants = _few_shot_plan(primary, args, pool_override=pool_override)
     models = _models(args)
+
+    fewshot_summary = summarize_fewshot_variants(fs_variants, primary.repo_root)
+    default_pool_size = len(primary.few_shot_pool())
+    mode = (
+        "explicit" if args.few_shot
+        else "walk" if args.few_shot_walk
+        else "sweep" if args.few_shot_sweep
+        else "none"
+    )
+    config["few_shot_mode"] = mode
+    config["few_shot_pool_size"] = (
+        len(pool_override) if pool_override is not None else default_pool_size
+    )
+    config["few_shot_default_pool_size"] = default_pool_size
+    config["few_shot_pool_override"] = (
+        [str(p.relative_to(primary.repo_root)) if p.is_relative_to(primary.repo_root) else str(p)
+         for p in pool_override]
+        if pool_override is not None else None
+    )
+    config["few_shot_variants"] = fewshot_summary
+    config["allow_self_fewshot"] = bool(args.allow_self_fewshot)
+    artifacts.write_config(run_dir, config)
 
     records: list[AgentRunResult] = []
     for dataset_id, source_path in sources:
         for model_key in models:
-            for fs_paths in fs_plans:
+            for _label, _requested_count, fs_paths in fs_variants:
+                effective_fs = resolve_fewshot_for_source(
+                    fs_paths, source_path, args.allow_self_fewshot,
+                )
                 opts_per_step: list[RunOptions] = []
                 for step_idx, agent in enumerate(pipeline.agents):
                     step_opts = RunOptions(
                         model_key=model_key,
-                        few_shot_paths=list(fs_paths) if step_idx == 0 else [],
+                        few_shot_paths=list(effective_fs) if step_idx == 0 else [],
                         dataset_id=dataset_id if step_idx == 0 else None,
                         extra={"db_few_shot_limit": args.db_few_shot_limit if step_idx == 0 else 0},
                     )
@@ -311,7 +431,9 @@ def main() -> None:
         "runs_per_chat": args.runs_per_chat,
         "max_workers": args.max_workers,
         "few_shot_explicit": args.few_shot,
+        "few_shot_walk": args.few_shot_walk,
         "few_shot_sweep": args.few_shot_sweep,
+        "few_shot_pool_argv": args.few_shot_pool,
         "few_shot_seed": args.few_shot_seed,
         "db_few_shot_limit": args.db_few_shot_limit,
         "skip_without_expected": bool(args.skip_without_expected),
@@ -336,7 +458,17 @@ def main() -> None:
     print(f"HTML report   : {run_dir / 'report.html'}")
 
 
-__all__ = ["main", "_run_bulk", "_run_pipeline", "_few_shot_plan", "ChatInput", "SummaryInput"]
+__all__ = [
+    "main",
+    "_run_bulk",
+    "_run_pipeline",
+    "_few_shot_plan",
+    "plan_few_shot_variants",
+    "resolve_fewshot_for_source",
+    "summarize_fewshot_variants",
+    "ChatInput",
+    "SummaryInput",
+]
 
 
 if __name__ == "__main__":
