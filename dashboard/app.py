@@ -19,7 +19,7 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-from statistics import mean, pstdev
+from statistics import mean
 from typing import Any
 
 import streamlit as st
@@ -35,6 +35,8 @@ from core.chat_loader import labeled_chat_paths_for_globs, load_chat_file
 from core.db import SavedSummary, get_history, get_summary_chain, init_db, save_summary
 from core.utils import DEFAULT_MODEL_KEY, MODEL_CATALOG, setup_streamlit_console_logfile
 from harness import artifacts
+from harness.report_summary import narrative_to_markdown, summarize_brief
+from harness.results_brief import brief_from_slim_records, headline_metrics, leaderboard_by_combo
 from harness.scoring import normalize_contract_shape
 
 # Reload the few-shot helper on every Streamlit rerun so edits to
@@ -107,12 +109,6 @@ def _load_run_records(run_dir: Path) -> list[dict[str, Any]]:
 
 def _safe_mean(values: list[float]) -> float | None:
     return mean(values) if values else None
-
-
-def _safe_std(values: list[float]) -> float | None:
-    if not values:
-        return None
-    return pstdev(values) if len(values) > 1 else 0.0
 
 
 def _coerce_paths(strs: list[str]) -> list[Path]:
@@ -630,43 +626,61 @@ with tab_results:
                 if not filtered:
                     st.info("No records match the filters.")
                 else:
-                    success_rate = sum(1 for r in filtered if r["success"]) / len(filtered)
-                    elapsed = [float(r["elapsed_sec"]) for r in filtered]
-                    mismatches = [int(r["mismatch_count"]) for r in filtered if r.get("expected_available")]
+                    hm = headline_metrics(filtered)
                     m1, m2, m3, m4 = st.columns(4)
-                    m1.metric("Runs", len(filtered))
-                    m2.metric("Success rate", f"{success_rate:.1%}")
-                    m3.metric("Avg runtime (s)", f"{(_safe_mean(elapsed) or 0):.3f}")
-                    m4.metric("Mismatch stdev", f"{(_safe_std(mismatches) or 0):.3f}")
+                    m1.metric("Runs", hm["runs"])
+                    m2.metric(
+                        "Success rate",
+                        f"{hm['success_rate']:.1%}" if hm["success_rate"] is not None else "—",
+                    )
+                    m3.metric(
+                        "Avg runtime (s)",
+                        f"{(hm['avg_runtime_sec'] or 0):.3f}" if hm["avg_runtime_sec"] is not None else "—",
+                    )
+                    m4.metric(
+                        "Mismatch stdev",
+                        f"{(hm['mismatch_stdev'] or 0):.3f}" if hm["mismatch_stdev"] is not None else "—",
+                    )
 
-                    by_combo: dict[tuple, list[dict[str, Any]]] = {}
-                    for r in filtered:
-                        key = (r["agent_id"], r["model_key"], r.get("few_shot_count", 0))
-                        by_combo.setdefault(key, []).append(r)
-                    leaderboard_rows = []
-                    for (agent_id, model_key, fs_count), rows in sorted(by_combo.items()):
-                        with_expected = [x for x in rows if x.get("expected_available")]
-                        total_mismatch = sum(x["mismatch_count"] for x in with_expected)
-                        total_compared = sum(x["compared_field_count"] for x in with_expected)
-                        leaderboard_rows.append(
-                            {
-                                "agent": agent_id,
-                                "model": model_key,
-                                "fs_count": fs_count,
-                                "runs": len(rows),
-                                "success_rate": sum(1 for x in rows if x["success"]) / len(rows),
-                                "avg_elapsed_sec": _safe_mean([x["elapsed_sec"] for x in rows]),
-                                "avg_mismatch_per_expected_run": (
-                                    total_mismatch / len(with_expected) if with_expected else None
-                                ),
-                                "field_match_rate": (
-                                    1 - (total_mismatch / max(total_compared, 1))
-                                    if with_expected else None
-                                ),
-                            }
-                        )
+                    leaderboard_rows = leaderboard_by_combo(filtered)
                     st.subheader("Agent + Model + FS-count Leaderboard")
                     st.dataframe(leaderboard_rows, use_container_width=True, hide_index=True)
+
+                    st.subheader("AI summary")
+                    st.caption(
+                        "Uses the filtered rows above (same metrics/leaderboard). "
+                        "Requires Gemini credentials (same as running Gemini models in the harness)."
+                    )
+                    if st.button("Generate AI summary", type="secondary", key="results_ai_summary_btn"):
+                        try:
+                            meta = {
+                                "run_folders": [p.name for p in selected_dirs],
+                                "filters": {
+                                    "agents": list(sel_agents),
+                                    "models": list(sel_models),
+                                    "providers": list(sel_providers),
+                                    "datasets": list(sel_datasets),
+                                    "chats": list(sel_chats),
+                                },
+                            }
+                            brief = brief_from_slim_records(filtered, meta=meta)
+                            with st.spinner("Using Gemini 2.5 Pro..."):
+                                narrative = summarize_brief(brief)
+                            label = ", ".join(meta["run_folders"])
+                            st.session_state["results_ai_summary_md"] = narrative_to_markdown(
+                                label, narrative
+                            )
+                            st.session_state.pop("results_ai_summary_err", None)
+                        except Exception as exc:
+                            st.session_state["results_ai_summary_err"] = str(exc)
+                            logger.exception("AI report summary failed")
+                    err = st.session_state.get("results_ai_summary_err")
+                    if err:
+                        st.error(err)
+                    md_out = st.session_state.get("results_ai_summary_md")
+                    if md_out:
+                        st.caption("If you changed filters, click Generate again for an up-to-date summary.")
+                        st.markdown(md_out)
 
                     st.subheader("Per-chat Breakdown")
                     chat_buckets: dict[tuple, list[dict[str, Any]]] = {}
