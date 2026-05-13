@@ -133,7 +133,7 @@ def narrative_to_html_fragment(run_label: str, narrative: HarnessReportNarrative
 
     inner = (
         f'<section id="harness-ai-summary" style="{box_style}">'
-        f'<h2 style="{h2_style}">AI summary (Gemini 2.5 Pro) · {_esc(run_label)}</h2>'
+        f'<h2 style="{h2_style}">Summary {_esc(run_label)}</h2>'
         f'<h3 style="{h3_style}">Overall</h3>'
         f"<p>{_esc(narrative.overall_assessment)}</p>"
         f'<h3 style="{h3_style}">What the numbers mean</h3>'
@@ -198,7 +198,7 @@ def prepend_summary_to_report_html(
 
 def _parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(
-        description="Prepend an AI summary section into report.html for a harness run directory.",
+        description="Prepend a summary section into report.html for a harness run directory.",
         epilog="Requires GOOGLE_API_KEY in the environment for Gemini (see instructor google-genai client).",
     )
     p.add_argument(

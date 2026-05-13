@@ -5,7 +5,7 @@ The harness drops two kinds of HTML reports into `results/`:
   1. Top-level files such as ``fewshot_benchmark_<timestamp>.html``.
   2. Per-run folders such as ``20260512T191113Z/`` that contain
      ``report.html`` plus ``aggregate.json`` / ``config.json`` / ``run.jsonl``.
-     An AI summary may be prepended into ``report.html`` by
+     A summary may be prepended into ``report.html`` by
      ``python -m harness.report_summary``.
 
 This script copies everything under ``results/`` into ``site/`` (preserving
