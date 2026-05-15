@@ -1,10 +1,13 @@
 """Assemble a static site from `results/` for GitHub Pages.
 
-The harness drops two kinds of HTML reports into `results/`:
+The harness drops two kinds of HTML reports into ``results/`` (any depth):
 
-  1. Top-level files such as ``fewshot_benchmark_<timestamp>.html``.
-  2. Per-run folders such as ``20260512T191113Z/`` that contain
-     ``report.html`` plus ``aggregate.json`` / ``config.json`` / ``run.jsonl``.
+  1. Standalone ``*.html`` files (for example ``archives/fewshot_*.html`` or
+     ``example/harness_report_reorganized.html``). ``report.html`` is reserved
+     for per-run folders and is not listed as a standalone benchmark.
+  2. Per-run directories containing ``report.html`` plus
+     ``aggregate.json`` / ``config.json`` / ``run.jsonl`` (timestamps like
+     ``20260512T191113Z`` at the top level or nested under other folders).
      A summary may be prepended into ``report.html`` by
      ``python -m harness.report_summary``.
 
@@ -77,46 +80,61 @@ def _format_timestamp(token: str) -> str:
         return token
 
 
+def _rel_posix(path: Path, root: Path) -> str:
+    return path.relative_to(root).as_posix()
+
+
+def _skip_path_rel(rel: Path) -> bool:
+    return any(part.startswith(".") for part in rel.parts)
+
+
 def discover_reports(results_dir: Path) -> list[ReportEntry]:
+    """Find all reports under ``results_dir`` recursively."""
     entries: list[ReportEntry] = []
+    root = results_dir.resolve()
 
-    for item in sorted(results_dir.iterdir()):
-        if item.name.startswith("."):
+    # Per-run folders: any directory (under root) that contains report.html
+    for report_html in sorted(root.rglob("report.html")):
+        rel = report_html.relative_to(root)
+        if _skip_path_rel(rel):
             continue
-
-        if item.is_file() and item.suffix.lower() == ".html":
-            stem = item.stem
-            # Try to pull a trailing timestamp like ...20260507T192249Z out.
-            ts_token = stem.split("_")[-1]
-            entries.append(
-                ReportEntry(
-                    title=stem,
-                    href=item.name,
-                    kind="benchmark",
-                    timestamp=_format_timestamp(ts_token),
-                    size_bytes=item.stat().st_size,
-                )
+        run_dir = report_html.parent
+        run_rel = _rel_posix(run_dir, root)
+        aggregate = _load_aggregate(run_dir / "aggregate.json")
+        cfg = aggregate.get("config", {}) if isinstance(aggregate, dict) else {}
+        entries.append(
+            ReportEntry(
+                title=run_rel,
+                href=f"{run_rel}/report.html",
+                kind="run",
+                timestamp=_format_timestamp(run_dir.name),
+                size_bytes=report_html.stat().st_size,
+                agent=cfg.get("agent"),
+                models=cfg.get("models") or None,
+                datasets=cfg.get("datasets") or None,
             )
+        )
+
+    # Standalone HTML (not report.html); report.html is only indexed via runs.
+    for path in sorted(root.rglob("*.html")):
+        rel = path.relative_to(root)
+        if _skip_path_rel(rel) or path.name == "report.html":
             continue
-
-        if item.is_dir():
-            report_html = item / "report.html"
-            if not report_html.is_file():
-                continue
-            aggregate = _load_aggregate(item / "aggregate.json")
-            cfg = aggregate.get("config", {}) if isinstance(aggregate, dict) else {}
-            entries.append(
-                ReportEntry(
-                    title=item.name,
-                    href=f"{item.name}/report.html",
-                    kind="run",
-                    timestamp=_format_timestamp(item.name),
-                    size_bytes=report_html.stat().st_size,
-                    agent=cfg.get("agent"),
-                    models=cfg.get("models") or None,
-                    datasets=cfg.get("datasets") or None,
-                )
+        if not path.is_file() or path.suffix.lower() != ".html":
+            continue
+        stem = path.stem
+        rel_str = _rel_posix(path, root)
+        title = path.relative_to(root).with_suffix("").as_posix()
+        ts_token = stem.split("_")[-1]
+        entries.append(
+            ReportEntry(
+                title=title,
+                href=rel_str,
+                kind="benchmark",
+                timestamp=_format_timestamp(ts_token),
+                size_bytes=path.stat().st_size,
             )
+        )
 
     # Newest first, falling back to title.
     entries.sort(key=lambda e: (e.timestamp, e.title), reverse=True)
