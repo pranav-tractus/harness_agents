@@ -30,3 +30,5 @@ tests/artifacts/
 
 # Generated static site (built in CI for GitHub Pages)
 site/
+
+graphify-out

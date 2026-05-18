@@ -12,7 +12,6 @@ This module owns the writers; ``harness.runner`` owns the orchestration.
 
 from __future__ import annotations
 
-import html
 import json
 from dataclasses import asdict
 from datetime import datetime, timezone
@@ -178,176 +177,61 @@ def write_aggregate(run_dir: Path, run_id: str, summary: dict[str, Any], config:
     return path
 
 
-def _fmt(value: Any) -> str:
-    if value is None:
-        return "-"
-    if isinstance(value, float):
-        return f"{value:.4f}"
-    return str(value)
-
-
-def _table(headers: list[str], rows: list[list[str]]) -> str:
-    head = "".join(f"<th>{html.escape(h)}</th>" for h in headers)
-    body = "\n".join(
-        "<tr>" + "".join(f"<td>{cell}</td>" for cell in row) + "</tr>"
-        for row in rows
-    )
-    return f"<table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>"
-
-
 def render_report_html(
+    run_dir: Path,
     run_id: str,
     config: dict[str, Any],
     summary: dict[str, Any],
     records: list[AgentRunResult],
+    *,
+    generate_llm_story: bool = True,
+    story_model_key: str = "sonnet-4-5",
 ) -> str:
-    rows = [record_to_row(r) for r in records]
+    """Single-page dashboard report (see ``harness/report_dashboard_html.py``)."""
+    from harness.report_dashboard_html import dashboard_generated_timestamp, render_dashboard_report_html
+    from harness.report_summary import DEFAULT_VISUAL_STORY_MODEL, summarize_visual_story_safe
+    from harness.results_brief import brief_from_run_dir
 
-    combo_table = _table(
-        ["Agent", "Model", "FS count", "Runs", "Success", "Avg attempts", "Avg elapsed (s)", "Avg mismatch/expected", "Field match"],
-        [
-            [
-                html.escape(r["agent_id"]),
-                html.escape(str(r["model_key"])),
-                _fmt(r["few_shot_count"]),
-                _fmt(r["run_count"]),
-                _fmt(r["success_rate"]),
-                _fmt(r["avg_attempts"]),
-                _fmt(r["avg_elapsed_sec"]),
-                _fmt(r["avg_mismatch_per_expected_run"]),
-                _fmt(r["field_match_rate"]),
-            ]
-            for r in summary["by_combo"]
-        ],
+    mk = story_model_key or DEFAULT_VISUAL_STORY_MODEL
+    brief = brief_from_run_dir(run_dir)
+    story = summarize_visual_story_safe(
+        brief,
+        summary,
+        config,
+        model_key=mk,
+        use_llm=generate_llm_story,
+    )
+    return render_dashboard_report_html(
+        run_id,
+        dashboard_generated_timestamp(),
+        config,
+        summary,
+        records,
+        story,
     )
 
-    chat_table = _table(
-        ["Agent", "Chat", "Model", "FS count", "Runs", "Success", "Avg elapsed (s)", "Avg mismatch/expected"],
-        [
-            [
-                html.escape(r["agent_id"]),
-                html.escape(r["chat_filename"]),
-                html.escape(str(r["model_key"])),
-                _fmt(r["few_shot_count"]),
-                _fmt(r["run_count"]),
-                _fmt(r["success_rate"]),
-                _fmt(r["avg_elapsed_sec"]),
-                _fmt(r["avg_mismatch_per_expected_run"]),
-            ]
-            for r in summary["by_chat"]
-        ],
-    )
 
-    dataset_table = _table(
-        ["Agent", "Dataset", "Runs", "Success", "Avg elapsed (s)", "Avg mismatch/expected", "Field match"],
-        [
-            [
-                html.escape(r["agent_id"]),
-                html.escape(r["dataset_id"]),
-                _fmt(r["run_count"]),
-                _fmt(r["success_rate"]),
-                _fmt(r["avg_elapsed_sec"]),
-                _fmt(r["avg_mismatch_per_expected_run"]),
-                _fmt(r["field_match_rate"]),
-            ]
-            for r in summary["by_dataset"]
-        ],
-    )
-
-    fs_table = _table(
-        ["Agent", "FS count", "Runs", "Success", "Avg mismatch/expected", "Field match"],
-        [
-            [
-                html.escape(r["agent_id"]),
-                _fmt(r["few_shot_count"]),
-                _fmt(r["run_count"]),
-                _fmt(r["success_rate"]),
-                _fmt(r["avg_mismatch_per_expected_run"]),
-                _fmt(r["field_match_rate"]),
-            ]
-            for r in summary["by_few_shot_count"]
-        ],
-    )
-
-    mismatched = [r for r in rows if r["mismatch_count"] > 0]
-    mismatched.sort(key=lambda r: (-r["mismatch_count"], r["source_filename"]))
-    mismatch_table = _table(
-        ["Agent", "Chat", "Model", "FS count", "Mismatches", "Sample"],
-        [
-            [
-                html.escape(r["agent_id"]),
-                html.escape(r["source_filename"]),
-                html.escape(str(r["model_key"])),
-                _fmt(r["few_shot_count"]),
-                _fmt(r["mismatch_count"]),
-                f"<pre>{html.escape(json.dumps(r['mismatches'][:5], indent=2, ensure_ascii=False))}</pre>",
-            ]
-            for r in mismatched[:100]
-        ],
-    )
-
-    return f"""<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Harness Run {html.escape(run_id)}</title>
-  <style>
-    body {{ font-family: Arial, sans-serif; margin: 20px; color: #1f2937; }}
-    h1, h2 {{ margin-bottom: 8px; }}
-    .meta {{ margin-bottom: 16px; color: #4b5563; }}
-    table {{ border-collapse: collapse; width: 100%; margin-bottom: 20px; font-size: 13px; }}
-    th, td {{ border: 1px solid #d1d5db; padding: 8px; vertical-align: top; text-align: left; }}
-    th {{ background: #f3f4f6; }}
-    pre {{ margin: 0; white-space: pre-wrap; }}
-    .card {{ background: #f9fafb; border: 1px solid #e5e7eb; padding: 10px; margin-bottom: 16px; }}
-  </style>
-</head>
-<body>
-  <h1>Agent Harness Run</h1>
-  <div class="meta">Run ID: <code>{html.escape(run_id)}</code> · Generated UTC: <code>{html.escape(datetime.now(timezone.utc).isoformat())}</code></div>
-
-  <div class="card">
-    <h2>Configuration</h2>
-    <pre>{html.escape(json.dumps(config, indent=2, ensure_ascii=False))}</pre>
-  </div>
-
-  <h2>Per-agent Totals</h2>
-  {_table(
-      ["Agent", "Runs", "Success", "Avg attempts", "Avg elapsed (s)", "Avg mismatch/expected", "Field match"],
-      [
-          [
-              html.escape(r["agent_id"]),
-              _fmt(r["run_count"]),
-              _fmt(r["success_rate"]),
-              _fmt(r["avg_attempts"]),
-              _fmt(r["avg_elapsed_sec"]),
-              _fmt(r["avg_mismatch_per_expected_run"]),
-              _fmt(r["field_match_rate"]),
-          ]
-          for r in summary["by_agent"]
-      ],
-  )}
-
-  <h2>Model + Strategy Leaderboard</h2>
-  {combo_table}
-
-  <h2>Few-shot Count Rollup</h2>
-  {fs_table}
-
-  <h2>Per-dataset Breakdown</h2>
-  {dataset_table}
-
-  <h2>Per-chat Breakdown</h2>
-  {chat_table}
-
-  <h2>Top Mismatches (up to 100 rows)</h2>
-  {mismatch_table}
-</body>
-</html>
-"""
-
-
-def write_report(run_dir: Path, run_id: str, config: dict[str, Any], summary: dict[str, Any], records: list[AgentRunResult]) -> Path:
+def write_report(
+    run_dir: Path,
+    run_id: str,
+    config: dict[str, Any],
+    summary: dict[str, Any],
+    records: list[AgentRunResult],
+    *,
+    generate_llm_story: bool = True,
+    story_model_key: str = "sonnet-4-5",
+) -> Path:
     path = run_dir / "report.html"
-    path.write_text(render_report_html(run_id, config, summary, records), encoding="utf-8")
+    path.write_text(
+        render_report_html(
+            run_dir,
+            run_id,
+            config,
+            summary,
+            records,
+            generate_llm_story=generate_llm_story,
+            story_model_key=story_model_key,
+        ),
+        encoding="utf-8",
+    )
     return path

@@ -1,0 +1,2116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harness Run 20260515T032806Z — so_extraction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+
+:root {
+  --bg: #f5f1e8;
+  --bg-card: #faf7ef;
+  --bg-elevated: #fffdf6;
+  --ink: #1a1a1a;
+  --ink-soft: #4a4a4a;
+  --ink-mute: #7a7a7a;
+  --line: #d6cfbe;
+  --line-soft: #e8e2d2;
+  --accent: #b8341c;
+  --accent-soft: #f4d9d2;
+  --warn: #c4761c;
+  --good: #2d6b3f;
+  --good-soft: #d4e3d8;
+  --display: 'Instrument Serif', Georgia, serif;
+  --sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.55;
+  font-size: 15px;
+  padding: 0;
+}
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+.masthead {
+  border-bottom: 2px solid var(--ink);
+  padding: 28px 0 20px;
+  margin-bottom: 32px;
+}
+.masthead-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 14px;
+}
+.masthead-top .dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  background: var(--good);
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+h1 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+h1 em { font-style: italic; color: var(--ink-soft); }
+.dek {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 21px;
+  color: var(--ink-soft);
+  max-width: 720px;
+  line-height: 1.4;
+}
+.findings {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 1px solid var(--ink);
+  margin: 40px 0;
+  background: var(--bg-card);
+}
+.finding {
+  padding: 24px 22px;
+  border-right: 1px solid var(--line);
+  position: relative;
+}
+.finding:last-child { border-right: none; }
+.finding .label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 12px;
+}
+.finding .label.critical { color: var(--accent); }
+.finding .label.critical::before { content: "▲ "; }
+.finding .big {
+  font-family: var(--display);
+  font-size: 42px;
+  line-height: 1;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+.finding .big.bad { color: var(--accent); }
+.finding .big.good { color: var(--good); }
+.finding .desc {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+.finding .desc strong { color: var(--ink); }
+section { margin: 56px 0; scroll-margin-top: 20px; }
+.section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 6px;
+}
+.section-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+}
+h2 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  flex: 1;
+}
+.section-intro {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 17px;
+  color: var(--ink-soft);
+  margin: 12px 0 24px;
+  max-width: 760px;
+  line-height: 1.45;
+}
+.alert {
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent);
+  padding: 18px 22px;
+  margin: 20px 0;
+  font-size: 14.5px;
+}
+.alert strong { color: var(--accent); font-weight: 600; }
+.dataset-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 24px 0;
+}
+.dataset-card {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  padding: 20px 18px;
+  position: relative;
+}
+.dataset-card.broken {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+.dataset-card .name {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  margin-bottom: 14px;
+  letter-spacing: 0.02em;
+}
+.dataset-card.broken .name { color: var(--accent); font-weight: 600; }
+.dataset-card .score {
+  font-family: var(--display);
+  font-size: 56px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.dataset-card.broken .score { color: var(--accent); }
+.dataset-card .score-label {
+  font-size: 11px;
+  color: var(--ink-mute);
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.dataset-card .meta {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-soft);
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.dataset-card .bar-track {
+  height: 6px;
+  background: var(--line-soft);
+  margin-bottom: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.dataset-card .bar-fill {
+  height: 100%;
+  background: var(--good);
+}
+.dataset-card.broken .bar-fill { background: var(--accent); }
+.chart-wrap {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  padding: 24px;
+  margin: 20px 0;
+}
+.chart-title {
+  font-family: var(--display);
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+.chart-sub {
+  font-size: 13px;
+  color: var(--ink-mute);
+  margin-bottom: 20px;
+}
+.chart-canvas-wrap {
+  position: relative;
+  height: 440px;
+}
+.table-controls {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.control label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
+.control select, .control input {
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 5px 9px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  border-radius: 0;
+}
+.control select:focus, .control input:focus {
+  outline: none;
+  border-color: var(--ink);
+}
+.table-scroll { overflow-x: auto; border: 1px solid var(--line); background: var(--bg-card); }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+thead th {
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--ink);
+  text-align: left;
+  padding: 11px 14px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  cursor: pointer;
+  user-select: none;
+  position: sticky;
+  top: 0;
+  white-space: nowrap;
+}
+thead th:hover { color: var(--ink); }
+thead th.sort-asc::after { content: " ↑"; color: var(--accent); }
+thead th.sort-desc::after { content: " ↓"; color: var(--accent); }
+tbody td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--line-soft);
+  font-family: var(--mono);
+  font-size: 12.5px;
+}
+tbody td:first-child { font-family: var(--sans); font-weight: 500; }
+tbody tr:hover td { background: var(--bg-elevated); }
+tbody tr.top-quartile td:first-child { color: var(--good); }
+tbody tr.top-quartile td:first-child::before { content: "● "; }
+tbody tr.bottom-quartile td:first-child { color: var(--accent); }
+tbody tr.bottom-quartile td:first-child::before { content: "○ "; }
+.numeric { text-align: right; }
+.match-cell { position: relative; }
+.match-bar {
+  display: inline-block;
+  width: 50px;
+  height: 5px;
+  background: var(--line-soft);
+  margin-right: 8px;
+  vertical-align: middle;
+  position: relative;
+}
+.match-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: var(--w);
+  background: var(--good);
+}
+.match-bar.low::after { background: var(--accent); }
+.match-bar.mid::after { background: var(--warn); }
+.fs-rollup {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  padding: 24px;
+  margin: 20px 0;
+}
+.fs-rollup-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+.fs-cell {
+  text-align: center;
+  padding: 14px 6px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--line-soft);
+}
+.fs-cell .fs-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+.fs-cell .fs-val {
+  font-family: var(--display);
+  font-size: 24px;
+}
+.fs-takeaway {
+  margin-top: 18px;
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ink-soft);
+}
+details {
+  border: 1px solid var(--line);
+  background: var(--bg-card);
+  margin: 20px 0;
+}
+details summary {
+  padding: 14px 22px;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+details summary::-webkit-details-marker { display: none; }
+details summary::after {
+  content: "+";
+  font-family: var(--display);
+  font-size: 22px;
+  color: var(--ink-soft);
+}
+details[open] summary::after { content: "−"; }
+details summary:hover { color: var(--ink); }
+details .details-content { padding: 0 22px 22px; }
+details pre {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--line-soft);
+  padding: 16px;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+.action-grid {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 14px 18px;
+  margin-top: 20px;
+}
+.action-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  padding-top: 3px;
+}
+.action-title {
+  font-family: var(--display);
+  font-size: 19px;
+  font-weight: 400;
+}
+.action-body { color: var(--ink-soft); margin-top: 4px; }
+footer {
+  margin-top: 80px;
+  padding: 24px 0 60px;
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.04em;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 820px) {
+  .wrap { padding: 0 18px; }
+  .findings { grid-template-columns: 1fr; }
+  .finding { border-right: none; border-bottom: 1px solid var(--line); }
+  .finding:last-child { border-bottom: none; }
+  .dataset-grid { grid-template-columns: 1fr; }
+  h1 { font-size: 36px; }
+  h2 { font-size: 28px; }
+  .chart-canvas-wrap { height: 360px; }
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="masthead">
+  <div class="masthead-top">
+    <span><span class="dot"></span>Harness Run · so_extraction</span>
+    <span>20260515T032806Z &nbsp;·&nbsp; 36 runs &nbsp;·&nbsp; Generated 2026-05-15 03:29 UTC</span>
+  </div>
+  <h1>Here is how this benchmark run shook out.</h1>
+  <p class="dek">36 harness runs for **so_extraction**. Overall field match is **-100.0%** with **0.0%** run success.</p>
+</div>
+<div class="findings">
+<div class="finding"><div class="label">Overall</div><div class="big">-100.0%</div><div class="desc">Scan the dataset cards below; uneven bars usually mean mixed data quality or evaluation drift.</div></div><div class="finding"><div class="label">Strongest model (avg across few-shot)</div><div class="big">opus-4-5</div><div class="desc">By weighted field match across all few-shot counts, <strong>opus-4-5</strong> leads at <strong>-100.0%</strong>. Compare the leaderboard when filtering to a single few-shot count.</div></div><div class="finding"><div class="label">Speed</div><div class="big">38.8s</div><div class="desc">Average wall time per run across the whole batch (latency proxy only — add cost to compare dollars).</div></div>
+</div>
+<section id="datasets">
+  <div class="section-head"><span class="section-num">Sec. 01</span><h2>Results by dataset</h2></div>
+  <p class="section-intro">Each card is one dataset bucket: height is field match, width of the bar is the same. Use this view to see whether the story is uniform or split.</p>
+  
+  <div class="dataset-grid"><div class="dataset-card"><div class="name">downloaded</div><div class="score">-100.00%</div><div class="score-label">Field match</div><div class="bar-track"><div class="bar-fill" style="width:-100.0%"></div></div><div class="meta"><span>36 runs</span><span>2.00 mismatch</span></div></div></div>
+</section>
+<section id="frontier">
+  <div class="section-head"><span class="section-num">Sec. 02</span><h2>Quality vs. speed</h2></div>
+  <p class="section-intro">Bubble chart: horizontal axis is average latency (log scale), vertical axis is field match. Upper-left is ideal; bubble size encodes mismatch pressure.</p>
+  <div class="chart-wrap">
+    <div class="chart-title">Model frontier</div>
+    <div class="chart-sub">Each bubble is one row in the table below (model × few-shot). Bubble size reflects mismatch load.</div>
+    <div class="chart-canvas-wrap"><canvas id="frontierChart"></canvas></div>
+  </div>
+</section>
+<section id="leaderboard">
+  <div class="section-head"><span class="section-num">Sec. 03</span><h2>Leaderboard</h2></div>
+  <p class="section-intro">Sort any column, filter few-shot count, and type in the search box. Green and red rows highlight top and bottom quartiles of field match in the current filter.</p>
+  <div class="table-controls">
+    <div class="control"><label for="fsFilter">FS Count</label>
+      <select id="fsFilter"><option value="all">All</option><option value="3">3</option></select></div>
+    <div class="control"><label for="modelFilter">Model</label>
+      <select id="modelFilter"><option value="all">All</option></select></div>
+    <div class="control"><label for="search">Search</label>
+      <input id="search" type="text" placeholder="filter…" style="width:180px"></div>
+    <div class="control" style="margin-left:auto;color:var(--ink-mute);font-family:var(--mono);font-size:11px;">
+      <span id="rowCount">0 rows</span></div>
+  </div>
+  <div class="table-scroll">
+    <table id="leaderboard-table">
+      <thead><tr>
+        
+        <th data-sort="model" data-type="str">Model</th>
+        <th data-sort="fs" data-type="num" class="numeric">FS</th>
+        <th data-sort="runs" data-type="num" class="numeric">Runs</th>
+        <th data-sort="elapsed" data-type="num" class="numeric">Avg s</th>
+        <th data-sort="mismatch" data-type="num" class="numeric">Mismatch</th>
+        <th data-sort="match" data-type="num" class="numeric sort-desc">Field match</th>
+      </tr></thead>
+      <tbody id="leaderboard-body"></tbody>
+    </table>
+  </div>
+</section>
+<section id="fewshot">
+  <div class="section-head"><span class="section-num">Sec. 04</span><h2>Few-shot sweep</h2></div>
+  <p class="section-intro">Cells aggregate every agent row in the run for each few-shot count (weighted by runs). Flat rows suggest few-shot is not the lever to pull.</p>
+  <div class="fs-rollup">
+    <div class="fs-rollup-grid"><div class="fs-cell"><div class="fs-label">FS 3</div><div class="fs-val">-100.00%</div></div></div>
+    
+  </div>
+</section>
+<section id="actions"><div class="section-head"><span class="section-num">Sec. 05</span><h2>What to check next</h2></div><p class="section-intro">Practical follow-ups in priority order:</p><div class="action-grid"><div class="action-num">01</div><div><div class="action-title">Confirm what “field match” covers</div><div class="action-body">Open the glossary under this page and align stakeholders on success vs quality metrics.</div></div><div class="action-num">02</div><div><div class="action-title">Split conclusions by dataset</div><div class="action-body">If one dataset is an outlier, report model winners per dataset instead of one blended score.</div></div><div class="action-num">03</div><div><div class="action-title">Spot-check the worst chats</div><div class="action-body">Expand “Sample mismatches” and compare agent JSON to the golden reference for a handful of rows.</div></div></div></section>
+<details>
+  <summary>Run configuration (JSON)</summary>
+  <div class="details-content"><pre>{
+  "agent": "so_extraction",
+  "pipeline": null,
+  "models": [
+    "sonnet-4-6",
+    "opus-4-5",
+    "opus-4-6",
+    "sonnet-4-5"
+  ],
+  "datasets": [
+    "downloaded"
+  ],
+  "chat": null,
+  "chats_glob": null,
+  "bulk": false,
+  "runs_per_chat": 1,
+  "max_workers": 25,
+  "few_shot_explicit": [
+    "/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/multiple_product_multiple_shipment_complex.json",
+    "/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/single_product_multiple_shipment_medium.json",
+    "/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/single_product_single_shipment_simple.json"
+  ],
+  "few_shot_walk": [],
+  "few_shot_sweep": [],
+  "few_shot_pool_argv": [],
+  "few_shot_seed": 42,
+  "db_few_shot_limit": 0,
+  "skip_without_expected": false,
+  "results_dir": "/Users/tripathipranav/Documents/code/harness_agents/results/20260515T032806Z",
+  "config_file": "configs/agents.json",
+  "few_shot_mode": "explicit",
+  "few_shot_pool_size": 68,
+  "few_shot_default_pool_size": 68,
+  "few_shot_pool_override": null,
+  "few_shot_variants": [
+    {
+      "label": "explicit",
+      "count": 3,
+      "paths": [
+        "raw_data/chats/multiple_product_multiple_shipment_complex.json",
+        "raw_data/chats/single_product_multiple_shipment_medium.json",
+        "raw_data/chats/single_product_single_shipment_simple.json"
+      ]
+    }
+  ],
+  "allow_self_fewshot": false
+}</pre></div>
+</details>
+<details>
+  <summary>How to read these numbers</summary>
+  <div class="details-content">
+    <div style="font-size:13.5px;color:var(--ink-soft);line-height:1.7;">
+      <p style="margin-bottom:10px;"><strong style="color:var(--ink);font-family:var(--mono);font-size:12px;">SUCCESS RATE</strong>
+      — Share of runs that finished without a harness or HTTP error. High success means the run was stable; it does not prove the answers matched the reference.</p>
+      <p style="margin-bottom:10px;"><strong style="color:var(--ink);font-family:var(--mono);font-size:12px;">AVG ELAPSED (S)</strong>
+      — Average wall time per run in that bucket. Useful for latency comparisons.</p>
+      <p style="margin-bottom:10px;"><strong style="color:var(--ink);font-family:var(--mono);font-size:12px;">AVG MISMATCH / EXPECTED RUN</strong>
+      — Average count of fields that differed from the golden JSON when a reference existed. Lower is better.</p>
+      <p><strong style="color:var(--ink);font-family:var(--mono);font-size:12px;">FIELD MATCH</strong>
+      — Fraction of compared fields that matched the golden output across runs in that bucket. Higher is better.</p>
+    </div>
+  </div>
+</details>
+<details>
+  <summary>Sample mismatches (up to 80 rows)</summary>
+  <div class="details-content"><div class='table-scroll'><table><thead><tr><th>Agent</th><th>Chat</th><th>Model</th><th>FS</th><th>Mismatches</th><th>Sample</th></tr></thead><tbody><tr><td>so_extraction</td><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-6</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE - P - S",
+              "quantity": 1800.0,
+              "quantity_unit": "kg",
+              "unit_price": 3250.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "EXW",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "Unknown",
+              "loading": "Unknown",
+              "total": 5850.0
+            }
+          ],
+          "do_date": "2026-03-31",
+          "po_date": "2026-02-24",
+          "po_ref_no": "GIIOFINE - P - S-2026-6",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "Advanced payment",
+          "delivery_terms": "EXW",
+          "billing_address": "Epic Chemicals Sdn Bhd, 17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia",
+          "shipping_method": "Collection Against OPO 260012/EC",
+          "shipping_address": "17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-5</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE - P - S",
+              "quantity": 1800.0,
+              "quantity_unit": "kg",
+              "unit_price": 3250.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "EXW",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "Unknown",
+              "loading": "Unknown",
+              "total": 5850.0
+            }
+          ],
+          "do_date": "2026-03-31",
+          "po_date": "2026-02-24",
+          "po_ref_no": "GIIOFINE - P - S-2026-6",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "Advanced payment",
+          "delivery_terms": "EXW",
+          "billing_address": "Epic Chemicals Sdn Bhd, 17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia",
+          "shipping_method": "Collection Against OPO 260012/EC",
+          "shipping_address": "17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-6</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE - P - S",
+              "quantity": 1800.0,
+              "quantity_unit": "kg",
+              "unit_price": 3250.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "EXW",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "Unknown",
+              "loading": "Unknown",
+              "total": 5850.0
+            }
+          ],
+          "do_date": "2026-03-31",
+          "po_date": "2026-02-24",
+          "po_ref_no": "GIIOFINE - P - S-2026-6",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "Advanced payment",
+          "delivery_terms": "EXW",
+          "billing_address": "Epic Chemicals Sdn Bhd, 17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia",
+          "shipping_method": "Collection Against OPO 260012/EC",
+          "shipping_address": "17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-5</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE - P - S",
+              "quantity": 1800.0,
+              "quantity_unit": "kg",
+              "unit_price": 3250.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "EXW",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "Unknown",
+              "loading": "Unknown",
+              "total": 5850.0
+            }
+          ],
+          "do_date": "2026-03-31",
+          "po_date": "2026-02-24",
+          "po_ref_no": "GIIOFINE - P - S-2026-6",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "Advanced payment",
+          "delivery_terms": "EXW",
+          "billing_address": "Epic Chemicals Sdn Bhd, 17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia",
+          "shipping_method": "Collection Against OPO 260012/EC",
+          "shipping_address": "17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-6</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE - P - S",
+              "quantity": 39000.0,
+              "quantity_unit": "kg",
+              "unit_price": 2850.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "CIF Nhava Sheva",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "25 kgs in PP bags",
+              "loading": "",
+              "total": 111150.0
+            }
+          ],
+          "do_date": "2026-02-29",
+          "po_date": "2026-02-09",
+          "po_ref_no": "GIIOFINE - P - S-2026-5",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "Net 30D",
+          "delivery_terms": "CIF Nhava Sheva",
+          "billing_address": "GIIAVA India Pvt Ltd, 70/21A Law College Road Pune 411004 India",
+          "shipping_method": "",
+          "shipping_address": "C3 MIDC Wai Dist Satara 412803 India"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-6</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE - P - S",
+              "quantity": 39000.0,
+              "quantity_unit": "kg",
+              "unit_price": 2850.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "CIF Nhava Sheva",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "25 kgs in PP bags",
+              "loading": "",
+              "total": 111150.0
+            }
+          ],
+          "do_date": "2026-02-29",
+          "po_date": "2026-02-09",
+          "po_ref_no": "GIIOFINE - P - S-2026-5",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "Net 30D",
+          "delivery_terms": "CIF Nhava Sheva",
+          "billing_address": "GIIAVA India Pvt Ltd, 70/21A Law College Road Pune 411004 India",
+          "shipping_method": "",
+          "shipping_address": "C3 MIDC Wai Dist Satara 412803 India"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-5</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE - P - S",
+              "quantity": 39000.0,
+              "quantity_unit": "kg",
+              "unit_price": 2850.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "CIF Nhava Sheva",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "25 kgs in PP bags",
+              "loading": "",
+              "total": 111150.0
+            }
+          ],
+          "do_date": "2026-02-29",
+          "po_date": "2026-02-09",
+          "po_ref_no": "GIIOFINE - P - S-2026-5",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "Net 30D",
+          "delivery_terms": "CIF Nhava Sheva",
+          "billing_address": "GIIAVA India Pvt Ltd, 70/21A Law College Road Pune 411004 India",
+          "shipping_method": "",
+          "shipping_address": "C3 MIDC Wai Dist Satara 412803 India"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-5</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE - P - S",
+              "quantity": 39000.0,
+              "quantity_unit": "kg",
+              "unit_price": 2850.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "CIF Nhava Sheva",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "25 kgs in PP bags",
+              "loading": "",
+              "total": 111150.0
+            }
+          ],
+          "do_date": "2026-02-29",
+          "po_date": "2026-02-09",
+          "po_ref_no": "GIIOFINE - P - S-2026-5",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "Net 30D",
+          "delivery_terms": "CIF Nhava Sheva",
+          "billing_address": "GIIAVA India Pvt Ltd, 70/21A Law College Road Pune 411004 India",
+          "shipping_method": "",
+          "shipping_address": "C3 MIDC Wai Dist Satara 412803 India"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-5</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "BergaPur",
+              "quantity": 6300.0,
+              "quantity_unit": "kg",
+              "unit_price": 3050.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "EXW",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "25kg bags in carton",
+              "loading": "10.5MT / 20'",
+              "total": 19215.0
+            }
+          ],
+          "do_date": "2026-03-31",
+          "po_date": "2026-01-30",
+          "po_ref_no": "BergaPur-2026-6",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "7D",
+          "delivery_terms": "EXW",
+          "billing_address": "Berg + Schmidt Asia Pte Ltd, 1 North Buona Vista Link #10-06 Elementum Singapore 139691",
+          "shipping_method": "collection",
+          "shipping_address": "Unknown"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-6</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "BergaPur",
+              "quantity": 6300.0,
+              "quantity_unit": "kg",
+              "unit_price": 3050.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "EXW",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "25kg bags in carton",
+              "loading": "10.5MT / 20'",
+              "total": 19215.0
+            }
+          ],
+          "do_date": "2026-03-31",
+          "po_date": "2026-01-30",
+          "po_ref_no": "BergaPur-2026-6",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "7D",
+          "delivery_terms": "EXW",
+          "billing_address": "Berg + Schmidt Asia Pte Ltd, 1 North Buona Vista Link #10-06 Elementum Singapore 139691",
+          "shipping_method": "collection",
+          "shipping_address": "Unknown"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-5</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "BergaPur",
+              "quantity": 6300.0,
+              "quantity_unit": "kg",
+              "unit_price": 3050.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "EXW",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "25kg bags in carton",
+              "loading": "10.5MT / 20'",
+              "total": 19215.0
+            }
+          ],
+          "do_date": "2026-03-31",
+          "po_date": "2026-01-30",
+          "po_ref_no": "BergaPur-2026-6",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "7D",
+          "delivery_terms": "EXW",
+          "billing_address": "Berg + Schmidt Asia Pte Ltd, 1 North Buona Vista Link #10-06 Elementum Singapore 139691",
+          "shipping_method": "collection",
+          "shipping_address": "Unknown"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-6</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "BergaPur",
+              "quantity": 6300.0,
+              "quantity_unit": "kg",
+              "unit_price": 3050.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "EXW",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "25kg bags in carton",
+              "loading": "10.5MT / 20'",
+              "total": 19215.0
+            }
+          ],
+          "do_date": "2026-03-31",
+          "po_date": "2026-01-30",
+          "po_ref_no": "BergaPur-2026-6",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "7D",
+          "delivery_terms": "EXW",
+          "billing_address": "Berg + Schmidt Asia Pte Ltd, 1 North Buona Vista Link #10-06 Elementum Singapore 139691",
+          "shipping_method": "collection",
+          "shipping_address": "Unknown"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>sonnet-4-6</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE - P - S",
+              "quantity": 9000.0,
+              "quantity_unit": "KG",
+              "unit_price": 3.25,
+              "pricing_unit": "USD/KG",
+              "ship_term": "CIF Jakarta",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "25kg bags in carton",
+              "loading": "25kg bags in carton",
+              "total": 29250.0
+            }
+          ],
+          "do_date": "2026-02-28",
+          "po_date": "2026-01-29",
+          "po_ref_no": "GIIOFINE - P - S-2026-4",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "CAD",
+          "delivery_terms": "CIF Jakarta",
+          "billing_address": "PT Bright International, Plaza Niaga 1 Blok B No 50 Sentul City - Bogor Indonesia",
+          "shipping_method": "against PO-IMP-BIB-2601-017",
+          "shipping_address": "Plaza Niaga 1 Blok B No 50 Sentul City - Bogor Indonesia"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>sonnet-4-5</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE - P - S",
+              "quantity": 9000.0,
+              "quantity_unit": "KG",
+              "unit_price": 3.25,
+              "pricing_unit": "USD/KG",
+              "ship_term": "CIF Jakarta",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "25kg bags in carton",
+              "loading": "25kg bags in carton",
+              "total": 29250.0
+            }
+          ],
+          "do_date": "2026-02-28",
+          "po_date": "2026-01-29",
+          "po_ref_no": "GIIOFINE - P - S-2026-4",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "CAD",
+          "delivery_terms": "CIF Jakarta",
+          "billing_address": "PT Bright International, Plaza Niaga 1 Blok B No 50 Sentul City - Bogor Indonesia",
+          "shipping_method": "against PO-IMP-BIB-2601-017",
+          "shipping_address": "Plaza Niaga 1 Blok B No 50 Sentul City - Bogor Indonesia"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>opus-4-6</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE - P - S",
+              "quantity": 9000.0,
+              "quantity_unit": "KG",
+              "unit_price": 3.25,
+              "pricing_unit": "USD/KG",
+              "ship_term": "CIF Jakarta",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "25kg bags in carton",
+              "loading": "25kg bags in carton",
+              "total": 29250.0
+            }
+          ],
+          "do_date": "2026-02-28",
+          "po_date": "2026-01-29",
+          "po_ref_no": "GIIOFINE - P - S-2026-4",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "CAD",
+          "delivery_terms": "CIF Jakarta",
+          "billing_address": "PT Bright International, Plaza Niaga 1 Blok B No 50 Sentul City - Bogor Indonesia",
+          "shipping_method": "against PO-IMP-BIB-2601-017",
+          "shipping_address": "Plaza Niaga 1 Blok B No 50 Sentul City - Bogor Indonesia"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>opus-4-5</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE - P - S",
+              "quantity": 9000.0,
+              "quantity_unit": "KG",
+              "unit_price": 3.25,
+              "pricing_unit": "USD/KG",
+              "ship_term": "CIF Jakarta",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "25kg bags in carton",
+              "loading": "25kg bags in carton",
+              "total": 29250.0
+            }
+          ],
+          "do_date": "2026-02-28",
+          "po_date": "2026-01-29",
+          "po_ref_no": "GIIOFINE - P - S-2026-4",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "CAD",
+          "delivery_terms": "CIF Jakarta",
+          "billing_address": "PT Bright International, Plaza Niaga 1 Blok B No 50 Sentul City - Bogor Indonesia",
+          "shipping_method": "against PO-IMP-BIB-2601-017",
+          "shipping_address": "Plaza Niaga 1 Blok B No 50 Sentul City - Bogor Indonesia"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-5</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE - P - S",
+              "quantity": 26000.0,
+              "quantity_unit": "KG",
+              "unit_price": 2850.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF NHAVA SHEVA",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 74100.0
+            }
+          ],
+          "do_date": "2026-01-31",
+          "po_date": "2026-01-20",
+          "po_ref_no": "GIIOFINE - P - S-2026-3",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "Net 30D",
+          "delivery_terms": "CIF NHAVA SHEVA",
+          "billing_address": "GIIAVA India Pvt Ltd, 70/21A Law College Road Pune 411004 India",
+          "shipping_method": "",
+          "shipping_address": "C3 MIDC Wai Dist Satara 412803 India"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-6</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE - P - S",
+              "quantity": 26000.0,
+              "quantity_unit": "KG",
+              "unit_price": 2850.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF NHAVA SHEVA",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 74100.0
+            }
+          ],
+          "do_date": "2026-01-31",
+          "po_date": "2026-01-20",
+          "po_ref_no": "GIIOFINE - P - S-2026-3",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "Net 30D",
+          "delivery_terms": "CIF NHAVA SHEVA",
+          "billing_address": "GIIAVA India Pvt Ltd, 70/21A Law College Road Pune 411004 India",
+          "shipping_method": "",
+          "shipping_address": "C3 MIDC Wai Dist Satara 412803 India"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-5</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE - P - S",
+              "quantity": 26000.0,
+              "quantity_unit": "KG",
+              "unit_price": 2850.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF NHAVA SHEVA",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 74100.0
+            }
+          ],
+          "do_date": "2026-01-31",
+          "po_date": "2026-01-20",
+          "po_ref_no": "GIIOFINE - P - S-2026-3",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "Net 30D",
+          "delivery_terms": "CIF NHAVA SHEVA",
+          "billing_address": "GIIAVA India Pvt Ltd, 70/21A Law College Road Pune 411004 India",
+          "shipping_method": "",
+          "shipping_address": "C3 MIDC Wai Dist Satara 412803 India"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-6</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE - P - S",
+              "quantity": 26000.0,
+              "quantity_unit": "KG",
+              "unit_price": 2850.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF NHAVA SHEVA",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 74100.0
+            }
+          ],
+          "do_date": "2026-01-31",
+          "po_date": "2026-01-20",
+          "po_ref_no": "GIIOFINE - P - S-2026-3",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "Net 30D",
+          "delivery_terms": "CIF NHAVA SHEVA",
+          "billing_address": "GIIAVA India Pvt Ltd, 70/21A Law College Road Pune 411004 India",
+          "shipping_method": "",
+          "shipping_address": "C3 MIDC Wai Dist Satara 412803 India"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-5</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE - P - S",
+              "quantity": 1800.0,
+              "quantity_unit": "kg",
+              "unit_price": 3500.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "EXW",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "LCL",
+              "total": 6300.0
+            }
+          ],
+          "do_date": "2026-02-28",
+          "po_date": "2026-01-06",
+          "po_ref_no": "GIIOFINE - P - S-2026-2",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "Advanced payment",
+          "delivery_terms": "EXW",
+          "billing_address": "Epic Chemicals Sdn Bhd, 17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia",
+          "shipping_method": "",
+          "shipping_address": "17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-6</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE - P - S",
+              "quantity": 1800.0,
+              "quantity_unit": "kg",
+              "unit_price": 3500.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "EXW",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "LCL",
+              "total": 6300.0
+            }
+          ],
+          "do_date": "2026-02-28",
+          "po_date": "2026-01-06",
+          "po_ref_no": "GIIOFINE - P - S-2026-2",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "Advanced payment",
+          "delivery_terms": "EXW",
+          "billing_address": "Epic Chemicals Sdn Bhd, 17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia",
+          "shipping_method": "",
+          "shipping_address": "17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-6</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE - P - S",
+              "quantity": 1800.0,
+              "quantity_unit": "kg",
+              "unit_price": 3500.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "EXW",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "LCL",
+              "total": 6300.0
+            }
+          ],
+          "do_date": "2026-02-28",
+          "po_date": "2026-01-06",
+          "po_ref_no": "GIIOFINE - P - S-2026-2",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "Advanced payment",
+          "delivery_terms": "EXW",
+          "billing_address": "Epic Chemicals Sdn Bhd, 17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia",
+          "shipping_method": "",
+          "shipping_address": "17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-5</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE - P - S",
+              "quantity": 1800.0,
+              "quantity_unit": "kg",
+              "unit_price": 3500.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "EXW",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "LCL",
+              "total": 6300.0
+            }
+          ],
+          "do_date": "2026-02-28",
+          "po_date": "2026-01-06",
+          "po_ref_no": "GIIOFINE - P - S-2026-2",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "Advanced payment",
+          "delivery_terms": "EXW",
+          "billing_address": "Epic Chemicals Sdn Bhd, 17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia",
+          "shipping_method": "",
+          "shipping_address": "17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-6</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "BergaPur",
+              "quantity": 10500.0,
+              "quantity_unit": "kg",
+              "unit_price": 3100.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "EXW",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "standard packaging",
+              "loading": "10.5MT / 20'",
+              "total": 32550.0
+            }
+          ],
+          "do_date": "2026-01-31",
+          "po_date": "2025-12-23",
+          "po_ref_no": "BergaPur-2025-4",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "7D",
+          "delivery_terms": "EXW",
+          "billing_address": "Berg + Schmidt Asia Pte Ltd, 1 North Buona Vista Link #10-06 Elementum Singapore 139691",
+          "shipping_method": "",
+          "shipping_address": "NA"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-6</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "BergaPur",
+              "quantity": 10500.0,
+              "quantity_unit": "kg",
+              "unit_price": 3100.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "EXW",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "standard packaging",
+              "loading": "10.5MT / 20'",
+              "total": 32550.0
+            }
+          ],
+          "do_date": "2026-01-31",
+          "po_date": "2025-12-23",
+          "po_ref_no": "BergaPur-2025-4",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "7D",
+          "delivery_terms": "EXW",
+          "billing_address": "Berg + Schmidt Asia Pte Ltd, 1 North Buona Vista Link #10-06 Elementum Singapore 139691",
+          "shipping_method": "",
+          "shipping_address": "NA"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-5</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "BergaPur",
+              "quantity": 10500.0,
+              "quantity_unit": "kg",
+              "unit_price": 3100.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "EXW",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "standard packaging",
+              "loading": "10.5MT / 20'",
+              "total": 32550.0
+            }
+          ],
+          "do_date": "2026-01-31",
+          "po_date": "2025-12-23",
+          "po_ref_no": "BergaPur-2025-4",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "7D",
+          "delivery_terms": "EXW",
+          "billing_address": "Berg + Schmidt Asia Pte Ltd, 1 North Buona Vista Link #10-06 Elementum Singapore 139691",
+          "shipping_method": "",
+          "shipping_address": "NA"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-5</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "BergaPur",
+              "quantity": 10500.0,
+              "quantity_unit": "kg",
+              "unit_price": 3100.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "EXW",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "standard packaging",
+              "loading": "10.5MT / 20'",
+              "total": 32550.0
+            }
+          ],
+          "do_date": "2026-01-31",
+          "po_date": "2025-12-23",
+          "po_ref_no": "BergaPur-2025-4",
+          "vendor_name": "GIIAVA Singapore Pte Ltd",
+          "payment_date": "7D",
+          "delivery_terms": "EXW",
+          "billing_address": "Berg + Schmidt Asia Pte Ltd, 1 North Buona Vista Link #10-06 Elementum Singapore 139691",
+          "shipping_method": "",
+          "shipping_address": "NA"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-6</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "TG - BP102",
+              "quantity": 46000.0,
+              "quantity_unit": "kg",
+              "unit_price": 1410.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "CIF",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "25kg printed paper bags",
+              "loading": "23 MT / 40' FCL",
+              "total": 64860.0
+            }
+          ],
+          "do_date": "2025-11-15",
+          "po_date": "2025-09-29",
+          "po_ref_no": "TG - BP102-2025-3",
+          "vendor_name": "AG Lipids Pte Ltd",
+          "payment_date": "Net 14 Days",
+          "delivery_terms": "CIF",
+          "billing_address": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea",
+          "shipping_method": "Unknown",
+          "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-5</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "TG - BP102",
+              "quantity": 46000.0,
+              "quantity_unit": "kg",
+              "unit_price": 1410.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "CIF",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "25kg printed paper bags",
+              "loading": "23 MT / 40' FCL",
+              "total": 64860.0
+            }
+          ],
+          "do_date": "2025-11-15",
+          "po_date": "2025-09-29",
+          "po_ref_no": "TG - BP102-2025-3",
+          "vendor_name": "AG Lipids Pte Ltd",
+          "payment_date": "Net 14 Days",
+          "delivery_terms": "CIF",
+          "billing_address": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea",
+          "shipping_method": "Unknown",
+          "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-6</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "TG - BP102",
+              "quantity": 46000.0,
+              "quantity_unit": "kg",
+              "unit_price": 1410.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "CIF",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "25kg printed paper bags",
+              "loading": "23 MT / 40' FCL",
+              "total": 64860.0
+            }
+          ],
+          "do_date": "2025-11-15",
+          "po_date": "2025-09-29",
+          "po_ref_no": "TG - BP102-2025-3",
+          "vendor_name": "AG Lipids Pte Ltd",
+          "payment_date": "Net 14 Days",
+          "delivery_terms": "CIF",
+          "billing_address": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea",
+          "shipping_method": "Unknown",
+          "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-5</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "TG - BP102",
+              "quantity": 46000.0,
+              "quantity_unit": "kg",
+              "unit_price": 1410.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "CIF",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "25kg printed paper bags",
+              "loading": "23 MT / 40' FCL",
+              "total": 64860.0
+            }
+          ],
+          "do_date": "2025-11-15",
+          "po_date": "2025-09-29",
+          "po_ref_no": "TG - BP102-2025-3",
+          "vendor_name": "AG Lipids Pte Ltd",
+          "payment_date": "Net 14 Days",
+          "delivery_terms": "CIF",
+          "billing_address": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea",
+          "shipping_method": "Unknown",
+          "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-6</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "TG - BP102",
+              "quantity": 23000.0,
+              "quantity_unit": "kg",
+              "unit_price": 1410.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "CIF",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "25kg printed paper bag",
+              "loading": "23 MT / 40' FCL",
+              "total": 32430.0
+            }
+          ],
+          "do_date": "2025-11-15",
+          "po_date": "2025-09-29",
+          "po_ref_no": "TG - BP102-2025-1",
+          "vendor_name": "AG Lipids Pte Ltd",
+          "payment_date": "Net 14 Days",
+          "delivery_terms": "CIF",
+          "billing_address": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea",
+          "shipping_method": "Unknown",
+          "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-5</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "TG - BP102",
+              "quantity": 23000.0,
+              "quantity_unit": "kg",
+              "unit_price": 1410.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "CIF",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "25kg printed paper bag",
+              "loading": "23 MT / 40' FCL",
+              "total": 32430.0
+            }
+          ],
+          "do_date": "2025-11-15",
+          "po_date": "2025-09-29",
+          "po_ref_no": "TG - BP102-2025-1",
+          "vendor_name": "AG Lipids Pte Ltd",
+          "payment_date": "Net 14 Days",
+          "delivery_terms": "CIF",
+          "billing_address": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea",
+          "shipping_method": "Unknown",
+          "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-6</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "TG - BP102",
+              "quantity": 23000.0,
+              "quantity_unit": "kg",
+              "unit_price": 1410.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "CIF",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "25kg printed paper bag",
+              "loading": "23 MT / 40' FCL",
+              "total": 32430.0
+            }
+          ],
+          "do_date": "2025-11-15",
+          "po_date": "2025-09-29",
+          "po_ref_no": "TG - BP102-2025-1",
+          "vendor_name": "AG Lipids Pte Ltd",
+          "payment_date": "Net 14 Days",
+          "delivery_terms": "CIF",
+          "billing_address": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea",
+          "shipping_method": "Unknown",
+          "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-5</td><td>3</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "TG - BP102",
+              "quantity": 23000.0,
+              "quantity_unit": "kg",
+              "unit_price": 1410.0,
+              "pricing_unit": "usd/mt",
+              "ship_term": "CIF",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "25kg printed paper bag",
+              "loading": "23 MT / 40' FCL",
+              "total": 32430.0
+            }
+          ],
+          "do_date": "2025-11-15",
+          "po_date": "2025-09-29",
+          "po_ref_no": "TG - BP102-2025-1",
+          "vendor_name": "AG Lipids Pte Ltd",
+          "payment_date": "Net 14 Days",
+          "delivery_terms": "CIF",
+          "billing_address": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea",
+          "shipping_method": "Unknown",
+          "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr></tbody></table></div></div>
+</details>
+<footer>
+  <span>so_extraction · 20260515T032806Z</span>
+  <span>36 runs · 0.00% success · -100.00% field match</span>
+</footer>
+</div>
+<script>
+
+const MULTI_AGENT = false;
+const DATA = [["opus-4-5", 3, 9, 40.229955555555556, 2.0, -1.0], ["opus-4-6", 3, 9, 36.346111111111114, 2.0, -1.0], ["sonnet-4-5", 3, 9, 39.36508888888889, 2.0, -1.0], ["sonnet-4-6", 3, 9, 39.3446, 2.0, -1.0]];
+const rows = DATA.map((row) => {
+  if (MULTI_AGENT) {
+    const parts = row[0].split(" · ");
+    const agent = parts[0] || "";
+    const model = parts.length > 1 ? parts.slice(1).join(" · ") : row[0];
+    return { agent, model, fs: row[1], runs: row[2], elapsed: row[3], mismatch: row[4], match: row[5] };
+  }
+  return { agent: "", model: row[0], fs: row[1], runs: row[2], elapsed: row[3], mismatch: row[4], match: row[5] };
+});
+const sortedMatches = [...rows.map((r) => r.match)].sort((a, b) => b - a);
+const topQuartile = sortedMatches.length ? sortedMatches[Math.floor(rows.length * 0.25)] : 0;
+const bottomQuartile = sortedMatches.length ? sortedMatches[Math.floor(rows.length * 0.75)] : 0;
+const modelFilter = document.getElementById("modelFilter");
+const models = [...new Set(rows.map((r) => r.model))].sort();
+models.forEach((m) => {
+  const opt = document.createElement("option");
+  opt.value = m;
+  opt.textContent = m;
+  modelFilter.appendChild(opt);
+});
+let state = { sort: "match", dir: "desc", fs: "all", model: "all", search: "" };
+function matchBarClass(v) {
+  if (v < 0.78) return "low";
+  if (v < 0.85) return "mid";
+  return "";
+}
+function render() {
+  let filtered = rows.filter((r) => {
+    if (state.fs !== "all" && r.fs !== Number(state.fs)) return false;
+    if (state.model !== "all" && r.model !== state.model) return false;
+    if (state.search) {
+      const q = state.search.toLowerCase();
+      const blob = (r.agent + " " + r.model).toLowerCase();
+      if (!blob.includes(q)) return false;
+    }
+    return true;
+  });
+  filtered.sort((a, b) => {
+    const av = a[state.sort];
+    const bv = b[state.sort];
+    if (typeof av === "string") {
+      return state.dir === "asc" ? av.localeCompare(bv) : bv.localeCompare(av);
+    }
+    return state.dir === "asc" ? av - bv : bv - av;
+  });
+  const tbody = document.getElementById("leaderboard-body");
+  const agentCell = (r) => (MULTI_AGENT ? `<td>${r.agent}</td>` : "");
+  tbody.innerHTML = filtered
+    .map((r) => {
+      const cls =
+        r.match >= topQuartile ? "top-quartile" : r.match <= bottomQuartile ? "bottom-quartile" : "";
+      const barCls = matchBarClass(r.match);
+      const barW = Math.round(r.match * 100) + "%";
+      return (
+        `<tr class="${cls}">${agentCell(r)}<td>${r.model}</td>` +
+        `<td class="numeric">${r.fs}</td>` +
+        `<td class="numeric">${r.runs}</td>` +
+        `<td class="numeric">${r.elapsed.toFixed(2)}</td>` +
+        `<td class="numeric">${r.mismatch.toFixed(2)}</td>` +
+        `<td class="numeric match-cell"><span class="match-bar ${barCls}" style="--w:${barW}"></span>${(r.match * 100).toFixed(2)}%</td></tr>`
+      );
+    })
+    .join("");
+  document.getElementById("rowCount").textContent = `${filtered.length} of ${rows.length} rows`;
+  document.querySelectorAll("thead th").forEach((th) => {
+    th.classList.remove("sort-asc", "sort-desc");
+    if (th.dataset.sort === state.sort) {
+      th.classList.add(state.dir === "asc" ? "sort-asc" : "sort-desc");
+    }
+  });
+}
+document.querySelectorAll("thead th").forEach((th) => {
+  th.addEventListener("click", () => {
+    const k = th.dataset.sort;
+    if (state.sort === k) {
+      state.dir = state.dir === "asc" ? "desc" : "asc";
+    } else {
+      state.sort = k;
+      state.dir = th.dataset.type === "num" ? "desc" : "asc";
+    }
+    render();
+  });
+});
+document.getElementById("fsFilter").addEventListener("change", (e) => {
+  state.fs = e.target.value;
+  render();
+});
+document.getElementById("modelFilter").addEventListener("change", (e) => {
+  state.model = e.target.value;
+  render();
+});
+document.getElementById("search").addEventListener("input", (e) => {
+  state.search = e.target.value;
+  render();
+});
+render();
+const modelAgg = {};
+rows.forEach((r) => {
+  const k = r.model;
+  if (!modelAgg[k]) modelAgg[k] = { elapsed: [], match: [], mismatch: [] };
+  modelAgg[k].elapsed.push(r.elapsed);
+  modelAgg[k].match.push(r.match);
+  modelAgg[k].mismatch.push(r.mismatch);
+});
+const avg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
+const modelPoints = Object.entries(modelAgg).map(([model, d]) => ({
+  model,
+  x: avg(d.elapsed),
+  y: avg(d.match) * 100,
+  r: 6 + avg(d.mismatch) * 1.5,
+}));
+const colorFor = (model) => {
+  if (model.startsWith("sonnet") || model.startsWith("opus")) return "#2d6b3f";
+  if (model.startsWith("openai:4")) return "#1a5490";
+  if (model.startsWith("openai")) return "#7a8aa8";
+  if (model.startsWith("gemini")) return "#b8341c";
+  return "#7a7a7a";
+};
+if (modelPoints.length) {
+  const ctx = document.getElementById("frontierChart").getContext("2d");
+  new Chart(ctx, {
+    type: "bubble",
+    data: {
+      datasets: modelPoints.map((p) => ({
+        label: p.model,
+        data: [{ x: p.x, y: p.y, r: p.r, model: p.model }],
+        backgroundColor: colorFor(p.model) + "cc",
+        borderColor: colorFor(p.model),
+        borderWidth: 1.5,
+      })),
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: "right",
+          labels: {
+            font: { family: "'JetBrains Mono', monospace", size: 11 },
+            color: "#4a4a4a",
+            boxWidth: 10,
+            boxHeight: 10,
+            padding: 8,
+          },
+        },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => {
+              const d = ctx.raw;
+              return `${d.model}: ${d.y.toFixed(1)}% match, ${d.x.toFixed(2)}s avg`;
+            },
+          },
+          bodyFont: { family: "'JetBrains Mono', monospace", size: 12 },
+          titleFont: { family: "'IBM Plex Sans', sans-serif" },
+        },
+      },
+      scales: {
+        x: {
+          type: "logarithmic",
+          title: {
+            display: true,
+            text: "Avg latency (s, log scale)",
+            font: { family: "'JetBrains Mono', monospace", size: 11, weight: 500 },
+            color: "#4a4a4a",
+          },
+          ticks: {
+            font: { family: "'JetBrains Mono', monospace", size: 10 },
+            color: "#7a7a7a",
+            callback: (v) => v + "s",
+          },
+          grid: { color: "#e8e2d2" },
+        },
+        y: {
+          title: {
+            display: true,
+            text: "Field match (%)",
+            font: { family: "'JetBrains Mono', monospace", size: 11, weight: 500 },
+            color: "#4a4a4a",
+          },
+          ticks: {
+            font: { family: "'JetBrains Mono', monospace", size: 10 },
+            color: "#7a7a7a",
+            callback: (v) => v + "%",
+          },
+          grid: { color: "#e8e2d2" },
+        },
+      },
+    },
+  });
+}
+
+</script>
+</body>
+</html>

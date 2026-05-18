@@ -8,8 +8,8 @@ The harness drops two kinds of HTML reports into ``results/`` (any depth):
   2. Per-run directories containing ``report.html`` plus
      ``aggregate.json`` / ``config.json`` / ``run.jsonl`` (timestamps like
      ``20260512T191113Z`` at the top level or nested under other folders).
-     A summary may be prepended into ``report.html`` by
-     ``python -m harness.report_summary``.
+     ``report.html`` is a dashboard-style page (charts + cards + sortable table);
+     optional Gemini narrative may still be prepended via ``python -m harness.report_summary``.
 
 This script copies everything under ``results/`` into ``site/`` (preserving
 structure) and writes a top-level ``index.html`` that links to each report

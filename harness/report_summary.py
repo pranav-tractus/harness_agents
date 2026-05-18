@@ -5,19 +5,311 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import logging
 import re
 import textwrap
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
 from core.llm_client import call_llm
 
+logger = logging.getLogger(__name__)
+
 DEFAULT_SUMMARY_MODEL = "gemini:gemini-2.5-pro"
+DEFAULT_VISUAL_STORY_MODEL = "sonnet-4-5"
 
 AI_SUMMARY_START = "<!-- harness-ai-summary-start -->"
 AI_SUMMARY_END = "<!-- harness-ai-summary-end -->"
+
+
+class VisualFinding(BaseModel):
+    label: str = Field(..., description="Short uppercase-style label, e.g. Overall quality")
+    label_critical: bool = Field(False, description="True if this finding flags a serious issue")
+    headline: str = Field(..., description="Large headline stat or model name, a few words")
+    headline_tone: Literal["good", "bad", "neutral"] = Field(
+        "neutral",
+        description="Visual tone for the headline number",
+    )
+    description: str = Field(
+        ...,
+        description="One or two sentences, plain text only (no HTML). Optional **bold** phrases.",
+    )
+
+
+class NextStep(BaseModel):
+    title: str = Field(..., description="Short imperative title for a stakeholder")
+    detail: str = Field(..., description="Plain text; what to do and why")
+
+
+class HarnessVisualStory(BaseModel):
+    """Editorial layer for dashboard-style report.html (filled by Claude Sonnet or heuristics)."""
+
+    headline_start: str = Field(..., description="Main title; conversational, non-technical")
+    headline_emphasis: str = Field(
+        default="",
+        description="Optional second clause rendered in italics after the start",
+    )
+    dek: str = Field(..., description="One sentence deck under the title")
+    findings: list[VisualFinding] = Field(default_factory=list)
+    dataset_section_intro: str = Field(..., description="Intro for dataset cards")
+    alert_lead: str = Field(default="", description="Bold lead-in for alert box, or empty")
+    alert_body: str = Field(default="", description="Rest of alert sentence(s), or empty")
+    frontier_section_intro: str = Field(..., description="Intro for quality vs speed chart")
+    leaderboard_section_intro: str = Field(..., description="Intro for sortable leaderboard")
+    fewshot_section_intro: str = Field(..., description="Intro for few-shot rollup")
+    fewshot_takeaway: str = Field(
+        default="",
+        description="Italic takeaway under few-shot cells; empty to use numeric spread fallback",
+    )
+    actions_section_intro: str = Field(..., description="Intro for next steps list")
+    next_steps: list[NextStep] = Field(default_factory=list)
+
+
+VISUAL_STORY_SYSTEM = textwrap.dedent(
+    """\
+    You write the editorial layer for an HTML benchmark report aimed at executives and PMs
+    who are not engineers. Use ONLY numbers and facts present in the JSON brief and the
+    companion machine summary; never invent models, datasets, or metrics.
+
+    Voice: confident, concise, plain English. Avoid jargon unless the brief already uses it.
+    Prefer "field match" over acronyms. If leaderboard_truncated is true, say conclusions are
+    tentative because only the worst rows were shown to you.
+
+    findings must be exactly three items. next_steps: 3 to 6 items, highest priority first.
+    description fields: plain text; you may use **double asterisks** sparingly for two or three
+    key phrases per finding (they become bold in the report).
+
+    headline_emphasis may be empty; if used, it completes the thought in headline_start
+    (the emphasis renders in italics).
+    """
+)
+
+
+def _avg_field_match_by_model(summary: dict[str, Any]) -> list[tuple[str, float]]:
+    buckets: dict[str, list[tuple[float, int]]] = {}
+    for r in summary.get("by_combo") or []:
+        mk = str(r.get("model_key", ""))
+        fm = r.get("field_match_rate")
+        n = int(r.get("run_count", 0))
+        if fm is None or n <= 0:
+            continue
+        buckets.setdefault(mk, []).append((float(fm), n))
+    out: list[tuple[str, float]] = []
+    for mk, pairs in buckets.items():
+        w = sum(n for _, n in pairs)
+        if w <= 0:
+            continue
+        avg = sum(f * n for f, n in pairs) / w
+        out.append((mk, avg))
+    out.sort(key=lambda x: -x[1])
+    return out
+
+
+def _dataset_outlier(summary: dict[str, Any]) -> tuple[str | None, float | None, float | None]:
+    """(dataset_id, its field_match, spread) if an outlier exists."""
+    rows = summary.get("by_dataset") or []
+    rates = [(r, r.get("field_match_rate")) for r in rows if r.get("field_match_rate") is not None]
+    if len(rates) < 2:
+        return None, None, None
+    vals = [float(fm) for _, fm in rates]
+    lo, hi = min(vals), max(vals)
+    if hi - lo < 0.18:
+        return None, None, hi - lo
+    worst = min(rates, key=lambda x: float(x[1]))
+    return str(worst[0].get("dataset_id")), float(worst[1]), hi - lo
+
+
+def heuristic_visual_story(
+    brief: dict[str, Any],
+    summary: dict[str, Any],
+    config: dict[str, Any],
+) -> HarnessVisualStory:
+    """Deterministic copy when the LLM is unavailable or skipped."""
+    totals = summary.get("totals") or {}
+    runs = int(totals.get("run_count") or 0)
+    fm = totals.get("field_match_rate")
+    sr = totals.get("success_rate")
+    label = str(config.get("agent") or config.get("pipeline") or "harness")
+    by_model = _avg_field_match_by_model(summary)
+    best_model, best_fm = by_model[0] if by_model else ("—", None)
+    out_ds, out_fm, spread = _dataset_outlier(summary)
+    outlier_note = ""
+    if out_ds and out_fm is not None:
+        outlier_note = (
+            f"The {out_ds} bucket is much lower than the others (~{100.0 * out_fm:.0f}% field match); "
+            "treat it as a **data or evaluation** signal until spot-checked."
+        )
+    headline_em = ""
+    if out_ds and out_fm is not None and spread and spread >= 0.22:
+        headline_start = "One dataset is dragging the average."
+        headline_em = "The rest look fine."
+    else:
+        headline_start = "Here is how this benchmark run shook out."
+    dek = (
+        f"{runs:,} harness runs for **{label}**. "
+        f"Overall field match is **{_fmt_story_pct(fm)}** with **{_fmt_story_pct(sr)}** run success."
+    )
+    crit = bool(out_ds and out_fm is not None and spread and spread >= 0.22)
+    f1 = VisualFinding(
+        label="Dataset check" if crit else "Overall",
+        label_critical=crit,
+        headline=_fmt_story_pct(out_fm) if out_fm is not None else _fmt_story_pct(fm),
+        headline_tone="bad" if crit else "neutral",
+        description=outlier_note
+        or "Scan the dataset cards below; uneven bars usually mean mixed data quality or evaluation drift.",
+    )
+    f2 = VisualFinding(
+        label="Strongest model (avg across few-shot)",
+        label_critical=False,
+        headline=best_model[:24] + ("…" if len(best_model) > 24 else ""),
+        headline_tone="good" if best_fm and best_fm >= 0.75 else "neutral",
+        description=(
+            f"By weighted field match across all few-shot counts, **{best_model}** leads at "
+            f"**{_fmt_story_pct(best_fm)}**. Compare the leaderboard when filtering to a single few-shot count."
+            if best_fm is not None
+            else "Not enough expected-output rows to rank models by field match."
+        ),
+    )
+    elapsed = totals.get("avg_elapsed_sec")
+    f3 = VisualFinding(
+        label="Speed",
+        label_critical=False,
+        headline=f"{float(elapsed):.1f}s" if isinstance(elapsed, (int, float)) else "—",
+        headline_tone="neutral",
+        description=(
+            "Average wall time per run across the whole batch (latency proxy only — add cost to compare dollars)."
+            if isinstance(elapsed, (int, float))
+            else "Latency averages were not available for this rollup."
+        ),
+    )
+    alert_lead, alert_body = "", ""
+    if crit and out_ds:
+        alert_lead = "Investigate before swapping models."
+        alert_body = (
+            f"Every model bucket inherits the same weak **{out_ds}** signal in the aggregate. "
+            "Fix data or goldens first; model changes may not move the headline much."
+        )
+    steps = [
+        NextStep(
+            title="Confirm what “field match” covers",
+            detail="Open the glossary under this page and align stakeholders on success vs quality metrics.",
+        ),
+        NextStep(
+            title="Split conclusions by dataset",
+            detail="If one dataset is an outlier, report model winners per dataset instead of one blended score.",
+        ),
+        NextStep(
+            title="Spot-check the worst chats",
+            detail="Expand “Sample mismatches” and compare agent JSON to the golden reference for a handful of rows.",
+        ),
+    ]
+    if out_ds:
+        steps.insert(
+            0,
+            NextStep(
+                title=f"Audit the {out_ds} dataset",
+                detail="Compare outputs to goldens; schema drift or bad references mimic low model quality.",
+            ),
+        )
+    return HarnessVisualStory(
+        headline_start=headline_start,
+        headline_emphasis=headline_em,
+        dek=dek,
+        findings=[f1, f2, f3],
+        dataset_section_intro=(
+            "Each card is one dataset bucket: height is field match, width of the bar is the same. "
+            "Use this view to see whether the story is uniform or split."
+        ),
+        alert_lead=alert_lead,
+        alert_body=alert_body,
+        frontier_section_intro=(
+            "Bubble chart: horizontal axis is average latency (log scale), vertical axis is field match. "
+            "Upper-left is ideal; bubble size encodes mismatch pressure."
+        ),
+        leaderboard_section_intro=(
+            "Sort any column, filter few-shot count, and type in the search box. "
+            "Green and red rows highlight top and bottom quartiles of field match in the current filter."
+        ),
+        fewshot_section_intro=(
+            "Cells aggregate every agent row in the run for each few-shot count (weighted by runs). "
+            "Flat rows suggest few-shot is not the lever to pull."
+        ),
+        fewshot_takeaway="",
+        actions_section_intro="Practical follow-ups in priority order:",
+        next_steps=steps[:6],
+    )
+
+
+def _fmt_story_pct(x: Any) -> str:
+    if x is None:
+        return "n/a"
+    return f"{100.0 * float(x):.1f}%"
+
+
+def summarize_visual_story(
+    brief: dict[str, Any],
+    *,
+    model_key: str = DEFAULT_VISUAL_STORY_MODEL,
+) -> HarnessVisualStory:
+    """Claude Sonnet on Bedrock (default ``sonnet-4-5``) for narrative HTML layer."""
+    payload = json.dumps(brief, indent=2, ensure_ascii=False)
+    prompt = (
+        "Machine summary (trust these numbers for consistency checks):\n"
+        + json.dumps(
+            {
+                "totals": (brief.get("totals_from_aggregate") or {}),
+                "datasets": [
+                    {
+                        "dataset_id": r.get("dataset_id"),
+                        "field_match_rate": r.get("field_match_rate"),
+                        "run_count": r.get("run_count"),
+                    }
+                    for r in (brief.get("_by_dataset") or [])
+                ],
+            },
+            indent=2,
+            ensure_ascii=False,
+        )
+        + "\n\nHarness brief (JSON):\n"
+        + payload
+    )
+    return call_llm(
+        prompt,
+        HarnessVisualStory,
+        model_key=model_key,
+        system_prompt=VISUAL_STORY_SYSTEM,
+    )
+
+
+def _story_is_complete(s: HarnessVisualStory) -> bool:
+    return len(s.findings) == 3 and len(s.next_steps) >= 3
+
+
+def summarize_visual_story_safe(
+    brief: dict[str, Any],
+    summary: dict[str, Any],
+    config: dict[str, Any],
+    *,
+    model_key: str = DEFAULT_VISUAL_STORY_MODEL,
+    use_llm: bool = True,
+) -> HarnessVisualStory:
+    """LLM story with Sonnet fallback to :func:`heuristic_visual_story`."""
+    base = heuristic_visual_story(brief, summary, config)
+    if not use_llm:
+        return base
+    brief = dict(brief)
+    brief["_by_dataset"] = summary.get("by_dataset") or []
+    try:
+        out = summarize_visual_story(brief, model_key=model_key)
+        if not _story_is_complete(out):
+            logger.warning("Harness visual story incomplete; using heuristic copy.")
+            return base
+        return out
+    except Exception as exc:
+        logger.warning("Harness visual story LLM failed (%s); using heuristic copy.", exc)
+        return base
 
 
 class HarnessReportNarrative(BaseModel):
@@ -226,14 +518,21 @@ if __name__ == "__main__":
 
 __all__ = [
     "HarnessReportNarrative",
+    "HarnessVisualStory",
+    "VisualFinding",
+    "NextStep",
     "AI_SUMMARY_START",
     "AI_SUMMARY_END",
     "summarize_brief",
+    "summarize_visual_story",
+    "summarize_visual_story_safe",
+    "heuristic_visual_story",
     "narrative_to_markdown",
     "narrative_to_html_fragment",
     "strip_ai_summary_html",
     "insert_summary_after_body_open",
     "prepend_summary_to_report_html",
     "DEFAULT_SUMMARY_MODEL",
+    "DEFAULT_VISUAL_STORY_MODEL",
     "main",
 ]

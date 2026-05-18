@@ -106,6 +106,17 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--results-root", type=str, default="", help="Override results/ root.")
     p.add_argument("--quiet", action="store_true")
     p.add_argument("--skip-without-expected", action="store_true")
+    p.add_argument(
+        "--no-report-llm",
+        action="store_true",
+        help="Skip Claude (Bedrock) for report.html headlines and copy; use fast heuristic text only.",
+    )
+    p.add_argument(
+        "--report-story-model",
+        type=str,
+        default="sonnet-4-5",
+        help="Model catalog key for report.html editorial layer (default: sonnet-4-5 on Bedrock).",
+    )
     return p.parse_args()
 
 
@@ -331,7 +342,17 @@ def _run_bulk(
             if completed % CHECKPOINT_EVERY_N_RUNS == 0 or completed == total:
                 summary = artifacts.aggregate(records)
                 artifacts.write_aggregate(run_dir, run_id, summary, config)
-                artifacts.write_report(run_dir, run_id, config, summary, records)
+                is_final = completed == total
+                want_llm = is_final and (not args.no_report_llm)
+                artifacts.write_report(
+                    run_dir,
+                    run_id,
+                    config,
+                    summary,
+                    records,
+                    generate_llm_story=want_llm,
+                    story_model_key=args.report_story_model,
+                )
 
     return records
 
@@ -405,7 +426,15 @@ def _run_pipeline(
 
     summary = artifacts.aggregate(records)
     artifacts.write_aggregate(run_dir, run_id, summary, config)
-    artifacts.write_report(run_dir, run_id, config, summary, records)
+    artifacts.write_report(
+        run_dir,
+        run_id,
+        config,
+        summary,
+        records,
+        generate_llm_story=not args.no_report_llm,
+        story_model_key=args.report_story_model,
+    )
     return records
 
 
@@ -450,7 +479,15 @@ def main() -> None:
 
     summary = artifacts.aggregate(records)
     artifacts.write_aggregate(run_dir, run_id, summary, config_payload)
-    artifacts.write_report(run_dir, run_id, config_payload, summary, records)
+    artifacts.write_report(
+        run_dir,
+        run_id,
+        config_payload,
+        summary,
+        records,
+        generate_llm_story=not args.no_report_llm,
+        story_model_key=args.report_story_model,
+    )
 
     print(f"Run dir       : {run_dir}")
     print(f"Run JSONL     : {run_dir / 'run.jsonl'}")

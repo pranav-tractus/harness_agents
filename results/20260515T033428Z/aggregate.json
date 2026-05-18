@@ -1,0 +1,581 @@
+{
+  "run_id": "20260515T033428Z",
+  "generated_at_utc": "2026-05-15T03:35:05.084891+00:00",
+  "config": {
+    "agent": "so_extraction",
+    "pipeline": null,
+    "models": [
+      "sonnet-4-6",
+      "opus-4-5",
+      "opus-4-6",
+      "sonnet-4-5"
+    ],
+    "datasets": [
+      "downloaded"
+    ],
+    "chat": null,
+    "chats_glob": null,
+    "bulk": false,
+    "runs_per_chat": 1,
+    "max_workers": 25,
+    "few_shot_explicit": [
+      "/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/multiple_product_multiple_shipment_complex.json",
+      "/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/single_product_multiple_shipment_medium.json",
+      "/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/single_product_single_shipment_simple.json"
+    ],
+    "few_shot_walk": [],
+    "few_shot_sweep": [],
+    "few_shot_pool_argv": [],
+    "few_shot_seed": 42,
+    "db_few_shot_limit": 0,
+    "skip_without_expected": false,
+    "results_dir": "/Users/tripathipranav/Documents/code/harness_agents/results/20260515T033428Z",
+    "config_file": "configs/agents.json",
+    "few_shot_mode": "explicit",
+    "few_shot_pool_size": 68,
+    "few_shot_default_pool_size": 68,
+    "few_shot_pool_override": null,
+    "few_shot_variants": [
+      {
+        "label": "explicit",
+        "count": 3,
+        "paths": [
+          "raw_data/chats/multiple_product_multiple_shipment_complex.json",
+          "raw_data/chats/single_product_multiple_shipment_medium.json",
+          "raw_data/chats/single_product_single_shipment_simple.json"
+        ]
+      }
+    ],
+    "allow_self_fewshot": false
+  },
+  "summary": {
+    "totals": {
+      "run_count": 36,
+      "success_rate": 1.0,
+      "avg_attempts": 1.0,
+      "avg_elapsed_sec": 6.1835305555555555,
+      "avg_mismatch_per_expected_run": 13.38888888888889,
+      "field_match_rate": 0.3937106918238994
+    },
+    "by_combo": [
+      {
+        "agent_id": "so_extraction",
+        "model_key": "opus-4-5",
+        "few_shot_count": 3,
+        "run_count": 9,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.299155555555555,
+        "avg_mismatch_per_expected_run": 12.444444444444445,
+        "field_match_rate": 0.4196891191709845
+      },
+      {
+        "agent_id": "so_extraction",
+        "model_key": "opus-4-6",
+        "few_shot_count": 3,
+        "run_count": 9,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.037877777777777,
+        "avg_mismatch_per_expected_run": 12.222222222222221,
+        "field_match_rate": 0.43005181347150256
+      },
+      {
+        "agent_id": "so_extraction",
+        "model_key": "sonnet-4-5",
+        "few_shot_count": 3,
+        "run_count": 9,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.132888888888889,
+        "avg_mismatch_per_expected_run": 13.88888888888889,
+        "field_match_rate": 0.3523316062176166
+      },
+      {
+        "agent_id": "so_extraction",
+        "model_key": "sonnet-4-6",
+        "few_shot_count": 3,
+        "run_count": 9,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.2642,
+        "avg_mismatch_per_expected_run": 15.0,
+        "field_match_rate": 0.375
+      }
+    ],
+    "by_chat": [
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json",
+        "model_key": "opus-4-5",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 7.202,
+        "avg_mismatch_per_expected_run": 15.0,
+        "field_match_rate": 0.375
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json",
+        "model_key": "opus-4-6",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.4823,
+        "avg_mismatch_per_expected_run": 15.0,
+        "field_match_rate": 0.375
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json",
+        "model_key": "sonnet-4-5",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 7.0366,
+        "avg_mismatch_per_expected_run": 15.0,
+        "field_match_rate": 0.375
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json",
+        "model_key": "sonnet-4-6",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.4051,
+        "avg_mismatch_per_expected_run": 14.0,
+        "field_match_rate": 0.41666666666666663
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json",
+        "model_key": "opus-4-5",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.3637,
+        "avg_mismatch_per_expected_run": 14.0,
+        "field_match_rate": 0.41666666666666663
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json",
+        "model_key": "opus-4-6",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.8964,
+        "avg_mismatch_per_expected_run": 14.0,
+        "field_match_rate": 0.41666666666666663
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json",
+        "model_key": "sonnet-4-5",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.355,
+        "avg_mismatch_per_expected_run": 14.0,
+        "field_match_rate": 0.41666666666666663
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json",
+        "model_key": "sonnet-4-6",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.6274,
+        "avg_mismatch_per_expected_run": 15.0,
+        "field_match_rate": 0.375
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json",
+        "model_key": "opus-4-5",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 10.4542,
+        "avg_mismatch_per_expected_run": 17.0,
+        "field_match_rate": 0.29166666666666663
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json",
+        "model_key": "opus-4-6",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 8.4676,
+        "avg_mismatch_per_expected_run": 16.0,
+        "field_match_rate": 0.33333333333333337
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json",
+        "model_key": "sonnet-4-5",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 10.5007,
+        "avg_mismatch_per_expected_run": 17.0,
+        "field_match_rate": 0.29166666666666663
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json",
+        "model_key": "sonnet-4-6",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 8.8733,
+        "avg_mismatch_per_expected_run": 16.0,
+        "field_match_rate": 0.33333333333333337
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json",
+        "model_key": "opus-4-5",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.7138,
+        "avg_mismatch_per_expected_run": 15.0,
+        "field_match_rate": 0.375
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json",
+        "model_key": "opus-4-6",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.59,
+        "avg_mismatch_per_expected_run": 15.0,
+        "field_match_rate": 0.375
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json",
+        "model_key": "sonnet-4-5",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.3737,
+        "avg_mismatch_per_expected_run": 15.0,
+        "field_match_rate": 0.375
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json",
+        "model_key": "sonnet-4-6",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.28,
+        "avg_mismatch_per_expected_run": 16.0,
+        "field_match_rate": 0.33333333333333337
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json",
+        "model_key": "opus-4-5",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.5387,
+        "avg_mismatch_per_expected_run": 14.0,
+        "field_match_rate": 0.41666666666666663
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json",
+        "model_key": "opus-4-6",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.5258,
+        "avg_mismatch_per_expected_run": 13.0,
+        "field_match_rate": 0.45833333333333337
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json",
+        "model_key": "sonnet-4-5",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.9855,
+        "avg_mismatch_per_expected_run": 13.0,
+        "field_match_rate": 0.45833333333333337
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json",
+        "model_key": "sonnet-4-6",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.1533,
+        "avg_mismatch_per_expected_run": 14.0,
+        "field_match_rate": 0.41666666666666663
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json",
+        "model_key": "opus-4-5",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.4333,
+        "avg_mismatch_per_expected_run": 14.0,
+        "field_match_rate": 0.41666666666666663
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json",
+        "model_key": "opus-4-6",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.344,
+        "avg_mismatch_per_expected_run": 14.0,
+        "field_match_rate": 0.41666666666666663
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json",
+        "model_key": "sonnet-4-5",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.2306,
+        "avg_mismatch_per_expected_run": 14.0,
+        "field_match_rate": 0.41666666666666663
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json",
+        "model_key": "sonnet-4-6",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.1294,
+        "avg_mismatch_per_expected_run": 15.0,
+        "field_match_rate": 0.375
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json",
+        "model_key": "opus-4-5",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 2.4291,
+        "avg_mismatch_per_expected_run": 1.0,
+        "field_match_rate": 0.0
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json",
+        "model_key": "opus-4-6",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 2.5274,
+        "avg_mismatch_per_expected_run": 1.0,
+        "field_match_rate": 0.0
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json",
+        "model_key": "sonnet-4-5",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 2.3786,
+        "avg_mismatch_per_expected_run": 1.0,
+        "field_match_rate": 0.0
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json",
+        "model_key": "sonnet-4-6",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.5353,
+        "avg_mismatch_per_expected_run": 17.0,
+        "field_match_rate": 0.29166666666666663
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json",
+        "model_key": "opus-4-5",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.2994,
+        "avg_mismatch_per_expected_run": 12.0,
+        "field_match_rate": 0.5
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json",
+        "model_key": "opus-4-6",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.2531,
+        "avg_mismatch_per_expected_run": 12.0,
+        "field_match_rate": 0.5
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json",
+        "model_key": "sonnet-4-5",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.1385,
+        "avg_mismatch_per_expected_run": 19.0,
+        "field_match_rate": 0.20833333333333337
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json",
+        "model_key": "sonnet-4-6",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 4.9977,
+        "avg_mismatch_per_expected_run": 15.0,
+        "field_match_rate": 0.375
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json",
+        "model_key": "opus-4-5",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.2582,
+        "avg_mismatch_per_expected_run": 10.0,
+        "field_match_rate": 0.5833333333333333
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json",
+        "model_key": "opus-4-6",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.2543,
+        "avg_mismatch_per_expected_run": 10.0,
+        "field_match_rate": 0.5833333333333333
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json",
+        "model_key": "sonnet-4-5",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.1968,
+        "avg_mismatch_per_expected_run": 17.0,
+        "field_match_rate": 0.29166666666666663
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json",
+        "model_key": "sonnet-4-6",
+        "few_shot_count": 3,
+        "run_count": 1,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.3763,
+        "avg_mismatch_per_expected_run": 13.0,
+        "field_match_rate": 0.45833333333333337
+      }
+    ],
+    "by_dataset": [
+      {
+        "agent_id": "so_extraction",
+        "dataset_id": "downloaded",
+        "run_count": 36,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.1835305555555555,
+        "avg_mismatch_per_expected_run": 13.38888888888889,
+        "field_match_rate": 0.3937106918238994
+      }
+    ],
+    "by_agent": [
+      {
+        "agent_id": "so_extraction",
+        "run_count": 36,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.1835305555555555,
+        "avg_mismatch_per_expected_run": 13.38888888888889,
+        "field_match_rate": 0.3937106918238994
+      }
+    ],
+    "by_few_shot_count": [
+      {
+        "agent_id": "so_extraction",
+        "few_shot_count": 3,
+        "run_count": 36,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.1835305555555555,
+        "avg_mismatch_per_expected_run": 13.38888888888889,
+        "field_match_rate": 0.3937106918238994
+      }
+    ]
+  },
+  "artifacts": {
+    "run_jsonl": "/Users/tripathipranav/Documents/code/harness_agents/results/20260515T033428Z/run.jsonl",
+    "config_json": "/Users/tripathipranav/Documents/code/harness_agents/results/20260515T033428Z/config.json",
+    "report_html": "/Users/tripathipranav/Documents/code/harness_agents/results/20260515T033428Z/report.html"
+  }
+}
