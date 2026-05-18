@@ -1,0 +1,2573 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harness Run 20260518T194103Z — so_extraction</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #f5f1e8;
+      --bg-card: #faf7ef;
+      --bg-elevated: #fffdf6;
+      --ink: #1a1a1a;
+      --ink-soft: #4a4a4a;
+      --ink-mute: #7a7a7a;
+      --line: #d6cfbe;
+      --line-soft: #e8e2d2;
+      --accent: #b8341c;
+      --accent-soft: #f4d9d2;
+      --warn: #c4761c;
+      --good: #2d6b3f;
+      --good-soft: #d4e3d8;
+      --display: 'Instrument Serif', Georgia, serif;
+      --sans: 'IBM Plex Sans', system-ui, sans-serif;
+      --mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.55;
+      font-size: 15px;
+      padding: 0;
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    .masthead {
+      border-bottom: 2px solid var(--ink);
+      padding: 28px 0 20px;
+      margin-bottom: 32px;
+    }
+
+    .masthead-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 14px;
+    }
+
+    .masthead-top .dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: var(--good);
+      border-radius: 50%;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    h1 {
+      font-family: var(--display);
+      font-weight: 400;
+      font-size: clamp(40px, 5vw, 64px);
+      line-height: 1.02;
+      letter-spacing: -0.01em;
+      margin-bottom: 8px;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--ink-soft);
+    }
+
+    .dek {
+      font-family: var(--display);
+      font-style: italic;
+      font-size: 21px;
+      color: var(--ink-soft);
+      max-width: 720px;
+      line-height: 1.4;
+    }
+
+    .findings {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border: 1px solid var(--ink);
+      margin: 40px 0;
+      background: var(--bg-card);
+    }
+
+    .finding {
+      padding: 24px 22px;
+      border-right: 1px solid var(--line);
+      position: relative;
+    }
+
+    .finding:last-child {
+      border-right: none;
+    }
+
+    .finding .label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      margin-bottom: 12px;
+    }
+
+    .finding .label.critical {
+      color: var(--accent);
+    }
+
+    .finding .label.critical::before {
+      content: "▲ ";
+    }
+
+    .finding .big {
+      font-family: var(--display);
+      font-size: 42px;
+      line-height: 1;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .finding .big.bad {
+      color: var(--accent);
+    }
+
+    .finding .big.good {
+      color: var(--good);
+    }
+
+    .finding .desc {
+      font-size: 13.5px;
+      color: var(--ink-soft);
+      line-height: 1.45;
+    }
+
+    .finding .desc strong {
+      color: var(--ink);
+    }
+
+    .author-remark {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      padding: 24px 22px;
+      margin: 24px 0;
+      font-size: 16px;
+      font-style: italic;
+      color: var(--ink-soft);
+      line-height: 1.45;
+    }
+
+    .author-remark ul {
+      list-style: disc;
+      padding-left: 20px;
+    }
+
+    .author-remark li {
+      margin-bottom: 10px;
+    }
+
+    .author-remark h3 {
+      font-family: var(--display);
+      font-size: 22px;
+      margin-bottom: 12px;
+      color: var(--ink);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+      text-align: center;
+    }
+
+    section {
+      margin: 56px 0;
+      scroll-margin-top: 20px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      gap: 18px;
+      margin-bottom: 6px;
+      border-bottom: 1px solid var(--ink);
+      padding-bottom: 6px;
+    }
+
+    .section-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+
+    h2 {
+      font-family: var(--display);
+      font-weight: 400;
+      font-size: 36px;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      flex: 1;
+    }
+
+    .section-intro {
+      font-family: var(--display);
+      font-style: italic;
+      font-size: 17px;
+      color: var(--ink-soft);
+      margin: 12px 0 24px;
+      max-width: 760px;
+      line-height: 1.45;
+    }
+
+    .alert {
+      background: var(--accent-soft);
+      border-left: 3px solid var(--accent);
+      padding: 18px 22px;
+      margin: 20px 0;
+      font-size: 14.5px;
+    }
+
+    .alert strong {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .dataset-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 24px 0;
+    }
+
+    .dataset-card {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      padding: 20px 18px;
+      position: relative;
+    }
+
+    .dataset-card.broken {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+    }
+
+    .dataset-card .name {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ink-soft);
+      margin-bottom: 14px;
+      letter-spacing: 0.02em;
+    }
+
+    .dataset-card.broken .name {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .dataset-card .score {
+      font-family: var(--display);
+      font-size: 56px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .dataset-card.broken .score {
+      color: var(--accent);
+    }
+
+    .dataset-card .score-label {
+      font-size: 11px;
+      color: var(--ink-mute);
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .dataset-card .meta {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink-soft);
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+
+    .dataset-card .bar-track {
+      height: 6px;
+      background: var(--line-soft);
+      margin-bottom: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dataset-card .bar-fill {
+      height: 100%;
+      background: var(--good);
+    }
+
+    .dataset-card.broken .bar-fill {
+      background: var(--accent);
+    }
+
+    .chart-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      padding: 24px;
+      margin: 20px 0;
+    }
+
+    .chart-title {
+      font-family: var(--display);
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .chart-sub {
+      font-size: 13px;
+      color: var(--ink-mute);
+      margin-bottom: 20px;
+    }
+
+    .chart-canvas-wrap {
+      position: relative;
+      height: 440px;
+    }
+
+    .table-controls {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .control label {
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ink-soft);
+    }
+
+    .control select,
+    .control input {
+      font-family: var(--mono);
+      font-size: 13px;
+      padding: 5px 9px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      border-radius: 0;
+    }
+
+    .control select:focus,
+    .control input:focus {
+      outline: none;
+      border-color: var(--ink);
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      background: var(--bg-card);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+    }
+
+    thead th {
+      background: var(--bg-elevated);
+      border-bottom: 1px solid var(--ink);
+      text-align: left;
+      padding: 11px 14px;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ink-soft);
+      cursor: pointer;
+      user-select: none;
+      position: sticky;
+      top: 0;
+      white-space: nowrap;
+    }
+
+    thead th:hover {
+      color: var(--ink);
+    }
+
+    thead th.sort-asc::after {
+      content: " ↑";
+      color: var(--accent);
+    }
+
+    thead th.sort-desc::after {
+      content: " ↓";
+      color: var(--accent);
+    }
+
+    tbody td {
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--line-soft);
+      font-family: var(--mono);
+      font-size: 12.5px;
+    }
+
+    tbody td:first-child {
+      font-family: var(--sans);
+      font-weight: 500;
+    }
+
+    tbody tr:hover td {
+      background: var(--bg-elevated);
+    }
+
+    tbody tr.top-quartile td:first-child {
+      color: var(--good);
+    }
+
+    tbody tr.top-quartile td:first-child::before {
+      content: "● ";
+    }
+
+    tbody tr.bottom-quartile td:first-child {
+      color: var(--accent);
+    }
+
+    tbody tr.bottom-quartile td:first-child::before {
+      content: "○ ";
+    }
+
+    .numeric {
+      text-align: right;
+    }
+
+    .match-cell {
+      position: relative;
+    }
+
+    .match-bar {
+      display: inline-block;
+      width: 50px;
+      height: 5px;
+      background: var(--line-soft);
+      margin-right: 8px;
+      vertical-align: middle;
+      position: relative;
+    }
+
+    .match-bar::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      width: var(--w);
+      background: var(--good);
+    }
+
+    .match-bar.low::after {
+      background: var(--accent);
+    }
+
+    .match-bar.mid::after {
+      background: var(--warn);
+    }
+
+    .fs-rollup {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      padding: 24px;
+      margin: 20px 0;
+    }
+
+    .fs-rollup-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .fs-cell {
+      text-align: center;
+      padding: 14px 6px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--line-soft);
+    }
+
+    .fs-cell .fs-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink-mute);
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+
+    .fs-cell .fs-val {
+      font-family: var(--display);
+      font-size: 24px;
+    }
+
+    .fs-takeaway {
+      margin-top: 18px;
+      font-family: var(--display);
+      font-style: italic;
+      font-size: 16px;
+      color: var(--ink-soft);
+    }
+
+    details {
+      border: 1px solid var(--line);
+      background: var(--bg-card);
+      margin: 20px 0;
+    }
+
+    details summary {
+      padding: 14px 22px;
+      cursor: pointer;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    details summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details summary::after {
+      content: "+";
+      font-family: var(--display);
+      font-size: 22px;
+      color: var(--ink-soft);
+    }
+
+    details[open] summary::after {
+      content: "−";
+    }
+
+    details summary:hover {
+      color: var(--ink);
+    }
+
+    details .details-content {
+      padding: 0 22px 22px;
+    }
+
+    details pre {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--line-soft);
+      padding: 16px;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 14px 18px;
+      margin-top: 20px;
+    }
+
+    .action-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent);
+      padding-top: 3px;
+    }
+
+    .action-title {
+      font-family: var(--display);
+      font-size: 19px;
+      font-weight: 400;
+    }
+
+    .action-body {
+      color: var(--ink-soft);
+      margin-top: 4px;
+    }
+
+    footer {
+      margin-top: 80px;
+      padding: 24px 0 60px;
+      border-top: 1px solid var(--line);
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink-mute);
+      letter-spacing: 0.04em;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    @media (max-width: 820px) {
+      .wrap {
+        padding: 0 18px;
+      }
+
+      .findings {
+        grid-template-columns: 1fr;
+      }
+
+      .finding {
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .finding:last-child {
+        border-bottom: none;
+      }
+
+      .dataset-grid {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 36px;
+      }
+
+      h2 {
+        font-size: 28px;
+      }
+
+      .chart-canvas-wrap {
+        height: 360px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="masthead">
+      <div class="masthead-top">
+        <span><span class="dot"></span>Harness Run · so_extraction</span>
+        <span>20260518T194103Z &nbsp;·&nbsp; 72 runs &nbsp;·&nbsp; Generated 2026-05-18 19:42 UTC</span>
+      </div>
+      <h1>All Four Models Cleared Quality Benchmarks <em>with sonnet-4-6 leading on accuracy</em></h1>
+      <p class="dek">72 extraction runs across four Claude models achieved 100% success and ~90% field match,
+        establishing a reliable baseline for structured data workflows.</p>
+    </div>
+    <div class="findings">
+      <div class="finding">
+        <div class="label">ACCURACY LEADER</div>
+        <div class="big good">sonnet-4-6</div>
+        <div class="desc"><strong>Sonnet-4-6</strong> delivered the highest field match rate at <strong>92.6%</strong>
+          with the fewest mismatches (1.78 per run), making it the accuracy champion. Opus-4-6 followed at 90.2%, while
+          the older opus-4-5 lagged at 86.5%.</div>
+      </div>
+      <div class="finding">
+        <div class="label">SPEED CONSISTENCY</div>
+        <div class="big">~5.0 sec average</div>
+        <div class="desc">Runtime spread stayed tight across all models (4.9 to 5.1 seconds), with no model showing a
+          meaningful speed advantage. This <strong>uniform latency</strong> simplifies deployment decisions when
+          accuracy alone differentiates the options.</div>
+      </div>
+      <div class="finding">
+        <div class="label">ZERO FAILURES</div>
+        <div class="big good">100% success</div>
+        <div class="desc">All 72 runs completed without errors across 18 runs per model. The <strong>1.85 standard
+            deviation</strong> in mismatch counts suggests predictable variance, not systemic instability.</div>
+      </div>
+    </div>
+    <div class="author-remark">
+      <div>
+        <h3>Pranav's Remarks:</h3>
+        <ul>
+          <li>
+            <strong>Why the accuracy was low in older attempts!:</strong> Earlier the mismatches were being counted from
+            the actual "production" summary generated. But I was not giving the exact Customer Card information to the
+            models we had for different conversations in the production chats.
+          </li>
+          <li>
+            This caused a lot of mismatches in fields for Customer and Vendor Details
+          </li>
+          <li>
+            Also the dates as most of the contracts were generated last year, the "production" extracted summary had
+            dates from 2025, but the models were generating summary with the 2026 dates.
+          </li>
+          <li>
+            Now when using a consistent Customer Card information for all the chats, the accuracy has improved
+            significantly.
+          </li>
+        </ul>
+      </div>
+    </div>
+    <section id="datasets">
+      <div class="section-head"><span class="section-num">Sec. 01</span>
+        <h2>Results by dataset</h2>
+      </div>
+      <p class="section-intro">The "downloaded" dataset drove all 72 runs, providing the sole test bed for this
+        four-model comparison.</p>
+
+      <div class="dataset-grid">
+        <div class="dataset-card">
+          <div class="name">downloaded</div>
+          <div class="score">89.75%</div>
+          <div class="score-label">Field match</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:89.7%"></div>
+          </div>
+          <div class="meta"><span>72 runs</span><span>2.26 mismatch</span></div>
+        </div>
+      </div>
+    </section>
+    <section id="frontier">
+      <div class="section-head"><span class="section-num">Sec. 02</span>
+        <h2>Quality vs. speed</h2>
+      </div>
+      <p class="section-intro">Runtime versus field match rate shows all models clustered near 5 seconds, with
+        sonnet-4-6 pulling ahead on accuracy while opus-4-5 trails by 6 percentage points.</p>
+      <div class="chart-wrap">
+        <div class="chart-title">Model frontier</div>
+        <div class="chart-sub">Each bubble is one row in the table below (model × few-shot). Bubble size reflects
+          mismatch load.</div>
+        <div class="chart-canvas-wrap"><canvas id="frontierChart"></canvas></div>
+      </div>
+    </section>
+    <section id="leaderboard">
+      <div class="section-head"><span class="section-num">Sec. 03</span>
+        <h2>Leaderboard</h2>
+      </div>
+      <p class="section-intro">Sort by field match rate to confirm sonnet-4-6's lead, or by average elapsed time to
+        verify the negligible speed differences.</p>
+      <div class="table-controls">
+        <div class="control"><label for="fsFilter">FS Count</label>
+          <select id="fsFilter">
+            <option value="all">All</option>
+            <option value="4">4</option>
+          </select>
+        </div>
+        <div class="control"><label for="modelFilter">Model</label>
+          <select id="modelFilter">
+            <option value="all">All</option>
+          </select>
+        </div>
+        <div class="control"><label for="search">Search</label>
+          <input id="search" type="text" placeholder="filter…" style="width:180px">
+        </div>
+        <div class="control" style="margin-left:auto;color:var(--ink-mute);font-family:var(--mono);font-size:11px;">
+          <span id="rowCount">0 rows</span>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table id="leaderboard-table">
+          <thead>
+            <tr>
+
+              <th data-sort="model" data-type="str">Model</th>
+              <th data-sort="fs" data-type="num" class="numeric">FS</th>
+              <th data-sort="runs" data-type="num" class="numeric">Runs</th>
+              <th data-sort="elapsed" data-type="num" class="numeric">Avg s</th>
+              <th data-sort="mismatch" data-type="num" class="numeric">Mismatch</th>
+              <th data-sort="match" data-type="num" class="numeric sort-desc">Field match</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-body"></tbody>
+        </table>
+      </div>
+    </section>
+    <section id="fewshot">
+      <div class="section-head"><span class="section-num">Sec. 04</span>
+        <h2>Few-shot sweep</h2>
+      </div>
+      <p class="section-intro">Each model ran with 4 few-shot examples; the rollup below shows how mismatch counts and
+        match rates evolved under identical prompting.</p>
+      <div class="fs-rollup">
+        <div class="fs-rollup-grid">
+          <div class="fs-cell">
+            <div class="fs-label">FS 4</div>
+            <div class="fs-val">89.75%</div>
+          </div>
+        </div>
+        <p class="fs-takeaway">Sonnet-4-6 maintained its accuracy edge even at higher few-shot counts, reinforcing its
+          suitability for production extraction tasks.</p>
+      </div>
+    </section>
+    <section id="actions">
+      <div class="section-head"><span class="section-num">Sec. 05</span>
+        <h2>What to check next</h2>
+      </div>
+      <p class="section-intro">Prioritize these steps to capitalize on the benchmark results and address remaining
+        extraction gaps.</p>
+      <div class="action-grid">
+        <div class="action-num">01</div>
+        <div>
+          <div class="action-title">Promote sonnet-4-6 to production</div>
+          <div class="action-body">With 92.6% field match and zero failures, sonnet-4-6 delivers the best risk-reward
+            profile for live extraction workflows.</div>
+        </div>
+        <div class="action-num">02</div>
+        <div>
+          <div class="action-title">Investigate the 7.4% mismatch gap</div>
+          <div class="action-body">Analyze the 1.78 mismatches per run to identify whether they stem from ambiguous
+            source data, schema edge cases, or prompt engineering gaps.</div>
+        </div>
+        <div class="action-num">03</div>
+        <div>
+          <div class="action-title">Expand dataset coverage</div>
+          <div class="action-body">A single dataset limits generalization; add 2–3 more corpora with different formats
+            or domains to validate model rankings under diverse conditions.</div>
+        </div>
+        <div class="action-num">04</div>
+        <div>
+          <div class="action-title">Benchmark cost per extraction</div>
+          <div class="action-body">Runtime parity means token usage likely drives economics; measure input/output tokens
+            to confirm whether sonnet-4-6's accuracy justifies any cost premium over sonnet-4-5.</div>
+        </div>
+        <div class="action-num">05</div>
+        <div>
+          <div class="action-title">Retire opus-4-5 from consideration</div>
+          <div class="action-body">Its 86.5% match rate and 2.89 mismatches per run make it the weakest performer;
+            reallocate testing resources to newer models or alternative prompting strategies.</div>
+        </div>
+      </div>
+    </section>
+    <details>
+      <summary>Run configuration (JSON)</summary>
+      <div class="details-content">
+        <pre>{
+  "agent": "so_extraction",
+  "pipeline": null,
+  "models": [
+    "sonnet-4-5",
+    "sonnet-4-6",
+    "opus-4-6",
+    "opus-4-5"
+  ],
+  "datasets": [
+    "downloaded"
+  ],
+  "chat": null,
+  "chats_glob": null,
+  "bulk": false,
+  "runs_per_chat": 2,
+  "max_workers": 25,
+  "few_shot_explicit": [
+    "/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/multiple_product_multiple_shipment_medium.json",
+    "/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/single_product_multiple_shipment_complex.json",
+    "/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/single_product_single_shipment_medium.json",
+    "/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/updates/update_change_payment_terms.json"
+  ],
+  "few_shot_walk": [],
+  "few_shot_sweep": [],
+  "few_shot_pool_argv": [],
+  "few_shot_seed": 42,
+  "db_few_shot_limit": 0,
+  "skip_without_expected": true,
+  "results_dir": "/Users/tripathipranav/Documents/code/harness_agents/results/20260518T194103Z",
+  "config_file": "configs/agents.json",
+  "few_shot_mode": "explicit",
+  "few_shot_pool_size": 68,
+  "few_shot_default_pool_size": 68,
+  "few_shot_pool_override": null,
+  "few_shot_variants": [
+    {
+      "label": "explicit",
+      "count": 4,
+      "paths": [
+        "raw_data/chats/multiple_product_multiple_shipment_medium.json",
+        "raw_data/chats/single_product_multiple_shipment_complex.json",
+        "raw_data/chats/single_product_single_shipment_medium.json",
+        "raw_data/chats/updates/update_change_payment_terms.json"
+      ]
+    }
+  ],
+  "allow_self_fewshot": false
+}</pre>
+      </div>
+    </details>
+    <details>
+      <summary>How to read these numbers</summary>
+      <div class="details-content">
+        <div style="font-size:13.5px;color:var(--ink-soft);line-height:1.7;">
+          <p style="margin-bottom:10px;"><strong
+              style="color:var(--ink);font-family:var(--mono);font-size:12px;">SUCCESS RATE</strong>
+            — Share of runs that finished without a harness or HTTP error. High success means the run was stable; it
+            does not prove the answers matched the reference.</p>
+          <p style="margin-bottom:10px;"><strong style="color:var(--ink);font-family:var(--mono);font-size:12px;">AVG
+              ELAPSED (S)</strong>
+            — Average wall time per run in that bucket. Useful for latency comparisons.</p>
+          <p style="margin-bottom:10px;"><strong style="color:var(--ink);font-family:var(--mono);font-size:12px;">AVG
+              MISMATCH / EXPECTED RUN</strong>
+            — Average count of fields that differed from the golden JSON when a reference existed. Lower is better.</p>
+          <p><strong style="color:var(--ink);font-family:var(--mono);font-size:12px;">FIELD MATCH</strong>
+            — Fraction of compared fields that matched the golden output across runs in that bucket. Higher is better.
+          </p>
+        </div>
+      </div>
+    </details>
+    <details>
+      <summary>Sample mismatches (up to 80 rows)</summary>
+      <div class="details-content">
+        <div class='table-scroll'>
+          <table>
+            <thead>
+              <tr>
+                <th>Agent</th>
+                <th>Chat</th>
+                <th>Model</th>
+                <th>FS</th>
+                <th>Mismatches</th>
+                <th>Sample</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>so_extraction</td>
+                <td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td>
+                <td>opus-4-5</td>
+                <td>4</td>
+                <td>8</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipment_date",
+    "expected": "2025-11-15",
+    "actual": "2026-11-15"
+  },
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea",
+    "actual": ""
+  },
+  {
+    "path": "data[0].items[0].loading",
+    "expected": "23MT/40'FCL",
+    "actual": "23 MT / 40' FCL"
+  },
+  {
+    "path": "data[0].do_date",
+    "expected": "2025-11-15",
+    "actual": "2026-11-15"
+  },
+  {
+    "path": "data[0].po_date",
+    "expected": "2025-09-29",
+    "actual": ""
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td>
+                <td>opus-4-5</td>
+                <td>4</td>
+                <td>8</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipment_date",
+    "expected": "2025-11-15",
+    "actual": "2026-11-15"
+  },
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea",
+    "actual": ""
+  },
+  {
+    "path": "data[0].items[0].loading",
+    "expected": "23MT/40'FCL",
+    "actual": "23 MT / 40' FCL"
+  },
+  {
+    "path": "data[0].do_date",
+    "expected": "2025-11-15",
+    "actual": "2026-11-15"
+  },
+  {
+    "path": "data[0].po_date",
+    "expected": "2025-09-29",
+    "actual": ""
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td>
+                <td>sonnet-4-6</td>
+                <td>4</td>
+                <td>7</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipment_date",
+    "expected": "2025-11-15",
+    "actual": "2026-11-15"
+  },
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea",
+    "actual": ""
+  },
+  {
+    "path": "data[0].do_date",
+    "expected": "2025-11-15",
+    "actual": "2026-11-15"
+  },
+  {
+    "path": "data[0].po_date",
+    "expected": "2025-09-29",
+    "actual": ""
+  },
+  {
+    "path": "data[0].po_ref_no",
+    "expected": "BP102-2025-1",
+    "actual": ""
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td>
+                <td>sonnet-4-6</td>
+                <td>4</td>
+                <td>7</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipment_date",
+    "expected": "2025-11-15",
+    "actual": "2026-11-15"
+  },
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea",
+    "actual": ""
+  },
+  {
+    "path": "data[0].do_date",
+    "expected": "2025-11-15",
+    "actual": "2026-11-15"
+  },
+  {
+    "path": "data[0].po_date",
+    "expected": "2025-09-29",
+    "actual": ""
+  },
+  {
+    "path": "data[0].po_ref_no",
+    "expected": "BP102-2025-1",
+    "actual": ""
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td>
+                <td>sonnet-4-5</td>
+                <td>4</td>
+                <td>5</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipment_date",
+    "expected": "2025-11-15",
+    "actual": "2026-11-15"
+  },
+  {
+    "path": "data[0].do_date",
+    "expected": "2025-11-15",
+    "actual": "2026-11-15"
+  },
+  {
+    "path": "data[0].po_date",
+    "expected": "2025-09-29",
+    "actual": ""
+  },
+  {
+    "path": "data[0].po_ref_no",
+    "expected": "BP102-2025-1",
+    "actual": ""
+  },
+  {
+    "path": "data[0].billing_address",
+    "expected": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea",
+    "actual": "Leonardo da Vinci"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td>
+                <td>sonnet-4-5</td>
+                <td>4</td>
+                <td>5</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipment_date",
+    "expected": "2025-11-15",
+    "actual": "2026-11-15"
+  },
+  {
+    "path": "data[0].do_date",
+    "expected": "2025-11-15",
+    "actual": "2026-11-15"
+  },
+  {
+    "path": "data[0].po_date",
+    "expected": "2025-09-29",
+    "actual": ""
+  },
+  {
+    "path": "data[0].po_ref_no",
+    "expected": "BP102-2025-1",
+    "actual": ""
+  },
+  {
+    "path": "data[0].billing_address",
+    "expected": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea",
+    "actual": "Leonardo da Vinci, Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td>
+                <td>sonnet-4-6</td>
+                <td>4</td>
+                <td>4</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].unit_price",
+    "expected": 3.25,
+    "actual": 3250.0
+  },
+  {
+    "path": "data[0].items[0].pricing_unit",
+    "expected": "USD/KG",
+    "actual": "USD/MT"
+  },
+  {
+    "path": "data[0].items[0].shipment_date",
+    "expected": "2027-03-01",
+    "actual": "2026-03-01"
+  },
+  {
+    "path": "data[0].do_date",
+    "expected": "2027-03-01",
+    "actual": "2026-03-01"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td>
+                <td>sonnet-4-6</td>
+                <td>4</td>
+                <td>4</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].unit_price",
+    "expected": 3.25,
+    "actual": 3250.0
+  },
+  {
+    "path": "data[0].items[0].pricing_unit",
+    "expected": "USD/KG",
+    "actual": "USD/MT"
+  },
+  {
+    "path": "data[0].items[0].shipment_date",
+    "expected": "2027-03-01",
+    "actual": "2026-03-01"
+  },
+  {
+    "path": "data[0].do_date",
+    "expected": "2027-03-01",
+    "actual": "2026-03-01"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td>
+                <td>opus-4-5</td>
+                <td>4</td>
+                <td>4</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipment_date",
+    "expected": "2026-03-31",
+    "actual": "2026-03-15"
+  },
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Japan",
+    "actual": ""
+  },
+  {
+    "path": "data[0].items[0].total",
+    "expected": null,
+    "actual": 32025.0
+  },
+  {
+    "path": "data[0].do_date",
+    "expected": "2026-03-31",
+    "actual": "2026-03-15"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td>
+                <td>opus-4-6</td>
+                <td>4</td>
+                <td>4</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipment_date",
+    "expected": "2026-03-31",
+    "actual": "2026-03-15"
+  },
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Japan",
+    "actual": ""
+  },
+  {
+    "path": "data[0].items[0].total",
+    "expected": null,
+    "actual": 32025.0
+  },
+  {
+    "path": "data[0].do_date",
+    "expected": "2026-03-31",
+    "actual": "2026-03-15"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td>
+                <td>opus-4-5</td>
+                <td>4</td>
+                <td>4</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipment_date",
+    "expected": "2026-03-31",
+    "actual": "2026-03-15"
+  },
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Japan",
+    "actual": ""
+  },
+  {
+    "path": "data[0].items[0].total",
+    "expected": null,
+    "actual": 32025.0
+  },
+  {
+    "path": "data[0].do_date",
+    "expected": "2026-03-31",
+    "actual": "2026-03-15"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td>
+                <td>opus-4-6</td>
+                <td>4</td>
+                <td>4</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipment_date",
+    "expected": "2026-03-31",
+    "actual": "2026-03-15"
+  },
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Japan",
+    "actual": ""
+  },
+  {
+    "path": "data[0].items[0].total",
+    "expected": null,
+    "actual": 32025.0
+  },
+  {
+    "path": "data[0].do_date",
+    "expected": "2026-03-31",
+    "actual": "2026-03-15"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td>
+                <td>sonnet-4-5</td>
+                <td>4</td>
+                <td>4</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].unit_price",
+    "expected": 3250.0,
+    "actual": 3.25
+  },
+  {
+    "path": "data[0].items[0].pricing_unit",
+    "expected": "USD/MT",
+    "actual": "USD/KG"
+  },
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Jakarta",
+    "actual": ""
+  },
+  {
+    "path": "data[0].billing_address",
+    "expected": "",
+    "actual": "Leonardo da Vinci"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td>
+                <td>opus-4-5</td>
+                <td>4</td>
+                <td>3</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipment_date",
+    "expected": "2027-03-01",
+    "actual": "2026-03-01"
+  },
+  {
+    "path": "data[0].do_date",
+    "expected": "2027-03-01",
+    "actual": "2026-03-01"
+  },
+  {
+    "path": "data[0].po_ref_no",
+    "expected": "",
+    "actual": "OPO 260012/EC"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td>
+                <td>opus-4-5</td>
+                <td>4</td>
+                <td>3</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipment_date",
+    "expected": "2027-03-01",
+    "actual": "2026-03-31"
+  },
+  {
+    "path": "data[0].do_date",
+    "expected": "2027-03-01",
+    "actual": "2026-03-31"
+  },
+  {
+    "path": "data[0].po_ref_no",
+    "expected": "",
+    "actual": "OPO 260012/EC"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td>
+                <td>sonnet-4-5</td>
+                <td>4</td>
+                <td>3</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipment_date",
+    "expected": "2027-03-01",
+    "actual": "2026-03-31"
+  },
+  {
+    "path": "data[0].do_date",
+    "expected": "2027-03-01",
+    "actual": "2026-03-31"
+  },
+  {
+    "path": "data[0].billing_address",
+    "expected": "",
+    "actual": "Leonardo da Vinci"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td>
+                <td>sonnet-4-5</td>
+                <td>4</td>
+                <td>3</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Japan",
+    "actual": ""
+  },
+  {
+    "path": "data[0].items[0].total",
+    "expected": null,
+    "actual": 32025.0
+  },
+  {
+    "path": "data[0].billing_address",
+    "expected": "",
+    "actual": "Leonardo da Vinci"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td>
+                <td>sonnet-4-5</td>
+                <td>4</td>
+                <td>3</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Japan",
+    "actual": ""
+  },
+  {
+    "path": "data[0].items[0].total",
+    "expected": null,
+    "actual": 32025.0
+  },
+  {
+    "path": "data[0].billing_address",
+    "expected": "",
+    "actual": "Leonardo da Vinci"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td>
+                <td>sonnet-4-5</td>
+                <td>4</td>
+                <td>3</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].unit_price",
+    "expected": 3250.0,
+    "actual": 3.25
+  },
+  {
+    "path": "data[0].items[0].pricing_unit",
+    "expected": "USD/MT",
+    "actual": "USD/KG"
+  },
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Jakarta",
+    "actual": ""
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td>
+                <td>opus-4-5</td>
+                <td>4</td>
+                <td>3</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].unit_price",
+    "expected": 3250.0,
+    "actual": 3.25
+  },
+  {
+    "path": "data[0].items[0].pricing_unit",
+    "expected": "USD/MT",
+    "actual": "USD/KG"
+  },
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Jakarta",
+    "actual": ""
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td>
+                <td>opus-4-5</td>
+                <td>4</td>
+                <td>3</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].unit_price",
+    "expected": 3250.0,
+    "actual": 3.25
+  },
+  {
+    "path": "data[0].items[0].pricing_unit",
+    "expected": "USD/MT",
+    "actual": "USD/KG"
+  },
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Jakarta",
+    "actual": ""
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td>
+                <td>opus-4-6</td>
+                <td>4</td>
+                <td>3</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].unit_price",
+    "expected": 3250.0,
+    "actual": 3.25
+  },
+  {
+    "path": "data[0].items[0].pricing_unit",
+    "expected": "USD/MT",
+    "actual": "USD/KG"
+  },
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Jakarta",
+    "actual": ""
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td>
+                <td>opus-4-6</td>
+                <td>4</td>
+                <td>3</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].unit_price",
+    "expected": 3250.0,
+    "actual": 3.25
+  },
+  {
+    "path": "data[0].items[0].pricing_unit",
+    "expected": "USD/MT",
+    "actual": "USD/KG"
+  },
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Jakarta",
+    "actual": ""
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td>
+                <td>sonnet-4-5</td>
+                <td>4</td>
+                <td>3</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Nhava Sheva",
+    "actual": ""
+  },
+  {
+    "path": "data[0].items[0].loading",
+    "expected": "",
+    "actual": "13MT/20'FCL"
+  },
+  {
+    "path": "data[0].billing_address",
+    "expected": "",
+    "actual": "Leonardo da Vinci"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td>
+                <td>opus-4-6</td>
+                <td>4</td>
+                <td>3</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].loading",
+    "expected": "23MT/40'FCL",
+    "actual": "23 MT / 40' FCL"
+  },
+  {
+    "path": "data[0].vendor_name",
+    "expected": "Van Beethoven",
+    "actual": "AG Lipids Pte Ltd"
+  },
+  {
+    "path": "data[0].payment_date",
+    "expected": "",
+    "actual": "Net 14 Days"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td>
+                <td>opus-4-5</td>
+                <td>4</td>
+                <td>3</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].loading",
+    "expected": "23MT/40'FCL",
+    "actual": "23 MT / 40' FCL"
+  },
+  {
+    "path": "data[0].vendor_name",
+    "expected": "Van Beethoven",
+    "actual": "AG Lipids Pte Ltd"
+  },
+  {
+    "path": "data[0].payment_date",
+    "expected": "",
+    "actual": "Net 14 Days"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td>
+                <td>opus-4-5</td>
+                <td>4</td>
+                <td>3</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].loading",
+    "expected": "23MT/40'FCL",
+    "actual": "23 MT / 40' FCL"
+  },
+  {
+    "path": "data[0].vendor_name",
+    "expected": "Van Beethoven",
+    "actual": "AG Lipids Pte Ltd"
+  },
+  {
+    "path": "data[0].payment_date",
+    "expected": "",
+    "actual": "Net 14 Days"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td>
+                <td>opus-4-6</td>
+                <td>4</td>
+                <td>3</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].loading",
+    "expected": "23MT/40'FCL",
+    "actual": "23 MT / 40' FCL"
+  },
+  {
+    "path": "data[0].vendor_name",
+    "expected": "Van Beethoven",
+    "actual": "AG Lipids Pte Ltd"
+  },
+  {
+    "path": "data[0].payment_date",
+    "expected": "",
+    "actual": "Net 14 Days"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td>
+                <td>opus-4-6</td>
+                <td>4</td>
+                <td>3</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].loading",
+    "expected": "23MT/40'FCL",
+    "actual": "23 MT / 40' FCL"
+  },
+  {
+    "path": "data[0].vendor_name",
+    "expected": "Van Beethoven",
+    "actual": "AG Lipids Pte Ltd"
+  },
+  {
+    "path": "data[0].payment_date",
+    "expected": "",
+    "actual": "Net 14 Days"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td>
+                <td>opus-4-6</td>
+                <td>4</td>
+                <td>3</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].loading",
+    "expected": "23MT/40'FCL",
+    "actual": "23 MT / 40' FCL"
+  },
+  {
+    "path": "data[0].vendor_name",
+    "expected": "Van Beethoven",
+    "actual": "AG Lipids Pte Ltd"
+  },
+  {
+    "path": "data[0].payment_date",
+    "expected": "",
+    "actual": "Net 14 Days"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td>
+                <td>sonnet-4-5</td>
+                <td>4</td>
+                <td>2</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipment_date",
+    "expected": "2027-03-01",
+    "actual": "2026-03-31"
+  },
+  {
+    "path": "data[0].do_date",
+    "expected": "2027-03-01",
+    "actual": "2026-03-31"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td>
+                <td>opus-4-6</td>
+                <td>4</td>
+                <td>2</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipment_date",
+    "expected": "2027-03-01",
+    "actual": "2026-03-31"
+  },
+  {
+    "path": "data[0].do_date",
+    "expected": "2027-03-01",
+    "actual": "2026-03-31"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td>
+                <td>opus-4-6</td>
+                <td>4</td>
+                <td>2</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipment_date",
+    "expected": "2027-03-01",
+    "actual": "2026-03-31"
+  },
+  {
+    "path": "data[0].do_date",
+    "expected": "2027-03-01",
+    "actual": "2026-03-31"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td>
+                <td>sonnet-4-6</td>
+                <td>4</td>
+                <td>2</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Nhava Sheva",
+    "actual": ""
+  },
+  {
+    "path": "data[0].billing_address",
+    "expected": "GIIAVA (India) Pvt. Ltd., Plot No. C3, Wai MIDC, Dist Satara, Maharashtra - 412803",
+    "actual": ""
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td>
+                <td>sonnet-4-6</td>
+                <td>4</td>
+                <td>2</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Nhava Sheva",
+    "actual": ""
+  },
+  {
+    "path": "data[0].billing_address",
+    "expected": "GIIAVA (India) Pvt. Ltd., Plot No. C3, Wai MIDC, Dist Satara, Maharashtra - 412803",
+    "actual": "GIIAVA (India) Pvt. Ltd., Plot No. C3, Wai MIDC, Dist – Satara, Maharashtra – 412803"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td>
+                <td>sonnet-4-5</td>
+                <td>4</td>
+                <td>2</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Nhava Sheva",
+    "actual": ""
+  },
+  {
+    "path": "data[0].billing_address",
+    "expected": "GIIAVA (India) Pvt. Ltd., Plot No. C3, Wai MIDC, Dist Satara, Maharashtra - 412803",
+    "actual": "Leonardo da Vinci"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td>
+                <td>opus-4-6</td>
+                <td>4</td>
+                <td>2</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Nhava Sheva",
+    "actual": ""
+  },
+  {
+    "path": "data[0].billing_address",
+    "expected": "GIIAVA (India) Pvt. Ltd., Plot No. C3, Wai MIDC, Dist Satara, Maharashtra - 412803",
+    "actual": "GIIAVA (India) Pvt. Ltd., Plot No. C3, Wai MIDC, Dist – Satara, Maharashtra – 412803"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td>
+                <td>opus-4-5</td>
+                <td>4</td>
+                <td>2</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Nhava Sheva",
+    "actual": ""
+  },
+  {
+    "path": "data[0].billing_address",
+    "expected": "GIIAVA (India) Pvt. Ltd., Plot No. C3, Wai MIDC, Dist Satara, Maharashtra - 412803",
+    "actual": "GIIAVA (India) Pvt. Ltd., Plot No. C3, Wai MIDC, Dist – Satara, Maharashtra – 412803"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td>
+                <td>opus-4-6</td>
+                <td>4</td>
+                <td>2</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Nhava Sheva",
+    "actual": ""
+  },
+  {
+    "path": "data[0].billing_address",
+    "expected": "GIIAVA (India) Pvt. Ltd., Plot No. C3, Wai MIDC, Dist Satara, Maharashtra - 412803",
+    "actual": "GIIAVA (India) Pvt. Ltd., Plot No. C3, Wai MIDC, Dist – Satara, Maharashtra – 412803"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td>
+                <td>opus-4-5</td>
+                <td>4</td>
+                <td>2</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Nhava Sheva",
+    "actual": ""
+  },
+  {
+    "path": "data[0].billing_address",
+    "expected": "GIIAVA (India) Pvt. Ltd., Plot No. C3, Wai MIDC, Dist Satara, Maharashtra - 412803",
+    "actual": "GIIAVA (India) Pvt. Ltd., Plot No. C3, Wai MIDC, Dist – Satara, Maharashtra – 412803"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td>
+                <td>sonnet-4-5</td>
+                <td>4</td>
+                <td>2</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Nhava Sheva",
+    "actual": ""
+  },
+  {
+    "path": "data[0].billing_address",
+    "expected": "GIIAVA (India) Pvt. Ltd., Plot No. C3, Wai MIDC, Dist Satara, Maharashtra - 412803",
+    "actual": "Leonardo da Vinci"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td>
+                <td>sonnet-4-5</td>
+                <td>4</td>
+                <td>2</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Nhava Sheva",
+    "actual": ""
+  },
+  {
+    "path": "data[0].items[0].loading",
+    "expected": "",
+    "actual": "13MT/20'FCL"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td>
+                <td>opus-4-5</td>
+                <td>4</td>
+                <td>2</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Nhava Sheva",
+    "actual": ""
+  },
+  {
+    "path": "data[0].items[0].loading",
+    "expected": "",
+    "actual": "13MT/20'FCL"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td>
+                <td>opus-4-5</td>
+                <td>4</td>
+                <td>2</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Nhava Sheva",
+    "actual": ""
+  },
+  {
+    "path": "data[0].items[0].loading",
+    "expected": "",
+    "actual": "13MT/20'FCL"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td>
+                <td>sonnet-4-6</td>
+                <td>4</td>
+                <td>2</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].loading",
+    "expected": "23MT/40'FCL",
+    "actual": "23 MT / 40' FCL"
+  },
+  {
+    "path": "data[0].payment_date",
+    "expected": "",
+    "actual": "Net 14 Days"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td>
+                <td>opus-4-6</td>
+                <td>4</td>
+                <td>1</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Nhava Sheva",
+    "actual": ""
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td>
+                <td>sonnet-4-6</td>
+                <td>4</td>
+                <td>1</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].loading",
+    "expected": "",
+    "actual": "13MT/20'FCL"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td>
+                <td>sonnet-4-6</td>
+                <td>4</td>
+                <td>1</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].loading",
+    "expected": "",
+    "actual": "13MT/20'FCL"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td>
+                <td>opus-4-6</td>
+                <td>4</td>
+                <td>1</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].shipping_address",
+    "expected": "Nhava Sheva",
+    "actual": ""
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td>
+                <td>sonnet-4-6</td>
+                <td>4</td>
+                <td>1</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].total",
+    "expected": 6300.0,
+    "actual": null
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td>
+                <td>sonnet-4-6</td>
+                <td>4</td>
+                <td>1</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].items[0].total",
+    "expected": 6300.0,
+    "actual": null
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td>
+                <td>sonnet-4-5</td>
+                <td>4</td>
+                <td>1</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data",
+    "expected_len": 1,
+    "actual_len": 0
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td>
+                <td>sonnet-4-5</td>
+                <td>4</td>
+                <td>1</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data",
+    "expected_len": 1,
+    "actual_len": 0
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td>
+                <td>opus-4-6</td>
+                <td>4</td>
+                <td>1</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data",
+    "expected_len": 1,
+    "actual_len": 0
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td>
+                <td>opus-4-6</td>
+                <td>4</td>
+                <td>1</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data",
+    "expected_len": 1,
+    "actual_len": 0
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td>
+                <td>opus-4-5</td>
+                <td>4</td>
+                <td>1</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data",
+    "expected_len": 1,
+    "actual_len": 0
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td>
+                <td>opus-4-5</td>
+                <td>4</td>
+                <td>1</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data",
+    "expected_len": 1,
+    "actual_len": 0
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td>
+                <td>sonnet-4-5</td>
+                <td>4</td>
+                <td>1</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].billing_address",
+    "expected": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea",
+    "actual": "Leonardo da Vinci"
+  }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td>so_extraction</td>
+                <td>08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td>
+                <td>sonnet-4-5</td>
+                <td>4</td>
+                <td>1</td>
+                <td>
+                  <pre>[
+  {
+    "path": "data[0].billing_address",
+    "expected": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea",
+    "actual": "Leonardo da Vinci"
+  }
+]</pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </details>
+    <footer>
+      <span>so_extraction · 20260518T194103Z</span>
+      <span>72 runs · 100.00% success · 89.75% field match</span>
+    </footer>
+  </div>
+  <script>
+
+    const MULTI_AGENT = false;
+    const DATA = [["opus-4-5", 4, 18, 4.896361111111111, 2.888888888888889, 0.8652849740932642], ["opus-4-6", 4, 18, 5.097161111111111, 2.111111111111111, 0.9015544041450777], ["sonnet-4-5", 4, 18, 5.12265, 2.2777777777777777, 0.8937823834196891], ["sonnet-4-6", 4, 18, 4.907305555555556, 1.7777777777777777, 0.9259259259259259]];
+    const rows = DATA.map((row) => {
+      if (MULTI_AGENT) {
+        const parts = row[0].split(" · ");
+        const agent = parts[0] || "";
+        const model = parts.length > 1 ? parts.slice(1).join(" · ") : row[0];
+        return { agent, model, fs: row[1], runs: row[2], elapsed: row[3], mismatch: row[4], match: row[5] };
+      }
+      return { agent: "", model: row[0], fs: row[1], runs: row[2], elapsed: row[3], mismatch: row[4], match: row[5] };
+    });
+    const sortedMatches = [...rows.map((r) => r.match)].sort((a, b) => b - a);
+    const topQuartile = sortedMatches.length ? sortedMatches[Math.floor(rows.length * 0.25)] : 0;
+    const bottomQuartile = sortedMatches.length ? sortedMatches[Math.floor(rows.length * 0.75)] : 0;
+    const modelFilter = document.getElementById("modelFilter");
+    const models = [...new Set(rows.map((r) => r.model))].sort();
+    models.forEach((m) => {
+      const opt = document.createElement("option");
+      opt.value = m;
+      opt.textContent = m;
+      modelFilter.appendChild(opt);
+    });
+    let state = { sort: "match", dir: "desc", fs: "all", model: "all", search: "" };
+    function matchBarClass(v) {
+      if (v < 0.78) return "low";
+      if (v < 0.85) return "mid";
+      return "";
+    }
+    function render() {
+      let filtered = rows.filter((r) => {
+        if (state.fs !== "all" && r.fs !== Number(state.fs)) return false;
+        if (state.model !== "all" && r.model !== state.model) return false;
+        if (state.search) {
+          const q = state.search.toLowerCase();
+          const blob = (r.agent + " " + r.model).toLowerCase();
+          if (!blob.includes(q)) return false;
+        }
+        return true;
+      });
+      filtered.sort((a, b) => {
+        const av = a[state.sort];
+        const bv = b[state.sort];
+        if (typeof av === "string") {
+          return state.dir === "asc" ? av.localeCompare(bv) : bv.localeCompare(av);
+        }
+        return state.dir === "asc" ? av - bv : bv - av;
+      });
+      const tbody = document.getElementById("leaderboard-body");
+      const agentCell = (r) => (MULTI_AGENT ? `<td>${r.agent}</td>` : "");
+      tbody.innerHTML = filtered
+        .map((r) => {
+          const cls =
+            r.match >= topQuartile ? "top-quartile" : r.match <= bottomQuartile ? "bottom-quartile" : "";
+          const barCls = matchBarClass(r.match);
+          const barW = Math.round(r.match * 100) + "%";
+          return (
+            `<tr class="${cls}">${agentCell(r)}<td>${r.model}</td>` +
+            `<td class="numeric">${r.fs}</td>` +
+            `<td class="numeric">${r.runs}</td>` +
+            `<td class="numeric">${r.elapsed.toFixed(2)}</td>` +
+            `<td class="numeric">${r.mismatch.toFixed(2)}</td>` +
+            `<td class="numeric match-cell"><span class="match-bar ${barCls}" style="--w:${barW}"></span>${(r.match * 100).toFixed(2)}%</td></tr>`
+          );
+        })
+        .join("");
+      document.getElementById("rowCount").textContent = `${filtered.length} of ${rows.length} rows`;
+      document.querySelectorAll("thead th").forEach((th) => {
+        th.classList.remove("sort-asc", "sort-desc");
+        if (th.dataset.sort === state.sort) {
+          th.classList.add(state.dir === "asc" ? "sort-asc" : "sort-desc");
+        }
+      });
+    }
+    document.querySelectorAll("thead th").forEach((th) => {
+      th.addEventListener("click", () => {
+        const k = th.dataset.sort;
+        if (state.sort === k) {
+          state.dir = state.dir === "asc" ? "desc" : "asc";
+        } else {
+          state.sort = k;
+          state.dir = th.dataset.type === "num" ? "desc" : "asc";
+        }
+        render();
+      });
+    });
+    document.getElementById("fsFilter").addEventListener("change", (e) => {
+      state.fs = e.target.value;
+      render();
+    });
+    document.getElementById("modelFilter").addEventListener("change", (e) => {
+      state.model = e.target.value;
+      render();
+    });
+    document.getElementById("search").addEventListener("input", (e) => {
+      state.search = e.target.value;
+      render();
+    });
+    render();
+    const modelAgg = {};
+    rows.forEach((r) => {
+      const k = r.model;
+      if (!modelAgg[k]) modelAgg[k] = { elapsed: [], match: [], mismatch: [] };
+      modelAgg[k].elapsed.push(r.elapsed);
+      modelAgg[k].match.push(r.match);
+      modelAgg[k].mismatch.push(r.mismatch);
+    });
+    const avg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
+    const modelPoints = Object.entries(modelAgg).map(([model, d]) => ({
+      model,
+      x: avg(d.elapsed),
+      y: avg(d.match) * 100,
+      r: 6 + avg(d.mismatch) * 1.5,
+    }));
+    const colorFor = (model) => {
+      if (model.startsWith("sonnet") || model.startsWith("opus")) return "#2d6b3f";
+      if (model.startsWith("openai:4")) return "#1a5490";
+      if (model.startsWith("openai")) return "#7a8aa8";
+      if (model.startsWith("gemini")) return "#b8341c";
+      return "#7a7a7a";
+    };
+    if (modelPoints.length) {
+      const ctx = document.getElementById("frontierChart").getContext("2d");
+      new Chart(ctx, {
+        type: "bubble",
+        data: {
+          datasets: modelPoints.map((p) => ({
+            label: p.model,
+            data: [{ x: p.x, y: p.y, r: p.r, model: p.model }],
+            backgroundColor: colorFor(p.model) + "cc",
+            borderColor: colorFor(p.model),
+            borderWidth: 1.5,
+          })),
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: "right",
+              labels: {
+                font: { family: "'JetBrains Mono', monospace", size: 11 },
+                color: "#4a4a4a",
+                boxWidth: 10,
+                boxHeight: 10,
+                padding: 8,
+              },
+            },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => {
+                  const d = ctx.raw;
+                  return `${d.model}: ${d.y.toFixed(1)}% match, ${d.x.toFixed(2)}s avg`;
+                },
+              },
+              bodyFont: { family: "'JetBrains Mono', monospace", size: 12 },
+              titleFont: { family: "'IBM Plex Sans', sans-serif" },
+            },
+          },
+          scales: {
+            x: {
+              type: "logarithmic",
+              title: {
+                display: true,
+                text: "Avg latency (s, log scale)",
+                font: { family: "'JetBrains Mono', monospace", size: 11, weight: 500 },
+                color: "#4a4a4a",
+              },
+              ticks: {
+                font: { family: "'JetBrains Mono', monospace", size: 10 },
+                color: "#7a7a7a",
+                callback: (v) => v + "s",
+              },
+              grid: { color: "#e8e2d2" },
+            },
+            y: {
+              title: {
+                display: true,
+                text: "Field match (%)",
+                font: { family: "'JetBrains Mono', monospace", size: 11, weight: 500 },
+                color: "#4a4a4a",
+              },
+              ticks: {
+                font: { family: "'JetBrains Mono', monospace", size: 10 },
+                color: "#7a7a7a",
+                callback: (v) => v + "%",
+              },
+              grid: { color: "#e8e2d2" },
+            },
+          },
+        },
+      });
+    }
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,51 @@
+{
+  "agent": "so_extraction",
+  "pipeline": null,
+  "models": [
+    "sonnet-4-5",
+    "sonnet-4-6",
+    "opus-4-6",
+    "openai:4.1",
+    "openai:5.4",
+    "gemini:gemini-2.5-pro"
+  ],
+  "datasets": [
+    "downloaded"
+  ],
+  "chat": null,
+  "chats_glob": null,
+  "bulk": false,
+  "runs_per_chat": 2,
+  "max_workers": 25,
+  "few_shot_explicit": [
+    "/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/multiple_product_multiple_shipment_medium.json",
+    "/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/single_product_multiple_shipment_complex.json",
+    "/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/single_product_single_shipment_medium.json",
+    "/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/updates/update_change_payment_terms.json"
+  ],
+  "few_shot_walk": [],
+  "few_shot_sweep": [],
+  "few_shot_pool_argv": [],
+  "few_shot_seed": 42,
+  "db_few_shot_limit": 0,
+  "skip_without_expected": true,
+  "results_dir": "/Users/tripathipranav/Documents/code/harness_agents/results/20260518T193425Z",
+  "config_file": "configs/agents.json",
+  "few_shot_mode": "explicit",
+  "few_shot_pool_size": 68,
+  "few_shot_default_pool_size": 68,
+  "few_shot_pool_override": null,
+  "few_shot_variants": [
+    {
+      "label": "explicit",
+      "count": 4,
+      "paths": [
+        "raw_data/chats/multiple_product_multiple_shipment_medium.json",
+        "raw_data/chats/single_product_multiple_shipment_complex.json",
+        "raw_data/chats/single_product_single_shipment_medium.json",
+        "raw_data/chats/updates/update_change_payment_terms.json"
+      ]
+    }
+  ],
+  "allow_self_fewshot": false
+}

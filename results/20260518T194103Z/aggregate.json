@@ -1,0 +1,583 @@
+{
+  "run_id": "20260518T194103Z",
+  "generated_at_utc": "2026-05-18T19:41:44.374863+00:00",
+  "config": {
+    "agent": "so_extraction",
+    "pipeline": null,
+    "models": [
+      "sonnet-4-5",
+      "sonnet-4-6",
+      "opus-4-6",
+      "opus-4-5"
+    ],
+    "datasets": [
+      "downloaded"
+    ],
+    "chat": null,
+    "chats_glob": null,
+    "bulk": false,
+    "runs_per_chat": 2,
+    "max_workers": 25,
+    "few_shot_explicit": [
+      "/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/multiple_product_multiple_shipment_medium.json",
+      "/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/single_product_multiple_shipment_complex.json",
+      "/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/single_product_single_shipment_medium.json",
+      "/Users/tripathipranav/Documents/code/harness_agents/raw_data/chats/updates/update_change_payment_terms.json"
+    ],
+    "few_shot_walk": [],
+    "few_shot_sweep": [],
+    "few_shot_pool_argv": [],
+    "few_shot_seed": 42,
+    "db_few_shot_limit": 0,
+    "skip_without_expected": true,
+    "results_dir": "/Users/tripathipranav/Documents/code/harness_agents/results/20260518T194103Z",
+    "config_file": "configs/agents.json",
+    "few_shot_mode": "explicit",
+    "few_shot_pool_size": 68,
+    "few_shot_default_pool_size": 68,
+    "few_shot_pool_override": null,
+    "few_shot_variants": [
+      {
+        "label": "explicit",
+        "count": 4,
+        "paths": [
+          "raw_data/chats/multiple_product_multiple_shipment_medium.json",
+          "raw_data/chats/single_product_multiple_shipment_complex.json",
+          "raw_data/chats/single_product_single_shipment_medium.json",
+          "raw_data/chats/updates/update_change_payment_terms.json"
+        ]
+      }
+    ],
+    "allow_self_fewshot": false
+  },
+  "summary": {
+    "totals": {
+      "run_count": 72,
+      "success_rate": 1.0,
+      "avg_attempts": 1.0,
+      "avg_elapsed_sec": 5.0058694444444445,
+      "avg_mismatch_per_expected_run": 2.263888888888889,
+      "field_match_rate": 0.8974842767295598
+    },
+    "by_combo": [
+      {
+        "agent_id": "so_extraction",
+        "model_key": "opus-4-5",
+        "few_shot_count": 4,
+        "run_count": 18,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 4.896361111111111,
+        "avg_mismatch_per_expected_run": 2.888888888888889,
+        "field_match_rate": 0.8652849740932642
+      },
+      {
+        "agent_id": "so_extraction",
+        "model_key": "opus-4-6",
+        "few_shot_count": 4,
+        "run_count": 18,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.097161111111111,
+        "avg_mismatch_per_expected_run": 2.111111111111111,
+        "field_match_rate": 0.9015544041450777
+      },
+      {
+        "agent_id": "so_extraction",
+        "model_key": "sonnet-4-5",
+        "few_shot_count": 4,
+        "run_count": 18,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.12265,
+        "avg_mismatch_per_expected_run": 2.2777777777777777,
+        "field_match_rate": 0.8937823834196891
+      },
+      {
+        "agent_id": "so_extraction",
+        "model_key": "sonnet-4-6",
+        "few_shot_count": 4,
+        "run_count": 18,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 4.907305555555556,
+        "avg_mismatch_per_expected_run": 1.7777777777777777,
+        "field_match_rate": 0.9259259259259259
+      }
+    ],
+    "by_chat": [
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json",
+        "model_key": "opus-4-5",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.76365,
+        "avg_mismatch_per_expected_run": 3.0,
+        "field_match_rate": 0.875
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json",
+        "model_key": "opus-4-6",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.98335,
+        "avg_mismatch_per_expected_run": 2.0,
+        "field_match_rate": 0.9166666666666666
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json",
+        "model_key": "sonnet-4-5",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.0863,
+        "avg_mismatch_per_expected_run": 2.5,
+        "field_match_rate": 0.8958333333333334
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "01__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json",
+        "model_key": "sonnet-4-6",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.632899999999999,
+        "avg_mismatch_per_expected_run": 4.0,
+        "field_match_rate": 0.8333333333333334
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json",
+        "model_key": "opus-4-5",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.090249999999999,
+        "avg_mismatch_per_expected_run": 2.0,
+        "field_match_rate": 0.9166666666666666
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json",
+        "model_key": "opus-4-6",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.9872499999999995,
+        "avg_mismatch_per_expected_run": 2.0,
+        "field_match_rate": 0.9166666666666666
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json",
+        "model_key": "sonnet-4-5",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.03685,
+        "avg_mismatch_per_expected_run": 2.0,
+        "field_match_rate": 0.9166666666666666
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "02__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json",
+        "model_key": "sonnet-4-6",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.654,
+        "avg_mismatch_per_expected_run": 2.0,
+        "field_match_rate": 0.9166666666666666
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json",
+        "model_key": "opus-4-5",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.6319,
+        "avg_mismatch_per_expected_run": 4.0,
+        "field_match_rate": 0.8333333333333334
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json",
+        "model_key": "opus-4-6",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.8534500000000005,
+        "avg_mismatch_per_expected_run": 4.0,
+        "field_match_rate": 0.8333333333333334
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json",
+        "model_key": "sonnet-4-5",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 6.06385,
+        "avg_mismatch_per_expected_run": 3.0,
+        "field_match_rate": 0.875
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "03__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json",
+        "model_key": "sonnet-4-6",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.42805,
+        "avg_mismatch_per_expected_run": 0.0,
+        "field_match_rate": 1.0
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json",
+        "model_key": "opus-4-5",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 4.61415,
+        "avg_mismatch_per_expected_run": 3.0,
+        "field_match_rate": 0.875
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json",
+        "model_key": "opus-4-6",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 4.845750000000001,
+        "avg_mismatch_per_expected_run": 3.0,
+        "field_match_rate": 0.875
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json",
+        "model_key": "sonnet-4-5",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.1979,
+        "avg_mismatch_per_expected_run": 3.5,
+        "field_match_rate": 0.8541666666666666
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "04__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json",
+        "model_key": "sonnet-4-6",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 4.51405,
+        "avg_mismatch_per_expected_run": 0.0,
+        "field_match_rate": 1.0
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json",
+        "model_key": "opus-4-5",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 4.68385,
+        "avg_mismatch_per_expected_run": 2.0,
+        "field_match_rate": 0.9166666666666666
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json",
+        "model_key": "opus-4-6",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 4.75915,
+        "avg_mismatch_per_expected_run": 1.0,
+        "field_match_rate": 0.9583333333333334
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json",
+        "model_key": "sonnet-4-5",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 4.6075,
+        "avg_mismatch_per_expected_run": 2.5,
+        "field_match_rate": 0.8958333333333334
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "05__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json",
+        "model_key": "sonnet-4-6",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 4.69425,
+        "avg_mismatch_per_expected_run": 1.0,
+        "field_match_rate": 0.9583333333333334
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json",
+        "model_key": "opus-4-5",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 4.7280999999999995,
+        "avg_mismatch_per_expected_run": 0.0,
+        "field_match_rate": 1.0
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json",
+        "model_key": "opus-4-6",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 4.6813,
+        "avg_mismatch_per_expected_run": 0.0,
+        "field_match_rate": 1.0
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json",
+        "model_key": "sonnet-4-5",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 4.32955,
+        "avg_mismatch_per_expected_run": 0.0,
+        "field_match_rate": 1.0
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "06__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json",
+        "model_key": "sonnet-4-6",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 4.4441500000000005,
+        "avg_mismatch_per_expected_run": 1.0,
+        "field_match_rate": 0.9583333333333334
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json",
+        "model_key": "opus-4-5",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 2.7154,
+        "avg_mismatch_per_expected_run": 1.0,
+        "field_match_rate": 0.0
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json",
+        "model_key": "opus-4-6",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 2.51775,
+        "avg_mismatch_per_expected_run": 1.0,
+        "field_match_rate": 0.0
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json",
+        "model_key": "sonnet-4-5",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 2.49475,
+        "avg_mismatch_per_expected_run": 1.0,
+        "field_match_rate": 0.0
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "07__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json",
+        "model_key": "sonnet-4-6",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 4.3656,
+        "avg_mismatch_per_expected_run": 0.0,
+        "field_match_rate": 1.0
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json",
+        "model_key": "opus-4-5",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.19775,
+        "avg_mismatch_per_expected_run": 3.0,
+        "field_match_rate": 0.875
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json",
+        "model_key": "opus-4-6",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.94005,
+        "avg_mismatch_per_expected_run": 3.0,
+        "field_match_rate": 0.875
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json",
+        "model_key": "sonnet-4-5",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.467650000000001,
+        "avg_mismatch_per_expected_run": 1.0,
+        "field_match_rate": 0.9583333333333334
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "08__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json",
+        "model_key": "sonnet-4-6",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 4.94425,
+        "avg_mismatch_per_expected_run": 1.0,
+        "field_match_rate": 0.9583333333333334
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json",
+        "model_key": "opus-4-5",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 4.6422,
+        "avg_mismatch_per_expected_run": 8.0,
+        "field_match_rate": 0.6666666666666667
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json",
+        "model_key": "opus-4-6",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.3064,
+        "avg_mismatch_per_expected_run": 3.0,
+        "field_match_rate": 0.875
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json",
+        "model_key": "sonnet-4-5",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.8195,
+        "avg_mismatch_per_expected_run": 5.0,
+        "field_match_rate": 0.7916666666666666
+      },
+      {
+        "agent_id": "so_extraction",
+        "chat_filename": "09__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json",
+        "model_key": "sonnet-4-6",
+        "few_shot_count": 4,
+        "run_count": 2,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 4.4885,
+        "avg_mismatch_per_expected_run": 7.0,
+        "field_match_rate": 0.7083333333333333
+      }
+    ],
+    "by_dataset": [
+      {
+        "agent_id": "so_extraction",
+        "dataset_id": "downloaded",
+        "run_count": 72,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.0058694444444445,
+        "avg_mismatch_per_expected_run": 2.263888888888889,
+        "field_match_rate": 0.8974842767295598
+      }
+    ],
+    "by_agent": [
+      {
+        "agent_id": "so_extraction",
+        "run_count": 72,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.0058694444444445,
+        "avg_mismatch_per_expected_run": 2.263888888888889,
+        "field_match_rate": 0.8974842767295598
+      }
+    ],
+    "by_few_shot_count": [
+      {
+        "agent_id": "so_extraction",
+        "few_shot_count": 4,
+        "run_count": 72,
+        "success_rate": 1.0,
+        "avg_attempts": 1.0,
+        "avg_elapsed_sec": 5.0058694444444445,
+        "avg_mismatch_per_expected_run": 2.263888888888889,
+        "field_match_rate": 0.8974842767295598
+      }
+    ]
+  },
+  "artifacts": {
+    "run_jsonl": "/Users/tripathipranav/Documents/code/harness_agents/results/20260518T194103Z/run.jsonl",
+    "config_json": "/Users/tripathipranav/Documents/code/harness_agents/results/20260518T194103Z/config.json",
+    "report_html": "/Users/tripathipranav/Documents/code/harness_agents/results/20260518T194103Z/report.html"
+  }
+}
