@@ -192,7 +192,14 @@ with tab_single:
                 st.caption(f"Date: {meta['created_at']}")
             if meta.get("realism_flags"):
                 st.caption(f"Realism flags: {', '.join(meta['realism_flags'])}")
-            st.text_area("Preview", value=chat_data.get("text", ""), height=240, disabled=True, key="single_preview")
+            preview_mtime = source_path.stat().st_mtime_ns if source_path.exists() else 0
+            st.text_area(
+                "Preview",
+                value=chat_data.get("text", ""),
+                height=240,
+                disabled=True,
+                key=f"single_preview_{source_path_str}_{preview_mtime}",
+            )
 
             st.subheader("Few-shot examples (cap 10)")
             pool = _agent_pool_labels(selected_agent_id)
@@ -644,7 +651,7 @@ with tab_results:
 
                     leaderboard_rows = leaderboard_by_combo(filtered)
                     st.subheader("Agent + Model + FS-count Leaderboard")
-                    st.dataframe(leaderboard_rows, use_container_width=True, hide_index=True)
+                    st.dataframe(leaderboard_rows, width='stretch', hide_index=True)
 
                     st.subheader("AI summary")
                     st.caption(
@@ -704,7 +711,7 @@ with tab_results:
                         }
                         for k, v in sorted(chat_buckets.items())
                     ]
-                    st.dataframe(chat_rows, use_container_width=True, hide_index=True)
+                    st.dataframe(chat_rows, width='stretch', hide_index=True)
 
                     st.subheader("Mismatch inspector")
                     with_mm = [r for r in filtered if r.get("mismatches")]
@@ -818,7 +825,7 @@ if rows:
             }
             for r in rows
         ],
-        use_container_width=True,
+        width='stretch',
         hide_index=True,
     )
 else:

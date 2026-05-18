@@ -111,19 +111,24 @@ def _parse_chats_format(data: dict[str, Any]) -> str:
 
 
 def _parse_downloaded_chats_format(data: dict[str, Any]) -> str:
-    """Parse the ``downloaded_chats/`` format (real WhatsApp exports)."""
+    """Parse the ``downloaded_chats/`` format (real WhatsApp exports).
+
+    Only ``chats[0]`` is used for the extraction input. Additional groups in
+    ``chats`` hold synthetic TEAM-format history (``from_whom``/``body``) or
+    archived slices and are not merged into the LLM prompt.
+    """
     chat_groups: list[list[dict]] = data.get("chats", [])
     chat_name = data.get("chat_name", "")
 
+    if not chat_groups or not isinstance(chat_groups[0], list):
+        return ""
+
     flat: list[dict] = []
-    for group in chat_groups:
-        if not isinstance(group, list):
-            continue
-        for msg in group:
-            if isinstance(msg, dict) and msg.get("type") == "text":
-                body = (msg.get("text") or {}).get("body", "").strip()
-                if body:
-                    flat.append(msg)
+    for msg in chat_groups[0]:
+        if isinstance(msg, dict) and msg.get("type") == "text":
+            body = (msg.get("text") or {}).get("body", "").strip()
+            if body:
+                flat.append(msg)
 
     sequenced = add_seq_numbers(flat)
 

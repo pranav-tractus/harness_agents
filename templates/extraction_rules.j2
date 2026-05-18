@@ -7,3 +7,4 @@
 6. **Strictness:** Do not add fields or values not stated or agreed in the chat. Use `null` or omit when unknown.
 7. **Pricing:** Use the final agreed price and total only — not initial quotes or counter-offers that were not accepted.
 8. **Field normalization:** Parse numeric values as numbers (int or float), never strings. Preserve units (e.g. MT, kg, USD/MT) exactly as stated.
+9. **Total calculation:** Calculate the total for each product item based on the quantity and unit price. The total should be the multiplicative product of the quantity and unit price. If the unit price is not found, the total should be empty. If the quantity is not found, the total should be empty.
