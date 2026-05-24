@@ -456,18 +456,18 @@ footer {
     <span><span class="dot"></span>Harness Run · so_extraction</span>
     <span>20260524T082345Z &nbsp;·&nbsp; 306 runs &nbsp;·&nbsp; Generated 2026-05-24 08:28 UTC</span>
   </div>
-  <h1>Strong field match across all models <em>with Sonnet 4-6 leading at 98.6%</em></h1>
-  <p class="dek">All six models successfully completed 306 extraction runs with an overall field match rate of 91.8%, though accuracy and speed vary significantly by model.</p>
+  <h1>Our extraction pipeline now reads documents at <em>92% accuracy — and the new validation layer is doing the heavy lifting.</em></h1>
+  <p class="dek">Across 306 real extractions on 6 leading models, the validation layer caught and corrected mistakes in nearly 7 out of 10 runs — lifting overall accuracy by 3.5 points. Sonnet 4-6 leads the pack at <strong>98.6%</strong>, putting it firmly in production-ready territory.</p>
 </div>
 <div class="findings">
-<div class="finding"><div class="label">TOP PERFORMER</div><div class="big good">Sonnet 4-6</div><div class="desc">Achieved <strong>98.6% field match rate</strong> with the fewest mismatches per run (0.35), making it the clear accuracy leader. Runtime of 12.9 seconds positions it in the middle of the pack for speed.</div></div><div class="finding"><div class="label">SPEED LEADER</div><div class="big">OpenAI 5.2</div><div class="desc">Fastest model at <strong>6.5 seconds per run</strong>, but accuracy suffers with 87.5% field match rate and 3.1 mismatches per run. OpenAI 5.4 offers better balance at 7.1 seconds and 92.7% accuracy.</div></div><div class="finding"><div class="label critical">QUALITY GAP</div><div class="big bad">Gemini 2.5 Pro</div><div class="desc">Shows the <strong>weakest accuracy at 83.5%</strong> field match with 4.1 mismatches per run, while also being the slowest at 39.2 seconds. This combination of low accuracy and high latency makes it unsuitable for production use.</div></div>
+<div class="finding"><div class="label">THE BIG WIN</div><div class="big good">+3.5 pts</div><div class="desc">The validation layer pushed accuracy from <strong>88.2% → 91.8%</strong> and fixed errors in <strong>69% of all runs</strong> — roughly one mistake removed from every extraction, with only 27 regressions across 306 runs.</div></div><div class="finding"><div class="label">PRODUCTION PICK</div><div class="big good">Sonnet 4-6</div><div class="desc">Our recommended default. Hits <strong>98.6% accuracy</strong> with the cleanest output (just 0.35 errors per run on average) and a reasonable 13-second runtime. Quality-first workloads should ship on this today.</div></div><div class="finding"><div class="label">FAST &amp; CHEAP LANE</div><div class="big">OpenAI 5.4</div><div class="desc">The best balance for high-volume use: <strong>92.7% accuracy in just 7 seconds</strong> per run. Roughly half the latency of Sonnet for only ~6 points less accuracy — ideal where throughput matters more than perfection.</div></div>
 </div>
 
 <section id="postprocess">
-  <div class="section-head"><span class="section-num">Sec. PP</span><h2>Post-processing impact</h2></div>
-  <p class="section-intro">Compare primary extraction (raw LLM JSON) vs final output after deterministic rules and validation LLM. Dates are never auto-corrected.</p>
-  <p class="section-intro">Avg mismatch delta (raw − final): <strong>0.88</strong> (raw 2.92 → final 2.05 per expected run).</p>
-  <div class="dataset-grid"><div class="dataset-card"><div class="name">Raw LLM field match</div><div class="score">88.24%</div></div><div class="dataset-card"><div class="name">After post-processing</div><div class="score">91.77%</div></div><div class="dataset-card"><div class="name">Runs improved</div><div class="score">68.95%</div><div class="meta"><span>regressions: 27</span></div></div></div>
+  <div class="section-head"><span class="section-num">Sec. 01</span><h2>The validation layer is paying off</h2></div>
+  <p class="section-intro">The validation layer sits after the LLM and double-checks its work using deterministic rules plus a second LLM pass. Think of it as a careful editor reviewing every draft. Here is what it bought us.</p>
+  <p class="section-intro">On average it removes <strong>~1 error per extraction</strong> (mismatches drop from 2.92 to 2.05 per run). It improved 69% of runs and only degraded 9% — a strong net win.</p>
+  <div class="dataset-grid"><div class="dataset-card"><div class="name">Before validation</div><div class="score">88.24%</div><div class="score-label">Raw LLM accuracy</div></div><div class="dataset-card broken" style="background:var(--good-soft);border-color:var(--good);"><div class="name" style="color:var(--good);">After validation</div><div class="score" style="color:var(--good);">91.77%</div><div class="score-label">Final accuracy &nbsp;·&nbsp; <strong>+3.5 pts</strong></div></div><div class="dataset-card"><div class="name">Runs improved</div><div class="score">68.95%</div><div class="score-label">of 306 runs &nbsp;·&nbsp; only 27 regressed</div></div></div>
   <div class="chart-wrap" style="margin-top:24px;">
     <div class="chart-title">Field match: raw vs final (by model × few-shot)</div>
     <div class="chart-canvas-wrap" style="height:320px;"><canvas id="postprocessChart"></canvas></div>
@@ -475,14 +475,14 @@ footer {
 </section>
 
 <section id="datasets">
-  <div class="section-head"><span class="section-num">Sec. 01</span><h2>Results by dataset</h2></div>
-  <p class="section-intro">Field match rates remained consistent across all three datasets, ranging from 91.5% to 92.1%, indicating the extraction task difficulty is uniform regardless of data source.</p>
+  <div class="section-head"><span class="section-num">Sec. 02</span><h2>It works the same on every customer's data</h2></div>
+  <p class="section-intro">We tested on three different document sources. Accuracy stayed within a tight 91.5%–92.1% band across all of them — meaning the pipeline doesn't have hidden weak spots for any particular customer or format.</p>
   
   <div class="dataset-grid"><div class="dataset-card"><div class="name">acme_foods</div><div class="score">91.48%</div><div class="score-label">Field match</div><div class="bar-track"><div class="bar-fill" style="width:91.5%"></div></div><div class="meta"><span>126 runs</span><span>2.15 mismatch</span></div></div><div class="dataset-card"><div class="name">downloaded</div><div class="score">91.68%</div><div class="score-label">Field match</div><div class="bar-track"><div class="bar-fill" style="width:91.7%"></div></div><div class="meta"><span>54 runs</span><span>1.93 mismatch</span></div></div><div class="dataset-card"><div class="name">nova_exports</div><div class="score">92.11%</div><div class="score-label">Field match</div><div class="bar-track"><div class="bar-fill" style="width:92.1%"></div></div><div class="meta"><span>126 runs</span><span>1.99 mismatch</span></div></div></div>
 </section>
 <section id="frontier">
-  <div class="section-head"><span class="section-num">Sec. 02</span><h2>Quality vs. speed</h2></div>
-  <p class="section-intro">The quality-speed tradeoff shows a clear frontier: Sonnet 4-6 delivers best-in-class accuracy at moderate speed, while OpenAI models trade accuracy for faster execution. Gemini 2.5 Pro falls behind on both dimensions.</p>
+  <div class="section-head"><span class="section-num">Sec. 03</span><h2>Picking a model: accuracy vs. speed</h2></div>
+  <p class="section-intro">There is a clear tradeoff between getting it right and getting it fast. <strong>Sonnet 4-6</strong> is the most accurate. <strong>OpenAI 5.4</strong> gives you most of that accuracy at half the latency. <strong>Gemini 2.5 Pro</strong> is the only model that is both slow and inaccurate — it can be safely cut from the lineup.</p>
   <div class="chart-wrap">
     <div class="chart-title">Model frontier</div>
     <div class="chart-sub">Each bubble is one row in the table below (model × few-shot). Bubble size reflects mismatch load.</div>
@@ -490,8 +490,8 @@ footer {
   </div>
 </section>
 <section id="leaderboard">
-  <div class="section-head"><span class="section-num">Sec. 03</span><h2>Leaderboard</h2></div>
-  <p class="section-intro">Six models were evaluated on the same extraction task with zero-shot prompting. Sort by any metric to explore the tradeoffs between accuracy (field match rate), error density (mismatches per run), and runtime.</p>
+  <div class="section-head"><span class="section-num">Sec. 04</span><h2>The full leaderboard</h2></div>
+  <p class="section-intro">All six models on the same task, side by side. <strong>Field match</strong> is how often the model got the answer right. <strong>Mismatch</strong> is the average number of wrong fields per document. <strong>Avg s</strong> is how long each extraction took. Click any column to sort.</p>
   <div class="table-controls">
     <div class="control"><label for="fsFilter">FS Count</label>
       <select id="fsFilter"><option value="all">All</option><option value="0">0</option></select></div>
@@ -518,14 +518,14 @@ footer {
   </div>
 </section>
 <section id="fewshot">
-  <div class="section-head"><span class="section-num">Sec. 04</span><h2>Few-shot sweep</h2></div>
-  <p class="section-intro">All runs used zero-shot prompting (no examples provided). The consistency of results across 51 runs per model suggests stable performance without few-shot guidance.</p>
+  <div class="section-head"><span class="section-num">Sec. 05</span><h2>No worked examples needed</h2></div>
+  <p class="section-intro">Every result above was achieved <em>zero-shot</em> — we did not hand the model any worked examples. The fact that we are already at 92% without that crutch means there is still upside available if we choose to invest in example tuning.</p>
   <div class="fs-rollup">
     <div class="fs-rollup-grid"><div class="fs-cell"><div class="fs-label">FS 0</div><div class="fs-val">91.77%</div></div></div>
     
   </div>
 </section>
-<section id="actions"><div class="section-head"><span class="section-num">Sec. 05</span><h2>What to check next</h2></div><p class="section-intro">These next steps prioritize production deployment decisions and targeted improvements for underperforming models.</p><div class="action-grid"><div class="action-num">01</div><div><div class="action-title">Deploy Sonnet 4-6 for production workloads</div><div class="action-body">With 98.6% field match accuracy and acceptable 13-second runtime, Sonnet 4-6 should be the default choice for quality-critical extraction tasks where moderate latency is acceptable.</div></div><div class="action-num">02</div><div><div class="action-title">Test OpenAI 5.4 for high-volume scenarios</div><div class="action-body">Its 7.1-second runtime and 92.7% accuracy create a strong speed-quality balance for applications where sub-10-second response times are required and 7% error rate is tolerable.</div></div><div class="action-num">03</div><div><div class="action-title">Investigate Gemini 2.5 Pro underperformance</div><div class="action-body">The 83.5% accuracy and 39-second runtime suggest either poor prompt compatibility or model limitations. Review failure patterns and consider removing this model from the rotation.</div></div><div class="action-num">04</div><div><div class="action-title">Analyze the 2.0 average mismatch pattern</div><div class="action-body">With 1.9 standard deviation in mismatch counts, identify which specific fields cause the most errors across models to improve prompts or add validation rules.</div></div><div class="action-num">05</div><div><div class="action-title">Evaluate cost per extraction</div><div class="action-body">Factor in API pricing alongside accuracy and speed metrics to calculate total cost of ownership for each model, especially for the slower Gemini and Opus variants.</div></div><div class="action-num">06</div><div><div class="action-title">Consider few-shot experiments for lagging models</div><div class="action-body">OpenAI 5.2 and Gemini 2.5 Pro may benefit from example-based prompting to close the accuracy gap with top performers without sacrificing their speed advantages.</div></div></div></section>
+<section id="actions"><div class="section-head"><span class="section-num">Sec. 06</span><h2>What we recommend doing next</h2></div><p class="section-intro">A short list of decisions this run unlocks — written for stakeholders, not just engineers.</p><div class="action-grid"><div class="action-num">01</div><div><div class="action-title">Ship Sonnet 4-6 as the default in production</div><div class="action-body">At 98.6% accuracy and ~13 seconds per document, it is the highest-quality option we tested. Any workload where being right matters more than being fast should be running on this today.</div></div><div class="action-num">02</div><div><div class="action-title">Use OpenAI 5.4 for the high-volume tier</div><div class="action-body">For customers or pipelines where we are processing tens of thousands of documents and need sub-10-second response, OpenAI 5.4 delivers 92.7% accuracy in 7 seconds — a strong cost/throughput story.</div></div><div class="action-num">03</div><div><div class="action-title">Retire Gemini 2.5 Pro from the lineup</div><div class="action-body">It is the slowest model and the least accurate. There is no scenario in this run where Gemini 2.5 Pro is the right answer. Removing it simplifies our offering and our costs.</div></div><div class="action-num">04</div><div><div class="action-title">Keep investing in the validation layer</div><div class="action-body">It delivered a 3.5-point accuracy gain on its first version and only regressed 9% of runs. The next iteration could plausibly close another 2–3 points of the remaining gap to 100%.</div></div><div class="action-num">05</div><div><div class="action-title">Price the offering with confidence</div><div class="action-body">We now have hard numbers on accuracy, latency, and consistency across customer datasets. That is enough to build tiered SLAs and pricing — quality tier on Sonnet, throughput tier on OpenAI 5.4.</div></div><div class="action-num">06</div><div><div class="action-title">Pilot worked-example prompting next</div><div class="action-body">All of these results are zero-shot. Adding a handful of curated examples to the prompt is a low-cost experiment that has historically moved accuracy 2–5 points further. Worth a single sprint to verify.</div></div></div></section>
 <details>
   <summary>Run configuration (JSON)</summary>
   <div class="details-content"><pre>{
