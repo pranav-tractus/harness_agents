@@ -148,97 +148,191 @@ def discover_reports(results_dir: Path) -> list[ReportEntry]:
 
 PAGE_CSS = """
 :root {
-  color-scheme: light dark;
-  --bg: #f7f8fb;
-  --fg: #1f2937;
-  --muted: #6b7280;
-  --card: #ffffff;
-  --border: #e5e7eb;
-  --accent: #2563eb;
+  --bg: #f5f1e8;
+  --bg-card: #faf7ef;
+  --bg-elevated: #fffdf6;
+  --ink: #1a1a1a;
+  --ink-soft: #4a4a4a;
+  --ink-mute: #7a7a7a;
+  --line: #d6cfbe;
+  --line-soft: #e8e2d2;
+  --accent: #b8341c;
+  --accent-soft: #f4d9d2;
+  --good: #2d6b3f;
+  --display: 'Instrument Serif', Georgia, serif;
+  --sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0f172a;
-    --fg: #e5e7eb;
-    --muted: #94a3b8;
-    --card: #111827;
-    --border: #1f2937;
-    --accent: #60a5fa;
-  }
-}
-* { box-sizing: border-box; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif;
-  margin: 0;
-  padding: 32px 16px 64px;
+  font-family: var(--sans);
   background: var(--bg);
-  color: var(--fg);
+  color: var(--ink);
+  line-height: 1.55;
+  font-size: 15px;
 }
-.container { max-width: 1100px; margin: 0 auto; }
-h1 { margin: 0 0 8px; font-size: 28px; }
-.subtitle { color: var(--muted); margin: 0 0 24px; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+.masthead {
+  border-bottom: 2px solid var(--ink);
+  padding: 28px 0 20px;
+  margin-bottom: 32px;
+}
+.masthead-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 14px;
+}
+.masthead-top .dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  background: var(--good);
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+h1 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+h1 em { font-style: italic; color: var(--ink-soft); }
+.dek {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 21px;
+  color: var(--ink-soft);
+  max-width: 720px;
+  line-height: 1.4;
+}
 .toolbar {
-  display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
-  margin-bottom: 20px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 28px 0 8px;
 }
 .toolbar input[type="search"] {
-  flex: 1 1 320px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--card);
-  color: var(--fg);
+  flex: 1 1 360px;
+  padding: 12px 14px;
+  border: 1px solid var(--ink);
+  background: var(--bg-elevated);
+  color: var(--ink);
+  font-family: var(--sans);
   font-size: 14px;
+  outline: none;
 }
+.toolbar input[type="search"]:focus { border-color: var(--accent); }
 .toolbar .pill {
-  font-size: 12px;
-  color: var(--muted);
-  background: var(--card);
-  border: 1px solid var(--border);
-  padding: 6px 10px;
-  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  padding: 8px 12px;
 }
-section { margin-bottom: 32px; }
-section h2 { margin: 0 0 12px; font-size: 18px; }
+section { margin: 48px 0; }
+.section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 6px;
+}
+.section-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+section h2 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  flex: 1;
+}
+.section-count {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.08em;
+}
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 12px;
+  gap: 14px;
 }
 .card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 14px 16px;
-  transition: transform 0.05s ease, border-color 0.1s ease;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  padding: 18px 18px 16px;
+  transition: border-color 0.1s ease, background 0.1s ease;
+  display: flex;
+  flex-direction: column;
 }
-.card:hover { border-color: var(--accent); }
+.card:hover { border-color: var(--accent); background: var(--bg-elevated); }
 .card a.title {
-  font-weight: 600;
-  color: var(--accent);
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.15;
+  color: var(--ink);
   text-decoration: none;
-  font-size: 15px;
+  letter-spacing: -0.005em;
   word-break: break-word;
 }
-.card a.title:hover { text-decoration: underline; }
-.meta { color: var(--muted); font-size: 12px; margin-top: 6px; }
-.meta-row { margin-top: 4px; }
+.card a.title:hover { color: var(--accent); }
+.meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.04em;
+  margin-top: 10px;
+}
+.meta-row { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 4px; }
 .tag {
   display: inline-block;
-  font-size: 11px;
-  padding: 2px 6px;
-  border-radius: 4px;
-  background: rgba(37, 99, 235, 0.08);
-  color: var(--accent);
-  margin-right: 4px;
-  margin-top: 4px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  padding: 3px 8px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+  letter-spacing: 0.02em;
 }
+.tag-agent { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
 footer {
-  margin-top: 40px;
-  color: var(--muted);
-  font-size: 12px;
+  margin: 48px 0 32px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-mute);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   text-align: center;
+}
+footer code { font-family: var(--mono); color: var(--ink-soft); }
+.empty {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--ink-mute);
+  padding: 24px 0;
 }
 """
 
@@ -262,7 +356,9 @@ search.addEventListener('input', () => {
 def _render_card(entry: ReportEntry) -> str:
     tags: list[str] = []
     if entry.agent:
-        tags.append(f"<span class='tag'>agent: {html.escape(entry.agent)}</span>")
+        tags.append(
+            f"<span class='tag tag-agent'>{html.escape(entry.agent)}</span>"
+        )
     if entry.models:
         for model in entry.models[:4]:
             tags.append(f"<span class='tag'>{html.escape(model)}</span>")
@@ -308,18 +404,26 @@ def render_index(entries: list[ReportEntry], generated_at: str) -> str:
     runs = [e for e in entries if e.kind == "run"]
     benchmarks = [e for e in entries if e.kind == "benchmark"]
 
-    def render_section(title: str, items: list[ReportEntry]) -> str:
+    def render_section(num: str, title: str, items: list[ReportEntry]) -> str:
         if not items:
             return ""
         cards = "\n".join(_render_card(item) for item in items)
         return (
-            f"<section><h2>{html.escape(title)} ({len(items)})</h2>"
-            f"<div class='grid'>{cards}</div></section>"
+            f"<section>"
+            f"<div class='section-head'>"
+            f"<span class='section-num'>Sec. {html.escape(num)}</span>"
+            f"<h2>{html.escape(title)}</h2>"
+            f"<span class='section-count'>{len(items)} report{'s' if len(items) != 1 else ''}</span>"
+            f"</div>"
+            f"<div class='grid'>{cards}</div>"
+            f"</section>"
         )
 
-    sections = render_section("Run reports", runs) + render_section(
-        "Benchmark reports", benchmarks
+    sections = render_section("01", "Run reports", runs) + render_section(
+        "02", "Benchmark reports", benchmarks
     )
+    if not sections:
+        sections = "<p class='empty'>No reports have been published yet.</p>"
 
     return f"""<!doctype html>
 <html lang=\"en\">
@@ -327,19 +431,27 @@ def render_index(entries: list[ReportEntry], generated_at: str) -> str:
   <meta charset=\"utf-8\" />
   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
   <title>Harness Agents · Reports</title>
+  <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">
+  <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>
+  <link href=\"https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap\" rel=\"stylesheet\">
   <style>{PAGE_CSS}</style>
 </head>
 <body>
-  <div class=\"container\">
-    <h1>Harness Agents · Reports</h1>
-    <p class=\"subtitle\">Static index of HTML reports generated by the harness.
-    Last built {html.escape(generated_at)}.</p>
-    <div class=\"toolbar\">
-      <input id=\"search\" type=\"search\" placeholder=\"Filter by name, model, dataset, timestamp...\" />
-      <span class=\"pill\">{len(entries)} report(s)</span>
+  <div class=\"wrap\">
+    <div class=\"masthead\">
+      <div class=\"masthead-top\">
+        <span><span class=\"dot\"></span>Harness Agents · Report Index</span>
+        <span>{html.escape(generated_at)} &nbsp;·&nbsp; {len(entries)} report{'s' if len(entries) != 1 else ''}</span>
+      </div>
+      <h1>The harness archive <em>— every run, every benchmark, in one place.</em></h1>
+      <p class=\"dek\">Browse every report generated by the harness. Each card opens the full editorial-style report for that run, with charts, leaderboards, and recommendations.</p>
+      <div class=\"toolbar\">
+        <input id=\"search\" type=\"search\" placeholder=\"Filter by name, model, dataset, timestamp…\" />
+        <span class=\"pill\">{len(entries)} total</span>
+      </div>
     </div>
     {sections}
-    <footer>Generated by <code>scripts/build_site.py</code>.</footer>
+    <footer>Generated by <code>scripts/build_site.py</code></footer>
   </div>
   <script>{PAGE_JS}</script>
 </body>
