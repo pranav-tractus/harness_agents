@@ -1,0 +1,24 @@
+## Chat transcript (source of truth)
+
+{{ source_text }}
+
+---
+
+## Current extraction JSON (to validate and correct)
+
+```json
+{{ extraction_json | jsonpretty }}
+```
+
+## Audit checklist (apply hard rules from system prompt)
+
+- [ ] For each non-empty field: is it contradicted by the chat? If not, leave it.
+- [ ] For each empty field: is there an explicit chat statement to fill it? If not, leave it empty. (Exception: vendor_name / billing_address / block-level shipping_address may be filled from reference blocks per rule 7.)
+- [ ] `quantity_unit` and `pricing_unit` match the chat for every line item (any unit system — MT, KG, lb, litre, gallon, bag, box, etc.).
+- [ ] `unit_price` basis matches the chat. Do NOT rescale prices based on arithmetic alone — only when the chat explicitly states a different basis (rule 4).
+- [ ] All date fields (`po_date`, `do_date`, `items[].shipment_date`) are unchanged from the JSON above.
+- [ ] `payment_date` is a date or an explicit payment-term phrase from the chat — not a shipping/document instruction. If unclear, leave empty.
+- [ ] String fields (`packing`, `loading`, `shipping_method`, addresses, `delivery_terms`, `description`, `ship_term`) are copied verbatim — no spacing, casing, or punctuation changes.
+- [ ] Every change is logged in `issues` with a chat quote in `suggestion`.
+
+Return the corrected contract in `extraction` (SOExtractContractList shape with top-level `data` array) plus `issues` and optional `notes`. If nothing needed changing, return the input extraction unchanged and `issues: []`.

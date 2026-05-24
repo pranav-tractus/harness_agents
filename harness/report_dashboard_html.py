@@ -6,6 +6,7 @@ import html
 import json
 from collections import defaultdict
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
 
 from agents.base import AgentRunResult
@@ -115,6 +116,99 @@ def _fs_rollup_cells(summary: dict[str, Any]) -> tuple[list[tuple[int, float | N
         f"({100.0 * lo:.2f}%–{100.0 * hi:.2f}% field match)."
     )
     return cells, note
+
+
+def _has_postprocess_metrics(summary: dict[str, Any]) -> bool:
+    totals = summary.get("totals") or {}
+    return totals.get("field_match_rate_raw_llm") is not None
+
+
+def _postprocess_comparison_html(summary: dict[str, Any]) -> tuple[str, str]:
+    """HTML section + chart script for raw vs final field match."""
+    if not _has_postprocess_metrics(summary):
+        return "", ""
+
+    totals = summary.get("totals") or {}
+    raw_rate = totals.get("field_match_rate_raw_llm")
+    final_rate = totals.get("field_match_rate_final") or totals.get("field_match_rate")
+    imp_rate = totals.get("improvement_rate")
+    regressions = int(totals.get("regression_count") or 0)
+    avg_delta = totals.get("avg_improvement_mismatches")
+    avg_raw_mm = totals.get("avg_mismatch_raw_per_expected_run")
+    avg_final_mm = totals.get("avg_mismatch_per_expected_run")
+
+    combo_points = []
+    for r in summary.get("by_combo") or []:
+        cr = r.get("field_match_rate_raw_llm")
+        cf = r.get("field_match_rate_final") or r.get("field_match_rate")
+        if cr is None and cf is None:
+            continue
+        label = str(r.get("model_key", ""))
+        if _multi_agent(summary):
+            label = f"{r.get('agent_id', '')} · {label}"
+        combo_points.append(
+            {
+                "label": label,
+                "fs": int(r.get("few_shot_count", 0)),
+                "raw_pct": round(100.0 * float(cr), 2) if cr is not None else 0.0,
+                "final_pct": round(100.0 * float(cf), 2) if cf is not None else 0.0,
+            }
+        )
+    chart_data = json.dumps(combo_points, ensure_ascii=False)
+
+    cards = (
+        f'<div class="dataset-card"><div class="name">Raw LLM field match</div>'
+        f'<div class="score">{_fmt_pct(raw_rate)}</div></div>'
+        f'<div class="dataset-card"><div class="name">After post-processing</div>'
+        f'<div class="score">{_fmt_pct(final_rate)}</div></div>'
+        f'<div class="dataset-card"><div class="name">Runs improved</div>'
+        f'<div class="score">{_fmt_pct(imp_rate)}</div>'
+        f'<div class="meta"><span>regressions: {regressions}</span></div></div>'
+    )
+    delta_note = ""
+    if avg_delta is not None:
+        delta_note = (
+            f"<p class=\"section-intro\">Avg mismatch delta (raw − final): "
+            f"<strong>{_fmt_num(avg_delta, 2)}</strong> "
+            f"(raw {_fmt_num(avg_raw_mm, 2)} → final {_fmt_num(avg_final_mm, 2)} per expected run).</p>"
+        )
+
+    html = f"""
+<section id="postprocess">
+  <div class="section-head"><span class="section-num">Sec. PP</span><h2>Post-processing impact</h2></div>
+  <p class="section-intro">Compare primary extraction (raw LLM JSON) vs final output after deterministic rules and validation LLM. Dates are never auto-corrected.</p>
+  {delta_note}
+  <div class="dataset-grid">{cards}</div>
+  <div class="chart-wrap" style="margin-top:24px;">
+    <div class="chart-title">Field match: raw vs final (by model × few-shot)</div>
+    <div class="chart-canvas-wrap" style="height:320px;"><canvas id="postprocessChart"></canvas></div>
+  </div>
+</section>
+"""
+    script = f"""
+const ppData = {chart_data};
+if (ppData.length && document.getElementById("postprocessChart")) {{
+  const labels = ppData.map((p) => p.label + " fs" + p.fs);
+  new Chart(document.getElementById("postprocessChart").getContext("2d"), {{
+    type: "bar",
+    data: {{
+      labels,
+      datasets: [
+        {{ label: "Raw LLM", data: ppData.map((p) => p.raw_pct), backgroundColor: "#7a8aa8cc" }},
+        {{ label: "Final", data: ppData.map((p) => p.final_pct), backgroundColor: "#2d6b3fcc" }},
+      ],
+    }},
+    options: {{
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {{
+        y: {{ min: 0, max: 100, ticks: {{ callback: (v) => v + "%" }} }},
+      }},
+    }},
+  }});
+}}
+"""
+    return html, script
 
 
 def _dataset_card_flags(rows: list[dict[str, Any]]) -> list[tuple[dict[str, Any], bool]]:
@@ -569,6 +663,10 @@ footer {
   h2 { font-size: 28px; }
   .chart-canvas-wrap { height: 360px; }
 }
+.badge { display:inline-block; padding:2px 7px; border-radius:10px; font-family:var(--mono); font-size:10px; margin-right:4px; border:1px solid var(--line); }
+.badge-warn { background:#fff3df; color:#7a4310; border-color:#e6c47a; }
+.badge-err  { background:#fde6e1; color:#7a160a; border-color:#e6928a; }
+.badge-info { background:#e7eef7; color:#1f3d70; border-color:#9bb4d4; }
 """
 
 
@@ -643,6 +741,81 @@ def _mismatch_details(records: list[AgentRunResult]) -> str:
         return "<p>No mismatches in this run.</p>"
     head = "<thead><tr><th>Agent</th><th>Chat</th><th>Model</th><th>FS</th><th>Mismatches</th><th>Sample</th></tr></thead>"
     return f"<div class='table-scroll'><table>{head}<tbody>{''.join(body_rows)}</tbody></table></div>"
+
+
+def _diagnostics_section(records: list[AgentRunResult]) -> str:
+    """Per-row layer-2 diagnostics: stage status, validator issues, warnings."""
+    rows: list[str] = []
+    for rec in records:
+        diag = rec.extraction_diagnostics or {}
+        if not diag:
+            continue
+        stages = diag.get("stages") or []
+        issues = diag.get("validation_issues") or []
+        warnings = diag.get("warnings") or []
+        stage_err = diag.get("stage_errors") or []
+        val_err = diag.get("validation_error")
+        chunk_trunc = diag.get("chunk_truncated")
+        # Only show rows with something noteworthy.
+        if not (issues or warnings or stage_err or val_err or chunk_trunc):
+            continue
+
+        badges: list[str] = []
+        if chunk_trunc:
+            badges.append('<span class="badge badge-warn">chunk-truncated</span>')
+        if val_err:
+            badges.append('<span class="badge badge-err">validator-failed</span>')
+        if stage_err:
+            badges.append(f'<span class="badge badge-err">stage-error ({len(stage_err)})</span>')
+        drift_codes = {w.get("code") for w in warnings if isinstance(w, dict)}
+        if "structural_drift" in drift_codes:
+            badges.append('<span class="badge badge-warn">structural-drift</span>')
+        if "date_change_masked" in drift_codes:
+            badges.append('<span class="badge badge-info">date-freeze-masked</span>')
+
+        stage_summary = " · ".join(
+            f'{s.get("name")}={s.get("status")} ({_fmt_num(s.get("elapsed_ms"), 1)}ms)'
+            for s in stages
+        )
+        issues_html = ""
+        if issues:
+            items = []
+            for it in issues[:20]:
+                if not isinstance(it, dict):
+                    continue
+                items.append(
+                    f"<li><code>{_esc(it.get('field_path',''))}</code> "
+                    f"<em>{_esc(it.get('severity',''))}</em> — "
+                    f"{_esc(it.get('issue',''))}"
+                    + (f" → <small>{_esc(it.get('suggestion',''))}</small>" if it.get('suggestion') else "")
+                    + "</li>"
+                )
+            issues_html = f"<details><summary>Validator issues ({len(issues)})</summary><ul>{''.join(items)}</ul></details>"
+        warnings_html = ""
+        if warnings:
+            wlines = []
+            for w in warnings[:20]:
+                if not isinstance(w, dict):
+                    continue
+                wlines.append(f"<li><code>{_esc(w.get('code',''))}</code> {_esc(w.get('path',''))} — {_esc(w.get('message',''))}</li>")
+            warnings_html = f"<details><summary>Warnings ({len(warnings)})</summary><ul>{''.join(wlines)}</ul></details>"
+
+        rows.append(
+            "<tr>"
+            f"<td>{_esc(Path(rec.source_path).name)}</td>"
+            f"<td>{_esc(rec.model_key)}</td>"
+            f"<td>{' '.join(badges) or '—'}</td>"
+            f"<td style='font-family:var(--mono);font-size:11px'>{_esc(stage_summary)}</td>"
+            f"<td>{issues_html}{warnings_html}</td>"
+            "</tr>"
+        )
+    if not rows:
+        return "<p>No layer-2 diagnostics to surface.</p>"
+    head = (
+        "<thead><tr><th>Chat</th><th>Model</th><th>Flags</th>"
+        "<th>Stages</th><th>Details</th></tr></thead>"
+    )
+    return f"<div class='table-scroll'><table>{head}<tbody>{''.join(rows)}</tbody></table></div>"
 
 
 def _interactive_script(multi: bool, data_json: str) -> str:
@@ -915,6 +1088,9 @@ def render_dashboard_report_html(
 
     cfg_pre = _esc(json.dumps(config, indent=2, ensure_ascii=False))
     script = _interactive_script(multi, data_json)
+    pp_html, pp_script = _postprocess_comparison_html(summary)
+    if pp_script:
+        script = script + "\n" + pp_script
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -943,6 +1119,7 @@ def render_dashboard_report_html(
 <div class="findings">
 {findings_html}
 </div>
+{pp_html}
 <section id="datasets">
   <div class="section-head"><span class="section-num">Sec. 01</span><h2>Results by dataset</h2></div>
   <p class="section-intro">{_esc(story.dataset_section_intro)}</p>
@@ -1017,6 +1194,10 @@ def render_dashboard_report_html(
 <details>
   <summary>Sample mismatches (up to 80 rows)</summary>
   <div class="details-content">{_mismatch_details(records)}</div>
+</details>
+<details>
+  <summary>Layer-2 diagnostics (validator issues, stage timings, drift)</summary>
+  <div class="details-content">{_diagnostics_section(records)}</div>
 </details>
 <footer>
   <span>{_esc(label)} · {_esc(run_id)}</span>

@@ -48,6 +48,11 @@ def test_render_dashboard_contains_chart_and_leaderboard(tmp_path: Path):
                 "run_count": 2,
                 "success_rate": 1.0,
                 "field_match_rate": 0.85,
+                "field_match_rate_raw_llm": 0.75,
+                "field_match_rate_final": 0.9,
+                "improvement_rate": 0.5,
+                "regression_count": 0,
+                "avg_improvement_mismatches": 1.0,
                 "avg_elapsed_sec": 1.2,
             },
             "by_combo": [
@@ -118,6 +123,8 @@ def test_render_dashboard_contains_chart_and_leaderboard(tmp_path: Path):
     assert "frontierChart" in html
     assert "leaderboard-body" in html
     assert "Sec. 01" in html
+    assert "postprocessChart" in html
+    assert "Post-processing impact" in html
 
 
 def test_write_report_end_to_end(tmp_path: Path):

@@ -23,6 +23,15 @@ from agents.base import AgentRunResult
 RESULTS_DIR_DEFAULT = Path(__file__).resolve().parents[1] / "results"
 
 
+def _field_match_rate_from_score_dict(score: dict[str, Any]) -> float | None:
+    if not score.get("expected_available"):
+        return None
+    compared = score.get("compared_field_count", 0)
+    if compared <= 0:
+        return None
+    return 1.0 - (score.get("mismatch_count", 0) / compared)
+
+
 def make_run_id() -> str:
     return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
@@ -38,6 +47,12 @@ def make_run_dir(results_root: Path | None = None, run_id: str | None = None) ->
 def record_to_row(rec: AgentRunResult) -> dict[str, Any]:
     """Flat dict representation suitable for jsonl + dashboards."""
     score = asdict(rec.score) if rec.score else {}
+    score_raw = asdict(rec.score_raw_llm) if rec.score_raw_llm else {}
+    mismatch_final = score.get("mismatch_count", 0)
+    mismatch_raw = score_raw.get("mismatch_count", 0)
+    improvement = None
+    if score.get("expected_available") and score_raw.get("expected_available"):
+        improvement = mismatch_raw - mismatch_final
     return {
         "run_started_at_utc": rec.started_at_utc,
         "agent_id": rec.agent_id,
@@ -51,17 +66,26 @@ def record_to_row(rec: AgentRunResult) -> dict[str, Any]:
         "error": rec.error,
         "model_key": rec.model_key,
         "model_provider": rec.model_provider,
+        "validation_model_key": rec.validation_model_key,
         "few_shot_count": rec.few_shot_count,
         "few_shot_paths": rec.few_shot_paths,
         "pipeline_step": rec.pipeline_step,
         "flow_stage_ms": rec.flow_stage_ms,
+        "raw_llm_output_json": rec.raw_llm_output_json,
         "output_json": rec.output_json,
+        "extraction_diagnostics": rec.extraction_diagnostics,
         "score": score,
+        "score_raw_llm": score_raw,
         "expected_available": score.get("expected_available", False),
-        "mismatch_count": score.get("mismatch_count", 0),
+        "mismatch_count": mismatch_final,
+        "mismatch_count_raw": mismatch_raw,
+        "improvement_mismatches": improvement,
         "compared_field_count": score.get("compared_field_count", 0),
+        "field_match_rate_raw_llm": _field_match_rate_from_score_dict(score_raw),
+        "field_match_rate_final": _field_match_rate_from_score_dict(score),
         "metrics": score.get("metrics", {}),
         "mismatches": score.get("mismatches", []),
+        "mismatches_raw": score_raw.get("mismatches", []),
     }
 
 
@@ -95,6 +119,15 @@ def aggregate(records: list[AgentRunResult]) -> dict[str, Any]:
         with_expected = [r for r in rows_in if r["expected_available"]]
         total_mismatch = sum(r["mismatch_count"] for r in with_expected)
         total_compared = sum(r["compared_field_count"] for r in with_expected)
+        total_mismatch_raw = sum(r.get("mismatch_count_raw", r["mismatch_count"]) for r in with_expected)
+        improved = [
+            r for r in with_expected
+            if r.get("improvement_mismatches") is not None and r["improvement_mismatches"] > 0
+        ]
+        regressed = [
+            r for r in with_expected
+            if r.get("improvement_mismatches") is not None and r["improvement_mismatches"] < 0
+        ]
         return {
             "run_count": len(rows_in),
             "success_rate": sum(1 for r in rows_in if r["success"]) / len(rows_in) if rows_in else 0.0,
@@ -103,10 +136,30 @@ def aggregate(records: list[AgentRunResult]) -> dict[str, Any]:
             "avg_mismatch_per_expected_run": (
                 total_mismatch / len(with_expected) if with_expected else None
             ),
+            "avg_mismatch_raw_per_expected_run": (
+                total_mismatch_raw / len(with_expected) if with_expected else None
+            ),
             "field_match_rate": (
                 1 - (total_mismatch / max(total_compared, 1))
                 if with_expected else None
             ),
+            "field_match_rate_raw_llm": (
+                1 - (total_mismatch_raw / max(total_compared, 1))
+                if with_expected else None
+            ),
+            "field_match_rate_final": (
+                1 - (total_mismatch / max(total_compared, 1))
+                if with_expected else None
+            ),
+            "improvement_rate": (
+                len(improved) / len(with_expected) if with_expected else None
+            ),
+            "regression_count": len(regressed),
+            "avg_improvement_mismatches": _safe_avg(
+                [float(r["improvement_mismatches"]) for r in with_expected if r.get("improvement_mismatches") is not None]
+            )
+            if with_expected
+            else None,
         }
 
     combo_buckets = _bucket(lambda r: (r["agent_id"], r["model_key"], r["few_shot_count"]))

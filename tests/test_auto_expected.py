@@ -17,6 +17,7 @@ from tempfile import TemporaryDirectory
 from harness.auto_expected import (
     EXPECTED_DICT_NAME,
     _apply_policy,
+    _outputs_from_jsonl,
     format_python_literal,
     load_expected_dict,
     rewrite_expected_file,
@@ -184,6 +185,49 @@ class ApplyPolicyTests(unittest.TestCase):
     def test_sort_keys_orders_output(self) -> None:
         merged, _ = _apply_policy({"b.json": 2}, {"a.json": 1}, _opts(sort_keys=True))
         self.assertEqual(list(merged.keys()), ["a.json", "b.json"])
+
+
+class OutputsFromJsonlExpectedSourceTests(unittest.TestCase):
+    """``--expected-source raw|final`` selects which payload becomes ground truth."""
+
+    def _write_jsonl(self, tmp: Path) -> Path:
+        import json as _json
+        path = tmp / "run.jsonl"
+        rows = [
+            {
+                "agent_id": "so_extraction",
+                "success": True,
+                "source_filename": "a.json",
+                "elapsed_sec": 1.0,
+                "score": {"mismatch_count": 0},
+                "output_json": {"data": [{"vendor_name": "FINAL"}]},
+                "raw_llm_output_json": {"data": [{"vendor_name": "RAW"}]},
+            },
+        ]
+        path.write_text("\n".join(_json.dumps(r) for r in rows), encoding="utf-8")
+        return path
+
+    def test_jsonl_selects_final_by_default(self):
+        with TemporaryDirectory() as td:
+            path = self._write_jsonl(Path(td))
+
+            class Stub:
+                id = "so_extraction"
+                repo_root = Path(td)
+
+            out = _outputs_from_jsonl(Stub(), path, None, expected_source="final")
+            self.assertEqual(out["a.json"]["data"][0]["vendor_name"], "FINAL")
+
+    def test_jsonl_selects_raw_when_requested(self):
+        with TemporaryDirectory() as td:
+            path = self._write_jsonl(Path(td))
+
+            class Stub:
+                id = "so_extraction"
+                repo_root = Path(td)
+
+            out = _outputs_from_jsonl(Stub(), path, None, expected_source="raw")
+            self.assertEqual(out["a.json"]["data"][0]["vendor_name"], "RAW")
 
 
 if __name__ == "__main__":

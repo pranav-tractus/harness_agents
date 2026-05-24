@@ -15,7 +15,7 @@ Examples::
 
     # Add expected entries for every chat in a dataset that doesn't have one.
     python -m harness.auto_expected --agent so_extraction \\
-        --dataset acme_foods --only-missing
+        --dataset acme_foods --only-missing --max-workers 8
 
     # Refresh a single chat (overwriting any existing entry), 3 runs deep.
     python -m harness.auto_expected --agent so_extraction \\
@@ -39,6 +39,7 @@ import logging
 import shutil
 import sys
 from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -88,6 +89,12 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     run.add_argument("--few-shot", nargs="*", default=[], help="Up to 10 few-shot chat paths.")
     run.add_argument("--db-few-shot-limit", type=int, default=0)
+    run.add_argument(
+        "--max-workers",
+        type=int,
+        default=8,
+        help="Concurrent sources for fresh LLM runs (ignored with --from-jsonl).",
+    )
 
     policy = p.add_argument_group("write policy")
     policy.add_argument(
@@ -104,6 +111,17 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--sort-keys",
         action="store_true",
         help="Sort EXPECTED_BY_CHAT alphabetically by filename when writing.",
+    )
+    policy.add_argument(
+        "--expected-source",
+        choices=("final", "raw"),
+        default="final",
+        help=(
+            "Which agent output becomes the new ground truth. "
+            "'final' = post-processed JSON (measures the whole pipeline downstream); "
+            "'raw' = primary LLM output before deterministic / validation refinement "
+            "(measures the extraction model in isolation)."
+        ),
     )
     policy.add_argument("--dry-run", action="store_true", help="Print the plan without writing the file.")
     policy.add_argument(
@@ -164,6 +182,7 @@ def _best_run(
     fs_paths: list[Path],
     runs: int,
     db_lim: int,
+    expected_source: str = "final",
 ) -> dict[str, Any] | None:
     payload = agent.load_input(source_path)
     best: dict[str, Any] | None = None
@@ -175,24 +194,50 @@ def _best_run(
             extra={"db_few_shot_limit": db_lim},
         )
         result = agent.run_one(payload, opts)
-        if not result.success or result.output_json is None:
+        if not result.success:
             logger.warning("Run %d failed for %s: %s", run_idx, source_path.name, result.error)
+            continue
+        chosen = result.raw_llm_output_json if expected_source == "raw" else result.output_json
+        if chosen is None:
+            logger.warning(
+                "Run %d for %s produced no %s output; skipping",
+                run_idx, source_path.name, expected_source,
+            )
             continue
         candidate = (result.score.mismatch_count, result.elapsed_sec)
         if candidate < best_score:
             best_score = candidate
             best = {
-                "output": result.output_json,
+                "output": chosen,
                 "mismatch_count": result.score.mismatch_count,
                 "elapsed_sec": result.elapsed_sec,
             }
     return best
 
 
+def _process_one_source(
+    agent: BaseAgent,
+    source: Path,
+    model_key: str,
+    fs_paths: list[Path],
+    runs: int,
+    db_lim: int,
+    expected_source: str = "final",
+) -> tuple[str, Any] | None:
+    """Run best-of-N for one source; return ``(filename, expected_value)`` or None."""
+    outcome = _best_run(agent, source, model_key, fs_paths, runs, db_lim, expected_source)
+    if outcome is None:
+        return None
+    raw = outcome["output"]
+    normalized = normalize_contract_shape(raw) or raw
+    return source.name, agent.expected_from_output(normalized)
+
+
 def _outputs_from_jsonl(
     agent: BaseAgent,
     jsonl_path: Path,
     sources_filter: set[str] | None,
+    expected_source: str = "final",
 ) -> dict[str, Any]:
     """Pick the best output per source from a benchmark run.jsonl artifact.
 
@@ -213,7 +258,11 @@ def _outputs_from_jsonl(
                 continue
             if row.get("agent_id") != agent.id:
                 continue
-            if not row.get("success") or row.get("output_json") is None:
+            if not row.get("success"):
+                continue
+            payload_key = "raw_llm_output_json" if expected_source == "raw" else "output_json"
+            payload = row.get(payload_key)
+            if payload is None:
                 continue
             filename = row.get("source_filename") or Path(row.get("source_path", "")).name
             if not filename:
@@ -223,7 +272,7 @@ def _outputs_from_jsonl(
             score = row.get("score") or {}
             key = (int(score.get("mismatch_count", 0)), float(row.get("elapsed_sec", 0.0)))
             if filename not in per_source or key < per_source[filename][0]:
-                per_source[filename] = (key, row["output_json"])
+                per_source[filename] = (key, payload)
     return {fn: payload for fn, (_, payload) in per_source.items()}
 
 
@@ -380,7 +429,7 @@ def _collect_new_entries(
         if not jsonl_path.is_absolute():
             jsonl_path = (agent.repo_root / jsonl_path).resolve()
         allowed = {p.name for p in sources} if sources else None
-        from_jsonl = _outputs_from_jsonl(agent, jsonl_path, allowed)
+        from_jsonl = _outputs_from_jsonl(agent, jsonl_path, allowed, expected_source=args.expected_source)
         for filename, payload in from_jsonl.items():
             normalized = normalize_contract_shape(payload) or payload
             new_entries[filename] = agent.expected_from_output(normalized)
@@ -391,21 +440,59 @@ def _collect_new_entries(
     if not sources:
         raise SystemExit("No sources matched. Use --source, --dataset, --all, or --from-jsonl.")
 
-    for source in sources:
-        outcome = _best_run(
-            agent=agent,
-            source_path=source,
-            model_key=args.model,
-            fs_paths=fs_paths,
-            runs=args.runs,
-            db_lim=args.db_few_shot_limit,
-        )
-        if outcome is None:
-            print(f"  ! all {args.runs} run(s) failed for {source.name}; skipping")
-            continue
-        raw = outcome["output"]
-        normalized = normalize_contract_shape(raw) or raw
-        new_entries[source.name] = agent.expected_from_output(normalized)
+    max_workers = max(1, args.max_workers)
+    total = len(sources)
+    completed = 0
+
+    def _record_failure(name: str) -> None:
+        print(f"  ! all {args.runs} run(s) failed for {name}; skipping")
+
+    if max_workers == 1:
+        for source in sources:
+            result = _process_one_source(
+                agent, source, args.model, fs_paths, args.runs, args.db_few_shot_limit,
+                args.expected_source,
+            )
+            completed += 1
+            if result is None:
+                _record_failure(source.name)
+                continue
+            filename, value = result
+            new_entries[filename] = value
+            if not args.quiet:
+                print(f"[{completed}/{total}] {filename}", flush=True)
+        return new_entries
+
+    with ThreadPoolExecutor(max_workers=max_workers) as ex:
+        futures = {
+            ex.submit(
+                _process_one_source,
+                agent,
+                source,
+                args.model,
+                fs_paths,
+                args.runs,
+                args.db_few_shot_limit,
+                args.expected_source,
+            ): source
+            for source in sources
+        }
+        for fut in as_completed(futures):
+            source = futures[fut]
+            completed += 1
+            try:
+                result = fut.result()
+            except Exception as exc:
+                logger.exception("Failed processing %s", source.name)
+                print(f"  ! error for {source.name}: {exc}")
+                continue
+            if result is None:
+                _record_failure(source.name)
+                continue
+            filename, value = result
+            new_entries[filename] = value
+            if not args.quiet:
+                print(f"[{completed}/{total}] {filename}", flush=True)
     return new_entries
 
 
@@ -463,6 +550,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"Mode            : from-jsonl ({scope})")
         else:
             print(f"Mode            : fresh runs (best-of-{args.runs})")
+            print(f"Max workers     : {max(1, args.max_workers)}")
             print(f"Sources matched : {len(sources)}")
         print()
 

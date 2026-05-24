@@ -147,3 +147,33 @@ def build_update_prompt(
         attempt, target_schema.__name__, len(prompt),
     )
     return prompt
+
+
+def build_validation_system_prompt(
+    organization_info: dict | None = None,
+    customer_info: dict | None = None,
+) -> str:
+    """System prompt for the validation / post-processing LLM layer."""
+    try:
+        template = _env.get_template("validation_system.j2")
+    except TemplateNotFound:
+        raise FileNotFoundError(f"validation_system.j2 not found in {_TEMPLATES_DIR}")
+    return template.render(
+        organization_info=organization_info if organization_info is not None else utils_team_info,
+        customer_info=customer_info if customer_info is not None else utils_customer_info,
+    )
+
+
+def build_validation_user_prompt(
+    source_text: str,
+    extraction_json: dict,
+) -> str:
+    """User prompt for validation LLM: chat + current extraction JSON."""
+    try:
+        template = _env.get_template("validation_user.j2")
+    except TemplateNotFound:
+        raise FileNotFoundError(f"validation_user.j2 not found in {_TEMPLATES_DIR}")
+    return template.render(
+        source_text=source_text.strip(),
+        extraction_json=extraction_json,
+    )

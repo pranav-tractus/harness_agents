@@ -65,6 +65,12 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--chats-glob", type=str, default="", help="Glob (relative to repo root) selecting bulk source paths.")
     p.add_argument("--bulk", action="store_true", help="Run all chats discovered via datasets/chats-glob.")
     p.add_argument("--models", nargs="*", default=[], help="Model keys; default is [sonnet-4-6].")
+    p.add_argument(
+        "--validation-model",
+        type=str,
+        default="",
+        help="Model key for post-processing validation LLM (defaults to each extraction model).",
+    )
     p.add_argument("--runs-per-chat", type=int, default=1)
     p.add_argument("--max-workers", type=int, default=8)
     p.add_argument("--few-shot", nargs="*", default=[], help="Explicit few-shot chat paths (capped at 10). Builds a single variant applied to every chat.")
@@ -118,6 +124,16 @@ def _parse_args() -> argparse.Namespace:
         help="Model catalog key for report.html editorial layer (default: sonnet-4-5 on Bedrock).",
     )
     return p.parse_args()
+
+
+def _run_extra(args: argparse.Namespace, extraction_model_key: str) -> dict[str, Any]:
+    validation_key = (args.validation_model or "").strip() or extraction_model_key
+    return {
+        "db_few_shot_limit": args.db_few_shot_limit,
+        "validation_model_key": validation_key,
+        "enable_validation_llm": True,
+        "enable_deterministic_postprocess": True,
+    }
 
 
 def _resolve_paths(values: list[str], root: Path) -> list[Path]:
@@ -319,7 +335,7 @@ def _run_bulk(
                             model_key=model_key,
                             few_shot_paths=list(effective_fs),
                             dataset_id=dataset_id,
-                            extra={"db_few_shot_limit": args.db_few_shot_limit},
+                            extra=_run_extra(args, model_key),
                         )
                         futures.append(
                             ex.submit(_run_case, agent, payload, opts, run_idx)
@@ -336,7 +352,8 @@ def _run_bulk(
                     f"[{completed}/{total} | {pct:5.1f}%] {rec.agent_id} | "
                     f"{rec.model_key} | fs={rec.few_shot_count} | {Path(rec.source_path).name} | "
                     f"status={rec.status} | elapsed={rec.elapsed_sec:.2f}s | "
-                    f"mismatches={rec.score.mismatch_count}",
+                    f"mismatches_final={rec.score.mismatch_count} "
+                    f"raw={rec.score_raw_llm.mismatch_count if rec.score_raw_llm else '—'}",
                     flush=True,
                 )
             if completed % CHECKPOINT_EVERY_N_RUNS == 0 or completed == total:
@@ -408,7 +425,7 @@ def _run_pipeline(
                         model_key=model_key,
                         few_shot_paths=list(effective_fs) if step_idx == 0 else [],
                         dataset_id=dataset_id if step_idx == 0 else None,
-                        extra={"db_few_shot_limit": args.db_few_shot_limit if step_idx == 0 else 0},
+                        extra=_run_extra(args, model_key) if step_idx == 0 else {},
                     )
                     opts_per_step.append(step_opts)
                 step_results = pipeline.run(source_path, opts_per_step)
@@ -465,6 +482,7 @@ def main() -> None:
         "few_shot_pool_argv": args.few_shot_pool,
         "few_shot_seed": args.few_shot_seed,
         "db_few_shot_limit": args.db_few_shot_limit,
+        "validation_model": args.validation_model or None,
         "skip_without_expected": bool(args.skip_without_expected),
         "results_dir": str(run_dir),
         "config_file": args.config or "configs/agents.json",

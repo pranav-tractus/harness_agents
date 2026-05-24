@@ -56,6 +56,9 @@ class ExtractionResult:
     model_key: str = "unknown"
     model_provider: str = "unknown"
     created_at: str = ""
+    chunk_count: int = 1
+    chunk_truncated: bool = False
+    input_chars: int = 0
 
     def __post_init__(self) -> None:
         if not self.created_at:

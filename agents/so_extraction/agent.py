@@ -13,6 +13,7 @@ from agents.base import AgentRunResult, BaseAgent, Dataset, RunOptions, ScoreRes
 from core.chat_loader import build_extraction_few_shot_from_paths, load_chat_file
 from core.extractor import ExtractionEngine
 from core.models import SOExtractContractList
+from core.postprocess_pipeline import run_postprocess_pipeline
 from harness.scoring import json_diff
 
 logger = logging.getLogger(__name__)
@@ -27,6 +28,17 @@ class ChatInput:
     meta: dict[str, Any]
 
 
+def _postprocess_options(extra: dict[str, Any], extraction_model_key: str) -> dict[str, Any]:
+    enable_det = extra.get("enable_deterministic_postprocess", True)
+    enable_val = extra.get("enable_validation_llm", True)
+    validation_key = extra.get("validation_model_key") or extraction_model_key
+    return {
+        "enable_deterministic": bool(enable_det),
+        "enable_validation_llm": bool(enable_val),
+        "validation_model_key": validation_key if enable_val else None,
+    }
+
+
 class SOExtractionAgent(BaseAgent[ChatInput, dict]):
     """Wraps :class:`core.extractor.ExtractionEngine` as a pluggable agent.
 
@@ -34,6 +46,10 @@ class SOExtractionAgent(BaseAgent[ChatInput, dict]):
     agent's few-shot pool, capped to 0..10 by the runner). Per-dataset
     ``organization_info`` / ``customer_info`` / ``db_path`` override the
     engine's defaults so customer-scoped DBs and prompt context still work.
+
+    After primary extraction, deterministic rules and an optional validation LLM
+    refine the JSON. Dates are never auto-updated; other fields (totals, units)
+    may be corrected. Dual scores compare raw vs final against expected.
     """
 
     input_type = ChatInput
@@ -75,24 +91,72 @@ class SOExtractionAgent(BaseAgent[ChatInput, dict]):
             extra_few_shot_examples=extra_fs,
             db_few_shot_limit=db_few_shot_limit,
         )
-        t_done = time.perf_counter()
+        t_extract = time.perf_counter()
 
-        output_dict: dict[str, Any] | None = None
+        raw_dict: dict[str, Any] | None = None
+        final_dict: dict[str, Any] | None = None
+        diagnostics: dict[str, Any] | None = None
+
         if result.status == "success" and result.output_json:
             try:
-                output_dict = json.loads(result.output_json)
+                raw_dict = json.loads(result.output_json)
             except json.JSONDecodeError:
-                output_dict = None
+                raw_dict = None
 
-        score = self.score(self.expected_for(input_payload.source_path), output_dict)
-        if not result.status == "success" and score.expected_available:
-            score = ScoreResult(
-                expected_available=True,
-                compared_field_count=score.compared_field_count,
-                mismatch_count=score.mismatch_count + 1,
-                mismatches=score.mismatches,
-                metrics=score.metrics,
+        pp_opts = _postprocess_options(options.extra, options.model_key)
+        validation_model_key = pp_opts["validation_model_key"]
+
+        if raw_dict is not None:
+            t_pp = time.perf_counter()
+            final_dict, diagnostics = run_postprocess_pipeline(
+                raw_dict,
+                source_text=input_payload.text,
+                reference_iso_date=engine.iso_date,
+                extraction_model_key=options.model_key,
+                validation_model_key=validation_model_key,
+                enable_deterministic=pp_opts["enable_deterministic"],
+                enable_validation_llm=pp_opts["enable_validation_llm"],
+                organization_info=organization_info,
+                customer_info=customer_info,
             )
+            if diagnostics is not None:
+                diagnostics["llm_extract_ms"] = round((t_extract - t_fs) * 1000, 3)
+                diagnostics["chunk_count"] = result.chunk_count
+                diagnostics["chunk_truncated"] = result.chunk_truncated
+                diagnostics["input_chars"] = result.input_chars
+                if result.chunk_truncated:
+                    diagnostics.setdefault("warnings", []).append({
+                        "code": "chunk_truncated",
+                        "path": "<input>",
+                        "message": (
+                            f"Input was {result.input_chars} chars, split into {result.chunk_count} chunks; "
+                            f"only chunk[0] was sent to the extraction LLM."
+                        ),
+                    })
+        t_done = time.perf_counter()
+
+        expected = self.expected_for(input_payload.source_path)
+        score_raw = self.score(expected, raw_dict)
+        score_final = self.score(expected, final_dict)
+
+        if not result.status == "success" and score_final.expected_available:
+            score_final = ScoreResult(
+                expected_available=True,
+                compared_field_count=score_final.compared_field_count,
+                mismatch_count=score_final.mismatch_count + 1,
+                mismatches=score_final.mismatches,
+                metrics=score_final.metrics,
+            )
+
+        flow_ms = {
+            "engine_init_ms": round((t_engine - t0) * 1000, 3),
+            "fewshot_plan_ms": round((t_fs - t_engine) * 1000, 3),
+            "llm_extract_ms": round((t_extract - t_fs) * 1000, 3),
+            "postprocess_total_ms": (diagnostics or {}).get("postprocess_total_ms", round((t_done - t_extract) * 1000, 3)),
+            "deterministic_ms": (diagnostics or {}).get("deterministic_ms", 0.0),
+            "llm_validate_ms": (diagnostics or {}).get("llm_validate_ms", 0.0),
+            "total_case_ms": round((t_done - t0) * 1000, 3),
+        }
 
         return AgentRunResult[dict](
             agent_id=self.id,
@@ -102,18 +166,17 @@ class SOExtractionAgent(BaseAgent[ChatInput, dict]):
             status=result.status,
             attempts=result.attempts,
             elapsed_sec=round(t_done - t0, 4),
-            output=output_dict,
-            output_json=output_dict,
+            output=final_dict,
+            output_json=final_dict,
+            raw_llm_output_json=raw_dict,
             error=result.error,
             model_key=result.model_key,
             model_provider=result.model_provider,
-            score=score,
-            flow_stage_ms={
-                "engine_init_ms": round((t_engine - t0) * 1000, 3),
-                "fewshot_plan_ms": round((t_fs - t_engine) * 1000, 3),
-                "model_run_ms": round((t_done - t_fs) * 1000, 3),
-                "total_case_ms": round((t_done - t0) * 1000, 3),
-            },
+            validation_model_key=validation_model_key,
+            score=score_final,
+            score_raw_llm=score_raw,
+            extraction_diagnostics=diagnostics,
+            flow_stage_ms=flow_ms,
             few_shot_paths=[str(p) for p in fs_paths],
             few_shot_count=len(fs_paths),
         )

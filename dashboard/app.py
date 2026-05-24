@@ -127,11 +127,19 @@ with st.sidebar:
     model_options = list(MODEL_CATALOG.keys())
     default_idx = model_options.index(DEFAULT_MODEL_KEY) if DEFAULT_MODEL_KEY in model_options else 0
     selected_model = st.selectbox(
-        "Model",
+        "Extraction model",
         model_options,
         index=default_idx,
         format_func=lambda k: MODEL_CATALOG[k]["display_name"],
         key="sidebar_model",
+    )
+    selected_validation_model = st.selectbox(
+        "Validation model",
+        model_options,
+        index=default_idx,
+        format_func=lambda k: MODEL_CATALOG[k]["display_name"],
+        key="sidebar_validation_model",
+        help="Second LLM layer for unit/price/total verification (chat is source of truth).",
     )
     agent_ids = cfg.agent_ids()
     selected_agent_id = st.selectbox("Agent", agent_ids, key="sidebar_agent")
@@ -222,18 +230,99 @@ with tab_single:
                     opts = RunOptions(
                         model_key=selected_model,
                         few_shot_paths=fs_paths,
-                        extra={"db_few_shot_limit": db_lim},
+                        extra={
+                            "db_few_shot_limit": db_lim,
+                            "validation_model_key": selected_validation_model,
+                        },
                     )
                     result = agent.run_one(payload, opts)
                 st.write(
                     f"**Status:** `{result.status}` | attempts={result.attempts} | "
-                    f"elapsed={result.elapsed_sec:.2f}s | mismatches={result.score.mismatch_count}"
+                    f"elapsed={result.elapsed_sec:.2f}s"
                 )
-                if result.output_json is not None:
+                if result.flow_stage_ms:
+                    st.caption(
+                        "Timings (ms): "
+                        + ", ".join(
+                            f"{k}={v}"
+                            for k, v in sorted(result.flow_stage_ms.items())
+                            if k != "run_index"
+                        )
+                    )
+                if result.raw_llm_output_json is not None:
+                    raw_mm = result.score_raw_llm.mismatch_count if result.score_raw_llm else "—"
+                    final_mm = result.score.mismatch_count
+                    st.write(
+                        f"**Mismatches:** raw LLM={raw_mm} → final={final_mm} "
+                        f"(Δ={raw_mm - final_mm if isinstance(raw_mm, int) else '—'})"
+                    )
+                    tab_raw, tab_final, tab_diag = st.tabs(
+                        ["Raw LLM output", "After post-processing", "Diagnostics"]
+                    )
+                    with tab_raw:
+                        st.json(result.raw_llm_output_json)
+                        if result.score_raw_llm.mismatches:
+                            with st.expander("Raw mismatches vs expected"):
+                                st.json(result.score_raw_llm.mismatches)
+                    with tab_final:
+                        if result.output_json is not None:
+                            st.json(result.output_json)
+                        if result.score.mismatches:
+                            with st.expander("Final mismatches vs expected"):
+                                st.json(result.score.mismatches)
+                    with tab_diag:
+                        diag = result.extraction_diagnostics or {}
+                        if not diag:
+                            st.info("No diagnostics recorded.")
+                        else:
+                            badges = []
+                            if diag.get("chunk_truncated"):
+                                badges.append(":orange-badge[chunk-truncated]")
+                            if diag.get("validation_error"):
+                                badges.append(":red-badge[validator-failed]")
+                            if diag.get("stage_errors"):
+                                badges.append(f":red-badge[stage-errors ({len(diag['stage_errors'])})]")
+                            drift_codes = {
+                                w.get("code") for w in diag.get("warnings", []) if isinstance(w, dict)
+                            }
+                            if "structural_drift" in drift_codes:
+                                badges.append(":orange-badge[structural-drift]")
+                            if "date_change_masked" in drift_codes:
+                                badges.append(":blue-badge[date-freeze-masked]")
+                            if badges:
+                                st.markdown(" ".join(badges))
+                            stages = diag.get("stages") or []
+                            if stages:
+                                st.markdown("**Stage timings**")
+                                st.table([
+                                    {
+                                        "stage": s.get("name"),
+                                        "status": s.get("status"),
+                                        "elapsed_ms": s.get("elapsed_ms"),
+                                        "changes": len(s.get("changes") or []),
+                                        "warnings": len(s.get("warnings") or []),
+                                    }
+                                    for s in stages
+                                ])
+                            issues = diag.get("validation_issues") or []
+                            if issues:
+                                with st.expander(f"Validator issues ({len(issues)})", expanded=True):
+                                    st.json(issues)
+                            warns = diag.get("warnings") or []
+                            if warns:
+                                with st.expander(f"Warnings ({len(warns)})"):
+                                    st.json(warns)
+                            notes = diag.get("validation_notes")
+                            if notes:
+                                st.markdown("**Validator notes**")
+                                st.write(notes)
+                            with st.expander("Raw diagnostics JSON"):
+                                st.json(diag)
+                elif result.output_json is not None:
                     st.json(result.output_json)
-                if result.score.mismatches:
-                    with st.expander("Mismatches vs expected"):
-                        st.json(result.score.mismatches)
+                    if result.score.mismatches:
+                        with st.expander("Mismatches vs expected"):
+                            st.json(result.score.mismatches)
                 if result.error:
                     st.error(result.error)
                 st.session_state["draft_summary"] = result.output_json
@@ -767,7 +856,10 @@ with tab_seed:
                     opts = RunOptions(
                         model_key=selected_model,
                         few_shot_paths=fs_paths,
-                        extra={"db_few_shot_limit": db_lim},
+                        extra={
+                            "db_few_shot_limit": db_lim,
+                            "validation_model_key": selected_validation_model,
+                        },
                     )
                     result = agent.run_one(payload, opts)
                 if result.output_json is None:

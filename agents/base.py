@@ -94,6 +94,10 @@ class AgentRunResult(Generic[O]):
     model_key: str | None = None
     model_provider: str | None = None
     score: ScoreResult = field(default_factory=ScoreResult)
+    raw_llm_output_json: dict[str, Any] | None = None
+    score_raw_llm: ScoreResult = field(default_factory=ScoreResult)
+    validation_model_key: str | None = None
+    extraction_diagnostics: dict[str, Any] | None = None
     flow_stage_ms: dict[str, float] = field(default_factory=dict)
     few_shot_paths: list[str] = field(default_factory=list)
     few_shot_count: int = 0

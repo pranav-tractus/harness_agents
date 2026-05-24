@@ -1,10 +1,12 @@
 ## Extraction rules
-1. **Agreement principle:** Extract only data where both parties have reached explicit consensus. Proposals, counter-offers, or silence are not agreement. Look for confirmation signals (e.g. "confirmed", "ok", "let's go", "agreed", "deal").
-2. **Sequence:** Each message is prefixed with `[seq=N]` where seq=0 is the oldest message and higher seq means more recent. Use `seq` to determine ordering — when a value (e.g. price, quantity) is revised in a higher-seq message, the higher-seq agreed value wins.
-3. **Dates:** Take **{{ iso_date }}** (ISO date) as today — use it when inferring omitted years (same year unless the conversation says otherwise); for partial months (e.g. "November 2026"), use the last day of that month (e.g. "2026-11-30"). Normalize all extracted dates to ISO 8601 (YYYY-MM-DD).
-4. **Packing and loading defaults:** If missing from the conversation, apply: "Fat Powder" → loading `23MT/40'FCL`; "Feeds" → loading `12MT/20'FCL`. "Packing" refers to physical packaging only (e.g. "25kg bags").
-5. **Shipping terms:** Format as `[INCOTERM] [PORT/LOCATION]`. Valid incoterms: EXW, FOB, CIF, DDP. Example: "CIF Busan".
-6. **Strictness:** Do not add fields or values not stated or agreed in the chat. Use `null` or omit when unknown.
-7. **Pricing:** Use the final agreed price and total only — not initial quotes or counter-offers that were not accepted.
-8. **Field normalization:** Parse numeric values as numbers (int or float), never strings. Preserve units (e.g. MT, kg, USD/MT) exactly as stated.
-9. **Total calculation:** Calculate the total for each product item based on the quantity and unit price. The total should be the multiplicative product of the quantity and unit price. If the unit price is not found, the total should be empty. If the quantity is not found, the total should be empty.
+
+1. **Agreement principle.** Extract only data where both parties have reached explicit consensus. Proposals, counter-offers, or silence are not agreement. Look for confirmation signals ("confirmed", "ok", "let's go", "agreed", "deal", explicit acceptance of a counter-offer).
+2. **Sequence.** Each message is prefixed with `[seq=N]` where seq=0 is the oldest. When a value (e.g. price, quantity) is revised by a higher-seq message that both sides accept, the higher-seq value wins. If a counter-offer is never accepted, it is not extractable.
+3. **Dates.** Take **{{ iso_date }}** as today. Normalize all extracted dates to ISO 8601 (YYYY-MM-DD). For omitted years use the same year unless the chat says otherwise. For partial months ("November 2026") use the last day of that month ("2026-11-30"). If a date cannot be resolved to a concrete day, leave the field empty — do not invent one.
+4. **Packing and loading defaults.** Apply ONLY when the field is missing from the chat: "Fat Powder" → loading `23MT/40'FCL`; "Feeds" → loading `12MT/20'FCL`. `packing` is physical packaging only (e.g. "25kg bags") — never a logistics phrase. If the chat does not state packing, leave it empty.
+5. **Shipping terms.** Format as `[INCOTERM] [PORT/LOCATION]` (incoterms: EXW, FOB, CIF, DDP). Example: `CIF Busan`. Only emit when explicitly stated.
+6. **Pricing.** Use the final agreed price only — never initial quotes or unaccepted counter-offers. Preserve the basis exactly: if the chat says "USD 3.5 per KG", write `unit_price=3.5, pricing_unit="USD/KG"`. Never rescale (MT↔KG, gallon↔litre, etc.).
+7. **`payment_date`.** A calendar date or an explicit payment-term phrase ("Net 30 from delivery", "advance 50%"). Never copy shipping or document-handling notes ("Against scan copies of documents") into this field. If unclear, leave empty.
+8. **String fields are verbatim.** `packing`, `loading`, `shipping_method`, `delivery_terms`, `billing_address`, `shipping_address`, `description`, `vendor_name`, `ship_term` are copied with the chat's exact spacing, casing, punctuation, and word order. No paraphrasing, no case-normalization.
+9. **Field normalization (numeric only).** Parse numeric values as numbers (int or float), never strings. Preserve units exactly as written.
+10. **Strictness.** Do not add fields or values not stated or agreed in the chat. Empty (`null` / "") is a valid output.

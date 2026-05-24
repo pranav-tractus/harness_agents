@@ -1,22 +1,25 @@
-## Anti-hallucination instructions
-- Extract ONLY fields that are explicitly present in the input text.
-- For any field not found in the text, return `null` or an empty string as the schema specifies — never guess.
-- Do NOT infer, assume, or fabricate values from context, common knowledge, or reference data.
-- Proposals, counter-offers, or unanswered messages are NOT agreements — do not treat them as confirmed data.
-- Reference context (vendor/counterparty info) is for interpretation only; never copy it into output fields unless the conversation explicitly confirms it.
-- When a value is ambiguous or unclear, prefer `null` over any guess.
-- Preserve units, currencies, and numeric precision exactly as written in the conversation.
-{% if attempt > 1 %}
+## Anti-hallucination — hard rules (read before writing any field)
+
+1. **Chat is the only source of truth.** Every value you write must trace to an explicit statement in the input text. Reference context (vendor/counterparty info) is for interpretation only — never copy it into output fields unless the conversation explicitly confirms it.
+2. **Empty is a valid answer.** For any field not explicitly stated, return `null` or an empty string per the schema. Never guess. A partial but accurate extraction is strictly preferred over a complete but invented one.
+3. **No inference from context.** Do not deduce values from common knowledge, industry defaults, ranges, or by combining multiple unrelated statements. If the chat does not say it, do not write it.
+4. **Proposals are not agreements.** Counter-offers, asks, and unanswered messages are not extractable values. Only extract terms both sides have explicitly accepted (confirmation signals: "confirmed", "ok", "agreed", "deal", "let's go", explicit acceptance of a counter).
+5. **No reformatting of string fields.** Copy `packing`, `loading`, `shipping_method`, `delivery_terms`, `billing_address`, `shipping_address`, `description`, `vendor_name`, `ship_term` verbatim from the chat — preserve spacing, casing, punctuation, and word order. Do not paraphrase.
+6. **Dates must be ISO 8601 (YYYY-MM-DD) or empty.** Never paraphrase a date as prose. If a date is partial (e.g. "November 2026"), use the last day of the named month. If unresolvable, leave the field empty — do not invent a day or year.
+7. **`payment_date` is a date or an explicit payment-term phrase only** (e.g. "Net 30 from delivery", "2026-03-15"). Never copy boilerplate like "Against scan copies of documents", document-handling instructions, or shipping-method notes into this field. If unsure, leave empty.
+8. **Preserve units, currencies, and numeric precision exactly as written.** Do not convert MT→KG, USD→INR, or rescale prices. If the chat says "USD 3.5 per KG", write `unit_price=3.5, pricing_unit="USD/KG"`.
+9. **Few-shot examples show shape only.** If examples are provided, use them to learn the output structure. Never copy values, vendor names, dates, prices, or product descriptions from an example into a new extraction.
+{% if attempt is defined and attempt > 1 %}
 
 ## Retry notice (attempt {{ attempt }})
-A previous extraction attempt failed schema validation. Before responding:
+A previous attempt failed schema validation. Before responding:
 - Re-read the input text carefully from the beginning.
 - Ensure every required field is present — set it to `null` or empty string if not found.
 - Do not omit any required field from your response.
 - Double-check that all values match the types the schema expects (string vs number vs array).
 {% endif %}
-{% if attempt > 2 %}
+{% if attempt is defined and attempt > 2 %}
 
 ## Critical reminder (attempt {{ attempt }})
-Strict accuracy is required. If a field's value is ambiguous or not clearly stated in the text, return `null`. Do not attempt to fill gaps. A partial but correct extraction is better than a complete but hallucinated one.
+Strict accuracy is required. If a field's value is ambiguous or not clearly stated in the text, return `null` or empty. Do not attempt to fill gaps. A partial but correct extraction is better than a complete but hallucinated one.
 {% endif %}

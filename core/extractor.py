@@ -169,9 +169,14 @@ class ExtractionEngine:
         target_schema = self.INITIAL_SCHEMA
         normalized = _normalize(input_text)
         chunks = _chunk_text(normalized)
+        chunk_count = len(chunks)
+        chunk_truncated = chunk_count > 1
 
-        if len(chunks) > 1:
-            logger.info("Input split into %d chunks (total chars=%d)", len(chunks), len(normalized))
+        if chunk_truncated:
+            logger.warning(
+                "Input split into %d chunks (total chars=%d); only chunk[0] (%d chars) is sent to the LLM",
+                chunk_count, len(normalized), len(chunks[0]),
+            )
 
         text_to_extract = chunks[0] if chunks else normalized
 
@@ -213,6 +218,9 @@ class ExtractionEngine:
                 attempts=attempts_used,
                 model_key=self.model_key,
                 model_provider=self.model_provider,
+                chunk_count=chunk_count,
+                chunk_truncated=chunk_truncated,
+                input_chars=len(normalized),
             )
 
         except (ValidationError, ValueError, json.JSONDecodeError, RetryError, Exception) as exc:
@@ -228,6 +236,9 @@ class ExtractionEngine:
                 attempts=_MAX_ATTEMPTS,
                 model_key=self.model_key,
                 model_provider=self.model_provider,
+                chunk_count=chunk_count,
+                chunk_truncated=chunk_truncated,
+                input_chars=len(normalized),
             )
 
     def update(
