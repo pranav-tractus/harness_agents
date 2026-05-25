@@ -156,14 +156,50 @@ def _postprocess_comparison_html(summary: dict[str, Any]) -> tuple[str, str]:
         )
     chart_data = json.dumps(combo_points, ensure_ascii=False)
 
+    run_count = int(totals.get("run_count") or 0)
+    improved_n = int(round(run_count * float(imp_rate))) if imp_rate is not None and run_count else 0
+    lift_pp = None
+    if raw_rate is not None and final_rate is not None:
+        lift_pp = 100.0 * (float(final_rate) - float(raw_rate))
+    final_badges: list[tuple[str, str]] = []
+    if lift_pp is not None and lift_pp > 0.05:
+        final_badges.append((f"+{lift_pp:.1f} pp lift", "badge-info"))
+    imp_badges: list[tuple[str, str]] = []
+    if regressions:
+        imp_badges.append((f"{regressions} regressions", "badge-warn"))
     cards = (
-        f'<div class="dataset-card"><div class="name">Raw LLM field match</div>'
-        f'<div class="score">{_fmt_pct(raw_rate)}</div></div>'
-        f'<div class="dataset-card"><div class="name">After post-processing</div>'
-        f'<div class="score">{_fmt_pct(final_rate)}</div></div>'
-        f'<div class="dataset-card"><div class="name">Runs improved</div>'
-        f'<div class="score">{_fmt_pct(imp_rate)}</div>'
-        f'<div class="meta"><span>regressions: {regressions}</span></div></div>'
+        _metric_dataset_card(
+            "Raw LLM field match",
+            _fmt_pct(raw_rate),
+            score_label="Primary extraction output",
+            meta_spans=[
+                f"{_fmt_num(avg_raw_mm, 2)} mismatch / run",
+                "Before rules + validation",
+            ],
+            bar_width=f"{100.0 * float(raw_rate):.1f}%" if raw_rate is not None else None,
+        )
+        + _metric_dataset_card(
+            "After post-processing",
+            _fmt_pct(final_rate),
+            score_label="Shippable JSON quality",
+            meta_spans=[
+                f"{_fmt_num(avg_final_mm, 2)} mismatch / run",
+                f"Δ {_fmt_num(avg_delta, 2)} fields saved" if avg_delta is not None else "—",
+            ],
+            bar_width=f"{100.0 * float(final_rate):.1f}%" if final_rate is not None else None,
+            badges=final_badges,
+        )
+        + _metric_dataset_card(
+            "Runs improved",
+            _fmt_pct(imp_rate),
+            score_label=f"{improved_n} of {run_count:,} runs gained fields",
+            meta_spans=[
+                f"{regressions} regressions",
+                f"{_fmt_num(avg_delta, 2)} avg field delta",
+            ],
+            bar_width=f"{100.0 * float(imp_rate):.1f}%" if imp_rate is not None else None,
+            badges=imp_badges,
+        )
     )
     delta_note = ""
     if avg_delta is not None:
@@ -227,6 +263,230 @@ def _dataset_card_flags(rows: list[dict[str, Any]]) -> list[tuple[dict[str, Any]
         )
         out.append((r, broken))
     return out
+
+
+def _model_card_flags(rows: list[dict[str, Any]]) -> list[tuple[dict[str, Any], bool]]:
+    """Highlight the weakest model when the spread is meaningful."""
+    rates = [r.get("field_match_rate") for r in rows if r.get("field_match_rate") is not None]
+    if not rates:
+        return [(r, False) for r in rows]
+    mx, mn = max(rates), min(rates)
+    out: list[tuple[dict[str, Any], bool]] = []
+    for r in rows:
+        fm = r.get("field_match_rate")
+        broken = (
+            fm is not None
+            and (mx - mn) >= 0.05
+            and float(fm) <= mn + 1e-9
+        )
+        out.append((r, broken))
+    return out
+
+
+def _badges_html(badges: list[tuple[str, str]]) -> str:
+    if not badges:
+        return ""
+    inner = "".join(f'<span class="badge {cls}">{_esc(text)}</span>' for text, cls in badges)
+    return f'<div class="score-label">{inner}</div>'
+
+
+def _meta_html(spans: list[str]) -> str:
+    if not spans:
+        return ""
+    inner = "".join(f"<span>{_esc(s)}</span>" for s in spans)
+    return f'<div class="meta">{inner}</div>'
+
+
+def _metric_dataset_card(
+    name: str,
+    score: str,
+    *,
+    score_label: str = "",
+    meta_spans: list[str] | None = None,
+    bar_width: str | None = None,
+    broken: bool = False,
+    badges: list[tuple[str, str]] | None = None,
+) -> str:
+    card_cls = "dataset-card broken" if broken else "dataset-card"
+    bar = ""
+    if bar_width is not None:
+        bar = (
+            f'<div class="bar-track"><div class="bar-fill" style="width:{bar_width}"></div></div>'
+        )
+    label_block = f'<div class="score-label">{_esc(score_label)}</div>' if score_label else ""
+    badge_block = _badges_html(badges or [])
+    meta = _meta_html(meta_spans or [])
+    return (
+        f'<div class="{card_cls}">'
+        f'<div class="name">{_esc(name)}</div>'
+        f'<div class="score">{score}</div>'
+        f"{label_block}{badge_block}{bar}{meta}</div>"
+    )
+
+
+def _experiment_brief_html(summary: dict[str, Any], config: dict[str, Any]) -> str:
+    totals = summary.get("totals") or {}
+    runs = int(totals.get("run_count") or 0)
+    sr = totals.get("success_rate")
+    elapsed = totals.get("avg_elapsed_sec")
+    mm = totals.get("avg_mismatch_per_expected_run")
+    fm = totals.get("field_match_rate")
+    models = list(config.get("models") or [])
+    datasets = list(config.get("datasets") or [])
+    fs_mode = str(config.get("few_shot_mode") or "—")
+    combos = summary.get("by_combo") or []
+    elapsed_by_model = [
+        (str(r.get("model_key", "")), float(r.get("avg_elapsed_sec") or 0.0))
+        for r in combos
+        if r.get("avg_elapsed_sec") is not None
+    ]
+    fastest = min(elapsed_by_model, key=lambda x: x[1])[0] if elapsed_by_model else "—"
+    slowest = max(elapsed_by_model, key=lambda x: x[1])[0] if elapsed_by_model else "—"
+
+    cards = [
+        _metric_dataset_card(
+            "Run volume",
+            f"{runs:,}",
+            score_label="Completed harness runs",
+            meta_spans=[
+                f"{_fmt_pct(sr)} success",
+                f"{_fmt_num(mm, 2)} avg mismatch",
+            ],
+            bar_width=f"{100.0 * float(sr):.1f}%" if sr is not None else None,
+            badges=[("All runs finished", "badge-info")] if sr == 1.0 else [],
+        ),
+        _metric_dataset_card(
+            "Experiment grid",
+            f"{len(models)}×{len(datasets)}",
+            score_label="Models × datasets",
+            meta_spans=[
+                f"{len(combos)} model buckets",
+                f"{fs_mode} few-shot",
+            ],
+            badges=[("Head-to-head bake-off", "badge-info")],
+        ),
+        _metric_dataset_card(
+            "Latency",
+            f"{float(elapsed):.1f}s" if isinstance(elapsed, (int, float)) else "—",
+            score_label="Avg wall time per run",
+            meta_spans=[f"Fastest: {fastest}", f"Slowest: {slowest}"],
+            badges=[("Speed vs quality tradeoff", "badge-info")],
+        ),
+        _metric_dataset_card(
+            "Blended quality",
+            _fmt_pct(fm),
+            score_label="Overall field match",
+            meta_spans=[
+                f"{_fmt_pct(totals.get('field_match_rate_raw_llm'))} raw LLM",
+                f"{_fmt_pct(totals.get('improvement_rate'))} runs improved",
+            ],
+            bar_width=f"{100.0 * float(fm):.1f}%" if fm is not None else None,
+        ),
+    ]
+    return f"""
+<section id="brief">
+  <div class="section-head"><span class="section-num">Sec. 00</span><h2>Experiment at a glance</h2></div>
+  <p class="section-intro">Headline experiment stats before model and dataset drill-down — use this strip in a stakeholder readout.</p>
+  <div class="dataset-grid">{"".join(cards)}</div>
+</section>
+"""
+
+
+def _model_lineup_html(summary: dict[str, Any]) -> str:
+    rows = list(summary.get("by_combo") or [])
+    if not rows:
+        return ""
+    multi = _multi_agent(summary)
+    sorted_rows = sorted(
+        rows,
+        key=lambda r: (-(float(r["field_match_rate"]) if r.get("field_match_rate") is not None else -1.0)),
+    )
+    elapsed_by_model = {
+        str(r.get("model_key", "")): float(r.get("avg_elapsed_sec") or 0.0)
+        for r in rows
+        if r.get("avg_elapsed_sec") is not None
+    }
+    fastest_model = min(elapsed_by_model, key=elapsed_by_model.get) if elapsed_by_model else ""
+    cards: list[str] = []
+    for r, broken in _model_card_flags(sorted_rows):
+        model = str(r.get("model_key", ""))
+        name = f"{r.get('agent_id', '')} · {model}" if multi else model
+        fm = r.get("field_match_rate")
+        pct = 100.0 * float(fm) if fm is not None else None
+        width = f"{pct:.1f}%" if pct is not None else "0%"
+        mm = r.get("avg_mismatch_per_expected_run")
+        imp = r.get("improvement_rate")
+        regressions = int(r.get("regression_count") or 0)
+        badges: list[tuple[str, str]] = []
+        if broken:
+            badges.append(("Avoid for production", "badge-err"))
+        elif fm is not None and pct is not None and pct >= 97.0:
+            badges.append(("Recommended default", "badge-info"))
+        if model == fastest_model:
+            badges.append(("Fastest", "badge-info"))
+        sub = "Field match — investigate" if broken else "Field match · sales pick"
+        cards.append(
+            _metric_dataset_card(
+                name,
+                _fmt_pct(fm),
+                score_label=sub,
+                meta_spans=[
+                    f"{int(r.get('run_count', 0))} runs",
+                    f"{_fmt_num(mm, 2)} mismatch",
+                    f"{_fmt_pct(imp)} improved",
+                    f"{regressions} regressions",
+                ],
+                bar_width=width,
+                broken=broken,
+                badges=badges,
+            )
+        )
+    return f"""
+<section id="models">
+  <div class="section-head"><span class="section-num">Sec. 01</span><h2>Model lineup</h2></div>
+  <p class="section-intro">Each card is one model bucket (zero few-shot here). Compare accuracy, post-processing lift, and regression risk side by side.</p>
+  <div class="dataset-grid">{"".join(cards)}</div>
+</section>
+"""
+
+
+def _enriched_dataset_card(r: dict[str, Any], *, broken: bool, multi: bool) -> str:
+    agent = r.get("agent_id", "")
+    ds = r.get("dataset_id", "")
+    name = f"{agent} · {ds}" if multi else str(ds)
+    fm = r.get("field_match_rate")
+    pct = 100.0 * float(fm) if fm is not None else None
+    width = f"{pct:.1f}%" if pct is not None else "0%"
+    mm = r.get("avg_mismatch_per_expected_run")
+    raw = r.get("field_match_rate_raw_llm")
+    imp = r.get("improvement_rate")
+    regressions = int(r.get("regression_count") or 0)
+    elapsed = r.get("avg_elapsed_sec")
+    runs = int(r.get("run_count", 0))
+    improved_n = int(round(runs * float(imp))) if imp is not None and runs else 0
+    badges: list[tuple[str, str]] = []
+    if broken:
+        badges.append(("Investigate bucket", "badge-warn"))
+    if raw is not None and fm is not None and float(fm) > float(raw) + 0.005:
+        lift_pp = 100.0 * (float(fm) - float(raw))
+        badges.append((f"+{lift_pp:.1f} pp post-process", "badge-info"))
+    sub = "Field match — investigate" if broken else "Field match · dataset slice"
+    return _metric_dataset_card(
+        name,
+        _fmt_pct(fm),
+        score_label=sub,
+        meta_spans=[
+            f"{runs} runs",
+            f"{_fmt_num(mm, 2)} mismatch",
+            f"{_fmt_pct(raw)} raw",
+            f"{improved_n}/{runs} improved",
+            f"{regressions} regressions",
+            f"{_fmt_num(elapsed, 1)}s avg",
+        ],
+        bar_width=width,
+        broken=broken,
+        badges=badges,
+    )
 
 
 def _css_block() -> str:
@@ -690,15 +950,58 @@ def _finding_tone_class(tone: str) -> str:
     return ""
 
 
-def _finding_block(story: HarnessVisualStory, idx: int) -> str:
+def _finding_stat_chips(summary: dict[str, Any], idx: int) -> str:
+    totals = summary.get("totals") or {}
+    combos = summary.get("by_combo") or []
+    if idx == 0:
+        chips = [
+            (f"{int(totals.get('run_count') or 0):,} runs", "badge-info"),
+            (f"{_fmt_pct(totals.get('success_rate'))} success", "badge-info"),
+            (f"{_fmt_num(totals.get('avg_mismatch_per_expected_run'), 2)} mismatch", "badge-info"),
+        ]
+    elif idx == 1:
+        best = max(
+            combos,
+            key=lambda r: float(r.get("field_match_rate") or 0),
+            default=None,
+        )
+        chips = []
+        if best:
+            chips = [
+                (f"{_fmt_num(best.get('avg_mismatch_per_expected_run'), 2)} mismatch", "badge-info"),
+                (f"{_fmt_num(best.get('avg_elapsed_sec'), 1)}s avg", "badge-info"),
+                (f"{int(best.get('regression_count') or 0)} regressions", "badge-warn"),
+            ]
+    else:
+        worst = min(
+            combos,
+            key=lambda r: float(r.get("field_match_rate") or 1),
+            default=None,
+        )
+        chips = []
+        if worst:
+            chips = [
+                (f"{_fmt_num(worst.get('avg_mismatch_per_expected_run'), 2)} mismatch", "badge-err"),
+                (f"{_fmt_num(worst.get('avg_elapsed_sec'), 1)}s avg", "badge-warn"),
+                (f"{int(worst.get('regression_count') or 0)} regressions", "badge-err"),
+            ]
+    if not chips:
+        return ""
+    inner = "".join(f'<span class="badge {cls}">{_esc(t)}</span>' for t, cls in chips)
+    return f'<p class="score-label">{inner}</p>'
+
+
+def _finding_block(story: HarnessVisualStory, idx: int, summary: dict[str, Any]) -> str:
     f = story.findings[idx]
     lab_cls = "label critical" if f.label_critical else "label"
     big_cls = "big " + _finding_tone_class(f.headline_tone)
     desc_html = _rich_text_to_html(f.description)
+    chips = _finding_stat_chips(summary, idx)
     return (
         f'<div class="finding">'
         f'<div class="{lab_cls}">{_esc(f.label)}</div>'
         f'<div class="{big_cls.strip()}">{_esc(f.headline)}</div>'
+        f"{chips}"
         f'<div class="desc">{desc_html}</div>'
         f"</div>"
     )
@@ -713,7 +1016,7 @@ def _actions_section(story: HarnessVisualStory) -> str:
     inner = "".join(parts) if parts else "<p>No follow-up steps.</p>"
     return (
         f'<section id="actions">'
-        f'<div class="section-head"><span class="section-num">Sec. 05</span>'
+        f'<div class="section-head"><span class="section-num">Sec. 06</span>'
         f"<h2>What to check next</h2></div>"
         f'<p class="section-intro">{_esc(story.actions_section_intro)}</p>'
         f'<div class="action-grid">{inner}</div></section>'
@@ -1035,7 +1338,7 @@ def render_dashboard_report_html(
     h1_em = story.headline_emphasis.strip()
     h1_html = f"{_esc(story.headline_start)}" + (f" <em>{_esc(h1_em)}</em>" if h1_em else "")
 
-    findings_html = "".join(_finding_block(story, i) for i in range(3))
+    findings_html = "".join(_finding_block(story, i, summary) for i in range(3))
 
     lb_rows = _leaderboard_js_rows(summary)
     data_json = json.dumps(lb_rows, ensure_ascii=False)
@@ -1051,27 +1354,22 @@ def render_dashboard_report_html(
     th_agent = "<th data-sort=\"agent\" data-type=\"str\">Agent</th>" if multi else ""
 
     dataset_rows = summary.get("by_dataset") or []
-    cards_html_parts = []
-    for r, broken in _dataset_card_flags(dataset_rows):
-        agent = r.get("agent_id", "")
-        ds = r.get("dataset_id", "")
-        name = f"{agent} · {ds}" if multi else str(ds)
-        fm = r.get("field_match_rate")
-        pct = 100.0 * float(fm) if fm is not None else None
-        width = f"{pct:.1f}%" if pct is not None else "0%"
-        mm = r.get("avg_mismatch_per_expected_run")
-        card_cls = "dataset-card broken" if broken else "dataset-card"
-        sub = "Field match — investigate" if broken else "Field match"
-        cards_html_parts.append(
-            f'<div class="{card_cls}">'
-            f'<div class="name">{_esc(name)}</div>'
-            f'<div class="score">{_fmt_pct(fm)}</div>'
-            f'<div class="score-label">{_esc(sub)}</div>'
-            f'<div class="bar-track"><div class="bar-fill" style="width:{width}"></div></div>'
-            f'<div class="meta"><span>{int(r.get("run_count", 0))} runs</span>'
-            f"<span>{_fmt_num(mm, 2)} mismatch</span></div></div>"
-        )
+    cards_html_parts = [
+        _enriched_dataset_card(r, broken=broken, multi=multi)
+        for r, broken in _dataset_card_flags(dataset_rows)
+    ]
     grid_inner = "".join(cards_html_parts) if cards_html_parts else "<p>No dataset breakdown.</p>"
+
+    brief_html = _experiment_brief_html(summary, config)
+    model_html = _model_lineup_html(summary)
+    model_fs_cells = []
+    for r in sorted(summary.get("by_combo") or [], key=lambda x: -(float(x.get("field_match_rate") or 0))):
+        mk = str(r.get("model_key", ""))
+        fm = r.get("field_match_rate")
+        model_fs_cells.append(
+            f'<div class="fs-cell"><div class="fs-label">{_esc(mk)}</div>'
+            f'<div class="fs-val">{_fmt_pct(fm)}</div></div>'
+        )
 
     alert_html = ""
     if story.alert_lead.strip() or story.alert_body.strip():
@@ -1084,6 +1382,8 @@ def render_dashboard_report_html(
         f'<div class="fs-val">{_fmt_pct(fm)}</div></div>'
         for fs, fm in fs_cells
     )
+    if model_fs_cells:
+        fs_cells_html += "".join(model_fs_cells)
     fs_takeaway_html = f'<p class="fs-takeaway">{_esc(fs_takeaway)}</p>' if fs_takeaway else ""
 
     cfg_pre = _esc(json.dumps(config, indent=2, ensure_ascii=False))
@@ -1119,15 +1419,17 @@ def render_dashboard_report_html(
 <div class="findings">
 {findings_html}
 </div>
+{brief_html}
 {pp_html}
+{model_html}
 <section id="datasets">
-  <div class="section-head"><span class="section-num">Sec. 01</span><h2>Results by dataset</h2></div>
+  <div class="section-head"><span class="section-num">Sec. 02</span><h2>Results by dataset</h2></div>
   <p class="section-intro">{_esc(story.dataset_section_intro)}</p>
   {alert_html}
   <div class="dataset-grid">{grid_inner}</div>
 </section>
 <section id="frontier">
-  <div class="section-head"><span class="section-num">Sec. 02</span><h2>Quality vs. speed</h2></div>
+  <div class="section-head"><span class="section-num">Sec. 03</span><h2>Quality vs. speed</h2></div>
   <p class="section-intro">{_esc(story.frontier_section_intro)}</p>
   <div class="chart-wrap">
     <div class="chart-title">Model frontier</div>
@@ -1136,7 +1438,7 @@ def render_dashboard_report_html(
   </div>
 </section>
 <section id="leaderboard">
-  <div class="section-head"><span class="section-num">Sec. 03</span><h2>Leaderboard</h2></div>
+  <div class="section-head"><span class="section-num">Sec. 04</span><h2>Leaderboard</h2></div>
   <p class="section-intro">{_esc(story.leaderboard_section_intro)}</p>
   <div class="table-controls">
     <div class="control"><label for="fsFilter">FS Count</label>
@@ -1164,7 +1466,7 @@ def render_dashboard_report_html(
   </div>
 </section>
 <section id="fewshot">
-  <div class="section-head"><span class="section-num">Sec. 04</span><h2>Few-shot sweep</h2></div>
+  <div class="section-head"><span class="section-num">Sec. 05</span><h2>Few-shot sweep</h2></div>
   <p class="section-intro">{_esc(story.fewshot_section_intro)}</p>
   <div class="fs-rollup">
     <div class="fs-rollup-grid">{fs_cells_html}</div>
