@@ -123,6 +123,52 @@ def _has_postprocess_metrics(summary: dict[str, Any]) -> bool:
     return totals.get("field_match_rate_raw_llm") is not None
 
 
+def _baseline_table_html(summary: dict[str, Any]) -> str:
+    """Per-chat baseline → agent → validation comparison table.
+
+    Returns an empty string when no baseline metrics are present so the
+    section disappears for runs without ``--with-baseline``.
+    """
+    rows = [
+        r for r in (summary.get("by_chat") or [])
+        if r.get("field_match_rate_baseline") is not None
+    ]
+    if not rows:
+        return ""
+
+    def _pct(v: Any) -> str:
+        return f"{100.0 * float(v):.0f}%" if v is not None else "—"
+
+    body = []
+    for r in rows:
+        b = r.get("field_match_rate_baseline")
+        a = r.get("field_match_rate_raw_llm")
+        f = r.get("field_match_rate_final") or r.get("field_match_rate")
+        lift = (
+            f"+{100.0 * (float(f) - float(b)):.0f}pp"
+            if (b is not None and f is not None) else "—"
+        )
+        body.append(
+            "<tr>"
+            f"<td>{_esc(str(r.get('chat_filename', '')))}</td>"
+            f"<td>{_pct(b)}</td>"
+            f"<td>{_pct(a)}</td>"
+            f"<td>{_pct(f)}</td>"
+            f"<td>{_esc(lift)}</td>"
+            "</tr>"
+        )
+    return (
+        "<div class=\"chart-wrap\" style=\"margin-top:24px;\">"
+        "<div class=\"chart-title\">Baseline Comparison (per chat)</div>"
+        "<table class=\"leaderboard\"><thead><tr>"
+        "<th>Chat</th><th>Baseline</th><th>Agent (raw)</th>"
+        "<th>Validation</th><th>Lift (baseline → validation)</th>"
+        "</tr></thead><tbody>"
+        + "".join(body)
+        + "</tbody></table></div>"
+    )
+
+
 def _postprocess_comparison_html(summary: dict[str, Any]) -> tuple[str, str]:
     """HTML section + chart script for raw vs final field match."""
     if not _has_postprocess_metrics(summary):
@@ -212,6 +258,7 @@ def _postprocess_comparison_html(summary: dict[str, Any]) -> tuple[str, str]:
             f"<strong>{_fmt_num(avg_delta, 2)}</strong> "
             f"(raw {_fmt_num(avg_raw_mm, 2)} → final {_fmt_num(avg_final_mm, 2)} per expected run).</p>"
         )
+    baseline_table = _baseline_table_html(summary)
     baseline_note = ""
     if has_baseline:
         b_pct = 100.0 * float(baseline_rate)
@@ -235,6 +282,7 @@ def _postprocess_comparison_html(summary: dict[str, Any]) -> tuple[str, str]:
     <div class="chart-title">Field match: raw vs final (by model × few-shot)</div>
     <div class="chart-canvas-wrap" style="height:320px;"><canvas id="postprocessChart"></canvas></div>
   </div>
+  {baseline_table}
 </section>
 """
     script = f"""

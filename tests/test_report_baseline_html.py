@@ -40,6 +40,26 @@ class TestReportBaseline(unittest.TestCase):
         html, script = _postprocess_comparison_html(_summary(with_baseline=False))
         self.assertNotIn("baseline_pct", script)
 
+    def test_per_chat_table_rendered_with_baseline(self):
+        summary = _summary(with_baseline=True)
+        summary["by_chat"] = [{
+            "chat_filename": "chat_01.json",
+            "model_key": "sonnet-4-6",
+            "few_shot_count": 0,
+            "field_match_rate_baseline": 0.61,
+            "field_match_rate_raw_llm": 0.74,
+            "field_match_rate_final": 0.89,
+            "field_match_rate": 0.89,
+        }]
+        html, _script = _postprocess_comparison_html(summary)
+        self.assertIn("Baseline Comparison", html)
+        self.assertIn("chat_01.json", html)
+        self.assertIn("+28", html)  # lift: 89 - 61 = 28pp
+
+    def test_no_table_without_baseline(self):
+        html, _script = _postprocess_comparison_html(_summary(with_baseline=False))
+        self.assertNotIn("Baseline Comparison", html)
+
 
 if __name__ == "__main__":
     unittest.main()
