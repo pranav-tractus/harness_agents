@@ -1,0 +1,171 @@
+{
+  "row_index": 14,
+  "whatsapp_group_id": "120363420625598220@g.us",
+  "customer_id": "f081da35-3b14-4328-86f6-0f569bc63b43",
+  "organization_id": "c53c0007-bbd6-4474-8348-b011992829f8",
+  "contract_id": "35cca622-b53d-4af3-9fae-2bb4da5380f6",
+  "po_ref_no": "GIIOFEED PL-5-2025-2",
+  "status": "SIGNED",
+  "created_at": "2025-07-18T04:39:37.963938",
+  "created_date": "2025-07-18",
+  "s3_matches": [
+    {
+      "bucket": "tractuslabs-data-sources",
+      "key": "messages/120363420625598220@g.us/2025-07-18.json",
+      "last_modified": "2025-07-18T04:45:48+00:00",
+      "size": 4412
+    }
+  ],
+  "chats": [
+    [
+      {
+        "id": "OlYH5Ox5HRY1jw-gqwBq53kslb3DA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420625598220@g.us",
+        "timestamp": 1752812840,
+        "source": "mobile",
+        "chat_name": "Testing Prod 11",
+        "text": {
+          "body": "These are the key terms of the trade you have just negotiated \n\n\n\nItems :\nProduct 1:\nDescription : *GIIOFEED PL-5*\nQuantity : *5*\nQuantity Unit : *MT*\nUnit Price : *1420*\nPricing Unit : *USD/MT*\nShip Term : *CIF*\nPacking : *20 kg kraft paper bags*\nLoading : *CIF Incheon*\nTotal : *7100*\nPo Date : *2025-07-18*\nPo Ref No : *GIIOFEED PL-5-2025-5*\nProduct 2:\nDescription : *GIIOFEED PL-5*\nQuantity : *2*\nQuantity Unit : *MT*\nUnit Price : *1420*\nPricing Unit : *USD/MT*\nShip Term : *CIF*\nPacking : *cardboard packing*\nLoading : *CIF Busan*\nTotal : *2840*\nPo Date : *2025-07-18*\nPo Ref No : *GIIOFEED PL-5-2025-5*\n\n\nPo Date : *2025-07-18*\nPo Number : *GIIOFEED PL-5-2025-5*\nGst Amount : *Unknown*\nReferences : *Unknown*\nVendor Name : *FeedBEST Company Limited*\nTotal Amount : *9940*\nVendor Email : *aditya+sign1@tractuslabs.com*\nVendor Phone : *Unknown*\nPayment Terms : *Unknown*\nShipment Date : *Unknown*\nShipping Terms : *CIF*\nVendor Address : *Factory 354-58 Mojeon-1 Sobuk-gu*\nShipping Method : *shipping by air*"
+        },
+        "from": "917980321298",
+        "from_name": "Aditya Pandey"
+      },
+      {
+        "id": "OngPLcJ_t7bsAQ-gucBq53kslb3DA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420625598220@g.us",
+        "timestamp": 1752813791,
+        "source": "mobile",
+        "chat_name": "Testing Prod 11",
+        "text": {
+          "body": "Payment term is cod"
+        },
+        "from": "917980321298",
+        "from_name": "Aditya Pandey"
+      },
+      {
+        "id": "UHJBMEVJOGtMcjFvUGVJLQ-Al8Bq53kslb3DA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420625598220@g.us",
+        "timestamp": 1752813898,
+        "source": "mobile",
+        "device_id": 1,
+        "chat_name": "Testing Prod 11",
+        "text": {
+          "body": "Dr. Yashodhan,Our cosmetics division asked about sunflower lecithin. Do you have GIIOFINE - L - SF in liquid form?"
+        },
+        "from": "917330603947",
+        "from_name": "Rahul Bharadwaj Thotapalli"
+      },
+      {
+        "id": "UHJEd2ZJU1Z2VHhKRUE0LQ-AuIBq53kslb3DA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420625598220@g.us",
+        "timestamp": 1752813910,
+        "source": "mobile",
+        "device_id": 20,
+        "chat_name": "Testing Prod 11",
+        "text": {
+          "body": "Yes we do — light brown liquid, phospholipids suspended in sunflower \noil. Totally clean, non-GMO, ideal for emulsification.\nOur price: USD 2,980/MT, CIF Busan."
+        },
+        "from": "917980321298",
+        "from_name": "Aditya Pandey"
+      },
+      {
+        "id": "PrBXHVdxo94ubGw-gtsBq53kslb3DA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420625598220@g.us",
+        "timestamp": 1752813913,
+        "source": "web",
+        "device_id": 1,
+        "chat_name": "Testing Prod 11",
+        "text": {
+          "body": "Perfect. Can we get 1 IBC for testing? Food grade pls."
+        },
+        "from": "917330603947",
+        "from_name": "Rahul Bharadwaj Thotapalli"
+      },
+      {
+        "id": "PrB.GQ58Hbsa1lY-glgBq53kslb3DA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420625598220@g.us",
+        "timestamp": 1752813922,
+        "source": "web",
+        "device_id": 20,
+        "chat_name": "Testing Prod 11",
+        "text": {
+          "body": "Sure — 1 IBC = 1.1 MT net. I can arrange loading with the GIIOFEED \nPL-5 batch.\nFood-grade version is FSSC22000 + kosher/halal."
+        },
+        "from": "917980321298",
+        "from_name": "Aditya Pandey"
+      },
+      {
+        "id": "PrDrQyo.GWRdPWU-glYBq53kslb3DA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420625598220@g.us",
+        "timestamp": 1752813925,
+        "source": "web",
+        "device_id": 1,
+        "chat_name": "Testing Prod 11",
+        "text": {
+          "body": "That works. Do you have CoA and TDS for this version?"
+        },
+        "from": "917330603947",
+        "from_name": "Rahul Bharadwaj Thotapalli"
+      },
+      {
+        "id": "PrCI7pAgM9wGeZg-gokBq53kslb3DA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420625598220@g.us",
+        "timestamp": 1752813932,
+        "source": "web",
+        "device_id": 20,
+        "chat_name": "Testing Prod 11",
+        "text": {
+          "body": "Yes — sending via email now. You’ll get PC content, moisture, acid \nvalue, etc."
+        },
+        "from": "917980321298",
+        "from_name": "Aditya Pandey"
+      },
+      {
+        "id": "PrDlZr95k6UXGco-gkgBq53kslb3DA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420625598220@g.us",
+        "timestamp": 1752813942,
+        "source": "web",
+        "device_id": 1,
+        "chat_name": "Testing Prod 11",
+        "text": {
+          "body": "Thank you. Please proceed to reserve 1 IBC under Feedbest Korea."
+        },
+        "from": "917330603947",
+        "from_name": "Rahul Bharadwaj Thotapalli"
+      },
+      {
+        "id": "PrDOWbx9UO_Ze7o-gp8Bq53kslb3DA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420625598220@g.us",
+        "timestamp": 1752813946,
+        "source": "web",
+        "device_id": 20,
+        "chat_name": "Testing Prod 11",
+        "text": {
+          "body": "Done. Booking will go in the July 28th container."
+        },
+        "from": "917980321298",
+        "from_name": "Aditya Pandey"
+      }
+    ]
+  ]
+}

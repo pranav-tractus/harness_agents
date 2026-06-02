@@ -1,0 +1,24 @@
+{
+  "messages": [
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Hi — can you confirm the sale we agreed on for Korea?",
+      "timestamp": 1772000000
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "We confirm having sold:\n\n1. 30th May 2026\n\t2 FCL BP102 @ USD 1450/MT 25 kg bags\n\t2 FCL PF85 @ USD 1400/MT 650 kg bags\n\t1 FCL PF85 @ USD 1400/MT 25 kg bags\n\n2. 3 weeks later\n\t2 FCL BP102 @ USD 1450/MT 25 kg bags\n\t2 FCL PF85 @ USD 1400/MT 650 kg bags\n\t1 FCL PF85 @ USD 1400/MT 25 kg bags\n\nLoading is 12 MT/20' FCL. CIF Korea.",
+      "timestamp": 1772000060
+    },
+    {
+      "from_whom": "(TEAM2)",
+      "body": "Confirmed. Thanks.",
+      "timestamp": 1772000120
+    },
+    {
+      "from_whom": "(TEAM1)",
+      "body": "You're welcome. SO will follow.",
+      "timestamp": 1772000180
+    }
+  ]
+}

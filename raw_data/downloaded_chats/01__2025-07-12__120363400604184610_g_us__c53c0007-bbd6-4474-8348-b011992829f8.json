@@ -1,0 +1,125 @@
+{
+  "row_index": 1,
+  "whatsapp_group_id": "120363400604184610@g.us",
+  "customer_id": "c53c0007-bbd6-4474-8348-b011992829f8",
+  "organization_id": "c53c0007-bbd6-4474-8348-b011992829f8",
+  "contract_id": "39f440f5-8da3-417e-a29a-d67d39a3f157",
+  "po_ref_no": "GIIOFINE - L - SF in liquid form-2025-1",
+  "status": "SIGNED",
+  "created_at": "2025-07-12T11:56:20.784836",
+  "created_date": "2025-07-12",
+  "s3_matches": [
+    {
+      "bucket": "tractuslabs-data-sources",
+      "key": "messages/120363400604184610@g.us/2025-07-12.json",
+      "last_modified": "2025-07-12T11:55:45+00:00",
+      "size": 829
+    },
+    {
+      "bucket": "tractuslabs-data-sources",
+      "key": "messages/120363400604184610@g.us/llm_msg.json",
+      "last_modified": "2025-07-12T11:55:45+00:00",
+      "size": 1313
+    }
+  ],
+  "chats": [
+    [
+      {
+        "id": "OiNgRA5M5VjNhw-ko4Bq53gCPhwIg-1bvkFhI",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363400604184610@g.us",
+        "timestamp": 1752319537,
+        "source": "mobile",
+        "chat_name": "Test prod 11",
+        "text": {
+          "body": "Hi let’s start"
+        },
+        "from": "917980321298",
+        "from_name": "Aditya Pandey"
+      },
+      {
+        "id": "PrCUchL86mDlClo-ktkBq53gCPhwIg-1bvkFhI",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363400604184610@g.us",
+        "timestamp": 1752321330,
+        "source": "web",
+        "device_id": 20,
+        "chat_name": "Test prod 11",
+        "text": {
+          "body": "shipping by air"
+        },
+        "from": "917980321298",
+        "from_name": "Aditya Pandey"
+      },
+      {
+        "id": "PrAzx_j1gI2qylM-ktQBq53gCPhwIg-1bvkFhI",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363400604184610@g.us",
+        "timestamp": 1752321342,
+        "source": "web",
+        "device_id": 20,
+        "chat_name": "Test prod 11",
+        "text": {
+          "body": "delivery terms is cif"
+        },
+        "from": "917980321298",
+        "from_name": "Aditya Pandey"
+      }
+    ],
+    [
+      {
+        "from_whom": "(TEAM1)",
+        "body": "Dr. Yashodhan, Our cosmetics division asked about sunflower lecithin. Do you have GIIOFINE - L - SF in liquid form?",
+        "timestamp": 1751273800
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "Yes we do — light brown liquid, phospholipids suspended in sunflower oil. Totally clean, non-GMO, ideal for emulsification. Our price: USD 2,980/MT, CIF Busan.",
+        "timestamp": 1751273850
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "Perfect. Can we get 1 IBC for testing? Food grade pls.",
+        "timestamp": 1751273880
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "Sure — 1 IBC = 1.1 MT net. I can arrange loading with the GIIOFEED PL-5 batch. Food-grade version is FSSC22000 + kosher/halal.",
+        "timestamp": 1751273920
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "That works. Do you have CoA and TDS for this version?",
+        "timestamp": 1751273960
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "Yes — sending via email now. You’ll get PC content, moisture, acid value, etc.",
+        "timestamp": 1751274000
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "Thank you. Please proceed to reserve 1 IBC under Feedbest Korea.",
+        "timestamp": 1751274040
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "Done. Booking will go in the July 28th container.",
+        "timestamp": 1751274080
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "shipping by air",
+        "timestamp": 1752321330
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "delivery terms is cif",
+        "timestamp": 1752321342
+      }
+    ]
+  ]
+}

@@ -1,0 +1,378 @@
+{
+  "row_index": 7,
+  "whatsapp_group_id": "120363420980882745@g.us",
+  "customer_id": "fc1a5131-1287-4c0b-98c6-40d0d5012d72",
+  "organization_id": "019fc82b-ec29-4203-b2fe-df2947282d72",
+  "contract_id": "8ac50f86-4e97-4a27-ae1c-c4acd5ab68cb",
+  "po_ref_no": "TG - MGL8-2025-2",
+  "status": "SIGNED",
+  "created_at": "2025-09-27T03:07:45.239318",
+  "created_date": "2025-09-27",
+  "s3_matches": [
+    {
+      "bucket": "tractuslabs-data-sources",
+      "key": "messages/120363420980882745@g.us/2025-09-27.json",
+      "last_modified": "2025-09-27T03:06:41+00:00",
+      "size": 7105
+    }
+  ],
+  "chats": [
+    [
+      {
+        "id": "PrBG6LH3I7WBdSs-giUBq53kx4QtOQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420980882745@g.us",
+        "timestamp": 1758940499,
+        "source": "web",
+        "device_id": 20,
+        "chat_name": "Core Trading <> FeedBest Production Test Group",
+        "text": {
+          "body": "how are you doing?"
+        },
+        "from": "917980321298",
+        "from_name": "Aditya Pandey"
+      },
+      {
+        "id": "Ossv7DJ69YhICw-gjwBq53kx4QtOQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420980882745@g.us",
+        "timestamp": 1758940511,
+        "source": "mobile",
+        "chat_name": "Core Trading <> FeedBest Production Test Group",
+        "text": {
+          "body": "Great to hear from you"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "PrDLWfRcJn7Zdkg-gnQBq53kx4QtOQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420980882745@g.us",
+        "timestamp": 1758940513,
+        "source": "web",
+        "device_id": 20,
+        "chat_name": "Core Trading <> FeedBest Production Test Group",
+        "text": {
+          "body": "could you please quote us the availability for lecithin fat powder?"
+        },
+        "from": "917980321298",
+        "from_name": "Aditya Pandey"
+      },
+      {
+        "id": "PrA1ghDrhdnaNpQ-gsMBq53kx4QtOQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420980882745@g.us",
+        "timestamp": 1758940521,
+        "source": "web",
+        "device_id": 20,
+        "chat_name": "Core Trading <> FeedBest Production Test Group",
+        "text": {
+          "body": "24MT"
+        },
+        "from": "917980321298",
+        "from_name": "Aditya Pandey"
+      },
+      {
+        "id": "Ov8fxByazdOpTQ-grMBq53kx4QtOQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420980882745@g.us",
+        "timestamp": 1758940532,
+        "source": "mobile",
+        "chat_name": "Core Trading <> FeedBest Production Test Group",
+        "text": {
+          "body": "Sure let me get back to you"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "PrAktw9eUDeUVWc-gssBq53kx4QtOQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420980882745@g.us",
+        "timestamp": 1758940535,
+        "source": "web",
+        "device_id": 20,
+        "chat_name": "Core Trading <> FeedBest Production Test Group",
+        "text": {
+          "body": "we are looking for two batches. 10MT by November this year. the remaining in Jan next year"
+        },
+        "from": "917980321298",
+        "from_name": "Aditya Pandey"
+      },
+      {
+        "id": "PrBZrKpqz1vj3R0-glgBq53kx4QtOQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420980882745@g.us",
+        "timestamp": 1758940549,
+        "source": "web",
+        "device_id": 20,
+        "chat_name": "Core Trading <> FeedBest Production Test Group",
+        "text": {
+          "body": "that's too high. can you do $11/kg?"
+        },
+        "from": "917980321298",
+        "from_name": "Aditya Pandey"
+      },
+      {
+        "id": "OkEhFbKISR_aHw-glUBq53kx4QtOQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420980882745@g.us",
+        "timestamp": 1758940585,
+        "source": "mobile",
+        "chat_name": "Core Trading <> FeedBest Production Test Group",
+        "text": {
+          "body": "We can do that"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "OhHcBTysdPKgZA-gh4Bq53kx4QtOQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420980882745@g.us",
+        "timestamp": 1758940599,
+        "source": "mobile",
+        "chat_name": "Core Trading <> FeedBest Production Test Group",
+        "text": {
+          "body": "We can offer us$12.5 per kg"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "PrBprf0cHM7CcGA-grUBq53kx4QtOQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420980882745@g.us",
+        "timestamp": 1758940607,
+        "source": "web",
+        "device_id": 20,
+        "chat_name": "Core Trading <> FeedBest Production Test Group",
+        "text": {
+          "body": "that's too high. can you do $11/kg?"
+        },
+        "from": "917980321298",
+        "from_name": "Aditya Pandey"
+      },
+      {
+        "id": "OmBf0sfw0n1TUg-ggkBq53kx4QtOQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420980882745@g.us",
+        "timestamp": 1758940619,
+        "source": "mobile",
+        "chat_name": "Core Trading <> FeedBest Production Test Group",
+        "text": {
+          "body": "Let me check and get back to you. Give me 24 hrs"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "Ovb9HTb8lOaFbA-gpUBq53kx4QtOQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420980882745@g.us",
+        "timestamp": 1758940630,
+        "source": "mobile",
+        "chat_name": "Core Trading <> FeedBest Production Test Group",
+        "text": {
+          "body": "Hi Aditya"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "Or5.JEUtmy.Yjw-gkwBq53kx4QtOQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420980882745@g.us",
+        "timestamp": 1758940648,
+        "source": "mobile",
+        "chat_name": "Core Trading <> FeedBest Production Test Group",
+        "text": {
+          "body": "Our best offer is $12 and expires by mid day tomorrow"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "PrAzO.54YlzHG9g-gp8Bq53kx4QtOQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420980882745@g.us",
+        "timestamp": 1758940652,
+        "source": "web",
+        "device_id": 20,
+        "chat_name": "Core Trading <> FeedBest Production Test Group",
+        "text": {
+          "body": "ok confirm. 20MT."
+        },
+        "from": "917980321298",
+        "from_name": "Aditya Pandey"
+      },
+      {
+        "id": "OifzPD2YbOxapg-gtoBq53kx4QtOQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420980882745@g.us",
+        "timestamp": 1758940667,
+        "source": "mobile",
+        "chat_name": "Core Trading <> FeedBest Production Test Group",
+        "text": {
+          "body": "Great. Equal tonnage per shipment?"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "PrCgqgIuV4sEykE-gqYBq53kx4QtOQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420980882745@g.us",
+        "timestamp": 1758940671,
+        "source": "web",
+        "device_id": 20,
+        "chat_name": "Core Trading <> FeedBest Production Test Group",
+        "text": {
+          "body": "no. 8MT this november. remanining in Jan next year. thanks"
+        },
+        "from": "917980321298",
+        "from_name": "Aditya Pandey"
+      },
+      {
+        "id": "OiNqJrMyu32Awg-gnkBq53kx4QtOQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420980882745@g.us",
+        "timestamp": 1758940681,
+        "source": "mobile",
+        "chat_name": "Core Trading <> FeedBest Production Test Group",
+        "text": {
+          "body": "Ok generating contract"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "OtytWVoo5KrGDQ-gvsBq53kx4QtOQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420980882745@g.us",
+        "timestamp": 1758941737,
+        "source": "mobile",
+        "chat_name": "Core Trading <> FeedBest Production Test Group",
+        "text": {
+          "body": "Change shipping term to CIF"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "OoZXEjgIvZgPCg-goUBq53kx4QtOQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420980882745@g.us",
+        "timestamp": 1758941795,
+        "source": "mobile",
+        "chat_name": "Core Trading <> FeedBest Production Test Group",
+        "text": {
+          "body": "Loading is same as packing"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "Ov8GBi5ziEbr3Q-gnQBq53kx4QtOQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420980882745@g.us",
+        "timestamp": 1758941813,
+        "source": "mobile",
+        "chat_name": "Core Trading <> FeedBest Production Test Group",
+        "text": {
+          "body": "Packing should be 25kg stitch paper bag"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "Ome2kEmyChUFEw-gq0Bq53kx4QtOQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420980882745@g.us",
+        "timestamp": 1758941822,
+        "source": "mobile",
+        "chat_name": "Core Trading <> FeedBest Production Test Group",
+        "text": {
+          "body": "Delivery date is January 2026"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "Og1eCugJTSVH6Q-gpEBq53kx4QtOQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420980882745@g.us",
+        "timestamp": 1758942176,
+        "source": "mobile",
+        "chat_name": "Core Trading <> FeedBest Production Test Group",
+        "text": {
+          "body": "Shipping method is by sea"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "Osy9ApXRbQ0rkg-ghEBq53kx4QtOQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363420980882745@g.us",
+        "timestamp": 1758942399,
+        "source": "mobile",
+        "chat_name": "Core Trading <> FeedBest Production Test Group",
+        "text": {
+          "body": "Change loading to 23MT/40’FCL"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      }
+    ]
+  ],
+  "field_data": {
+    "items": [
+      {
+        "sr_no": 1,
+        "total": 144000,
+        "loading": "23MT/40’FCL",
+        "packing": "25kg stitch paper bag",
+        "quantity": 12000,
+        "ship_term": "CIF",
+        "unit_price": 12,
+        "description": "TG - MGL8",
+        "pricing_unit": "USD/KG",
+        "quantity_unit": "KG"
+      }
+    ],
+    "do_date": "January 2026",
+    "po_date": "2025-09-27",
+    "po_ref_no": "TG - MGL8-2025-2",
+    "vendor_name": "Core Trading Pte Ltd",
+    "payment_date": "Net 14 Days",
+    "delivery_terms": "Unknown",
+    "billing_address": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu",
+    "shipping_method": "by sea",
+    "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu"
+  }
+}

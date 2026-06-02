@@ -1,0 +1,256 @@
+{
+  "row_index": 9,
+  "whatsapp_group_id": "120363403571614155@g.us",
+  "customer_id": "64e00925-1a11-47da-bf00-9a015a992148",
+  "organization_id": "2187915f-d496-48f7-83e1-244f7b3944fd",
+  "contract_id": "0ec99fd8-289b-48c6-8380-3bc735a216f6",
+  "po_ref_no": "Not found-2025-2",
+  "status": "SIGNED",
+  "created_at": "2025-10-26T16:36:13.862166",
+  "created_date": "2025-10-26",
+  "s3_matches": [
+    {
+      "bucket": "tractuslabs-data-sources",
+      "key": "messages/120363403571614155@g.us/2025-10-26.json",
+      "last_modified": "2025-10-26T21:52:53+00:00",
+      "size": 5046
+    }
+  ],
+  "chats": [
+    [
+      {
+        "id": "Oihb72sWIockdQ-gvgBq53gudfRyw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403571614155@g.us",
+        "timestamp": 1761495470,
+        "source": "mobile",
+        "chat_name": "TractUs Demo Chat",
+        "text": {
+          "body": "Red balloons"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "Ou_YO5SCsFvefQ-gjYBq53gudfRyw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403571614155@g.us",
+        "timestamp": 1761495476,
+        "source": "mobile",
+        "chat_name": "TractUs Demo Chat",
+        "text": {
+          "body": "2 MT"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "Olnm4yKYUhJrBA-guMBq53gudfRyw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403571614155@g.us",
+        "timestamp": 1761495496,
+        "source": "mobile",
+        "chat_name": "TractUs Demo Chat",
+        "text": {
+          "body": "CIF Tacoma Washington"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "OtBNyOJPKjCmjw-gisBq53gudfRyw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403571614155@g.us",
+        "timestamp": 1761495519,
+        "source": "mobile",
+        "chat_name": "TractUs Demo Chat",
+        "text": {
+          "body": "Delivery mid December 2025"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "OmxOQ2fys2imvA-gg0Bq53gudfRyw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403571614155@g.us",
+        "timestamp": 1761495535,
+        "source": "mobile",
+        "chat_name": "TractUs Demo Chat",
+        "text": {
+          "body": "Usd 20/MT"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva"
+      },
+      {
+        "id": "OnvBGHGkU8A7EQ-gnABq53gudfRyw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403571614155@g.us",
+        "timestamp": 1761510100,
+        "source": "mobile",
+        "chat_name": "TractUs Demo Chat",
+        "text": {
+          "body": "Fat powder"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva Murarka"
+      },
+      {
+        "id": "OrsHVDdcVtcvfA-gj8Bq53gudfRyw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403571614155@g.us",
+        "timestamp": 1761510117,
+        "source": "mobile",
+        "chat_name": "TractUs Demo Chat",
+        "text": {
+          "body": "23 MT"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva Murarka"
+      },
+      {
+        "id": "Omqbbz7j0rIHeg-gvoBq53gudfRyw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403571614155@g.us",
+        "timestamp": 1761510126,
+        "source": "mobile",
+        "chat_name": "TractUs Demo Chat",
+        "text": {
+          "body": "CIF Busan"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva Murarka"
+      },
+      {
+        "id": "OmHxbeCEKvGJAQ-gg4Bq53gudfRyw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403571614155@g.us",
+        "timestamp": 1761510145,
+        "source": "mobile",
+        "chat_name": "TractUs Demo Chat",
+        "text": {
+          "body": "Delivery mid Jan 2026"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva Murarka"
+      },
+      {
+        "id": "OtGrgI.DHovb5A-gikBq53gudfRyw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403571614155@g.us",
+        "timestamp": 1761510172,
+        "source": "mobile",
+        "chat_name": "TractUs Demo Chat",
+        "text": {
+          "body": "$1000/MT"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva Murarka"
+      },
+      {
+        "id": "Om.QuJJmK8E1tw-gmkBq53gudfRyw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403571614155@g.us",
+        "timestamp": 1761510286,
+        "source": "mobile",
+        "chat_name": "TractUs Demo Chat",
+        "text": {
+          "body": "@125379322851493 change delivery date to 15 Jan 2026"
+        },
+        "context": {
+          "mentions": [
+            "919123097519"
+          ]
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva Murarka"
+      },
+      {
+        "id": "Oudmxr0ParbYbQ-gsUBq53gudfRyw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403571614155@g.us",
+        "timestamp": 1761513077,
+        "source": "mobile",
+        "device_id": 1,
+        "chat_name": "TractUs Demo Chat",
+        "text": {
+          "body": "These are the key terms of the trade you have just negotiated \n\n\n\nSr No : *1*\nDescription : *Fat powder*\nQuantity : *23.0*\nQuantity Unit : *MT*\nUnit Price : *1000.0*\nPricing Unit : *USD/MT*\nShip Term : *CIF*\nPacking : *Unknown*\nLoading : *23MT/40'FCL*\nTotal : *USD 23000.0*\n\n\nSO Date : *2025-10-26*\nSO Ref No : *Fat powder-2025-1*\nSeller : *TractUs Chats-to-Contracts Demo*\nPayment Terms : *Net 14 Days*\nBill To : *Mock Customer Pte Ltd, 175 Filbert Street, Hutchinson, Minnesota 55350, USA\t*\nShipping Method : *Unknown*\nShip To : *175 Filbert Street, Hutchinson, Minnesota 55350, USA\t*\nDelivery Date : *2026-01-15*"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva Murarka"
+      },
+      {
+        "id": "OnzJo9UzmyQc.A-guMBq53gudfRyw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403571614155@g.us",
+        "timestamp": 1761513163,
+        "source": "mobile",
+        "device_id": 1,
+        "chat_name": "TractUs Demo Chat",
+        "text": {
+          "body": "@125379322851493 change shipment method to by sea"
+        },
+        "context": {
+          "mentions": [
+            "919123097519"
+          ]
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva Murarka"
+      },
+      {
+        "id": "On2h8Yhqi0Q9ig-giUBq53gudfRyw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403571614155@g.us",
+        "timestamp": 1761515571,
+        "source": "mobile",
+        "chat_name": "TractUs Demo Chat",
+        "text": {
+          "body": "These are the key terms of the trade you have just negotiated \n\n\n\nSr No : *1*\nDescription : *Fat powder*\nQuantity : *23.0*\nQuantity Unit : *MT*\nUnit Price : *1000.0*\nPricing Unit : *USD/MT*\nShip Term : *CIF*\nPacking : *Unknown*\nLoading : *23MT/40'FCL*\nTotal : *USD 23000.0*\n\n\nSO Date : *2025-10-26*\nSO Ref No : *Fat powder-2025-1*\nSeller : *TractUs Chats-to-Contracts Demo*\nPayment Terms : *Net 14 Days*\nBill To : *Mock Customer Pte Ltd, 175 Filbert Street, Hutchinson, Minnesota 55350, USA\t*\nShipping Method : *by sea*\nShip To : *175 Filbert Street, Hutchinson, Minnesota 55350, USA\t*\nDelivery Date : *2026-01-15*"
+        },
+        "from": "18572336857",
+        "from_name": "Apoorva Murarka"
+      }
+    ]
+  ],
+  "field_data": {
+    "items": [
+      {
+        "sr_no": 1,
+        "total": 40,
+        "loading": "",
+        "packing": "",
+        "quantity": "4,000.00",
+        "ship_term": "CIF",
+        "unit_price": 20,
+        "description": "Not found",
+        "pricing_unit": "USD/MT",
+        "quantity_unit": "kg"
+      }
+    ],
+    "do_date": "2025-12-15",
+    "po_date": "2025-10-26",
+    "po_ref_no": "Not found-2025-2",
+    "vendor_name": "TractUs Chats-to-Contracts Demo",
+    "payment_date": "Net 14 Days",
+    "delivery_terms": "CIF",
+    "billing_address": "Mock Customer Pte Ltd, 175 Filbert Street, Hutchinson, Minnesota 55350, USA\t",
+    "shipping_method": "",
+    "shipping_address": "175 Filbert Street, Hutchinson, Minnesota 55350, USA\t"
+  }
+}

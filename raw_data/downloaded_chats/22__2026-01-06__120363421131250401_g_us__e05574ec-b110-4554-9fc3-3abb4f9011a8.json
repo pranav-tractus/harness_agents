@@ -1,41 +1,19 @@
 {
-  "row_index": 6,
+  "row_index": 22,
   "whatsapp_group_id": "120363421131250401@g.us",
   "customer_id": "e05574ec-b110-4554-9fc3-3abb4f9011a8",
-  "created_at": "2026-01-06 04:16:22.843372",
+  "organization_id": "65411164-9df8-432d-af92-c5c4fa3193e5",
+  "contract_id": "b68fdf40-b338-4d12-86aa-2c8bbaf2f1eb",
+  "po_ref_no": "GIIOFINE - P — S-2026-2",
+  "status": "SIGNED",
+  "created_at": "2026-01-06T04:16:22.843372",
   "created_date": "2026-01-06",
-  "field_data": {
-    "items": [
-      {
-        "sr_no": 1,
-        "total": 6300.0,
-        "loading": "LCL",
-        "packing": "",
-        "quantity": 1800.0,
-        "ship_term": "EXW",
-        "unit_price": 3500.0,
-        "description": "GIIOFINE - P - S",
-        "pricing_unit": "usd/mt",
-        "quantity_unit": "kg"
-      }
-    ],
-    "do_date": "2026-02-28",
-    "po_date": "2026-01-06",
-    "po_ref_no": "GIIOFINE - P - S-2026-2",
-    "vendor_name": "GIIAVA Singapore Pte Ltd",
-    "payment_date": "Advanced payment",
-    "delivery_terms": "EXW",
-    "billing_address": "Epic Chemicals Sdn Bhd, 17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia",
-    "shipping_method": "",
-    "shipping_address": "17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia"
-  },
   "s3_matches": [
     {
       "bucket": "tractuslabs-data-sources",
       "key": "messages/120363421131250401@g.us/2026-01-06.json",
       "last_modified": "2026-01-06T09:17:35+00:00",
-      "size": 16048,
-      "presigned_url": "https://tractuslabs-data-sources.s3.amazonaws.com/messages/120363421131250401%40g.us/2026-01-06.json?AWSAccessKeyId=AKIAYQYUBA34VECEKVJT&Signature=xvYxUu0ET9eG8tdCbT3WusDdQYQ%3D&Expires=1776066107"
+      "size": 16048
     }
   ],
   "chats": [
@@ -224,7 +202,7 @@
             "mime_type": "application/pdf",
             "file_size": 274482,
             "sha256": "I6ryA/lyeooathcc5HTm6NPRiLtUUn4OSNMGwsUrVC0=",
-            "caption": "contract_GIIOFINE - P \u2014 S-2026-2.pdf"
+            "caption": "contract_GIIOFINE - P — S-2026-2.pdf"
           },
           "quoted_type": "documentWithCaption"
         },
@@ -262,7 +240,7 @@
         "source": "mobile",
         "chat_name": "Lecithin Epic / GIIAVA",
         "text": {
-          "body": "We are moving everything digital now \ud83d\udc4d\ud83c\udffc"
+          "body": "We are moving everything digital now 👍🏼"
         },
         "from": "6594240709",
         "from_name": "YB"
@@ -334,7 +312,7 @@
         "source": "mobile",
         "chat_name": "Lecithin Epic / GIIAVA",
         "text": {
-          "body": "That\u2019s why we moved to this system."
+          "body": "That’s why we moved to this system."
         },
         "from": "6594240709",
         "from_name": "YB"
@@ -480,7 +458,7 @@
         "device_id": 3,
         "chat_name": "Lecithin Epic / GIIAVA",
         "text": {
-          "body": "if interested, we\u2019ll reach out to you for an introduction. Thanks!"
+          "body": "if interested, we’ll reach out to you for an introduction. Thanks!"
         },
         "from": "60125872711",
         "from_name": "Jelene"
@@ -501,5 +479,29 @@
       }
     ]
   ],
-  "error": "Expecting value: line 1 column 1 (char 0)"
+  "field_data": {
+    "items": [
+      {
+        "sr_no": 1,
+        "total": 6300,
+        "loading": "LCL",
+        "packing": "",
+        "quantity": 1800,
+        "ship_term": "EXW",
+        "unit_price": 3500,
+        "description": "GIIOFINE - P — S",
+        "pricing_unit": "usd/mt",
+        "quantity_unit": "kg"
+      }
+    ],
+    "do_date": "2026-02-28",
+    "po_date": "2026-01-06",
+    "po_ref_no": "GIIOFINE - P — S-2026-2",
+    "vendor_name": "GIIAVA Singapore Pte Ltd",
+    "payment_date": "Advanced payment",
+    "delivery_terms": "EXW",
+    "billing_address": "Epic Chemicals Sdn Bhd, 17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia",
+    "shipping_method": "",
+    "shipping_address": "17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia"
+  }
 }

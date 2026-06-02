@@ -1,0 +1,210 @@
+{
+  "row_index": 2,
+  "whatsapp_group_id": "120363403809993004@g.us",
+  "customer_id": "cb0945e9-65a0-488f-99f7-a2f9ab857033",
+  "organization_id": "3061312e-c212-418f-ab5b-9e92dfe87c50",
+  "contract_id": "3ff4c77a-4575-4dff-b94a-1ec714f898d3",
+  "po_ref_no": "GIIOFEED PL-5-2025-1",
+  "status": "SIGNED",
+  "created_at": "2025-07-14T17:07:07.878635",
+  "created_date": "2025-07-14",
+  "s3_matches": [
+    {
+      "bucket": "tractuslabs-data-sources",
+      "key": "messages/120363403809993004@g.us/2025-07-14.json",
+      "last_modified": "2025-07-14T17:06:25+00:00",
+      "size": 3268
+    },
+    {
+      "bucket": "tractuslabs-data-sources",
+      "key": "messages/120363403809993004@g.us/llm_msg.json",
+      "last_modified": "2025-07-14T17:06:25+00:00",
+      "size": 1473
+    }
+  ],
+  "chats": [
+    [
+      {
+        "id": "PrCxEgwX_YtRRsE-gowBq53gyA0xLA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403809993004@g.us",
+        "timestamp": 1752512737,
+        "source": "web",
+        "device_id": 1,
+        "chat_name": "Feedtest",
+        "text": {
+          "body": "I just reviewed the fat powder sample from last container. Can I ask—was that made with standard lecithin or with the GIIOFEED PL-5 formulation?"
+        },
+        "from": "917330603947",
+        "from_name": "Rahul Bharadwaj Thotapalli"
+      },
+      {
+        "id": "PrC7Ht79wSS1NTQ-gokBq53gyA0xLA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403809993004@g.us",
+        "timestamp": 1752512742,
+        "source": "web",
+        "device_id": 26,
+        "chat_name": "Feedtest",
+        "text": {
+          "body": "That was with standard soy lecithin, actually. Why, was there an issue?"
+        },
+        "from": "918809069427",
+        "from_name": "somesh harshvardhan"
+      },
+      {
+        "id": "PrBoBnEpV9apPAY-gqkBq53gyA0xLA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403809993004@g.us",
+        "timestamp": 1752512746,
+        "source": "web",
+        "device_id": 1,
+        "chat_name": "Feedtest",
+        "text": {
+          "body": "Yes… the powder was slightly sticky above 5% dosage. My formulation team noticed high PV values after 2 weeks of storage"
+        },
+        "from": "917330603947",
+        "from_name": "Rahul Bharadwaj Thotapalli"
+      },
+      {
+        "id": "PrCFnqCmJ_IfUcI-gkgBq53gyA0xLA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403809993004@g.us",
+        "timestamp": 1752512751,
+        "source": "web",
+        "device_id": 26,
+        "chat_name": "Feedtest",
+        "text": {
+          "body": "Ah, in that case we’d recommend switching to GIIOFEED PL-5. It’s a \nspecial low-linoleic formulation with high PC+PL — designed exactly for that\nissue.\nIt keeps PV low and improves digestibility for pigs and poultry.\nPrice: USD 1,420/MT, CIF Busan"
+        },
+        "from": "918809069427",
+        "from_name": "somesh harshvardhan"
+      },
+      {
+        "id": "PrDf3m_oZUv8Tpc-gqIBq53gyA0xLA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403809993004@g.us",
+        "timestamp": 1752512755,
+        "source": "web",
+        "device_id": 1,
+        "chat_name": "Feedtest",
+        "text": {
+          "body": "That sounds like what we need. Is it brown sticky solid like the others?"
+        },
+        "from": "917330603947",
+        "from_name": "Rahul Bharadwaj Thotapalli"
+      },
+      {
+        "id": "PrCb9dydJA1F9Ds-gvcBq53gyA0xLA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403809993004@g.us",
+        "timestamp": 1752512758,
+        "source": "web",
+        "device_id": 26,
+        "chat_name": "Feedtest",
+        "text": {
+          "body": "Yes, but much more stable. You can dose even up to 10% if needed \nwithout stickiness"
+        },
+        "from": "918809069427",
+        "from_name": "somesh harshvardhan"
+      },
+      {
+        "id": "PrAEFEwAH8ju2qU-gjwBq53gyA0xLA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403809993004@g.us",
+        "timestamp": 1752512761,
+        "source": "web",
+        "device_id": 1,
+        "chat_name": "Feedtest",
+        "text": {
+          "body": "Perfect. Then can I request a trial batch of 2 MT? I’ll send PO later today.Ship together with the July BPPC order."
+        },
+        "from": "917330603947",
+        "from_name": "Rahul Bharadwaj Thotapalli"
+      },
+      {
+        "id": "PrCe8dhWxQI.Ghk-gsEBq53gyA0xLA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403809993004@g.us",
+        "timestamp": 1752512766,
+        "source": "web",
+        "device_id": 26,
+        "chat_name": "Feedtest",
+        "text": {
+          "body": "Noted. Will block 2 MT of GIIOFEED PL-5 for your July 20th dispatch. \nCIF Busan"
+        },
+        "from": "918809069427",
+        "from_name": "somesh harshvardhan"
+      },
+      {
+        "id": "OuhNhH97IsNd4A-gvEBq53gyA0xLA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403809993004@g.us",
+        "timestamp": 1752512783,
+        "source": "mobile",
+        "chat_name": "Feedtest",
+        "text": {
+          "body": "✌️"
+        },
+        "from": "919980511039",
+        "from_name": "Dev"
+      }
+    ],
+    [
+      {
+        "from_whom": "(TEAM2)",
+        "body": "I just reviewed the fat powder sample from last container. Can I ask—was that made with standard lecithin or with the GIIOFEED PL-5 formulation?",
+        "timestamp": 1752512737
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "That was with standard soy lecithin, actually. Why, was there an issue?",
+        "timestamp": 1752512742
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "Yes… the powder was slightly sticky above 5% dosage. My formulation team noticed high PV values after 2 weeks of storage",
+        "timestamp": 1752512746
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "Ah, in that case we’d recommend switching to GIIOFEED PL-5. It’s a \nspecial low-linoleic formulation with high PC+PL — designed exactly for that\nissue.\nIt keeps PV low and improves digestibility for pigs and poultry.\nPrice: USD 1,420/MT, CIF Busan",
+        "timestamp": 1752512751
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "That sounds like what we need. Is it brown sticky solid like the others?",
+        "timestamp": 1752512755
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "Yes, but much more stable. You can dose even up to 10% if needed \nwithout stickiness",
+        "timestamp": 1752512758
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "Perfect. Then can I request a trial batch of 2 MT? I’ll send PO later today.Ship together with the July BPPC order.",
+        "timestamp": 1752512761
+      },
+      {
+        "from_whom": "(TEAM2)",
+        "body": "Noted. Will block 2 MT of GIIOFEED PL-5 for your July 20th dispatch. \nCIF Busan",
+        "timestamp": 1752512766
+      },
+      {
+        "from_whom": "(TEAM1)",
+        "body": "✌️",
+        "timestamp": 1752512783
+      }
+    ]
+  ]
+}

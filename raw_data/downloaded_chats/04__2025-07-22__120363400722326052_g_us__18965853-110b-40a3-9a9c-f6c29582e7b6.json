@@ -1,0 +1,53 @@
+{
+  "row_index": 4,
+  "whatsapp_group_id": "120363400722326052@g.us",
+  "customer_id": "18965853-110b-40a3-9a9c-f6c29582e7b6",
+  "organization_id": "6ef75e3b-c19d-4caa-a2a5-bd6230c41732",
+  "contract_id": "8c47dc0e-f86c-46ff-9b1c-d62f8217a34e",
+  "po_ref_no": "GIIOFEED PL-5-2025-6",
+  "status": "SIGNED",
+  "created_at": "2025-07-22T03:35:50.147548",
+  "created_date": "2025-07-22",
+  "s3_matches": [
+    {
+      "bucket": "tractuslabs-data-sources",
+      "key": "messages/120363400722326052@g.us/2025-07-22.json",
+      "last_modified": "2025-07-22T03:41:06+00:00",
+      "size": 1729
+    }
+  ],
+  "chats": [
+    [
+      {
+        "id": "PrAleLeDBTxUDLk-gvwBq53gEAMiJA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363400722326052@g.us",
+        "timestamp": 1753155306,
+        "source": "web",
+        "device_id": 30,
+        "chat_name": "BB",
+        "text": {
+          "body": "These are the key terms of the trade you have just negotiated \n\n\n\nItems :\nProduct 1:\nDescription : *GIIOFEED PL-5*\nQuantity : *2*\nQuantity Unit : *MT*\nUnit Price : *1420*\nPricing Unit : *USD/MT*\nShip Term : *CIF*\nPacking : *Unknown*\nLoading : *Unknown*\nTotal : *2840.0*\nPo Date : *2025-07-18*\nPo Ref No : *GIIOFEED PL-5-2025-5*\n\n\nSeller : *Beauxbatons Agricultural Solutions*\nBill To : *Dumbledore Army*\nShip To : *Dumbledore Army*\nSo Date : *2025-07-18*\nSo Number : *GIIOFEED PL-5-2025-5*\nVendor Name : *Roadrunner Inc*\nDelivery Date : *July 20th*\nPayment Terms : *Unknown*\nDelivery Terms : *CIF Busan*\nShipping Method : *Unknown*"
+        },
+        "from": "16506464893",
+        "from_name": "Abhinav"
+      },
+      {
+        "id": "PrALpgc3FfG6aWY-gg0Bq53gEAMiJA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363400722326052@g.us",
+        "timestamp": 1753155664,
+        "source": "web",
+        "device_id": 30,
+        "chat_name": "BB",
+        "text": {
+          "body": "Items :\nProduct 1:\nDescription : *GIIOFEED PL-5*\nQuantity : *2000*\nQuantity Unit : *KG*\nUnit Price : *1420*\nPricing Unit : *USD/MT*\nShip Term : *CIF*\nPacking : *Unknown*\nLoading : *Unknown*\nAmount : *2840.0*\nPo Date : *2025-07-22*\nPo Ref No : *GIIOFEED PL-5-2025-6*\n\n\nSeller : *Beauxbatons Agricultural Solutions*\nBill To : *Dumbledore Army*\nShip To : *Dumbledore Army*\nSo Date : *2025-07-22*\nSo Number : *GIIOFEED PL-5-2025-6*\nVendor Name : *Roadrunner Inc*\nDelivery Date : *July 20th*\nPayment Terms : *Unknown*\nDelivery Terms : *CIF Busan*\nShipping Method : *Unknown*"
+        },
+        "from": "16506464893",
+        "from_name": "Abhinav"
+      }
+    ]
+  ]
+}

@@ -1,0 +1,433 @@
+{
+  "row_index": 19,
+  "whatsapp_group_id": "120363422613115487@g.us",
+  "customer_id": "31b110ba-8007-4099-b171-e58e35c97bfc",
+  "organization_id": "43c7406f-161f-46b8-997c-b5ca99c72345",
+  "contract_id": "862e5ff6-b171-4262-a03e-49c7440b5b15",
+  "po_ref_no": "TG - BP102-2025-2",
+  "status": "SIGNED",
+  "created_at": "2025-10-01T00:58:28.721929",
+  "created_date": "2025-10-01",
+  "s3_matches": [
+    {
+      "bucket": "tractuslabs-data-sources",
+      "key": "messages/120363422613115487@g.us/2025-10-01.json",
+      "last_modified": "2025-10-01T02:19:49+00:00",
+      "size": 11239
+    }
+  ],
+  "chats": [
+    [
+      {
+        "id": "P4iHZct8BMshvw-gisBq53lKM4SXw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363422613115487@g.us",
+        "timestamp": 1759278645,
+        "source": "mobile",
+        "device_id": 5,
+        "chat_name": "AG Lipids / FeedBEST Fat Powder",
+        "text": {
+          "body": "Good morning Dr.Yashodhan, I confirm thank you"
+        },
+        "from": "821083389380",
+        "from_name": "Sophie"
+      },
+      {
+        "id": "Oqbbst7LnR86Iw-ggYBq53lKM4SXw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363422613115487@g.us",
+        "timestamp": 1759278762,
+        "source": "mobile",
+        "chat_name": "AG Lipids / FeedBEST Fat Powder",
+        "text": {
+          "body": "Change packing to 25kg paper bag and loading to 23 MT/ 40’ FCL"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "OvA_2oVI9Xrkxg-gt0Bq53lKM4SXw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363422613115487@g.us",
+        "timestamp": 1759278849,
+        "source": "mobile",
+        "chat_name": "AG Lipids / FeedBEST Fat Powder",
+        "text": {
+          "body": "Ms Sophie the sales order should have been sent to you for digital signing"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "Oln8JU_xNx75tg-giYBq53lKM4SXw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363422613115487@g.us",
+        "timestamp": 1759278918,
+        "source": "mobile",
+        "chat_name": "AG Lipids / FeedBEST Fat Powder",
+        "text": {
+          "body": "Can I request you to complete the digital signing, and it will email you the finished sales order contract?"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "P9MkaTkZLLjiCA-giEBq53lKM4SXw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363422613115487@g.us",
+        "timestamp": 1759279238,
+        "source": "mobile",
+        "device_id": 5,
+        "chat_name": "AG Lipids / FeedBEST Fat Powder",
+        "text": {
+          "body": "how to do for digital signing? just open the pdf file and sign?"
+        },
+        "from": "821083389380",
+        "from_name": "Sophie"
+      },
+      {
+        "id": "Ou4jrva6WDUpmA-gm4Bq53lKM4SXw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363422613115487@g.us",
+        "timestamp": 1759279260,
+        "source": "mobile",
+        "chat_name": "AG Lipids / FeedBEST Fat Powder",
+        "text": {
+          "body": "The digital signature document should have gone to your email"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "PxFgLflwmxERAQ-guwBq53lKM4SXw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363422613115487@g.us",
+        "timestamp": 1759279517,
+        "source": "mobile",
+        "device_id": 5,
+        "chat_name": "AG Lipids / FeedBEST Fat Powder",
+        "text": {
+          "body": "haven't received yet"
+        },
+        "from": "821083389380",
+        "from_name": "Sophie"
+      },
+      {
+        "id": "OncKExUUEpPR1w-gjUBq53lKM4SXw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363422613115487@g.us",
+        "timestamp": 1759280170,
+        "source": "mobile",
+        "chat_name": "AG Lipids / FeedBEST Fat Powder",
+        "text": {
+          "body": "Oh shoot my mistake I typed your email wrong"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "OhhhIVKBCjRWTA-gjIBq53lKM4SXw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363422613115487@g.us",
+        "timestamp": 1759280188,
+        "source": "mobile",
+        "chat_name": "AG Lipids / FeedBEST Fat Powder",
+        "text": {
+          "body": "These are the key terms of the trade you have just negotiated \n\n\n\nSr No : *1*\nDescription : *BP102*\nQuantity : *23.0*\nQuantity Unit : *MT*\nUnit Price : *1360.0*\nPricing Unit : *USD/MT*\nShip Term : *CIF*\nPacking : *25kg paper bag*\nLoading : *23 MT/ 40’ FCL*\nTotal : *USD 31280.0*\n\n\nSO Date : *2025-10-01*\nSO Ref No : *BP102-2025-1*\nSeller : *AG Lipids Pte Ltd*\nPayment Terms : *Net 14 Days*\nBill To : *FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu*\nShipping Method : *Unknown*\nShip To : *Factory 354-58 Mojeon-1 Sobuk-gu*\nDelivery Date : *2025-10-31*"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "Oh3kayNFpS_b6w-goABq53lKM4SXw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363422613115487@g.us",
+        "timestamp": 1759280237,
+        "source": "mobile",
+        "chat_name": "AG Lipids / FeedBEST Fat Powder",
+        "text": {
+          "body": "Change packing to 25kg paper bag and loading to 23 MT/ 40’ FCL"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "OikmWqZ0T1i06A-gssBq53lKM4SXw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363422613115487@g.us",
+        "timestamp": 1759280332,
+        "source": "mobile",
+        "chat_name": "AG Lipids / FeedBEST Fat Powder",
+        "text": {
+          "body": "Ms Sophie can you check email now"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "Ou2LtLMwN1GZKg-gjsBq53lKM4SXw",
+        "from_me": false,
+        "type": "image",
+        "chat_id": "120363422613115487@g.us",
+        "timestamp": 1759280526,
+        "source": "mobile",
+        "chat_name": "AG Lipids / FeedBEST Fat Powder",
+        "image": {
+          "id": "jpeg-3aed8bb4b3303751992a-823b01ab9de528ce125f",
+          "mime_type": "image/jpeg",
+          "file_size": 61057,
+          "sha256": "VkEzMXdqUld1aVdQMldQTEdwOGZIYVhGSTNVN2Z5U1hrUkl5U1c1Vm5Qaz0=",
+          "link": "https://tractuslabs-data-sources.s3.us-east-1.amazonaws.com/messages/120363422613115487@g.us/2025-10-01/47fa7d0b-006d-4f57-bc38-8b8a50948447_jpeg-3aed8bb4b3303751992a-823b01ab9de528ce125f.jpeg",
+          "width": 880,
+          "height": 1600,
+          "preview": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABsSFBcUERsXFhceHBsgKEIrKCUlKFE6PTBCYFVlZF9VXVtqeJmBanGQc1tdhbWGkJ6jq62rZ4C8ybqmx5moq6T/2wBDARweHigjKE4rK06kbl1upKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKT/wgARCABIAEgDASIAAhEBAxEB/8QAGQABAQEBAQEAAAAAAAAAAAAAAAECAwQG/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEAMQAAAA+hnYeXr1GNgxsRRz8/sHie0cO8FAAAlhFCygAhZBUFuaUDIYyHHuF2Ggf//EABQRAQAAAAAAAAAAAAAAAAAAAED/2gAIAQIBAT8AT//EABQRAQAAAAAAAAAAAAAAAAAAAED/2gAIAQMBAT8AT//EACgQAAICAQEGBgMAAAAAAAAAAAECABEDEgQQFCAhMRMiMEFRUiRCYf/aAAgBAQABPwDNqryzIpbF1u/5FwWw8+QRcIUHzE38wYwD3O9VKknUSDAKPf0szMmMsgsziM4xq3h6j7zjM1dNna4drzi/xz0mz5ny3rxlK+fRv0DLlwcxlCVBz3Lg5GYL3NTWg/YQugNFhNa/YQuo7sJrX7CAg9je9kVxTCxOHxfWZMGPSTpsiPoCgHCxi4cbqCVq/acPj+IiKgpe27///gADAP/Z",
+          "s3_info": {
+            "bucket": "tractuslabs-data-sources",
+            "key": "messages/120363422613115487@g.us/2025-10-01/47fa7d0b-006d-4f57-bc38-8b8a50948447_jpeg-3aed8bb4b3303751992a-823b01ab9de528ce125f.jpeg"
+          }
+        },
+        "from": "821083389380",
+        "from_name": "Sophie"
+      },
+      {
+        "id": "Ok__IWbKN3Fikw-gmABq53lKM4SXw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363422613115487@g.us",
+        "timestamp": 1759280584,
+        "source": "mobile",
+        "chat_name": "AG Lipids / FeedBEST Fat Powder",
+        "text": {
+          "body": "Yes this. Can you sign from the link"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "OiFNzfhBhk2bdQ-guYBq53lKM4SXw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363422613115487@g.us",
+        "timestamp": 1759280907,
+        "source": "mobile",
+        "chat_name": "AG Lipids / FeedBEST Fat Powder",
+        "text": {
+          "body": "The contract is signed! Wonderful thanks 👍🏼"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "Opx3v46EAvP.9g-gpUBq53lKM4SXw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363422613115487@g.us",
+        "timestamp": 1759281058,
+        "source": "mobile",
+        "chat_name": "AG Lipids / FeedBEST Fat Powder",
+        "text": {
+          "body": "Any chance you can take any additional quantity of the May material? I can offer same discount"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "OqFkZVN1J2T7Ow-gqMBq53lKM4SXw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363422613115487@g.us",
+        "timestamp": 1759281123,
+        "source": "mobile",
+        "chat_name": "AG Lipids / FeedBEST Fat Powder",
+        "text": {
+          "body": "Can you confirm if you got the double signed copy also? Thank you! 🙏🏽"
+        },
+        "context": {
+          "quoted_id": "Ou2LtLMwN1GZKg-gjsBq53lKM4SXw",
+          "quoted_author": "821083389380",
+          "quoted_content": {
+            "id": "media_init",
+            "mime_type": "image/jpeg",
+            "file_size": 61057,
+            "sha256": "VkEzMXdqUld1aVdQMldQTEdwOGZIYVhGSTNVN2Z5U1hrUkl5U1c1Vm5Qaz0=",
+            "width": 880,
+            "height": 1600,
+            "preview": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABsSFBcUERsXFhceHBsgKEIrKCUlKFE6PTBCYFVlZF9VXVtqeJmBanGQc1tdhbWGkJ6jq62rZ4C8ybqmx5moq6T/2wBDARweHigjKE4rK06kbl1upKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKT/wgARCABIAEgDASIAAhEBAxEB/8QAGQABAQEBAQEAAAAAAAAAAAAAAAECAwQG/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEAMQAAAA+hnYeXr1GNgxsRRz8/sHie0cO8FAAAlhFCygAhZBUFuaUDIYyHHuF2Ggf//EABQRAQAAAAAAAAAAAAAAAAAAAED/2gAIAQIBAT8AT//EABQRAQAAAAAAAAAAAAAAAAAAAED/2gAIAQMBAT8AT//EACgQAAICAQEGBgMAAAAAAAAAAAECABEDEgQQFCAhMRMiMEFRUiRCYf/aAAgBAQABPwDNqryzIpbF1u/5FwWw8+QRcIUHzE38wYwD3O9VKknUSDAKPf0szMmMsgsziM4xq3h6j7zjM1dNna4drzi/xz0mz5ny3rxlK+fRv0DLlwcxlCVBz3Lg5GYL3NTWg/YQugNFhNa/YQuo7sJrX7CAg9je9kVxTCxOHxfWZMGPSTpsiPoCgHCxi4cbqCVq/acPj+IiKgpe27///gADAP/Z"
+          },
+          "quoted_type": "image"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "P2DT.bimWSwfUA-gr8Bq53lKM4SXw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363422613115487@g.us",
+        "timestamp": 1759281761,
+        "source": "mobile",
+        "device_id": 5,
+        "chat_name": "AG Lipids / FeedBEST Fat Powder",
+        "text": {
+          "body": "yes received email:D"
+        },
+        "context": {
+          "quoted_id": "OqFkZVN1J2T7Ow-gqMBq53lKM4SXw",
+          "quoted_author": "6594240709",
+          "quoted_content": {
+            "body": "Can you confirm if you got the double signed copy also? Thank you! 🙏🏽"
+          },
+          "quoted_type": "text"
+        },
+        "from": "821083389380",
+        "from_name": "Sophie"
+      },
+      {
+        "id": "P_0KS7F1WPLQ8g-gmQBq53lKM4SXw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363422613115487@g.us",
+        "timestamp": 1759282321,
+        "source": "mobile",
+        "device_id": 5,
+        "chat_name": "AG Lipids / FeedBEST Fat Powder",
+        "text": {
+          "body": "1. If I order additional 1FCL, can you arrange the same schedule as you gave me yesterday?\n - ETD 14 October / ETA 27 October sir\n2. Could you please check the production/delivery schedule(about) of 5FCLs?"
+        },
+        "context": {
+          "quoted_id": "Opx3v46EAvP.9g-gpUBq53lKM4SXw",
+          "quoted_author": "6594240709",
+          "quoted_content": {
+            "body": "Any chance you can take any additional quantity of the May material? I can offer same discount"
+          },
+          "quoted_type": "text"
+        },
+        "from": "821083389380",
+        "from_name": "Sophie"
+      },
+      {
+        "id": "OnhwyHBigiyxbw-gvUBq53lKM4SXw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363422613115487@g.us",
+        "timestamp": 1759282356,
+        "source": "mobile",
+        "chat_name": "AG Lipids / FeedBEST Fat Powder",
+        "text": {
+          "body": "Wonderful"
+        },
+        "context": {
+          "quoted_id": "P2DT.bimWSwfUA-gr8Bq53lKM4SXw",
+          "quoted_author": "821083389380",
+          "quoted_content": {
+            "body": "yes received email:D"
+          },
+          "quoted_type": "text"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "OsB.ps6Dcr_cCQ-gpMBq53lKM4SXw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363422613115487@g.us",
+        "timestamp": 1759282392,
+        "source": "mobile",
+        "chat_name": "AG Lipids / FeedBEST Fat Powder",
+        "text": {
+          "body": "If you order additional container I can also arrange along with this one"
+        },
+        "context": {
+          "quoted_id": "P_0KS7F1WPLQ8g-gmQBq53lKM4SXw",
+          "quoted_author": "821083389380",
+          "quoted_content": {
+            "body": "1. If I order additional 1FCL, can you arrange the same schedule as you gave me yesterday?\n - ETD 14 October / ETA 27 October sir\n2. Could you please check the production/delivery schedule(about) of 5FCLs?"
+          },
+          "quoted_type": "text"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "OrUZqqC0YIrpDw-gv0Bq53lKM4SXw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363422613115487@g.us",
+        "timestamp": 1759282397,
+        "source": "mobile",
+        "chat_name": "AG Lipids / FeedBEST Fat Powder",
+        "text": {
+          "body": "To gwangyang"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "Oti9GVXKA9LbIg-gh8Bq53lKM4SXw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363422613115487@g.us",
+        "timestamp": 1759282402,
+        "source": "mobile",
+        "chat_name": "AG Lipids / FeedBEST Fat Powder",
+        "text": {
+          "body": "I check the 5 FCL first"
+        },
+        "from": "6594240709",
+        "from_name": "YB"
+      },
+      {
+        "id": "P_qmgZWVDaPnHA-guQBq53lKM4SXw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363422613115487@g.us",
+        "timestamp": 1759285180,
+        "source": "mobile",
+        "device_id": 5,
+        "chat_name": "AG Lipids / FeedBEST Fat Powder",
+        "text": {
+          "body": "I replied to Mr. Muhamad about the schedule of PF85 - if 3fcls already departed 23Sep as arranged, then I could receive them after national holiday - also i can use them for Oct and Nov. so you don't have to dispatch remained 3fcls(#S002423&24) earlier - departs on Nov is fine"
+        },
+        "from": "821083389380",
+        "from_name": "Sophie"
+      }
+    ]
+  ],
+  "field_data": {
+    "items": [
+      {
+        "sr_no": 1,
+        "total": 31280,
+        "loading": "23 MT/ 40’ FCL",
+        "packing": "25kg paper bag",
+        "quantity": 23000,
+        "ship_term": "CIF",
+        "unit_price": 1360,
+        "description": "TG - BP102",
+        "pricing_unit": "usd/mt",
+        "quantity_unit": "kg"
+      }
+    ],
+    "do_date": "2025-10-31",
+    "po_date": "2025-10-01",
+    "po_ref_no": "TG - BP102-2025-2",
+    "vendor_name": "AG Lipids Pte Ltd",
+    "payment_date": "Net 14 Days",
+    "delivery_terms": "CIF",
+    "billing_address": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu",
+    "shipping_method": "Unknown",
+    "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu"
+  }
+}

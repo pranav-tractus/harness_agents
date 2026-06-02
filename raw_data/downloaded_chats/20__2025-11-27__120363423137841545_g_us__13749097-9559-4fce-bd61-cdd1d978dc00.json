@@ -1,0 +1,115 @@
+{
+  "row_index": 20,
+  "whatsapp_group_id": "120363423137841545@g.us",
+  "customer_id": "13749097-9559-4fce-bd61-cdd1d978dc00",
+  "organization_id": "ddde9111-24f8-4a15-bd24-b0433e8ad700",
+  "contract_id": "aa19e831-e1bf-4be9-8c13-83858a5976f8",
+  "po_ref_no": "GIIOFINE - L - S-2025-1",
+  "status": "SIGNED",
+  "created_at": "2025-11-27T05:02:35.854218",
+  "created_date": "2025-11-27",
+  "s3_matches": [
+    {
+      "bucket": "tractuslabs-data-sources",
+      "key": "messages/120363423137841545@g.us/2025-11-27.json",
+      "last_modified": "2025-11-27T05:02:08+00:00",
+      "size": 1642
+    }
+  ],
+  "chats": [
+    [
+      {
+        "id": "OxtFMpipzEzXSg-glkBq53lSBTBiQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363423137841545@g.us",
+        "timestamp": 1764219524,
+        "source": "mobile",
+        "device_id": 26,
+        "text": {
+          "body": "1"
+        },
+        "from": "919560993089",
+        "from_name": "Pranav Tripathi"
+      },
+      {
+        "id": "O8ilTRMMD81gLw-guMBq53lSBTBiQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363423137841545@g.us",
+        "timestamp": 1764219640,
+        "source": "mobile",
+        "device_id": 26,
+        "chat_name": "Tract us bot testing prod",
+        "text": {
+          "body": "Sr No : *1*\nDescription : *GIIOFINE - L - S*\nQuantity : *2.0*\nQuantity Unit : *MT*\nUnit Price : *339.0*\nPricing Unit : *USD/KG*\nShip Term : *Unknown*\nPacking : *Unknown*\nLoading : *23MT/40'FCL*\nTotal : *USD 678000.0*\n\n\nSO Date : *2025-11-25*\nSO Ref No : *GIIOFINE - L - S-2025-2*\nSeller : *Qwerty*\nPayment Terms : *Net 14 Days*\nBill To : *FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu*\nShipping Method : *Unknown*\nShip To : *Factory 354-58 Mojeon-1 Sobuk-gu*\nDelivery Date : *2025-12-07*"
+        },
+        "from": "919560993089",
+        "from_name": "Pranav Tripathi"
+      },
+      {
+        "id": "O6yzXZmtrtH10g-gtMBq53lSBTBiQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363423137841545@g.us",
+        "timestamp": 1764219655,
+        "source": "mobile",
+        "device_id": 26,
+        "chat_name": "Tract us bot testing prod",
+        "text": {
+          "body": "1"
+        },
+        "from": "919560993089",
+        "from_name": "Pranav Tripathi"
+      },
+      {
+        "id": "O.oqXfKUuNBoWQ-gisBq53lSBTBiQ",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363423137841545@g.us",
+        "timestamp": 1764219726,
+        "source": "mobile",
+        "device_id": 26,
+        "chat_name": "Tract us bot testing prod",
+        "text": {
+          "body": "@125379322851493 change qty to 5"
+        },
+        "context": {
+          "mentions": [
+            "919123097519"
+          ]
+        },
+        "from": "919560993089",
+        "from_name": "Pranav Tripathi"
+      }
+    ]
+  ],
+  "field_data": {
+    "items": [
+      {
+        "sr_no": 1,
+        "total": 1695000,
+        "do_date": "2025-12-07",
+        "loading": "23MT/40'FCL",
+        "packing": "Unknown",
+        "po_date": "2025-11-27",
+        "quantity": 5000,
+        "po_ref_no": "GIIOFINE - L - S-2025-1",
+        "ship_term": "Unknown",
+        "unit_price": 339000,
+        "description": "GIIOFINE - L - S",
+        "pricing_unit": "usd/mt",
+        "quantity_unit": "kg"
+      }
+    ],
+    "do_date": "2025-12-07",
+    "po_date": "2025-11-27",
+    "po_ref_no": "GIIOFINE - L - S-2025-1",
+    "vendor_name": "Qwerty",
+    "payment_date": "Net 14 Days",
+    "delivery_terms": "Unknown",
+    "billing_address": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu",
+    "shipping_method": "Unknown",
+    "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "row_index": 23,
+  "whatsapp_group_id": "120363403571614155@g.us",
+  "customer_id": "c21c86dd-475b-49f4-8799-49743702a286",
+  "organization_id": "2187915f-d496-48f7-83e1-244f7b3944fd",
+  "contract_id": "e86e463e-3d2f-476f-b6c5-ece5be36c278",
+  "po_ref_no": "STARIZO-High Maltose Syrup-2026-1",
+  "status": "SIGNED",
+  "created_at": "2026-01-07T02:48:52.470484",
+  "created_date": "2026-01-07",
+  "s3_matches": [
+    {
+      "bucket": "tractuslabs-data-sources",
+      "key": "messages/120363403571614155@g.us/2026-01-07.json",
+      "last_modified": "2026-01-07T02:48:05+00:00",
+      "size": 309
+    }
+  ],
+  "chats": [
+    [
+      {
+        "id": "OiSf1UoliuwGDw-gtABq53gudfRyw",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363403571614155@g.us",
+        "timestamp": 1767754080,
+        "source": "mobile",
+        "chat_name": "TractUs Demo Chat",
+        "text": {
+          "body": "Syrup\nFON Chennai \nShipment by mid March \n40 MT\n$1500/MT"
+        },
+        "from": "16172164289",
+        "from_name": "Apoorva Murarka"
+      }
+    ]
+  ],
+  "field_data": {
+    "items": [
+      {
+        "sr_no": 1,
+        "total": 60000,
+        "loading": "",
+        "packing": "",
+        "quantity": 40000,
+        "ship_term": "FOB Chennai",
+        "unit_price": 1500,
+        "description": "STARIZO-High Maltose Syrup",
+        "pricing_unit": "usd/mt",
+        "quantity_unit": "kg"
+      }
+    ],
+    "do_date": "2026-03-15",
+    "po_date": "2026-01-07",
+    "po_ref_no": "STARIZO-High Maltose Syrup-2026-1",
+    "vendor_name": "TractUs Chats-to-Contracts Demo",
+    "payment_date": "Net 14 Days",
+    "delivery_terms": "FOB Chennai",
+    "billing_address": "Paramount Agricultural Solutions, 175 Filbert Street, Hutchinson, Minnesota 55350, USA",
+    "shipping_method": "",
+    "shipping_address": "175 Filbert Street, Hutchinson, Minnesota 55350, USA"
+  }
+}

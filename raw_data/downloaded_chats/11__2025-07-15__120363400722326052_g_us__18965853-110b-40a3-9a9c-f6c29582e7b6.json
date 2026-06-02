@@ -1,0 +1,143 @@
+{
+  "row_index": 11,
+  "whatsapp_group_id": "120363400722326052@g.us",
+  "customer_id": "18965853-110b-40a3-9a9c-f6c29582e7b6",
+  "organization_id": "6ef75e3b-c19d-4caa-a2a5-bd6230c41732",
+  "contract_id": "2bb365ab-5ba0-4b90-88e0-e7a3e0a0a800",
+  "po_ref_no": "GIIOFEED PL-5-2025-1",
+  "status": "SIGNED",
+  "created_at": "2025-07-15T19:51:17.018804",
+  "created_date": "2025-07-15",
+  "s3_matches": [
+    {
+      "bucket": "tractuslabs-data-sources",
+      "key": "messages/120363400722326052@g.us/2025-07-15.json",
+      "last_modified": "2025-07-15T18:11:12+00:00",
+      "size": 2900
+    }
+  ],
+  "chats": [
+    [
+      {
+        "id": "PrDL9..KoEJ7QNU-gmoBq53gEAMiJA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363400722326052@g.us",
+        "timestamp": 1752602926,
+        "source": "web",
+        "device_id": 2,
+        "chat_name": "BB",
+        "text": {
+          "body": "Good morning,I just reviewed the fat powder sample from last container. Can I ask—was that made with standard lecithin or with the GIIOFEED PL-5 formulation?"
+        },
+        "from": "6584869695",
+        "from_name": "Abhinav"
+      },
+      {
+        "id": "PzkN4teho.YSIA-gm8Bq53gEAMiJA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363400722326052@g.us",
+        "timestamp": 1752602943,
+        "source": "mobile",
+        "device_id": 27,
+        "chat_name": "BB",
+        "text": {
+          "body": "Morning!\nThat was with standard soy lecithin, actually. Why, was there an issue?"
+        },
+        "from": "16506464893",
+        "from_name": "Abhinav"
+      },
+      {
+        "id": "PrAH5Yx0W4d.1E4-gtUBq53gEAMiJA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363400722326052@g.us",
+        "timestamp": 1752602967,
+        "source": "web",
+        "device_id": 2,
+        "chat_name": "BB",
+        "text": {
+          "body": "Yes… the powder was slightly sticky above 5% dosage. My formulation team noticed high PV values after 2 weeks of storage"
+        },
+        "from": "6584869695",
+        "from_name": "Abhinav"
+      },
+      {
+        "id": "P9Rv9oGdh6zC.A-gvcBq53gEAMiJA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363400722326052@g.us",
+        "timestamp": 1752602976,
+        "source": "mobile",
+        "device_id": 27,
+        "chat_name": "BB",
+        "text": {
+          "body": "Ah, in that case we’d recommend switching to GIIOFEED PL-5. It’s a \nspecial low-linoleic formulation with high PC+PL — designed exactly for that\nissue.\nIt keeps PV low and improves digestibility for pigs and poultry.\nPrice: USD 1,420/MT, CIF Busan."
+        },
+        "from": "16506464893",
+        "from_name": "Abhinav"
+      },
+      {
+        "id": "PrATRNFWuKJw7lk-gtQBq53gEAMiJA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363400722326052@g.us",
+        "timestamp": 1752603013,
+        "source": "web",
+        "device_id": 2,
+        "chat_name": "BB",
+        "text": {
+          "body": "That sounds like what we need. Is it brown sticky solid like the others?"
+        },
+        "from": "6584869695",
+        "from_name": "Abhinav"
+      },
+      {
+        "id": "P3TRNRMqxBVbAQ-giEBq53gEAMiJA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363400722326052@g.us",
+        "timestamp": 1752603031,
+        "source": "mobile",
+        "device_id": 27,
+        "chat_name": "BB",
+        "text": {
+          "body": "Yes, but much more stable. You can dose even up to 10% if needed without stickiness."
+        },
+        "from": "16506464893",
+        "from_name": "Abhinav"
+      },
+      {
+        "id": "PrAMIPUuOklbCvc-giwBq53gEAMiJA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363400722326052@g.us",
+        "timestamp": 1752603062,
+        "source": "web",
+        "device_id": 2,
+        "chat_name": "BB",
+        "text": {
+          "body": "Perfect. Then can I request a trial batch of 2 MT? I’ll send PO later today.Ship together with the July BPPC order."
+        },
+        "from": "6584869695",
+        "from_name": "Abhinav"
+      },
+      {
+        "id": "P.QxHwx4DmZzuA-gnMBq53gEAMiJA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363400722326052@g.us",
+        "timestamp": 1752603070,
+        "source": "mobile",
+        "device_id": 27,
+        "chat_name": "BB",
+        "text": {
+          "body": "Noted. Will block 2 MT of GIIOFEED PL-5 for your July 20th dispatch. \nCIF Busan."
+        },
+        "from": "16506464893",
+        "from_name": "Abhinav"
+      }
+    ]
+  ]
+}

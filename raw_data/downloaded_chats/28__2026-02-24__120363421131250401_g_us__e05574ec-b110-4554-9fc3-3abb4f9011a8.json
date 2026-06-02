@@ -1,48 +1,25 @@
 {
-  "row_index": 1,
+  "row_index": 28,
   "whatsapp_group_id": "120363421131250401@g.us",
   "customer_id": "e05574ec-b110-4554-9fc3-3abb4f9011a8",
-  "created_at": "2026-02-24 01:13:15.602732",
+  "organization_id": "65411164-9df8-432d-af92-c5c4fa3193e5",
+  "contract_id": "1c269dc1-d50c-4121-9941-efc659aca80e",
+  "po_ref_no": "GIIOFINE - P — S-2026-6",
+  "status": "SIGNED",
+  "created_at": "2026-02-24T01:13:15.602732",
   "created_date": "2026-02-24",
-  "field_data": {
-    "items": [
-      {
-        "sr_no": 1,
-        "total": 5850.0,
-        "loading": "Unknown",
-        "packing": "Unknown",
-        "quantity": 1800.0,
-        "ship_term": "EXW",
-        "unit_price": 3250.0,
-        "description": "GIIOFINE - P - S",
-        "pricing_unit": "usd/mt",
-        "quantity_unit": "kg"
-      }
-    ],
-    "do_date": "2026-03-31",
-    "po_date": "2026-02-24",
-    "po_ref_no": "GIIOFINE - P - S-2026-6",
-    "vendor_name": "GIIAVA Singapore Pte Ltd",
-    "payment_date": "Advanced payment",
-    "delivery_terms": "EXW",
-    "billing_address": "Epic Chemicals Sdn Bhd, 17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia",
-    "shipping_method": "Collection Against OPO 260012/EC",
-    "shipping_address": "17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia"
-  },
   "s3_matches": [
     {
       "bucket": "tractuslabs-data-sources",
       "key": "messages/120363421131250401@g.us/2026-02-24.json",
       "last_modified": "2026-02-24T10:42:10+00:00",
-      "size": 2651,
-      "presigned_url": "https://tractuslabs-data-sources.s3.amazonaws.com/messages/120363421131250401%40g.us/2026-02-24.json?AWSAccessKeyId=AKIAYQYUBA34VECEKVJT&Signature=dHnnNgjob1TuwWctdT0B4o7Ilc0%3D&Expires=1776066096"
+      "size": 2651
     },
     {
       "bucket": "tractuslabs-data-sources",
       "key": "messages/120363421131250401@g.us/llm_msg.json",
       "last_modified": "2026-02-24T10:42:09+00:00",
-      "size": 3773,
-      "presigned_url": "https://tractuslabs-data-sources.s3.amazonaws.com/messages/120363421131250401%40g.us/llm_msg.json?AWSAccessKeyId=AKIAYQYUBA34VECEKVJT&Signature=Riqb0VLBinduoRRWkKrrQeiCJN4%3D&Expires=1776066097"
+      "size": 3773
     }
   ],
   "chats": [
@@ -221,7 +198,7 @@
       },
       {
         "from_whom": "(TEAM1)",
-        "body": "We are moving everything digital now \ud83d\udc4d\ud83c\udffc",
+        "body": "We are moving everything digital now 👍🏼",
         "timestamp": 1767690361
       },
       {
@@ -246,7 +223,7 @@
       },
       {
         "from_whom": "(TEAM1)",
-        "body": "That\u2019s why we moved to this system.",
+        "body": "That’s why we moved to this system.",
         "timestamp": 1767690459
       },
       {
@@ -291,7 +268,7 @@
       },
       {
         "from_whom": "(TEAM2)",
-        "body": "if interested, we\u2019ll reach out to you for an introduction. Thanks!",
+        "body": "if interested, we’ll reach out to you for an introduction. Thanks!",
         "timestamp": 1767690938
       },
       {
@@ -325,5 +302,30 @@
         "timestamp": 1771929725
       }
     ]
-  ]
+  ],
+  "field_data": {
+    "items": [
+      {
+        "sr_no": 1,
+        "total": 5850,
+        "loading": "Unknown",
+        "packing": "Unknown",
+        "quantity": 1800,
+        "ship_term": "EXW",
+        "unit_price": 3250,
+        "description": "GIIOFINE - P — S",
+        "pricing_unit": "usd/mt",
+        "quantity_unit": "kg"
+      }
+    ],
+    "do_date": "2026-03-31",
+    "po_date": "2026-02-24",
+    "po_ref_no": "GIIOFINE - P — S-2026-6",
+    "vendor_name": "GIIAVA Singapore Pte Ltd",
+    "payment_date": "Advanced payment",
+    "delivery_terms": "EXW",
+    "billing_address": "Epic Chemicals Sdn Bhd, 17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia",
+    "shipping_method": "Collection Against OPO 260012/EC",
+    "shipping_address": "17 Jalan Industri Mas 12,Taman Mas Sepang,47130 Puchong,Selangor,Malaysia"
+  }
 }

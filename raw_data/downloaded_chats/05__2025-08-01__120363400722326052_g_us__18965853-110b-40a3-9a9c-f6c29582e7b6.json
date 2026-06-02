@@ -1,0 +1,82 @@
+{
+  "row_index": 5,
+  "whatsapp_group_id": "120363400722326052@g.us",
+  "customer_id": "18965853-110b-40a3-9a9c-f6c29582e7b6",
+  "organization_id": "6ef75e3b-c19d-4caa-a2a5-bd6230c41732",
+  "contract_id": "51df95b3-a95a-4504-93d0-409768519460",
+  "po_ref_no": "GIIOFEED PL-5-2025-6",
+  "status": "SIGNED",
+  "created_at": "2025-08-01T04:16:01.101902",
+  "created_date": "2025-08-01",
+  "s3_matches": [
+    {
+      "bucket": "tractuslabs-data-sources",
+      "key": "messages/120363400722326052@g.us/2025-08-01.json",
+      "last_modified": "2025-08-01T21:38:46+00:00",
+      "size": 2597
+    }
+  ],
+  "chats": [
+    [
+      {
+        "id": "PrCky55jHaHK_Z4-groBq53gEAMiJA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363400722326052@g.us",
+        "timestamp": 1754021714,
+        "source": "web",
+        "device_id": 30,
+        "chat_name": "BB",
+        "text": {
+          "body": "Items :\nProduct 1:\nDescription : *GIIOFEED PL-5*\nQuantity : *2*\nQuantity Unit : *MT*\nUnit Price : *1420*\nPricing Unit : *USD/MT*\nShip Term : *CIF*\nPacking : *Unknown*\nLoading : *Unknown*\nTotal : *2840.0*\nPo Date : *2025-07-15*\nPo Ref No : *GIIOFEED PL-5-2025-1*\n\n\nBill To : *RoadrunnerArmy*\nShip To : *Roadrunner*\nSo Number : *GIIOFEED PL-5-2025-1*\nSeller Name : *Beauxbatons Agricultural Solutions*\nVendor Name : *BB*\nDelivery Date : *July 20th*\nDocument Date : *Unknown*\nPayment Terms : *Unknown*\nDelivery Terms : *CIF Busan*\nShipping Method : *Unknown*"
+        },
+        "from": "16506464893",
+        "from_name": "Abhinav"
+      },
+      {
+        "id": "PrDCkNpOwRTGiUg-gpQBq53gEAMiJA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363400722326052@g.us",
+        "timestamp": 1754027791,
+        "source": "web",
+        "device_id": 30,
+        "chat_name": "BB",
+        "text": {
+          "body": "Items :\nProduct 1:\nDescription : *GIIOFEED PL-5*\nQuantity : *2*\nQuantity Unit : *MT*\nUnit Price : *1420*\nPricing Unit : *USD/MT*\nShip Term : *CIF*\nPacking : *Unknown*\nLoading : *Unknown*\nAmount : *2840.0*\nPo Date : *2025-08-01*\nPo Ref No : *GIIOFEED PL-5-2025-6*\n\n\nSeller : *Google*\nBill To : *Microsoft*\nShip To : *Apple*\nSo Date : *2025-08-01*\nSo Number : *GIIOFEED PL-5-2025-6*\nVendor Name : *BB*\nDelivery Date : *July 20th*\nPayment Terms : *Unknown*\nDelivery Terms : *CIF Busan*\nShipping Method : *Unknown*"
+        },
+        "from": "16506464893",
+        "from_name": "Abhinav"
+      },
+      {
+        "id": "1THLrWUSye4Q3ZREBuDotw-gpoBq53gEAMiJA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363400722326052@g.us",
+        "timestamp": 1754084053,
+        "source": "mobile",
+        "chat_name": "BB",
+        "text": {
+          "body": "Hi"
+        },
+        "from": "16506464893",
+        "from_name": "Abhinav"
+      },
+      {
+        "id": "PrBkL4vPspS041I-grEBq53gEAMiJA",
+        "from_me": false,
+        "type": "text",
+        "chat_id": "120363400722326052@g.us",
+        "timestamp": 1754084320,
+        "source": "web",
+        "device_id": 30,
+        "chat_name": "BB",
+        "text": {
+          "body": "Items :\nProduct 1:\nDescription : *GIIOFEED PL-5*\nQuantity : *2*\nQuantity Unit : *MT*\nUnit Price : *1420*\nPricing Unit : *USD/MT*\nShip Term : *CIF*\nPacking : *Unknown*\nLoading : *Unknown*\nAmount : *2840.0*\nPo Date : *2025-08-01*\nPo Ref No : *GIIOFEED PL-5-2025-6*\n\n\nSeller : *Google*\nBill To : *Microsoft*\nShip To : *Apple*\nSo Date : *2025-08-01*\nSo Number : *GIIOFEED PL-5-2025-6*\nVendor Name : *BB*\nDelivery Date : *July 20th*\nPayment Terms : *Unknown*\nDelivery Terms : *CIF Busan*\nShipping Method : *Unknown*"
+        },
+        "from": "16506464893",
+        "from_name": "Abhinav"
+      }
+    ]
+  ]
+}

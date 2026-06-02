@@ -1,41 +1,19 @@
 {
-  "row_index": 8,
+  "row_index": 18,
   "whatsapp_group_id": "120363403592950429@g.us",
   "customer_id": "d586d853-694c-42f9-93be-bc7ba5b2110c",
-  "created_at": "2026-09-29 04:57:51.412664",
-  "created_date": "2026-09-29",
-  "field_data": {
-    "items": [
-      {
-        "sr_no": 1,
-        "total": 64860,
-        "loading": "23 MT / 40' FCL",
-        "packing": "25kg printed paper bags",
-        "quantity": "46000",
-        "ship_term": "CIF",
-        "unit_price": 1410,
-        "description": "TG - BP102",
-        "pricing_unit": "usd/mt",
-        "quantity_unit": "kg"
-      }
-    ],
-    "do_date": "2026-11-15",
-    "po_date": "2026-09-29",
-    "po_ref_no": "TG - BP102-2026-3",
-    "vendor_name": "AG Lipids Pte Ltd",
-    "payment_date": "Net 14 Days",
-    "delivery_terms": "CIF",
-    "billing_address": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea",
-    "shipping_method": "Unknown",
-    "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea"
-  },
+  "organization_id": "65411164-9df8-432d-af92-c5c4fa3193e5",
+  "contract_id": "6acc2569-bf97-4761-9e3c-183a9fa46a06",
+  "po_ref_no": "TG - BP102-2025-1",
+  "status": "SIGNED",
+  "created_at": "2025-09-29T04:30:46.008579",
+  "created_date": "2025-09-29",
   "s3_matches": [
     {
       "bucket": "tractuslabs-data-sources",
-      "key": "messages/120363403592950429@g.us/2026-09-29.json",
-      "last_modified": "2026-09-29T04:49:30+00:00",
-      "size": 9468,
-      "presigned_url": "https://tractuslabs-data-sources.s3.amazonaws.com/messages/120363403592950429%40g.us/2026-09-29.json?AWSAccessKeyId=AKIAYQYUBA34VECEKVJT&Signature=b9ddoyDaSeUdH8VH6z0v1fZpSaM%3D&Expires=1776066111"
+      "key": "messages/120363403592950429@g.us/2025-09-29.json",
+      "last_modified": "2025-09-29T04:49:30+00:00",
+      "size": 9468
     }
   ],
   "chats": [
@@ -112,7 +90,7 @@
         "source": "mobile",
         "chat_name": "Tractus Test Group",
         "text": {
-          "body": "Let\u2019s go for 20 MT"
+          "body": "Let’s go for 20 MT"
         },
         "from": "18572336857",
         "from_name": "Apoorva"
@@ -141,7 +119,7 @@
         "device_id": 59,
         "chat_name": "Tractus Test Group",
         "text": {
-          "body": "your standard order is 23 MT / 40\u2019 FCL OR we can offer you 12 MT / 20\u2019 FCL - which would you like?"
+          "body": "your standard order is 23 MT / 40’ FCL OR we can offer you 12 MT / 20’ FCL - which would you like?"
         },
         "from": "6594240709",
         "from_name": "YB"
@@ -170,7 +148,7 @@
         "device_id": 59,
         "chat_name": "Tractus Test Group",
         "text": {
-          "body": "The current price is USD 1425 CIF Busan for 23 MT / 40\u2019 FCL, price valid till 2026-09-29 1400 SGT"
+          "body": "The current price is USD 1425 CIF Busan for 23 MT / 40’ FCL, price valid till 2025-09-29 1400 SGT"
         },
         "from": "6594240709",
         "from_name": "YB"
@@ -199,7 +177,7 @@
         "device_id": 59,
         "chat_name": "Tractus Test Group",
         "text": {
-          "body": "with today\u2019s underlying stearin price the lowest I can do is 1410"
+          "body": "with today’s underlying stearin price the lowest I can do is 1410"
         },
         "from": "6594240709",
         "from_name": "YB"
@@ -242,7 +220,7 @@
         "device_id": 59,
         "chat_name": "Tractus Test Group",
         "text": {
-          "body": "Change loading to 23MT / 40\u2019 FCL and packing to 25kg printed paper bag"
+          "body": "Change loading to 23MT / 40’ FCL and packing to 25kg printed paper bag"
         },
         "from": "6594240709",
         "from_name": "YB"
@@ -306,7 +284,7 @@
         "source": "mobile",
         "chat_name": "Tractus Test Group",
         "text": {
-          "body": "Alright let\u2019s go with 20 MT of BP102"
+          "body": "Alright let’s go with 20 MT of BP102"
         },
         "from": "18572336857",
         "from_name": "Apoorva"
@@ -335,7 +313,7 @@
         "device_id": 59,
         "chat_name": "Tractus Test Group",
         "text": {
-          "body": "your standard order is 23 MT / 40\u2019 FCL OR we can offer you 12 MT / 20\u2019 FCL - which would you like?"
+          "body": "your standard order is 23 MT / 40’ FCL OR we can offer you 12 MT / 20’ FCL - which would you like?"
         },
         "from": "6594240709",
         "from_name": "YB"
@@ -364,7 +342,7 @@
         "device_id": 59,
         "chat_name": "Tractus Test Group",
         "text": {
-          "body": "The current price is USD 1425 CIF Busan for 23 MT / 40\u2019 FCL, price valid till 2026-09-29 1400 SGT"
+          "body": "The current price is USD 1425 CIF Busan for 23 MT / 40’ FCL, price valid till 2025-09-29 1400 SGT"
         },
         "from": "6594240709",
         "from_name": "YB"
@@ -393,7 +371,7 @@
         "device_id": 59,
         "chat_name": "Tractus Test Group",
         "text": {
-          "body": "with today\u2019s underlying stearin price the lowest I can do is 1410"
+          "body": "with today’s underlying stearin price the lowest I can do is 1410"
         },
         "from": "6594240709",
         "from_name": "YB"
@@ -436,7 +414,7 @@
         "device_id": 59,
         "chat_name": "Tractus Test Group",
         "text": {
-          "body": "Change the Packing to 25kg printed paper bag. Change the loading to 23 MT / 40\u2019 FCL. Change the Seller to AG Lipids Pte Ltd"
+          "body": "Change the Packing to 25kg printed paper bag. Change the loading to 23 MT / 40’ FCL. Change the Seller to AG Lipids Pte Ltd"
         },
         "from": "6594240709",
         "from_name": "YB"
@@ -465,7 +443,7 @@
         "source": "mobile",
         "chat_name": "Tractus Test Group",
         "text": {
-          "body": "These are the key terms of the trade you have just negotiated \n\n\n\nSr No : *1*\nDescription : *BP102*\nQuantity : *23.0*\nQuantity Unit : *MT*\nUnit Price : *1410.0*\nPricing Unit : *USD*\nShip Term : *CIF*\nPacking : *25kg printed paper bag*\nLoading : *23 MT / 40\u2019 FCL*\nTotal : *USD 32430.0*\n\n\nSO Date : *2026-09-29*\nSO Ref No : *BP102-2026-1*\nSeller : *AG Lipids Pte Ltd*\nPayment Terms : *Net 14 Days*\nBill To : *FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea*\nShipping Method : *Unknown*\nShip To : *Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea*\nDelivery Date : *2026-11-15*"
+          "body": "These are the key terms of the trade you have just negotiated \n\n\n\nSr No : *1*\nDescription : *BP102*\nQuantity : *23.0*\nQuantity Unit : *MT*\nUnit Price : *1410.0*\nPricing Unit : *USD*\nShip Term : *CIF*\nPacking : *25kg printed paper bag*\nLoading : *23 MT / 40’ FCL*\nTotal : *USD 32430.0*\n\n\nSO Date : *2025-09-29*\nSO Ref No : *BP102-2025-1*\nSeller : *AG Lipids Pte Ltd*\nPayment Terms : *Net 14 Days*\nBill To : *FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea*\nShipping Method : *Unknown*\nShip To : *Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea*\nDelivery Date : *2025-11-15*"
         },
         "from": "18572336857",
         "from_name": "Apoorva"
@@ -480,11 +458,36 @@
         "device_id": 59,
         "chat_name": "Tractus Test Group",
         "text": {
-          "body": "Update packing to 25kg printed paper bags; loading to 23 MT / 40\u2019 FCL and seller to AG Lipids Pte Ltd"
+          "body": "Update packing to 25kg printed paper bags; loading to 23 MT / 40’ FCL and seller to AG Lipids Pte Ltd"
         },
         "from": "6594240709",
         "from_name": "YB"
       }
     ]
-  ]
+  ],
+  "field_data": {
+    "items": [
+      {
+        "sr_no": 1,
+        "total": 32430,
+        "loading": "23 MT / 40’ FCL",
+        "packing": "25kg printed paper bag",
+        "quantity": 23000,
+        "ship_term": "CIF",
+        "unit_price": 1410,
+        "description": "TG - BP102",
+        "pricing_unit": "usd/mt",
+        "quantity_unit": "kg"
+      }
+    ],
+    "do_date": "2025-11-15",
+    "po_date": "2025-09-29",
+    "po_ref_no": "TG - BP102-2025-1",
+    "vendor_name": "AG Lipids Pte Ltd",
+    "payment_date": "Net 14 Days",
+    "delivery_terms": "CIF",
+    "billing_address": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea",
+    "shipping_method": "Unknown",
+    "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea"
+  }
 }

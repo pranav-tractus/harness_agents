@@ -1,41 +1,19 @@
 {
-  "row_index": 7,
+  "row_index": 21,
   "whatsapp_group_id": "120363403074656566@g.us",
   "customer_id": "8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f",
-  "created_at": "2025-12-23 05:53:36.411843",
+  "organization_id": "65411164-9df8-432d-af92-c5c4fa3193e5",
+  "contract_id": "717e0cc3-ac4a-46a3-a998-bb7324315f78",
+  "po_ref_no": "BergaPur-2025-4",
+  "status": "SIGNED",
+  "created_at": "2025-12-23T05:53:36.411843",
   "created_date": "2025-12-23",
-  "field_data": {
-    "items": [
-      {
-        "sr_no": 1,
-        "total": 32550.0,
-        "loading": "10.5MT / 20'",
-        "packing": "standard packaging",
-        "quantity": 10500.0,
-        "ship_term": "EXW",
-        "unit_price": 3100.0,
-        "description": "BergaPur",
-        "pricing_unit": "usd/mt",
-        "quantity_unit": "kg"
-      }
-    ],
-    "do_date": "2026-01-31",
-    "po_date": "2025-12-23",
-    "po_ref_no": "BergaPur-2025-4",
-    "vendor_name": "GIIAVA Singapore Pte Ltd",
-    "payment_date": "7D",
-    "delivery_terms": "EXW",
-    "billing_address": "Berg + Schmidt Asia Pte Ltd, 1 North Buona Vista Link #10-06 Elementum Singapore 139691",
-    "shipping_method": "",
-    "shipping_address": "NA"
-  },
   "s3_matches": [
     {
       "bucket": "tractuslabs-data-sources",
       "key": "messages/120363403074656566@g.us/2025-12-23.json",
       "last_modified": "2025-12-23T06:15:26+00:00",
-      "size": 2504,
-      "presigned_url": "https://tractuslabs-data-sources.s3.amazonaws.com/messages/120363403074656566%40g.us/2025-12-23.json?AWSAccessKeyId=AKIAYQYUBA34VECEKVJT&Signature=N3nL6OXqchP25THPJ5w%2Bl0zTgBc%3D&Expires=1776066110"
+      "size": 2504
     }
   ],
   "chats": [
@@ -163,5 +141,30 @@
         "from_name": "Ng"
       }
     ]
-  ]
+  ],
+  "field_data": {
+    "items": [
+      {
+        "sr_no": 1,
+        "total": 32550,
+        "loading": "10.5MT / 20'",
+        "packing": "standard packaging",
+        "quantity": 10500,
+        "ship_term": "EXW",
+        "unit_price": 3100,
+        "description": "BergaPur",
+        "pricing_unit": "usd/mt",
+        "quantity_unit": "kg"
+      }
+    ],
+    "do_date": "2026-01-31",
+    "po_date": "2025-12-23",
+    "po_ref_no": "BergaPur-2025-4",
+    "vendor_name": "GIIAVA Singapore Pte Ltd",
+    "payment_date": "7D",
+    "delivery_terms": "EXW",
+    "billing_address": "Berg + Schmidt Asia Pte Ltd, 1 North Buona Vista Link #10-06 Elementum Singapore 139691",
+    "shipping_method": "",
+    "shipping_address": "NA"
+  }
 }
