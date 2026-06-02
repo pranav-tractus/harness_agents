@@ -113,6 +113,11 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--quiet", action="store_true")
     p.add_argument("--skip-without-expected", action="store_true")
     p.add_argument(
+        "--with-baseline",
+        action="store_true",
+        help="Also run a no-context baseline extraction (single-line prompt, no system prompt) per chat for comparison.",
+    )
+    p.add_argument(
         "--no-report-llm",
         action="store_true",
         help="Skip Claude (Bedrock) for report.html headlines and copy; use fast heuristic text only.",
@@ -133,6 +138,7 @@ def _run_extra(args: argparse.Namespace, extraction_model_key: str) -> dict[str,
         "validation_model_key": validation_key,
         "enable_validation_llm": True,
         "enable_deterministic_postprocess": True,
+        "run_baseline": bool(getattr(args, "with_baseline", False)),
     }
 
 
@@ -484,6 +490,7 @@ def main() -> None:
         "db_few_shot_limit": args.db_few_shot_limit,
         "validation_model": args.validation_model or None,
         "skip_without_expected": bool(args.skip_without_expected),
+        "with_baseline": bool(args.with_baseline),
         "results_dir": str(run_dir),
         "config_file": args.config or "configs/agents.json",
     }
