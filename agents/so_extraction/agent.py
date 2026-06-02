@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from agents.base import AgentRunResult, BaseAgent, Dataset, RunOptions, ScoreResult
+from core.baseline_extractor import run_baseline
 from core.chat_loader import build_extraction_few_shot_from_paths, load_chat_file
 from core.extractor import ExtractionEngine
 from core.models import SOExtractContractList
@@ -139,6 +140,12 @@ class SOExtractionAgent(BaseAgent[ChatInput, dict]):
         score_raw = self.score(expected, raw_dict)
         score_final = self.score(expected, final_dict)
 
+        baseline_dict: dict[str, Any] | None = None
+        score_baseline = ScoreResult()
+        if options.extra.get("run_baseline"):
+            baseline_dict = run_baseline(input_payload.text, options.model_key)
+            score_baseline = self.score(expected, baseline_dict)
+
         if not result.status == "success" and score_final.expected_available:
             score_final = ScoreResult(
                 expected_available=True,
@@ -175,6 +182,8 @@ class SOExtractionAgent(BaseAgent[ChatInput, dict]):
             validation_model_key=validation_model_key,
             score=score_final,
             score_raw_llm=score_raw,
+            score_baseline=score_baseline,
+            baseline_output_json=baseline_dict,
             extraction_diagnostics=diagnostics,
             flow_stage_ms=flow_ms,
             few_shot_paths=[str(p) for p in fs_paths],
