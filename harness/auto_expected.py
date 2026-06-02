@@ -28,6 +28,10 @@ Examples::
     # Seed from an existing benchmark artifact instead of re-running the LLM.
     python -m harness.auto_expected --agent so_extraction \\
         --from-jsonl results/<run_id>/run.jsonl --only-missing
+
+    # Seed downloaded production chats from embedded contract field_data.
+    python -m harness.auto_expected --agent so_extraction \\
+        --dataset downloaded --from-field-data --overwrite-existing --prune-orphans
 """
 
 from __future__ import annotations
@@ -49,6 +53,7 @@ if str(ROOT_DIR) not in sys.path:
 
 from agents.base import BaseAgent, RunOptions
 from agents.config import load_config
+from core.chat_loader import load_chat_file
 from core.utils import DEFAULT_MODEL_KEY
 from harness.scoring import normalize_contract_shape
 
@@ -77,6 +82,16 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--from-jsonl",
         default="",
         help="Skip the LLM and use outputs from a prior run's run.jsonl artifact.",
+    )
+    src.add_argument(
+        "--from-field-data",
+        action="store_true",
+        help="Seed from field_data embedded in chat JSON files (no LLM run).",
+    )
+    src.add_argument(
+        "--fallback-llm",
+        action="store_true",
+        help="With --from-field-data, run the agent for sources that lack field_data.",
     )
 
     run = p.add_argument_group("agent run options")
@@ -111,6 +126,14 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--sort-keys",
         action="store_true",
         help="Sort EXPECTED_BY_CHAT alphabetically by filename when writing.",
+    )
+    policy.add_argument(
+        "--prune-orphans",
+        action="store_true",
+        help=(
+            "Drop EXPECTED_BY_CHAT keys that look like downloaded chat exports "
+            "(filename contains '__') but are not in the selected source list."
+        ),
     )
     policy.add_argument(
         "--expected-source",
@@ -417,28 +440,34 @@ def _summarize_diff(current: Any, new: Any) -> str:
 # ---------------------------------------------------------------------------
 
 
-def _collect_new_entries(
+def _collect_from_field_data(agent: BaseAgent, sources: list[Path]) -> tuple[dict[str, Any], list[Path]]:
+    new_entries: dict[str, Any] = {}
+    llm_sources: list[Path] = []
+    for source in sources:
+        loaded = load_chat_file(source)
+        field_data = loaded.get("field_data")
+        if not isinstance(field_data, dict) or not field_data:
+            logger.warning("No field_data in %s; will need LLM fallback", source.name)
+            llm_sources.append(source)
+            continue
+        normalized = normalize_contract_shape(field_data)
+        if normalized is None:
+            logger.warning("Could not normalize field_data in %s; will need LLM fallback", source.name)
+            llm_sources.append(source)
+            continue
+        new_entries[source.name] = agent.expected_from_output(normalized)
+    return new_entries, llm_sources
+
+
+def _collect_llm_entries(
     agent: BaseAgent,
     sources: list[Path],
     args: argparse.Namespace,
     fs_paths: list[Path],
 ) -> dict[str, Any]:
     new_entries: dict[str, Any] = {}
-    if args.from_jsonl:
-        jsonl_path = Path(args.from_jsonl).expanduser()
-        if not jsonl_path.is_absolute():
-            jsonl_path = (agent.repo_root / jsonl_path).resolve()
-        allowed = {p.name for p in sources} if sources else None
-        from_jsonl = _outputs_from_jsonl(agent, jsonl_path, allowed, expected_source=args.expected_source)
-        for filename, payload in from_jsonl.items():
-            normalized = normalize_contract_shape(payload) or payload
-            new_entries[filename] = agent.expected_from_output(normalized)
-        if not new_entries:
-            print(f"No usable outputs for agent={agent.id} in {jsonl_path}.")
-        return new_entries
-
     if not sources:
-        raise SystemExit("No sources matched. Use --source, --dataset, --all, or --from-jsonl.")
+        return new_entries
 
     max_workers = max(1, args.max_workers)
     total = len(sources)
@@ -460,7 +489,7 @@ def _collect_new_entries(
             filename, value = result
             new_entries[filename] = value
             if not args.quiet:
-                print(f"[{completed}/{total}] {filename}", flush=True)
+                print(f"[llm {completed}/{total}] {filename}", flush=True)
         return new_entries
 
     with ThreadPoolExecutor(max_workers=max_workers) as ex:
@@ -492,14 +521,67 @@ def _collect_new_entries(
             filename, value = result
             new_entries[filename] = value
             if not args.quiet:
-                print(f"[{completed}/{total}] {filename}", flush=True)
+                print(f"[llm {completed}/{total}] {filename}", flush=True)
     return new_entries
+
+
+def _collect_new_entries(
+    agent: BaseAgent,
+    sources: list[Path],
+    args: argparse.Namespace,
+    fs_paths: list[Path],
+) -> dict[str, Any]:
+    new_entries: dict[str, Any] = {}
+    if args.from_field_data:
+        if args.from_jsonl:
+            raise SystemExit("Use only one of --from-field-data and --from-jsonl.")
+        field_entries, llm_sources = _collect_from_field_data(agent, sources)
+        new_entries.update(field_entries)
+        if args.fallback_llm and llm_sources:
+            if not args.quiet:
+                print(f"LLM fallback for {len(llm_sources)} source(s) without field_data")
+            new_entries.update(_collect_llm_entries(agent, llm_sources, args, fs_paths))
+        return new_entries
+    if args.from_jsonl:
+        jsonl_path = Path(args.from_jsonl).expanduser()
+        if not jsonl_path.is_absolute():
+            jsonl_path = (agent.repo_root / jsonl_path).resolve()
+        allowed = {p.name for p in sources} if sources else None
+        from_jsonl = _outputs_from_jsonl(agent, jsonl_path, allowed, expected_source=args.expected_source)
+        for filename, payload in from_jsonl.items():
+            normalized = normalize_contract_shape(payload) or payload
+            new_entries[filename] = agent.expected_from_output(normalized)
+        if not new_entries:
+            print(f"No usable outputs for agent={agent.id} in {jsonl_path}.")
+        return new_entries
+
+    if not sources:
+        raise SystemExit("No sources matched. Use --source, --dataset, --all, or --from-jsonl.")
+
+    return _collect_llm_entries(agent, sources, args, fs_paths)
+
+
+def _prune_orphan_downloaded_entries(
+    merged: dict[str, Any],
+    source_names: set[str],
+) -> tuple[dict[str, Any], list[tuple[str, str]]]:
+    actions: list[tuple[str, str]] = []
+    pruned = dict(merged)
+    for filename in list(merged):
+        if filename in source_names:
+            continue
+        if "__" not in filename:
+            continue
+        del pruned[filename]
+        actions.append((filename, "prune"))
+    return pruned, actions
 
 
 def _apply_policy(
     current: dict[str, Any],
     new_entries: dict[str, Any],
     args: argparse.Namespace,
+    source_names: set[str] | None = None,
 ) -> tuple[dict[str, Any], list[tuple[str, str]]]:
     actions: list[tuple[str, str]] = []  # (filename, action) where action ∈ {new, replace, skip:*}
     merged: dict[str, Any] = dict(current)
@@ -519,6 +601,10 @@ def _apply_policy(
         else:
             merged[filename] = value
             actions.append((filename, "new"))
+    if args.prune_orphans and source_names is not None:
+        merged, prune_actions = _prune_orphan_downloaded_entries(merged, source_names)
+        actions.extend(prune_actions)
+
     if args.sort_keys:
         merged = dict(sorted(merged.items()))
     return merged, actions
@@ -542,10 +628,17 @@ def main(argv: list[str] | None = None) -> int:
     fs_paths = _resolve_paths(args.few_shot, agent.repo_root)[:10]
     sources = _collect_sources(agent, args)
 
+    if args.from_field_data and args.from_jsonl:
+        raise SystemExit("Use only one of --from-field-data and --from-jsonl.")
+
     if not args.quiet:
         print(f"Agent           : {agent.id}")
         print(f"Expected file   : {expected_path.relative_to(agent.repo_root)}")
-        if args.from_jsonl:
+        if args.from_field_data:
+            print(f"Mode            : from-field-data ({len(sources)} source(s))")
+            if args.fallback_llm:
+                print("                  + LLM fallback when field_data is missing")
+        elif args.from_jsonl:
             scope = f"all entries in {args.from_jsonl}" if not sources else f"{len(sources)} source filter(s)"
             print(f"Mode            : from-jsonl ({scope})")
         else:
@@ -560,7 +653,8 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     current = load_expected_dict(expected_path)
-    merged, actions = _apply_policy(current, new_entries, args)
+    source_names = {p.name for p in sources}
+    merged, actions = _apply_policy(current, new_entries, args, source_names=source_names)
 
     counts: dict[str, int] = defaultdict(int)
     for _, action in actions:
@@ -574,7 +668,7 @@ def main(argv: list[str] | None = None) -> int:
         summary = ", ".join(f"{k}={v}" for k, v in sorted(counts.items()))
         print(f"Summary: {summary or '<no-op>'}")
 
-    will_change = counts.get("new", 0) + counts.get("replace", 0)
+    will_change = counts.get("new", 0) + counts.get("replace", 0) + counts.get("prune", 0)
     if will_change == 0:
         if not args.quiet:
             print("No file changes required.")
