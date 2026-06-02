@@ -11,7 +11,7 @@ from core.models import SOExtractContractList
 
 class TestBaselineExtractor(unittest.TestCase):
     def test_prompt_is_single_line_with_text_appended(self):
-        prompt = BASELINE_PROMPT_TEMPLATE.format(text="hello world")
+        prompt = BASELINE_PROMPT_TEMPLATE + "hello world"
         self.assertTrue(prompt.startswith("Create a sales order from this:"))
         self.assertIn("hello world", prompt)
 
@@ -20,10 +20,12 @@ class TestBaselineExtractor(unittest.TestCase):
         with patch("core.baseline_extractor.call_llm", return_value=fake) as mocked:
             out = run_baseline("some chat text", model_key="sonnet-4-6")
         self.assertEqual(out, {"data": []})
-        _, kwargs = mocked.call_args
-        self.assertIsNone(kwargs.get("system_prompt"))
-        self.assertEqual(kwargs.get("model_key"), "sonnet-4-6")
-        self.assertEqual(kwargs.get("schema"), SOExtractContractList)
+        mocked.assert_called_once_with(
+            "Create a sales order from this:\n\nsome chat text",
+            schema=SOExtractContractList,
+            model_key="sonnet-4-6",
+            system_prompt=None,
+        )
 
     def test_run_baseline_returns_none_on_failure(self):
         with patch("core.baseline_extractor.call_llm", side_effect=RuntimeError("boom")):

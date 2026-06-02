@@ -16,7 +16,7 @@ from core.models import SOExtractContractList
 
 logger = logging.getLogger(__name__)
 
-BASELINE_PROMPT_TEMPLATE = "Create a sales order from this:\n\n{text}"
+BASELINE_PROMPT_TEMPLATE = "Create a sales order from this:\n\n"
 
 
 def run_baseline(text: str, model_key: str) -> dict | None:
@@ -25,7 +25,7 @@ def run_baseline(text: str, model_key: str) -> dict | None:
     Returns the parsed dict on success, or ``None`` on any failure (logged as a
     warning, never raised) so a baseline miss can never fail the agent run.
     """
-    prompt = BASELINE_PROMPT_TEMPLATE.format(text=text)
+    prompt = BASELINE_PROMPT_TEMPLATE + text
     try:
         result = call_llm(
             prompt,
@@ -35,5 +35,5 @@ def run_baseline(text: str, model_key: str) -> dict | None:
         )
         return result.model_dump()
     except Exception as exc:  # noqa: BLE001 - baseline must never crash the run
-        logger.warning("Baseline extraction failed (model=%s): %s", model_key, exc)
+        logger.warning("Baseline extraction failed (model=%s, exc_type=%s): %s", model_key, type(exc).__name__, exc)
         return None
