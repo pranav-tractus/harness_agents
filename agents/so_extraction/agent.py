@@ -140,12 +140,6 @@ class SOExtractionAgent(BaseAgent[ChatInput, dict]):
         score_raw = self.score(expected, raw_dict)
         score_final = self.score(expected, final_dict)
 
-        baseline_dict: dict[str, Any] | None = None
-        score_baseline = ScoreResult()
-        if options.extra.get("run_baseline"):
-            baseline_dict = run_baseline(input_payload.text, options.model_key)
-            score_baseline = self.score(expected, baseline_dict)
-
         if not result.status == "success" and score_final.expected_available:
             score_final = ScoreResult(
                 expected_available=True,
@@ -164,6 +158,14 @@ class SOExtractionAgent(BaseAgent[ChatInput, dict]):
             "llm_validate_ms": (diagnostics or {}).get("llm_validate_ms", 0.0),
             "total_case_ms": round((t_done - t0) * 1000, 3),
         }
+
+        baseline_dict: dict[str, Any] | None = None
+        score_baseline = ScoreResult()
+        if options.extra.get("run_baseline"):
+            t_baseline_start = time.perf_counter()
+            baseline_dict = run_baseline(input_payload.text, options.model_key)
+            score_baseline = self.score(expected, baseline_dict)
+            flow_ms["baseline_ms"] = round((time.perf_counter() - t_baseline_start) * 1000, 3)
 
         return AgentRunResult[dict](
             agent_id=self.id,

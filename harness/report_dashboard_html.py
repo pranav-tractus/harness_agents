@@ -144,10 +144,8 @@ def _baseline_table_html(summary: dict[str, Any]) -> str:
         b = r.get("field_match_rate_baseline")
         a = r.get("field_match_rate_raw_llm")
         f = r.get("field_match_rate_final") or r.get("field_match_rate")
-        lift = (
-            f"+{100.0 * (float(f) - float(b)):.0f}pp"
-            if (b is not None and f is not None) else "—"
-        )
+        diff_pp = (100.0 * (float(f) - float(b))) if (b is not None and f is not None) else None
+        lift = f"{diff_pp:+.0f}pp" if diff_pp is not None else "—"
         body.append(
             "<tr>"
             f"<td>{_esc(str(r.get('chat_filename', '')))}</td>"
@@ -265,10 +263,14 @@ def _postprocess_comparison_html(summary: dict[str, Any]) -> tuple[str, str]:
         a_pct = 100.0 * float(raw_rate) if raw_rate is not None else 0.0
         v_pct = 100.0 * float(final_rate) if final_rate is not None else 0.0
         lift_total = v_pct - b_pct
+        if lift_total >= 0:
+            lift_str = f"+{lift_total:.0f}pp lift over no-context baseline"
+        else:
+            lift_str = f"{lift_total:.0f}pp vs no-context baseline (regression)"
         baseline_note = (
             f"<p class=\"section-intro\"><strong>Baseline: {b_pct:.0f}% → "
             f"Agent: {a_pct:.0f}% → Validation: {v_pct:.0f}%</strong> "
-            f"(+{lift_total:.0f}pp lift over no-context baseline).</p>"
+            f"({lift_str}).</p>"
         )
 
     html = f"""

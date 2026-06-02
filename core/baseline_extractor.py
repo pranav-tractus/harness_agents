@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import logging
 
+from core.extractor import _normalize, _chunk_text
 from core.llm_client import call_llm
 from core.models import SOExtractContractList
 
@@ -25,7 +26,9 @@ def run_baseline(text: str, model_key: str) -> dict | None:
     Returns the parsed dict on success, or ``None`` on any failure (logged as a
     warning, never raised) so a baseline miss can never fail the agent run.
     """
-    prompt = BASELINE_PROMPT_TEMPLATE + text
+    normalized = _normalize(text)
+    chunks = _chunk_text(normalized)
+    prompt = BASELINE_PROMPT_TEMPLATE + (chunks[0] if chunks else normalized)
     try:
         result = call_llm(
             prompt,
