@@ -416,6 +416,15 @@ with tab_bulk:
     runs_per_chat = st.number_input("Runs per chat", min_value=1, max_value=10, value=1, key="bulk_runs")
     max_workers = st.number_input("Max workers", min_value=1, max_value=32, value=8, key="bulk_workers")
     skip_no_expected = st.checkbox("Skip chats without expected entries", value=True, key="bulk_skip_no_expected")
+    with_baseline = st.checkbox(
+        "Run baseline comparison",
+        value=False,
+        key="bulk_with_baseline",
+        help=(
+            "Also run a no-context baseline (single-line prompt, no system prompt) per chat. "
+            "Adds a 'Baseline Extraction' bar and a three-tier comparison to the report."
+        ),
+    )
 
     st.subheader("Few-shot strategy")
     bulk_agent = cfg.get_agent(bulk_agent_id)
@@ -614,6 +623,8 @@ with tab_bulk:
         cmd += ["--db-few-shot-limit", str(int(db_lim))]
         if skip_no_expected:
             cmd += ["--skip-without-expected"]
+        if with_baseline:
+            cmd += ["--with-baseline"]
         if fs_mode == "explicit" and explicit:
             cmd += ["--few-shot", *[label_to_path[label] for label in explicit]]
         elif fs_mode == "walk" and walk_paths:
