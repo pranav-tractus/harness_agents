@@ -48,6 +48,7 @@ def record_to_row(rec: AgentRunResult) -> dict[str, Any]:
     """Flat dict representation suitable for jsonl + dashboards."""
     score = asdict(rec.score) if rec.score else {}
     score_raw = asdict(rec.score_raw_llm) if rec.score_raw_llm else {}
+    score_baseline = asdict(rec.score_baseline) if rec.score_baseline else {}
     mismatch_final = score.get("mismatch_count", 0)
     mismatch_raw = score_raw.get("mismatch_count", 0)
     improvement = None
@@ -76,6 +77,11 @@ def record_to_row(rec: AgentRunResult) -> dict[str, Any]:
         "extraction_diagnostics": rec.extraction_diagnostics,
         "score": score,
         "score_raw_llm": score_raw,
+        "score_baseline": score_baseline,
+        "baseline_available": score_baseline.get("expected_available", False),
+        "mismatch_count_baseline": score_baseline.get("mismatch_count", 0),
+        "field_match_rate_baseline": _field_match_rate_from_score_dict(score_baseline),
+        "baseline_output_json": rec.baseline_output_json,
         "expected_available": score.get("expected_available", False),
         "mismatch_count": mismatch_final,
         "mismatch_count_raw": mismatch_raw,
@@ -120,6 +126,9 @@ def aggregate(records: list[AgentRunResult]) -> dict[str, Any]:
         total_mismatch = sum(r["mismatch_count"] for r in with_expected)
         total_compared = sum(r["compared_field_count"] for r in with_expected)
         total_mismatch_raw = sum(r.get("mismatch_count_raw", r["mismatch_count"]) for r in with_expected)
+        baseline_rows = [r for r in with_expected if r.get("baseline_available")]
+        total_mismatch_baseline = sum(r.get("mismatch_count_baseline", 0) for r in baseline_rows)
+        total_compared_baseline = sum(r["compared_field_count"] for r in baseline_rows)
         improved = [
             r for r in with_expected
             if r.get("improvement_mismatches") is not None and r["improvement_mismatches"] > 0
@@ -146,6 +155,10 @@ def aggregate(records: list[AgentRunResult]) -> dict[str, Any]:
             "field_match_rate_raw_llm": (
                 1 - (total_mismatch_raw / max(total_compared, 1))
                 if with_expected else None
+            ),
+            "field_match_rate_baseline": (
+                1 - (total_mismatch_baseline / max(total_compared_baseline, 1))
+                if baseline_rows else None
             ),
             "field_match_rate_final": (
                 1 - (total_mismatch / max(total_compared, 1))
