@@ -1,0 +1,51 @@
+<extraction_task>
+<rules>
+<rule id="source_of_truth">The chat transcript is the only source of truth. Extract only terms both parties have explicitly agreed to.</rule>
+<rule id="empty_valid">If a field is not stated in the chat, return null or empty string per the schema. Never guess. A partial but accurate extraction is strictly preferred over a complete but invented one.</rule>
+<rule id="agreements_only">Only extract mutually accepted values. Proposals, counter-offers, and unanswered messages are not agreements. Confirmation signals: "confirmed", "ok", "agreed", "deal", "let's go", or explicit acceptance of a counter-offer.</rule>
+<rule id="sequence">Messages are prefixed [seq=N] where seq=0 is oldest. When a value is revised by a later message both sides accept, the later value wins. An unaccepted counter-offer is not extractable.</rule>
+<rule id="dates">Today is {{ iso_date }}. Normalize all dates to ISO 8601 (YYYY-MM-DD). Partial months (e.g. "November 2026") use the last day of the month (2026-11-30). If a date cannot be resolved to a concrete day, leave the field empty.</rule>
+<rule id="verbatim">Copy these fields verbatim — exact spacing, casing, punctuation, word order — do not paraphrase: packing, loading, shipping_method, delivery_terms, billing_address, shipping_address, description, vendor_name, ship_term.</rule>
+<rule id="units">Preserve units and currencies exactly as stated. No conversion (MT to KG, USD to INR, etc.). If the chat says "USD 3.5 per KG", write unit_price=3.5 and pricing_unit="USD/KG".</rule>
+<rule id="payment_date">payment_date must be a calendar date or an explicit payment-term phrase from the chat (e.g. "Net 30 from delivery", "100% Advance"). Never copy shipping or document-handling instructions into this field. If unclear, leave empty.</rule>
+<rule id="packing_loading_defaults">Apply ONLY when the field is missing from the chat: "Fat Powder" product -> loading "23MT/40'FCL"; "Feeds" product -> loading "12MT/20'FCL". packing is physical packaging only (e.g. "25kg bags") — never a logistics phrase.</rule>
+<rule id="no_inference">Do not deduce values from common knowledge, industry norms, or arithmetic. If the chat does not state it, leave the field empty.</rule>
+</rules>
+
+{% if organization_info or customer_info %}
+<reference_context note="Use only to interpret abbreviations or party names. Do not copy values into output fields unless the chat explicitly confirms them.">
+{% if organization_info %}
+<vendor>{{ organization_info | jsonpretty }}</vendor>
+{% endif %}
+{% if customer_info %}
+<counterparty>{{ customer_info | jsonpretty }}</counterparty>
+{% endif %}
+</reference_context>
+{% endif %}
+
+{% if few_shot_examples %}
+<examples note="Use only to learn the output structure. Do not copy values, prices, names, or dates from examples into this extraction.">
+{% for ex in few_shot_examples %}
+<example id="{{ loop.index }}">
+<input>{{ ex.input_text }}</input>
+<output>{{ ex.output_json }}</output>
+</example>
+{% endfor %}
+</examples>
+{% endif %}
+
+<schema>
+{{ schema_json }}
+</schema>
+
+<chat_transcript>
+{{ input_text }}
+</chat_transcript>
+
+</extraction_task>
+
+Extract the structured sales order from the chat_transcript above. Return only valid JSON that strictly conforms to the schema. No text, explanation, or markdown before or after the JSON.
+{% if attempt is defined and attempt > 1 %}
+
+Note (retry {{ attempt }}): A previous attempt failed schema validation. Ensure every required field is present — set it to null or empty string if not found. Double-check all value types match the schema.
+{% endif %}
