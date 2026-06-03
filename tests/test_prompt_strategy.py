@@ -39,3 +39,27 @@ def test_provider_family_gemini():
 
 def test_provider_family_unknown():
     assert provider_family("") == "anthropic"
+
+
+from core.models import LLMExtractContractProductItem, SalesOrderExtractContractKeyDetails
+
+
+def test_item_field_descriptions_are_precise():
+    schema = LLMExtractContractProductItem.model_json_schema()
+    props = schema.get("properties", {})
+    # Confirm agreement-only rule is encoded for unit_price
+    assert "agreed" in props["unit_price"]["description"].lower() or \
+           "final" in props["unit_price"]["description"].lower()
+    # Confirm verbatim rule is encoded for packing
+    assert "verbatim" in props["packing"]["description"].lower() or \
+           "exact" in props["packing"]["description"].lower()
+
+
+def test_contract_field_descriptions_encode_rules():
+    schema = SalesOrderExtractContractKeyDetails.model_json_schema()
+    props = schema.get("properties", {})
+    # payment_date must mention payment
+    assert "payment" in props["payment_date"]["description"].lower()
+    # vendor_name must mention null/empty
+    assert "null" in props["vendor_name"]["description"].lower() or \
+           "empty" in props["vendor_name"]["description"].lower()
