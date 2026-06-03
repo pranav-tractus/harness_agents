@@ -1,0 +1,16 @@
+<chat_transcript>
+{{ source_text }}
+</chat_transcript>
+
+<extraction_to_validate>
+{{ extraction_json | jsonpretty }}
+</extraction_to_validate>
+
+Audit the extraction against the chat transcript using the rules in your system prompt.
+
+For each non-empty field: does the chat contradict it? If not, leave it unchanged.
+For each empty field: does the chat explicitly state a value? If not, leave it empty. Exception: vendor_name, billing_address, and block-level shipping_address may be filled from reference blocks per rule 6.
+Do not change po_date, do_date, or items[].shipment_date.
+Every change must be logged in the issues array with a chat quote as evidence.
+
+Return the corrected contract in the extraction field (SOExtractContractList shape with top-level data array), plus issues and optional notes. If nothing needed changing, return the input extraction unchanged and issues as an empty list.
