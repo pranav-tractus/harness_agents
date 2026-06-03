@@ -50,5 +50,43 @@ class TestTokenUsage(unittest.TestCase):
         self.assertEqual(u.output_tokens, 0)
 
 
+class TestCallLlmWithUsage(unittest.TestCase):
+    def test_returns_tuple_of_model_and_usage(self):
+        from unittest.mock import MagicMock, patch
+
+        from core.llm_client import call_llm_with_usage
+        from core.models import SOExtractContractList
+
+        fake_result = SOExtractContractList.model_validate({"data": []})
+        fake_usage = {
+            "input_tokens": 100, "output_tokens": 50,
+            "cache_read_tokens": 0, "cache_write_tokens": 0, "total_tokens": 150,
+        }
+
+        with patch("core.llm_client._call_bedrock_with_usage", return_value=(fake_result, fake_usage)):
+            model, usage = call_llm_with_usage(
+                "prompt",
+                SOExtractContractList,
+                model_key="sonnet-4-6",
+            )
+
+        self.assertIsInstance(model, SOExtractContractList)
+        self.assertEqual(usage["input_tokens"], 100)
+        self.assertEqual(usage["output_tokens"], 50)
+
+    def test_call_llm_unchanged_returns_model_only(self):
+        from unittest.mock import patch
+
+        from core.llm_client import call_llm
+        from core.models import SOExtractContractList
+
+        fake_result = SOExtractContractList.model_validate({"data": []})
+
+        with patch("core.llm_client._call_bedrock", return_value=fake_result):
+            result = call_llm("prompt", SOExtractContractList, model_key="sonnet-4-6")
+
+        self.assertIsInstance(result, SOExtractContractList)
+
+
 if __name__ == "__main__":
     unittest.main()
