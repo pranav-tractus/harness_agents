@@ -1,6 +1,7 @@
 import logging
 from typing import Type, TypeVar
 
+import anthropic as anthropic_sdk
 import instructor
 from pydantic import BaseModel
 
@@ -70,6 +71,22 @@ def _call_gemini(prompt: str, schema: Type[T], model_id: str, system_prompt: str
     return result
 
 
+def _call_anthropic(prompt: str, schema: Type[T], model_id: str, system_prompt: str | None = None) -> T:
+    logger.info("Calling Anthropic model=%s schema=%s", model_id, schema.__name__)
+    client = instructor.from_anthropic(anthropic_sdk.Anthropic())
+    kwargs: dict = dict(
+        model=model_id,
+        response_model=schema,
+        max_tokens=_MAX_TOKENS,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    if system_prompt:
+        kwargs["system"] = system_prompt
+    result: T = client.messages.create(**kwargs)
+    logger.info("Anthropic extraction succeeded, type=%s", type(result).__name__)
+    return result
+
+
 def call_llm(
     prompt: str,
     schema: Type[T],
@@ -86,4 +103,6 @@ def call_llm(
         return _call_openai(prompt, schema, model_id=model_id, system_prompt=system_prompt)
     if provider == "gemini":
         return _call_gemini(prompt, schema, model_id=model_id, system_prompt=system_prompt)
+    if provider == "anthropic":
+        return _call_anthropic(prompt, schema, model_id=model_id, system_prompt=system_prompt)
     raise ValueError(f"Unsupported provider '{provider}' for model_key='{model_key}'")
