@@ -33,7 +33,7 @@ from tenacity import (
 
 from core.chat_loader import load_synthetic_update_few_shot_examples
 from core.db import DB_PATH, ExtractionResult, init_db
-from core.llm_client import call_llm
+from core.llm_client import call_llm, call_llm_with_usage
 from core.models import SOExtractContractList, SOUpdateContractList
 from core.prompt_builder import (
     INITIAL_FEW_SHOT_DB_LIMIT_DEFAULT,
@@ -95,10 +95,11 @@ def _call_with_retry(
     model_key: str,
     prompt_factory,
     system_prompt: str | None,
-) -> tuple[T, int, str]:
+) -> tuple[T, int, str, dict | None]:
     """Run prompt -> LLM -> validated model, retrying up to ``_MAX_ATTEMPTS`` times."""
     attempts_used = 0
     last_prompt = ""
+    accumulated_usage: dict | None = None
 
     @retry(
         retry=retry_if_exception_type((ValidationError, ValueError, json.JSONDecodeError)),
@@ -108,7 +109,7 @@ def _call_with_retry(
         reraise=True,
     )
     def _attempt() -> T:
-        nonlocal attempts_used, last_prompt
+        nonlocal attempts_used, last_prompt, accumulated_usage
         attempts_used += 1
         current_attempt = attempts_used
 
@@ -120,13 +121,23 @@ def _call_with_retry(
         last_prompt = prompt
         logger.debug("Prompt (attempt=%d):\n%s", current_attempt, textwrap.indent(prompt, "  "))
 
-        result = call_llm(prompt, schema, model_key=model_key, system_prompt=system_prompt)
+        result, usage = call_llm_with_usage(prompt, schema, model_key=model_key, system_prompt=system_prompt)
+        if usage:
+            if accumulated_usage is None:
+                accumulated_usage = dict(usage)
+            else:
+                for k in ("input_tokens", "output_tokens", "cache_read_tokens", "cache_write_tokens"):
+                    accumulated_usage[k] = accumulated_usage.get(k, 0) + usage.get(k, 0)
+                accumulated_usage["total_tokens"] = (
+                    accumulated_usage.get("input_tokens", 0)
+                    + accumulated_usage.get("output_tokens", 0)
+                )
 
         logger.info("Attempt %d succeeded", current_attempt)
         return result
 
     result = _attempt()
-    return result, attempts_used, last_prompt
+    return result, attempts_used, last_prompt, accumulated_usage
 
 
 class ExtractionEngine:
@@ -203,7 +214,7 @@ class ExtractionEngine:
             )
 
         try:
-            result_model, attempts_used, final_prompt = _call_with_retry(
+            result_model, attempts_used, final_prompt, token_usage = _call_with_retry(
                 target_schema, self.model_key, _factory, system_prompt,
             )
             output_json = result_model.model_dump_json(indent=2)
@@ -221,6 +232,7 @@ class ExtractionEngine:
                 chunk_count=chunk_count,
                 chunk_truncated=chunk_truncated,
                 input_chars=len(normalized),
+                token_usage=token_usage,
             )
 
         except (ValidationError, ValueError, json.JSONDecodeError, RetryError, Exception) as exc:
@@ -239,6 +251,7 @@ class ExtractionEngine:
                 chunk_count=chunk_count,
                 chunk_truncated=chunk_truncated,
                 input_chars=len(normalized),
+                token_usage=None,
             )
 
     def update(
@@ -288,7 +301,7 @@ class ExtractionEngine:
             )
 
         try:
-            result_model, attempts_used, final_prompt = _call_with_retry(
+            result_model, attempts_used, final_prompt, token_usage = _call_with_retry(
                 target_schema, self.model_key, _factory, system_prompt,
             )
             output_json = result_model.model_dump_json(indent=2)
@@ -303,6 +316,7 @@ class ExtractionEngine:
                 attempts=attempts_used,
                 model_key=self.model_key,
                 model_provider=self.model_provider,
+                token_usage=token_usage,
             )
 
         except (ValidationError, ValueError, json.JSONDecodeError, RetryError, Exception) as exc:
@@ -318,4 +332,5 @@ class ExtractionEngine:
                 attempts=_MAX_ATTEMPTS,
                 model_key=self.model_key,
                 model_provider=self.model_provider,
+                token_usage=None,
             )

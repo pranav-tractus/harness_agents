@@ -88,5 +88,32 @@ class TestCallLlmWithUsage(unittest.TestCase):
         self.assertIsInstance(result, SOExtractContractList)
 
 
+class TestExtractorTokenPropagation(unittest.TestCase):
+    def test_extraction_engine_run_stores_token_usage(self):
+        from pathlib import Path
+        from unittest.mock import MagicMock, patch
+
+        from core.extractor import ExtractionEngine
+        from core.models import SOExtractContractList
+
+        fake_model = SOExtractContractList.model_validate({"data": []})
+        fake_usage = {
+            "input_tokens": 200, "output_tokens": 80,
+            "cache_read_tokens": 0, "cache_write_tokens": 0, "total_tokens": 280,
+        }
+
+        with patch("core.extractor.call_llm_with_usage", return_value=(fake_model, fake_usage)), \
+                patch("core.extractor.init_db"), \
+                patch("core.extractor.build_prompt", return_value="fake prompt"), \
+                patch("core.extractor.build_system_prompt", return_value="fake system"):
+            engine = ExtractionEngine(model_key="sonnet-4-6", db_path=Path("/tmp/test.db"))
+            result = engine.run("some chat text")
+
+        self.assertEqual(result.status, "success")
+        self.assertIsNotNone(result.token_usage)
+        self.assertEqual(result.token_usage["input_tokens"], 200)
+        self.assertEqual(result.token_usage["total_tokens"], 280)
+
+
 if __name__ == "__main__":
     unittest.main()

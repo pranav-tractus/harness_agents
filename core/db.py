@@ -59,6 +59,7 @@ class ExtractionResult:
     chunk_count: int = 1
     chunk_truncated: bool = False
     input_chars: int = 0
+    token_usage: dict | None = None
 
     def __post_init__(self) -> None:
         if not self.created_at:
