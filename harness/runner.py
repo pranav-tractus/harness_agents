@@ -128,6 +128,13 @@ def _parse_args() -> argparse.Namespace:
         default="sonnet-4-5",
         help="Model catalog key for report.html editorial layer (default: sonnet-4-5 on Bedrock).",
     )
+    p.add_argument(
+        "--prompt-strategy",
+        type=str,
+        default="current",
+        choices=["current", "xml_neutral", "provider_profile", "schema_driven"],
+        help="Prompt template strategy: current (default), xml_neutral, provider_profile, schema_driven.",
+    )
     return p.parse_args()
 
 
@@ -139,6 +146,7 @@ def _run_extra(args: argparse.Namespace, extraction_model_key: str) -> dict[str,
         "enable_validation_llm": True,
         "enable_deterministic_postprocess": True,
         "run_baseline": bool(getattr(args, "with_baseline", False)),
+        "prompt_strategy": getattr(args, "prompt_strategy", "current"),
     }
 
 

@@ -15,6 +15,7 @@ from core.chat_loader import build_extraction_few_shot_from_paths, load_chat_fil
 from core.extractor import ExtractionEngine
 from core.models import SOExtractContractList
 from core.postprocess_pipeline import run_postprocess_pipeline
+from core.prompt_strategy import PromptStrategy
 from harness.scoring import json_diff
 
 logger = logging.getLogger(__name__)
@@ -72,7 +73,12 @@ class SOExtractionAgent(BaseAgent[ChatInput, dict]):
         db_path = options.db_path or (dataset.db_path if dataset else None) or self._db_path
 
         t0 = time.perf_counter()
-        engine_kwargs: dict[str, Any] = {"model_key": options.model_key}
+        strategy_str = options.extra.get("prompt_strategy", "current")
+        strategy = PromptStrategy.from_str(strategy_str)
+        engine_kwargs: dict[str, Any] = {
+            "model_key": options.model_key,
+            "strategy": strategy,
+        }
         if db_path is not None:
             engine_kwargs["db_path"] = Path(db_path)
         if organization_info:
@@ -119,6 +125,7 @@ class SOExtractionAgent(BaseAgent[ChatInput, dict]):
                 enable_validation_llm=pp_opts["enable_validation_llm"],
                 organization_info=organization_info,
                 customer_info=customer_info,
+                prompt_strategy=strategy,
             )
             if diagnostics is not None:
                 diagnostics["llm_extract_ms"] = round((t_extract - t_fs) * 1000, 3)
