@@ -316,3 +316,23 @@ def write_report(
         encoding="utf-8",
     )
     return path
+
+
+def write_token_report(
+    run_dir: Path,
+    run_id: str,
+    config: dict[str, Any],
+    summary: dict[str, Any],
+) -> Path:
+    from harness.token_report_html import render_token_report_html
+    path = run_dir / "token_report.html"
+    path.write_text(
+        render_token_report_html(
+            run_id,
+            datetime.now(timezone.utc).isoformat(),
+            config,
+            summary,
+        ),
+        encoding="utf-8",
+    )
+    return path

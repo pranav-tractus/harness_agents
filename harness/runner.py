@@ -376,6 +376,8 @@ def _run_bulk(
                     generate_llm_story=want_llm,
                     story_model_key=args.report_story_model,
                 )
+                if is_final:
+                    artifacts.write_token_report(run_dir, run_id, config, summary)
 
     return records
 
@@ -458,6 +460,7 @@ def _run_pipeline(
         generate_llm_story=not args.no_report_llm,
         story_model_key=args.report_story_model,
     )
+    artifacts.write_token_report(run_dir, run_id, config, summary)
     return records
 
 
@@ -513,6 +516,8 @@ def main() -> None:
         generate_llm_story=not args.no_report_llm,
         story_model_key=args.report_story_model,
     )
+    artifacts.write_token_report(run_dir, run_id, config_payload, summary)
+    print(f"Token report  : {run_dir / 'token_report.html'}")
 
     print(f"Run dir       : {run_dir}")
     print(f"Run JSONL     : {run_dir / 'run.jsonl'}")
