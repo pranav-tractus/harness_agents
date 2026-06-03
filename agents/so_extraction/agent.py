@@ -167,6 +167,22 @@ class SOExtractionAgent(BaseAgent[ChatInput, dict]):
             score_baseline = self.score(expected, baseline_dict)
             flow_ms["baseline_ms"] = round((time.perf_counter() - t_baseline_start) * 1000, 3)
 
+        # Collect token usage from extraction and (if available) validation.
+        agent_token_usage: dict | None = None
+        if result.token_usage:
+            agent_token_usage = dict(result.token_usage)
+        val_usage = (diagnostics or {}).get("validation_token_usage")
+        if val_usage and isinstance(val_usage, dict):
+            if agent_token_usage is None:
+                agent_token_usage = dict(val_usage)
+            else:
+                for k in ("input_tokens", "output_tokens", "cache_read_tokens", "cache_write_tokens"):
+                    agent_token_usage[k] = agent_token_usage.get(k, 0) + val_usage.get(k, 0)
+                agent_token_usage["total_tokens"] = (
+                    agent_token_usage.get("input_tokens", 0)
+                    + agent_token_usage.get("output_tokens", 0)
+                )
+
         return AgentRunResult[dict](
             agent_id=self.id,
             dataset_id=dataset_id or "default",
@@ -186,6 +202,7 @@ class SOExtractionAgent(BaseAgent[ChatInput, dict]):
             score_raw_llm=score_raw,
             score_baseline=score_baseline,
             baseline_output_json=baseline_dict,
+            token_usage=agent_token_usage,
             extraction_diagnostics=diagnostics,
             flow_stage_ms=flow_ms,
             few_shot_paths=[str(p) for p in fs_paths],

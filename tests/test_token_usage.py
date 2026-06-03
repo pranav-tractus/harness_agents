@@ -115,5 +115,53 @@ class TestExtractorTokenPropagation(unittest.TestCase):
         self.assertEqual(result.token_usage["total_tokens"], 280)
 
 
+class TestAgentTokenWiring(unittest.TestCase):
+    def test_run_one_stores_token_usage_from_engine(self):
+        from pathlib import Path
+        from unittest.mock import MagicMock, patch
+
+        from agents.base import RunOptions
+        from agents.so_extraction.agent import ChatInput, SOExtractionAgent
+
+        agent = SOExtractionAgent(
+            id="so_extraction",
+            display_name="SO Extraction",
+            datasets=[],
+            repo_root=Path(__file__).resolve().parents[1],
+        )
+        payload = ChatInput(
+            source_path=Path("raw_data/chats/x.json"),
+            text="buy 10 bags",
+            meta={},
+        )
+        opts = RunOptions(model_key="sonnet-4-6", extra={})
+
+        engine = MagicMock()
+        engine.iso_date = "2026-06-01"
+        engine.run.return_value = MagicMock(
+            status="success",
+            output_json='{"data": []}',
+            attempts=1,
+            error=None,
+            model_key="sonnet-4-6",
+            model_provider="bedrock",
+            chunk_count=1,
+            chunk_truncated=False,
+            input_chars=10,
+            token_usage={"input_tokens": 150, "output_tokens": 60, "cache_read_tokens": 0,
+                         "cache_write_tokens": 0, "total_tokens": 210},
+        )
+
+        with patch("agents.so_extraction.agent.ExtractionEngine", return_value=engine), \
+                patch("agents.so_extraction.agent.run_postprocess_pipeline",
+                      return_value=({"data": []}, {"llm_validate_ms": 0, "postprocess_total_ms": 0,
+                                                    "deterministic_ms": 0})), \
+                patch.object(agent, "expected_for", return_value=None):
+            result = agent.run_one(payload, opts)
+
+        self.assertIsNotNone(result.token_usage)
+        self.assertEqual(result.token_usage["input_tokens"], 150)
+
+
 if __name__ == "__main__":
     unittest.main()
