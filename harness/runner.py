@@ -113,6 +113,11 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--quiet", action="store_true")
     p.add_argument("--skip-without-expected", action="store_true")
     p.add_argument(
+        "--with-baseline",
+        action="store_true",
+        help="Also run a no-context baseline extraction (single-line prompt, no system prompt) per chat for comparison.",
+    )
+    p.add_argument(
         "--no-report-llm",
         action="store_true",
         help="Skip Claude (Bedrock) for report.html headlines and copy; use fast heuristic text only.",
@@ -133,6 +138,7 @@ def _run_extra(args: argparse.Namespace, extraction_model_key: str) -> dict[str,
         "validation_model_key": validation_key,
         "enable_validation_llm": True,
         "enable_deterministic_postprocess": True,
+        "run_baseline": bool(getattr(args, "with_baseline", False)),
     }
 
 
@@ -370,6 +376,8 @@ def _run_bulk(
                     generate_llm_story=want_llm,
                     story_model_key=args.report_story_model,
                 )
+                if is_final:
+                    artifacts.write_token_report(run_dir, run_id, config, summary)
 
     return records
 
@@ -452,6 +460,7 @@ def _run_pipeline(
         generate_llm_story=not args.no_report_llm,
         story_model_key=args.report_story_model,
     )
+    artifacts.write_token_report(run_dir, run_id, config, summary)
     return records
 
 
@@ -484,6 +493,7 @@ def main() -> None:
         "db_few_shot_limit": args.db_few_shot_limit,
         "validation_model": args.validation_model or None,
         "skip_without_expected": bool(args.skip_without_expected),
+        "with_baseline": bool(args.with_baseline),
         "results_dir": str(run_dir),
         "config_file": args.config or "configs/agents.json",
     }
@@ -506,6 +516,8 @@ def main() -> None:
         generate_llm_story=not args.no_report_llm,
         story_model_key=args.report_story_model,
     )
+    artifacts.write_token_report(run_dir, run_id, config_payload, summary)
+    print(f"Token report  : {run_dir / 'token_report.html'}")
 
     print(f"Run dir       : {run_dir}")
     print(f"Run JSONL     : {run_dir / 'run.jsonl'}")

@@ -48,6 +48,7 @@ def record_to_row(rec: AgentRunResult) -> dict[str, Any]:
     """Flat dict representation suitable for jsonl + dashboards."""
     score = asdict(rec.score) if rec.score else {}
     score_raw = asdict(rec.score_raw_llm) if rec.score_raw_llm else {}
+    score_baseline = asdict(rec.score_baseline) if rec.score_baseline else {}
     mismatch_final = score.get("mismatch_count", 0)
     mismatch_raw = score_raw.get("mismatch_count", 0)
     improvement = None
@@ -76,6 +77,16 @@ def record_to_row(rec: AgentRunResult) -> dict[str, Any]:
         "extraction_diagnostics": rec.extraction_diagnostics,
         "score": score,
         "score_raw_llm": score_raw,
+        "score_baseline": score_baseline,
+        "baseline_available": score_baseline.get("expected_available", False),
+        "mismatch_count_baseline": score_baseline.get("mismatch_count", 0),
+        "field_match_rate_baseline": _field_match_rate_from_score_dict(score_baseline),
+        "baseline_output_json": rec.baseline_output_json,
+        "input_tokens": int((rec.token_usage or {}).get("input_tokens") or 0),
+        "output_tokens": int((rec.token_usage or {}).get("output_tokens") or 0),
+        "cache_read_tokens": int((rec.token_usage or {}).get("cache_read_tokens") or 0),
+        "cache_write_tokens": int((rec.token_usage or {}).get("cache_write_tokens") or 0),
+        "total_tokens": int((rec.token_usage or {}).get("total_tokens") or 0),
         "expected_available": score.get("expected_available", False),
         "mismatch_count": mismatch_final,
         "mismatch_count_raw": mismatch_raw,
@@ -120,6 +131,14 @@ def aggregate(records: list[AgentRunResult]) -> dict[str, Any]:
         total_mismatch = sum(r["mismatch_count"] for r in with_expected)
         total_compared = sum(r["compared_field_count"] for r in with_expected)
         total_mismatch_raw = sum(r.get("mismatch_count_raw", r["mismatch_count"]) for r in with_expected)
+        baseline_rows = [r for r in with_expected if r.get("baseline_available")]
+        total_mismatch_baseline = sum(r.get("mismatch_count_baseline", 0) for r in baseline_rows)
+        total_compared_baseline = sum(r["compared_field_count"] for r in baseline_rows)
+        total_input_tokens = sum(r.get("input_tokens", 0) for r in rows_in)
+        total_output_tokens = sum(r.get("output_tokens", 0) for r in rows_in)
+        total_cache_read = sum(r.get("cache_read_tokens", 0) for r in rows_in)
+        total_cache_write = sum(r.get("cache_write_tokens", 0) for r in rows_in)
+        total_tokens_all = sum(r.get("total_tokens", 0) for r in rows_in)
         improved = [
             r for r in with_expected
             if r.get("improvement_mismatches") is not None and r["improvement_mismatches"] > 0
@@ -147,6 +166,10 @@ def aggregate(records: list[AgentRunResult]) -> dict[str, Any]:
                 1 - (total_mismatch_raw / max(total_compared, 1))
                 if with_expected else None
             ),
+            "field_match_rate_baseline": (
+                1 - (total_mismatch_baseline / max(total_compared_baseline, 1))
+                if baseline_rows else None
+            ),
             "field_match_rate_final": (
                 1 - (total_mismatch / max(total_compared, 1))
                 if with_expected else None
@@ -160,6 +183,11 @@ def aggregate(records: list[AgentRunResult]) -> dict[str, Any]:
             )
             if with_expected
             else None,
+            "total_input_tokens": total_input_tokens,
+            "total_output_tokens": total_output_tokens,
+            "total_cache_read_tokens": total_cache_read,
+            "total_cache_write_tokens": total_cache_write,
+            "total_tokens": total_tokens_all,
         }
 
     combo_buckets = _bucket(lambda r: (r["agent_id"], r["model_key"], r["few_shot_count"]))
@@ -284,6 +312,26 @@ def write_report(
             records,
             generate_llm_story=generate_llm_story,
             story_model_key=story_model_key,
+        ),
+        encoding="utf-8",
+    )
+    return path
+
+
+def write_token_report(
+    run_dir: Path,
+    run_id: str,
+    config: dict[str, Any],
+    summary: dict[str, Any],
+) -> Path:
+    from harness.token_report_html import render_token_report_html
+    path = run_dir / "token_report.html"
+    path.write_text(
+        render_token_report_html(
+            run_id,
+            datetime.now(timezone.utc).isoformat(),
+            config,
+            summary,
         ),
         encoding="utf-8",
     )

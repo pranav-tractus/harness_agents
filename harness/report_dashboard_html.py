@@ -123,6 +123,50 @@ def _has_postprocess_metrics(summary: dict[str, Any]) -> bool:
     return totals.get("field_match_rate_raw_llm") is not None
 
 
+def _baseline_table_html(summary: dict[str, Any]) -> str:
+    """Per-chat baseline → agent → validation comparison table.
+
+    Returns an empty string when no baseline metrics are present so the
+    section disappears for runs without ``--with-baseline``.
+    """
+    rows = [
+        r for r in (summary.get("by_chat") or [])
+        if r.get("field_match_rate_baseline") is not None
+    ]
+    if not rows:
+        return ""
+
+    def _pct(v: Any) -> str:
+        return f"{100.0 * float(v):.0f}%" if v is not None else "—"
+
+    body = []
+    for r in rows:
+        b = r.get("field_match_rate_baseline")
+        a = r.get("field_match_rate_raw_llm")
+        f = r.get("field_match_rate_final") or r.get("field_match_rate")
+        diff_pp = (100.0 * (float(f) - float(b))) if (b is not None and f is not None) else None
+        lift = f"{diff_pp:+.0f}pp" if diff_pp is not None else "—"
+        body.append(
+            "<tr>"
+            f"<td>{_esc(str(r.get('chat_filename', '')))}</td>"
+            f"<td>{_pct(b)}</td>"
+            f"<td>{_pct(a)}</td>"
+            f"<td>{_pct(f)}</td>"
+            f"<td>{_esc(lift)}</td>"
+            "</tr>"
+        )
+    return (
+        "<div class=\"chart-wrap\" style=\"margin-top:24px;\">"
+        "<div class=\"chart-title\">Baseline Comparison (per chat)</div>"
+        "<table class=\"leaderboard\"><thead><tr>"
+        "<th>Chat</th><th>Baseline</th><th>Agent (raw)</th>"
+        "<th>Validation</th><th>Lift (baseline → validation)</th>"
+        "</tr></thead><tbody>"
+        + "".join(body)
+        + "</tbody></table></div>"
+    )
+
+
 def _postprocess_comparison_html(summary: dict[str, Any]) -> tuple[str, str]:
     """HTML section + chart script for raw vs final field match."""
     if not _has_postprocess_metrics(summary):
@@ -131,6 +175,8 @@ def _postprocess_comparison_html(summary: dict[str, Any]) -> tuple[str, str]:
     totals = summary.get("totals") or {}
     raw_rate = totals.get("field_match_rate_raw_llm")
     final_rate = totals.get("field_match_rate_final") or totals.get("field_match_rate")
+    baseline_rate = totals.get("field_match_rate_baseline")
+    has_baseline = baseline_rate is not None
     imp_rate = totals.get("improvement_rate")
     regressions = int(totals.get("regression_count") or 0)
     avg_delta = totals.get("avg_improvement_mismatches")
@@ -146,14 +192,14 @@ def _postprocess_comparison_html(summary: dict[str, Any]) -> tuple[str, str]:
         label = str(r.get("model_key", ""))
         if _multi_agent(summary):
             label = f"{r.get('agent_id', '')} · {label}"
-        combo_points.append(
-            {
-                "label": label,
-                "fs": int(r.get("few_shot_count", 0)),
-                "raw_pct": round(100.0 * float(cr), 2) if cr is not None else 0.0,
-                "final_pct": round(100.0 * float(cf), 2) if cf is not None else 0.0,
-            }
-        )
+        cb = r.get("field_match_rate_baseline")
+        combo_points.append({
+            "label": label,
+            "fs": int(r.get("few_shot_count", 0)),
+            "raw_pct": round(100.0 * float(cr), 2) if cr is not None else 0.0,
+            "final_pct": round(100.0 * float(cf), 2) if cf is not None else 0.0,
+            "baseline_pct": round(100.0 * float(cb), 2) if cb is not None else None,
+        })
     chart_data = json.dumps(combo_points, ensure_ascii=False)
 
     run_count = int(totals.get("run_count") or 0)
@@ -208,17 +254,35 @@ def _postprocess_comparison_html(summary: dict[str, Any]) -> tuple[str, str]:
             f"<strong>{_fmt_num(avg_delta, 2)}</strong> "
             f"(raw {_fmt_num(avg_raw_mm, 2)} → final {_fmt_num(avg_final_mm, 2)} per expected run).</p>"
         )
+    baseline_table = _baseline_table_html(summary)
+    baseline_note = ""
+    if has_baseline:
+        b_pct = 100.0 * float(baseline_rate)
+        a_pct = 100.0 * float(raw_rate) if raw_rate is not None else 0.0
+        v_pct = 100.0 * float(final_rate) if final_rate is not None else 0.0
+        lift_total = v_pct - b_pct
+        if lift_total >= 0:
+            lift_str = f"+{lift_total:.0f}pp lift over no-context baseline"
+        else:
+            lift_str = f"{lift_total:.0f}pp vs no-context baseline (regression)"
+        baseline_note = (
+            f"<p class=\"section-intro\"><strong>Baseline: {b_pct:.0f}% → "
+            f"Agent: {a_pct:.0f}% → Validation: {v_pct:.0f}%</strong> "
+            f"({lift_str}).</p>"
+        )
 
     html = f"""
 <section id="postprocess">
   <div class="section-head"><span class="section-num">Sec. PP</span><h2>Post-processing impact</h2></div>
   <p class="section-intro">Compare primary extraction (raw LLM JSON) vs final output after deterministic rules and validation LLM. Dates are never auto-corrected.</p>
+  {baseline_note}
   {delta_note}
   <div class="dataset-grid">{cards}</div>
   <div class="chart-wrap" style="margin-top:24px;">
     <div class="chart-title">Field match: raw vs final (by model × few-shot)</div>
     <div class="chart-canvas-wrap" style="height:320px;"><canvas id="postprocessChart"></canvas></div>
   </div>
+  {baseline_table}
 </section>
 """
     script = f"""
@@ -230,8 +294,9 @@ if (ppData.length && document.getElementById("postprocessChart")) {{
     data: {{
       labels,
       datasets: [
-        {{ label: "Raw LLM", data: ppData.map((p) => p.raw_pct), backgroundColor: "#7a8aa8cc" }},
-        {{ label: "Final", data: ppData.map((p) => p.final_pct), backgroundColor: "#2d6b3fcc" }},
+        {"{ label: \"Baseline Extraction\", data: ppData.map((p) => p.baseline_pct), backgroundColor: \"#b9543fcc\" }," if has_baseline else ""}
+        {{ label: "Agent Extraction", data: ppData.map((p) => p.raw_pct), backgroundColor: "#7a8aa8cc" }},
+        {{ label: "Validation Layer", data: ppData.map((p) => p.final_pct), backgroundColor: "#2d6b3fcc" }},
       ],
     }},
     options: {{

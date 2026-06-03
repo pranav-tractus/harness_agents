@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from agents.base import AgentRunResult, BaseAgent, Dataset, RunOptions, ScoreResult
+from core.baseline_extractor import run_baseline
 from core.chat_loader import build_extraction_few_shot_from_paths, load_chat_file
 from core.extractor import ExtractionEngine
 from core.models import SOExtractContractList
@@ -158,6 +159,30 @@ class SOExtractionAgent(BaseAgent[ChatInput, dict]):
             "total_case_ms": round((t_done - t0) * 1000, 3),
         }
 
+        baseline_dict: dict[str, Any] | None = None
+        score_baseline = ScoreResult()
+        if options.extra.get("run_baseline"):
+            t_baseline_start = time.perf_counter()
+            baseline_dict = run_baseline(input_payload.text, options.model_key)
+            score_baseline = self.score(expected, baseline_dict)
+            flow_ms["baseline_ms"] = round((time.perf_counter() - t_baseline_start) * 1000, 3)
+
+        # Collect token usage from extraction and (if available) validation.
+        from core.token_usage import TokenUsage
+        agent_token_usage: dict | None = None
+        ext_usage = TokenUsage.from_dict(result.token_usage) if result.token_usage else None
+        val_usage_dict = (diagnostics or {}).get("validation_token_usage")
+        val_usage = TokenUsage.from_dict(val_usage_dict) if val_usage_dict else None
+        combined = None
+        if ext_usage and val_usage:
+            combined = ext_usage + val_usage
+        elif ext_usage:
+            combined = ext_usage
+        elif val_usage:
+            combined = val_usage
+        if combined:
+            agent_token_usage = combined.to_dict()
+
         return AgentRunResult[dict](
             agent_id=self.id,
             dataset_id=dataset_id or "default",
@@ -175,6 +200,9 @@ class SOExtractionAgent(BaseAgent[ChatInput, dict]):
             validation_model_key=validation_model_key,
             score=score_final,
             score_raw_llm=score_raw,
+            score_baseline=score_baseline,
+            baseline_output_json=baseline_dict,
+            token_usage=agent_token_usage,
             extraction_diagnostics=diagnostics,
             flow_stage_ms=flow_ms,
             few_shot_paths=[str(p) for p in fs_paths],

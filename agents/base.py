@@ -96,6 +96,9 @@ class AgentRunResult(Generic[O]):
     score: ScoreResult = field(default_factory=ScoreResult)
     raw_llm_output_json: dict[str, Any] | None = None
     score_raw_llm: ScoreResult = field(default_factory=ScoreResult)
+    score_baseline: ScoreResult = field(default_factory=ScoreResult)
+    baseline_output_json: dict[str, Any] | None = None
+    token_usage: dict | None = None
     validation_model_key: str | None = None
     extraction_diagnostics: dict[str, Any] | None = None
     flow_stage_ms: dict[str, float] = field(default_factory=dict)
