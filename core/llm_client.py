@@ -1,13 +1,12 @@
 import logging
 from typing import Type, TypeVar
 
-import anthropic as anthropic_sdk
-import instructor
 from pydantic import BaseModel
 
 from core.token_usage import TokenUsage
 from core.utils import (
     _gemini_model_for_api,
+    _get_anthropic_client,
     _get_gemini_client,
     _get_openai_client,
     create_boto3_client,
@@ -143,7 +142,8 @@ def _call_gemini_with_usage(
 
 def _call_anthropic(prompt: str, schema: Type[T], model_id: str, system_prompt: str | None = None) -> T:
     logger.info("Calling Anthropic model=%s schema=%s", model_id, schema.__name__)
-    client = instructor.from_anthropic(anthropic_sdk.Anthropic())
+    from core.utils import _get_anthropic_client
+    client = _get_anthropic_client()
     kwargs: dict = dict(
         model=model_id,
         response_model=schema,
@@ -161,7 +161,8 @@ def _call_anthropic_with_usage(
     prompt: str, schema: Type[T], model_id: str, system_prompt: str | None = None
 ) -> tuple[T, dict]:
     logger.info("Calling Anthropic (with usage) model=%s schema=%s", model_id, schema.__name__)
-    client = instructor.from_anthropic(anthropic_sdk.Anthropic())
+    from core.utils import _get_anthropic_client
+    client = _get_anthropic_client()
     kwargs: dict = dict(
         model=model_id,
         response_model=schema,

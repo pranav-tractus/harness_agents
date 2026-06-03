@@ -61,10 +61,7 @@ class TestAnthropicDirectCaller(unittest.TestCase):
         fake_client = MagicMock()
         fake_client.messages.create.return_value = SOExtractContractList.model_validate({"data": []})
 
-        with patch("core.llm_client.instructor") as mock_instructor, \
-                patch("core.llm_client.anthropic_sdk") as mock_sdk:
-            mock_sdk.Anthropic.return_value = MagicMock()
-            mock_instructor.from_anthropic.return_value = fake_client
+        with patch("core.utils._get_anthropic_client", return_value=fake_client):
             _call_anthropic(
                 "hello",
                 SOExtractContractList,

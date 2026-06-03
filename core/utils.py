@@ -191,6 +191,14 @@ def _get_openai_client():
     return instructor.from_openai(OpenAI(api_key=OPENAI_API_KEY))
 
 
+def _get_anthropic_client():
+    if not ANTHROPIC_API_KEY:
+        raise ValueError("ANTHROPIC_API_KEY is not set")
+    import anthropic as anthropic_sdk
+    import instructor
+    return instructor.from_anthropic(anthropic_sdk.Anthropic(api_key=ANTHROPIC_API_KEY))
+
+
 def build_model_catalog() -> dict[str, dict[str, str]]:
     """Provider-aware model catalog with stable CLI/UI keys."""
     catalog: dict[str, dict[str, str]] = {}

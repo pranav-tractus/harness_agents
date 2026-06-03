@@ -97,9 +97,10 @@ def _call_with_retry(
     system_prompt: str | None,
 ) -> tuple[T, int, str, dict | None]:
     """Run prompt -> LLM -> validated model, retrying up to ``_MAX_ATTEMPTS`` times."""
+    from core.token_usage import TokenUsage
     attempts_used = 0
     last_prompt = ""
-    accumulated_usage: dict | None = None
+    accumulated_usage: TokenUsage | None = None
 
     @retry(
         retry=retry_if_exception_type((ValidationError, ValueError, json.JSONDecodeError)),
@@ -123,21 +124,14 @@ def _call_with_retry(
 
         result, usage = call_llm_with_usage(prompt, schema, model_key=model_key, system_prompt=system_prompt)
         if usage:
-            if accumulated_usage is None:
-                accumulated_usage = dict(usage)
-            else:
-                for k in ("input_tokens", "output_tokens", "cache_read_tokens", "cache_write_tokens"):
-                    accumulated_usage[k] = accumulated_usage.get(k, 0) + usage.get(k, 0)
-                accumulated_usage["total_tokens"] = (
-                    accumulated_usage.get("input_tokens", 0)
-                    + accumulated_usage.get("output_tokens", 0)
-                )
+            usage_obj = TokenUsage.from_dict(usage)
+            accumulated_usage = usage_obj if accumulated_usage is None else accumulated_usage + usage_obj
 
         logger.info("Attempt %d succeeded", current_attempt)
         return result
 
     result = _attempt()
-    return result, attempts_used, last_prompt, accumulated_usage
+    return result, attempts_used, last_prompt, accumulated_usage.to_dict() if accumulated_usage else None
 
 
 class ExtractionEngine:

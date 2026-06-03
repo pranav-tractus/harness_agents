@@ -193,15 +193,13 @@ def _postprocess_comparison_html(summary: dict[str, Any]) -> tuple[str, str]:
         if _multi_agent(summary):
             label = f"{r.get('agent_id', '')} · {label}"
         cb = r.get("field_match_rate_baseline")
-        point = {
+        combo_points.append({
             "label": label,
             "fs": int(r.get("few_shot_count", 0)),
             "raw_pct": round(100.0 * float(cr), 2) if cr is not None else 0.0,
             "final_pct": round(100.0 * float(cf), 2) if cf is not None else 0.0,
-        }
-        if cb is not None:
-            point["baseline_pct"] = round(100.0 * float(cb), 2)
-        combo_points.append(point)
+            "baseline_pct": round(100.0 * float(cb), 2) if cb is not None else None,
+        })
     chart_data = json.dumps(combo_points, ensure_ascii=False)
 
     run_count = int(totals.get("run_count") or 0)

@@ -42,7 +42,7 @@ def _token_summary_cards(totals: dict[str, Any]) -> str:
         f'<div class="score">{_fmt_num(cr)}</div></div>',
         f'<div class="dataset-card"><div class="name">Cache Write</div>'
         f'<div class="score">{_fmt_num(cw)}</div></div>',
-        f'<div class="dataset-card"><div class="name">Total Tokens</div>'
+        f'<div class="dataset-card"><div class="name">Total Tokens (excl. cache)</div>'
         f'<div class="score">{_fmt_num(tt)}</div></div>',
     ])
     return f'<div class="dataset-grid">{cards}</div>'
@@ -143,6 +143,7 @@ def render_token_report_html(
 
     if has_tokens:
         summary_cards = _token_summary_cards(totals)
+        token_note = '<p class="section-intro" style="margin-top:12px;">Total tokens = input + output. Cache tokens (read/write) are tracked separately and reflect Anthropic prompt caching activity.</p>'
         model_table = _per_model_table(by_combo)
         chat_table = _per_chat_table(by_chat)
         chart_canvas = '<div class="chart-wrap" style="margin-top:24px;"><div class="chart-title">Token Distribution by Model</div><div class="chart-canvas-wrap" style="height:320px;"><canvas id="tokenChart"></canvas></div></div>'
@@ -150,6 +151,7 @@ def render_token_report_html(
         no_data_msg = ""
     else:
         summary_cards = ""
+        token_note = ""
         model_table = ""
         chat_table = ""
         chart_canvas = ""
@@ -183,6 +185,7 @@ def render_token_report_html(
   <div class="section-head"><span class="section-num">Sec. 1</span><h2>Token Usage</h2></div>
   {no_data_msg}
   {summary_cards}
+  {token_note}
   {chart_canvas}
   {model_table}
   {chat_table}

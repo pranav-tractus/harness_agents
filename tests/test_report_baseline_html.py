@@ -38,7 +38,7 @@ class TestReportBaseline(unittest.TestCase):
 
     def test_no_baseline_bar_when_metric_absent(self):
         html, script = _postprocess_comparison_html(_summary(with_baseline=False))
-        self.assertNotIn("baseline_pct", script)
+        self.assertNotIn("Baseline Extraction", script)
 
     def test_per_chat_table_rendered_with_baseline(self):
         summary = _summary(with_baseline=True)
