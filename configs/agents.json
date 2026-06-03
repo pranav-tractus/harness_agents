@@ -13,6 +13,10 @@
           "chat_globs": ["raw_data/chats/*.json"]
         },
         {
+          "id": "emails",
+          "chat_globs": ["raw_data/emails/*.json"]
+        },
+        {
           "id": "downloaded",
           "chat_globs": ["raw_data/downloaded_chats/*.json"]
         },

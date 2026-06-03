@@ -1,0 +1,51 @@
+{
+  "agent": "so_extraction",
+  "pipeline": null,
+  "models": [
+    "sonnet-4-6",
+    "opus-4-6",
+    "anthropic:opus-4-7",
+    "anthropic:opus-4-8",
+    "openai:5.4",
+    "openai:5.2"
+  ],
+  "datasets": [
+    "downloaded",
+    "acme_foods",
+    "nova_exports"
+  ],
+  "chat": null,
+  "chats_glob": null,
+  "bulk": false,
+  "runs_per_chat": 1,
+  "max_workers": 25,
+  "few_shot_explicit": [],
+  "few_shot_walk": [],
+  "few_shot_sweep": [],
+  "few_shot_pool_argv": [],
+  "few_shot_seed": 42,
+  "db_few_shot_limit": 0,
+  "validation_model": null,
+  "skip_without_expected": true,
+  "with_baseline": true,
+  "results_dir": "/Users/tripathipranav/Documents/code/harness_agents/results/20260603T055749Z",
+  "config_file": "configs/agents.json",
+  "few_shot_mode": "none",
+  "few_shot_pool_size": 88,
+  "few_shot_default_pool_size": 88,
+  "few_shot_pool_override": null,
+  "few_shot_variants": [
+    {
+      "label": "none",
+      "count": 0,
+      "paths": []
+    }
+  ],
+  "allow_self_fewshot": false,
+  "report_style": "pitch",
+  "merged_from": [
+    "20260603T053802Z",
+    "20260603T051559Z"
+  ],
+  "baseline_policy": "Per-model baseline from primary run; anthropic:opus-4-7 and anthropic:opus-4-8 use opus-4-6 baseline_output_json from primary run (same source_path)."
+}

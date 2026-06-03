@@ -1,6 +1,7 @@
 import logging
 from typing import Type, TypeVar
 
+import instructor
 from pydantic import BaseModel
 
 from core.token_usage import TokenUsage

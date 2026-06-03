@@ -1,0 +1,4206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harness Run 20260603T064135Z — so_extraction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+
+:root {
+  --bg: #f5f1e8;
+  --bg-card: #faf7ef;
+  --bg-elevated: #fffdf6;
+  --ink: #1a1a1a;
+  --ink-soft: #4a4a4a;
+  --ink-mute: #7a7a7a;
+  --line: #d6cfbe;
+  --line-soft: #e8e2d2;
+  --accent: #b8341c;
+  --accent-soft: #f4d9d2;
+  --warn: #c4761c;
+  --good: #2d6b3f;
+  --good-soft: #d4e3d8;
+  --display: 'Instrument Serif', Georgia, serif;
+  --sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.55;
+  font-size: 15px;
+  padding: 0;
+}
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+.masthead {
+  border-bottom: 2px solid var(--ink);
+  padding: 28px 0 20px;
+  margin-bottom: 32px;
+}
+.masthead-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 14px;
+}
+.masthead-top .dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  background: var(--good);
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+h1 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+h1 em { font-style: italic; color: var(--ink-soft); }
+.dek {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 21px;
+  color: var(--ink-soft);
+  max-width: 720px;
+  line-height: 1.4;
+}
+.findings {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 1px solid var(--ink);
+  margin: 40px 0;
+  background: var(--bg-card);
+}
+.finding {
+  padding: 24px 22px;
+  border-right: 1px solid var(--line);
+  position: relative;
+}
+.finding:last-child { border-right: none; }
+.finding .label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 12px;
+}
+.finding .label.critical { color: var(--accent); }
+.finding .label.critical::before { content: "▲ "; }
+.finding .big {
+  font-family: var(--display);
+  font-size: 42px;
+  line-height: 1;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+.finding .big.bad { color: var(--accent); }
+.finding .big.good { color: var(--good); }
+.finding .desc {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+.finding .desc strong { color: var(--ink); }
+section { margin: 56px 0; scroll-margin-top: 20px; }
+.section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 6px;
+}
+.section-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+}
+h2 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  flex: 1;
+}
+.section-intro {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 17px;
+  color: var(--ink-soft);
+  margin: 12px 0 24px;
+  max-width: 760px;
+  line-height: 1.45;
+}
+.alert {
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent);
+  padding: 18px 22px;
+  margin: 20px 0;
+  font-size: 14.5px;
+}
+.alert strong { color: var(--accent); font-weight: 600; }
+.dataset-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 24px 0;
+}
+.dataset-card {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  padding: 20px 18px;
+  position: relative;
+}
+.dataset-card.broken {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+.dataset-card .name {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  margin-bottom: 14px;
+  letter-spacing: 0.02em;
+}
+.dataset-card.broken .name { color: var(--accent); font-weight: 600; }
+.dataset-card .score {
+  font-family: var(--display);
+  font-size: 56px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.dataset-card.broken .score { color: var(--accent); }
+.dataset-card .score-label {
+  font-size: 11px;
+  color: var(--ink-mute);
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.dataset-card .meta {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-soft);
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.dataset-card .bar-track {
+  height: 6px;
+  background: var(--line-soft);
+  margin-bottom: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.dataset-card .bar-fill {
+  height: 100%;
+  background: var(--good);
+}
+.dataset-card.broken .bar-fill { background: var(--accent); }
+.chart-wrap {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  padding: 24px;
+  margin: 20px 0;
+}
+.chart-title {
+  font-family: var(--display);
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+.chart-sub {
+  font-size: 13px;
+  color: var(--ink-mute);
+  margin-bottom: 20px;
+}
+.chart-canvas-wrap {
+  position: relative;
+  height: 440px;
+}
+.table-controls {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.control label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
+.control select, .control input {
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 5px 9px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  border-radius: 0;
+}
+.control select:focus, .control input:focus {
+  outline: none;
+  border-color: var(--ink);
+}
+.table-scroll { overflow-x: auto; border: 1px solid var(--line); background: var(--bg-card); }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+thead th {
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--ink);
+  text-align: left;
+  padding: 11px 14px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  cursor: pointer;
+  user-select: none;
+  position: sticky;
+  top: 0;
+  white-space: nowrap;
+}
+thead th:hover { color: var(--ink); }
+thead th.sort-asc::after { content: " ↑"; color: var(--accent); }
+thead th.sort-desc::after { content: " ↓"; color: var(--accent); }
+tbody td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--line-soft);
+  font-family: var(--mono);
+  font-size: 12.5px;
+}
+tbody td:first-child { font-family: var(--sans); font-weight: 500; }
+tbody tr:hover td { background: var(--bg-elevated); }
+tbody tr.top-quartile td:first-child { color: var(--good); }
+tbody tr.top-quartile td:first-child::before { content: "● "; }
+tbody tr.bottom-quartile td:first-child { color: var(--accent); }
+tbody tr.bottom-quartile td:first-child::before { content: "○ "; }
+.numeric { text-align: right; }
+.match-cell { position: relative; }
+.match-bar {
+  display: inline-block;
+  width: 50px;
+  height: 5px;
+  background: var(--line-soft);
+  margin-right: 8px;
+  vertical-align: middle;
+  position: relative;
+}
+.match-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: var(--w);
+  background: var(--good);
+}
+.match-bar.low::after { background: var(--accent); }
+.match-bar.mid::after { background: var(--warn); }
+.fs-rollup {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  padding: 24px;
+  margin: 20px 0;
+}
+.fs-rollup-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+.fs-cell {
+  text-align: center;
+  padding: 14px 6px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--line-soft);
+}
+.fs-cell .fs-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+.fs-cell .fs-val {
+  font-family: var(--display);
+  font-size: 24px;
+}
+.fs-takeaway {
+  margin-top: 18px;
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ink-soft);
+}
+details {
+  border: 1px solid var(--line);
+  background: var(--bg-card);
+  margin: 20px 0;
+}
+details summary {
+  padding: 14px 22px;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+details summary::-webkit-details-marker { display: none; }
+details summary::after {
+  content: "+";
+  font-family: var(--display);
+  font-size: 22px;
+  color: var(--ink-soft);
+}
+details[open] summary::after { content: "−"; }
+details summary:hover { color: var(--ink); }
+details .details-content { padding: 0 22px 22px; }
+details pre {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--line-soft);
+  padding: 16px;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+.action-grid {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 14px 18px;
+  margin-top: 20px;
+}
+.action-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  padding-top: 3px;
+}
+.action-title {
+  font-family: var(--display);
+  font-size: 19px;
+  font-weight: 400;
+}
+.action-body { color: var(--ink-soft); margin-top: 4px; }
+footer {
+  margin-top: 80px;
+  padding: 24px 0 60px;
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.04em;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 820px) {
+  .wrap { padding: 0 18px; }
+  .findings { grid-template-columns: 1fr; }
+  .finding { border-right: none; border-bottom: 1px solid var(--line); }
+  .finding:last-child { border-bottom: none; }
+  .dataset-grid { grid-template-columns: 1fr; }
+  h1 { font-size: 36px; }
+  h2 { font-size: 28px; }
+  .chart-canvas-wrap { height: 360px; }
+}
+.badge { display:inline-block; padding:2px 7px; border-radius:10px; font-family:var(--mono); font-size:10px; margin-right:4px; border:1px solid var(--line); }
+.badge-warn { background:#fff3df; color:#7a4310; border-color:#e6c47a; }
+.badge-err  { background:#fde6e1; color:#7a160a; border-color:#e6928a; }
+.badge-info { background:#e7eef7; color:#1f3d70; border-color:#9bb4d4; }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="masthead">
+  <div class="masthead-top">
+    <span><span class="dot"></span>Harness Run · so_extraction</span>
+    <span>20260603T064135Z &nbsp;·&nbsp; 172 runs &nbsp;·&nbsp; Generated 2026-06-03 06:41 UTC</span>
+  </div>
+  <h1>Here is how this benchmark run shook out.</h1>
+  <p class="dek">172 harness runs for **so_extraction**. Overall field match is **-100.0%** with **0.0%** run success.</p>
+</div>
+<div class="findings">
+<div class="finding"><div class="label">Overall</div><div class="big">-100.0%</div><p class="score-label"><span class="badge badge-info">172 runs</span><span class="badge badge-info">0.00% success</span><span class="badge badge-info">2.00 mismatch</span></p><div class="desc">Scan the dataset cards below; uneven bars usually mean mixed data quality or evaluation drift.</div></div><div class="finding"><div class="label">Strongest model (avg across few-shot)</div><div class="big">anthropic:opus-4-7</div><p class="score-label"><span class="badge badge-info">2.00 mismatch</span><span class="badge badge-info">2.0s avg</span><span class="badge badge-warn">86 regressions</span></p><div class="desc">By weighted field match across all few-shot counts, <strong>anthropic:opus-4-7</strong> leads at <strong>-100.0%</strong>. Compare the leaderboard when filtering to a single few-shot count.</div></div><div class="finding"><div class="label">Speed</div><div class="big">2.0s</div><p class="score-label"><span class="badge badge-err">2.00 mismatch</span><span class="badge badge-warn">2.0s avg</span><span class="badge badge-err">86 regressions</span></p><div class="desc">Average wall time per run across the whole batch (latency proxy only — add cost to compare dollars).</div></div>
+</div>
+
+<section id="brief">
+  <div class="section-head"><span class="section-num">Sec. 00</span><h2>Experiment at a glance</h2></div>
+  <p class="section-intro">Headline experiment stats before model and dataset drill-down — use this strip in a stakeholder readout.</p>
+  <div class="dataset-grid"><div class="dataset-card"><div class="name">Run volume</div><div class="score">172</div><div class="score-label">Completed harness runs</div><div class="bar-track"><div class="bar-fill" style="width:0.0%"></div></div><div class="meta"><span>0.00% success</span><span>2.00 avg mismatch</span></div></div><div class="dataset-card"><div class="name">Experiment grid</div><div class="score">2×5</div><div class="score-label">Models × datasets</div><div class="score-label"><span class="badge badge-info">Head-to-head bake-off</span></div><div class="meta"><span>2 model buckets</span><span>none few-shot</span></div></div><div class="dataset-card"><div class="name">Latency</div><div class="score">2.0s</div><div class="score-label">Avg wall time per run</div><div class="score-label"><span class="badge badge-info">Speed vs quality tradeoff</span></div><div class="meta"><span>Fastest: anthropic:opus-4-7</span><span>Slowest: anthropic:opus-4-8</span></div></div><div class="dataset-card"><div class="name">Blended quality</div><div class="score">-100.00%</div><div class="score-label">Overall field match</div><div class="bar-track"><div class="bar-fill" style="width:-100.0%"></div></div><div class="meta"><span>0.00% raw LLM</span><span>0.00% runs improved</span></div></div></div>
+</section>
+
+
+<section id="postprocess">
+  <div class="section-head"><span class="section-num">Sec. PP</span><h2>Post-processing impact</h2></div>
+  <p class="section-intro">Compare primary extraction (raw LLM JSON) vs final output after deterministic rules and validation LLM. Dates are never auto-corrected.</p>
+  
+  <p class="section-intro">Avg mismatch delta (raw − final): <strong>-1.00</strong> (raw 1.00 → final 2.00 per expected run).</p>
+  <div class="dataset-grid"><div class="dataset-card"><div class="name">Raw LLM field match</div><div class="score">0.00%</div><div class="score-label">Primary extraction output</div><div class="bar-track"><div class="bar-fill" style="width:0.0%"></div></div><div class="meta"><span>1.00 mismatch / run</span><span>Before rules + validation</span></div></div><div class="dataset-card"><div class="name">After post-processing</div><div class="score">-100.00%</div><div class="score-label">Shippable JSON quality</div><div class="bar-track"><div class="bar-fill" style="width:-100.0%"></div></div><div class="meta"><span>2.00 mismatch / run</span><span>Δ -1.00 fields saved</span></div></div><div class="dataset-card"><div class="name">Runs improved</div><div class="score">0.00%</div><div class="score-label">0 of 172 runs gained fields</div><div class="score-label"><span class="badge badge-warn">172 regressions</span></div><div class="bar-track"><div class="bar-fill" style="width:0.0%"></div></div><div class="meta"><span>172 regressions</span><span>-1.00 avg field delta</span></div></div></div>
+  <div class="chart-wrap" style="margin-top:24px;">
+    <div class="chart-title">Field match: raw vs final (by model × few-shot)</div>
+    <div class="chart-canvas-wrap" style="height:320px;"><canvas id="postprocessChart"></canvas></div>
+  </div>
+  
+</section>
+
+
+<section id="models">
+  <div class="section-head"><span class="section-num">Sec. 01</span><h2>Model lineup</h2></div>
+  <p class="section-intro">Each card is one model bucket (zero few-shot here). Compare accuracy, post-processing lift, and regression risk side by side.</p>
+  <div class="dataset-grid"><div class="dataset-card"><div class="name">anthropic:opus-4-7</div><div class="score">-100.00%</div><div class="score-label">Field match · sales pick</div><div class="score-label"><span class="badge badge-info">Fastest</span></div><div class="bar-track"><div class="bar-fill" style="width:-100.0%"></div></div><div class="meta"><span>86 runs</span><span>2.00 mismatch</span><span>0.00% improved</span><span>86 regressions</span></div></div><div class="dataset-card"><div class="name">anthropic:opus-4-8</div><div class="score">-100.00%</div><div class="score-label">Field match · sales pick</div><div class="bar-track"><div class="bar-fill" style="width:-100.0%"></div></div><div class="meta"><span>86 runs</span><span>2.00 mismatch</span><span>0.00% improved</span><span>86 regressions</span></div></div></div>
+</section>
+
+<section id="datasets">
+  <div class="section-head"><span class="section-num">Sec. 02</span><h2>Results by dataset</h2></div>
+  <p class="section-intro">Each card is one dataset bucket: height is field match, width of the bar is the same. Use this view to see whether the story is uniform or split.</p>
+  
+  <div class="dataset-grid"><div class="dataset-card"><div class="name">acme_foods</div><div class="score">-100.00%</div><div class="score-label">Field match · dataset slice</div><div class="bar-track"><div class="bar-fill" style="width:-100.0%"></div></div><div class="meta"><span>42 runs</span><span>2.00 mismatch</span><span>0.00% raw</span><span>0/42 improved</span><span>42 regressions</span><span>2.0s avg</span></div></div><div class="dataset-card"><div class="name">core</div><div class="score">-100.00%</div><div class="score-label">Field match · dataset slice</div><div class="bar-track"><div class="bar-fill" style="width:-100.0%"></div></div><div class="meta"><span>26 runs</span><span>2.00 mismatch</span><span>0.00% raw</span><span>0/26 improved</span><span>26 regressions</span><span>2.1s avg</span></div></div><div class="dataset-card"><div class="name">downloaded</div><div class="score">-100.00%</div><div class="score-label">Field match · dataset slice</div><div class="bar-track"><div class="bar-fill" style="width:-100.0%"></div></div><div class="meta"><span>56 runs</span><span>2.00 mismatch</span><span>0.00% raw</span><span>0/56 improved</span><span>56 regressions</span><span>2.0s avg</span></div></div><div class="dataset-card"><div class="name">emails</div><div class="score">-100.00%</div><div class="score-label">Field match · dataset slice</div><div class="bar-track"><div class="bar-fill" style="width:-100.0%"></div></div><div class="meta"><span>6 runs</span><span>2.00 mismatch</span><span>0.00% raw</span><span>0/6 improved</span><span>6 regressions</span><span>2.0s avg</span></div></div><div class="dataset-card"><div class="name">nova_exports</div><div class="score">-100.00%</div><div class="score-label">Field match · dataset slice</div><div class="bar-track"><div class="bar-fill" style="width:-100.0%"></div></div><div class="meta"><span>42 runs</span><span>2.00 mismatch</span><span>0.00% raw</span><span>0/42 improved</span><span>42 regressions</span><span>2.0s avg</span></div></div></div>
+</section>
+<section id="frontier">
+  <div class="section-head"><span class="section-num">Sec. 03</span><h2>Quality vs. speed</h2></div>
+  <p class="section-intro">Bubble chart: horizontal axis is average latency (log scale), vertical axis is field match. Upper-left is ideal; bubble size encodes mismatch pressure.</p>
+  <div class="chart-wrap">
+    <div class="chart-title">Model frontier</div>
+    <div class="chart-sub">Each bubble is one row in the table below (model × few-shot). Bubble size reflects mismatch load.</div>
+    <div class="chart-canvas-wrap"><canvas id="frontierChart"></canvas></div>
+  </div>
+</section>
+<section id="leaderboard">
+  <div class="section-head"><span class="section-num">Sec. 04</span><h2>Leaderboard</h2></div>
+  <p class="section-intro">Sort any column, filter few-shot count, and type in the search box. Green and red rows highlight top and bottom quartiles of field match in the current filter.</p>
+  <div class="table-controls">
+    <div class="control"><label for="fsFilter">FS Count</label>
+      <select id="fsFilter"><option value="all">All</option><option value="0">0</option></select></div>
+    <div class="control"><label for="modelFilter">Model</label>
+      <select id="modelFilter"><option value="all">All</option></select></div>
+    <div class="control"><label for="search">Search</label>
+      <input id="search" type="text" placeholder="filter…" style="width:180px"></div>
+    <div class="control" style="margin-left:auto;color:var(--ink-mute);font-family:var(--mono);font-size:11px;">
+      <span id="rowCount">0 rows</span></div>
+  </div>
+  <div class="table-scroll">
+    <table id="leaderboard-table">
+      <thead><tr>
+        
+        <th data-sort="model" data-type="str">Model</th>
+        <th data-sort="fs" data-type="num" class="numeric">FS</th>
+        <th data-sort="runs" data-type="num" class="numeric">Runs</th>
+        <th data-sort="elapsed" data-type="num" class="numeric">Avg s</th>
+        <th data-sort="mismatch" data-type="num" class="numeric">Mismatch</th>
+        <th data-sort="match" data-type="num" class="numeric sort-desc">Field match</th>
+      </tr></thead>
+      <tbody id="leaderboard-body"></tbody>
+    </table>
+  </div>
+</section>
+<section id="fewshot">
+  <div class="section-head"><span class="section-num">Sec. 05</span><h2>Few-shot sweep</h2></div>
+  <p class="section-intro">Cells aggregate every agent row in the run for each few-shot count (weighted by runs). Flat rows suggest few-shot is not the lever to pull.</p>
+  <div class="fs-rollup">
+    <div class="fs-rollup-grid"><div class="fs-cell"><div class="fs-label">FS 0</div><div class="fs-val">-100.00%</div></div><div class="fs-cell"><div class="fs-label">anthropic:opus-4-7</div><div class="fs-val">-100.00%</div></div><div class="fs-cell"><div class="fs-label">anthropic:opus-4-8</div><div class="fs-val">-100.00%</div></div></div>
+    
+  </div>
+</section>
+<section id="actions"><div class="section-head"><span class="section-num">Sec. 06</span><h2>What to check next</h2></div><p class="section-intro">Practical follow-ups in priority order:</p><div class="action-grid"><div class="action-num">01</div><div><div class="action-title">Confirm what “field match” covers</div><div class="action-body">Open the glossary under this page and align stakeholders on success vs quality metrics.</div></div><div class="action-num">02</div><div><div class="action-title">Split conclusions by dataset</div><div class="action-body">If one dataset is an outlier, report model winners per dataset instead of one blended score.</div></div><div class="action-num">03</div><div><div class="action-title">Spot-check the worst chats</div><div class="action-body">Expand “Sample mismatches” and compare agent JSON to the golden reference for a handful of rows.</div></div></div></section>
+<details>
+  <summary>Run configuration (JSON)</summary>
+  <div class="details-content"><pre>{
+  "agent": "so_extraction",
+  "pipeline": null,
+  "models": [
+    "anthropic:opus-4-7",
+    "anthropic:opus-4-8"
+  ],
+  "datasets": [
+    "core",
+    "downloaded",
+    "acme_foods",
+    "nova_exports",
+    "emails"
+  ],
+  "chat": null,
+  "chats_glob": null,
+  "bulk": true,
+  "runs_per_chat": 1,
+  "max_workers": 25,
+  "few_shot_explicit": [],
+  "few_shot_walk": [],
+  "few_shot_sweep": [],
+  "few_shot_pool_argv": [],
+  "few_shot_seed": 42,
+  "db_few_shot_limit": 0,
+  "validation_model": null,
+  "skip_without_expected": true,
+  "with_baseline": false,
+  "results_dir": "/Users/tripathipranav/Documents/code/harness_agents/results/20260603T064135Z",
+  "config_file": "configs/agents.json",
+  "few_shot_mode": "none",
+  "few_shot_pool_size": 88,
+  "few_shot_default_pool_size": 88,
+  "few_shot_pool_override": null,
+  "few_shot_variants": [
+    {
+      "label": "none",
+      "count": 0,
+      "paths": []
+    }
+  ],
+  "allow_self_fewshot": false
+}</pre></div>
+</details>
+<details>
+  <summary>How to read these numbers</summary>
+  <div class="details-content">
+    <div style="font-size:13.5px;color:var(--ink-soft);line-height:1.7;">
+      <p style="margin-bottom:10px;"><strong style="color:var(--ink);font-family:var(--mono);font-size:12px;">SUCCESS RATE</strong>
+      — Share of runs that finished without a harness or HTTP error. High success means the run was stable; it does not prove the answers matched the reference.</p>
+      <p style="margin-bottom:10px;"><strong style="color:var(--ink);font-family:var(--mono);font-size:12px;">AVG ELAPSED (S)</strong>
+      — Average wall time per run in that bucket. Useful for latency comparisons.</p>
+      <p style="margin-bottom:10px;"><strong style="color:var(--ink);font-family:var(--mono);font-size:12px;">AVG MISMATCH / EXPECTED RUN</strong>
+      — Average count of fields that differed from the golden JSON when a reference existed. Lower is better.</p>
+      <p><strong style="color:var(--ink);font-family:var(--mono);font-size:12px;">FIELD MATCH</strong>
+      — Fraction of compared fields that matched the golden output across runs in that bucket. Higher is better.</p>
+    </div>
+  </div>
+</details>
+<details>
+  <summary>Sample mismatches (up to 80 rows)</summary>
+  <div class="details-content"><div class='table-scroll'><table><thead><tr><th>Agent</th><th>Chat</th><th>Model</th><th>FS</th><th>Mismatches</th><th>Sample</th></tr></thead><tbody><tr><td>so_extraction</td><td>01__2025-07-12__120363400604184610_g_us__c53c0007-bbd6-4474-8348-b011992829f8.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "cif",
+          "billing_address": "",
+          "shipping_method": "by air",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>01__2025-07-12__120363400604184610_g_us__c53c0007-bbd6-4474-8348-b011992829f8.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "cif",
+          "billing_address": "",
+          "shipping_method": "by air",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>02__2025-07-14__120363403809993004_g_us__cb0945e9-65a0-488f-99f7-a2f9ab857033.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFEED PL-5",
+              "quantity": 2.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "2026-07-20",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 2840.0
+            }
+          ],
+          "do_date": "2026-07-20",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "CIF Busan",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>02__2025-07-14__120363403809993004_g_us__cb0945e9-65a0-488f-99f7-a2f9ab857033.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFEED PL-5",
+              "quantity": 2.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "2026-07-20",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 2840.0
+            }
+          ],
+          "do_date": "2026-07-20",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "CIF Busan",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>03__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "BP102",
+              "quantity": 23.0,
+              "quantity_unit": "MT",
+              "unit_price": 1410.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "2025-11-15",
+              "shipping_address": "",
+              "packing": "25kg printed paper bag",
+              "loading": "23MT / 40' FCL",
+              "total": 32430.0
+            }
+          ],
+          "do_date": "2025-11-15",
+          "po_date": "2025-09-29",
+          "po_ref_no": "BP102-2025-1",
+          "vendor_name": "AG Lipids Pte Ltd",
+          "payment_date": "Net 14 Days",
+          "delivery_terms": "CIF Busan",
+          "billing_address": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea",
+          "shipping_method": "",
+          "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>03__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "BP102",
+              "quantity": 23.0,
+              "quantity_unit": "MT",
+              "unit_price": 1410.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "2025-11-15",
+              "shipping_address": "",
+              "packing": "25kg printed paper bag",
+              "loading": "23MT / 40' FCL",
+              "total": 32430.0
+            }
+          ],
+          "do_date": "2025-11-15",
+          "po_date": "2025-09-29",
+          "po_ref_no": "BP102-2025-1",
+          "vendor_name": "AG Lipids Pte Ltd",
+          "payment_date": "Net 14 Days",
+          "delivery_terms": "CIF Busan",
+          "billing_address": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea",
+          "shipping_method": "",
+          "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>04__2025-07-22__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFEED PL-5",
+              "quantity": 2000.0,
+              "quantity_unit": "KG",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 2840.0
+            }
+          ],
+          "do_date": "2026-07-20",
+          "po_date": "2025-07-22",
+          "po_ref_no": "GIIOFEED PL-5-2025-6",
+          "vendor_name": "Roadrunner Inc",
+          "payment_date": "",
+          "delivery_terms": "CIF Busan",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>04__2025-07-22__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFEED PL-5",
+              "quantity": 2000.0,
+              "quantity_unit": "KG",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 2840.0
+            }
+          ],
+          "do_date": "2026-07-20",
+          "po_date": "2025-07-22",
+          "po_ref_no": "GIIOFEED PL-5-2025-6",
+          "vendor_name": "Roadrunner Inc",
+          "payment_date": "",
+          "delivery_terms": "CIF Busan",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>05__2025-08-01__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFEED PL-5",
+              "quantity": 2.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 2840.0
+            }
+          ],
+          "do_date": "2026-07-20",
+          "po_date": "2025-08-01",
+          "po_ref_no": "GIIOFEED PL-5-2025-6",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "CIF Busan",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>05__2025-08-01__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFEED PL-5",
+              "quantity": 2.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 2840.0
+            }
+          ],
+          "do_date": "2026-07-20",
+          "po_date": "2025-08-01",
+          "po_ref_no": "GIIOFEED PL-5-2025-6",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "CIF Busan",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>06__2025-08-01__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFEED PL-5",
+              "quantity": 2.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 2840.0
+            }
+          ],
+          "do_date": "2026-07-20",
+          "po_date": "2025-08-01",
+          "po_ref_no": "GIIOFEED PL-5-2025-6",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "CIF Busan",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>06__2025-08-01__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFEED PL-5",
+              "quantity": 2.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 2840.0
+            }
+          ],
+          "do_date": "2026-07-20",
+          "po_date": "2025-08-01",
+          "po_ref_no": "GIIOFEED PL-5-2025-6",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "CIF Busan",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>07__2025-09-27__120363420980882745_g_us__fc1a5131-1287-4c0b-98c6-40d0d5012d72.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "lecithin fat powder",
+              "quantity": 8.0,
+              "quantity_unit": "MT",
+              "unit_price": 12.0,
+              "pricing_unit": "USD/KG",
+              "ship_term": "CIF",
+              "delivery_terms": "",
+              "shipment_date": "2026-11-30",
+              "shipping_address": "",
+              "packing": "25kg stitch paper bag",
+              "loading": "23MT/40'FCL",
+              "total": 96000.0
+            },
+            {
+              "sr_no": 2,
+              "description": "lecithin fat powder",
+              "quantity": 12.0,
+              "quantity_unit": "MT",
+              "unit_price": 12.0,
+              "pricing_unit": "USD/KG",
+              "ship_term": "CIF",
+              "delivery_terms": "",
+              "shipment_date": "2026-01-31",
+              "shipping_address": "",
+              "packing": "25kg stitch paper bag",
+              "loading": "23MT/40'FCL",
+              "total": 144000.0
+            }
+          ],
+          "do_date": "2026-01-31",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "by sea",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>07__2025-09-27__120363420980882745_g_us__fc1a5131-1287-4c0b-98c6-40d0d5012d72.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "lecithin fat powder",
+              "quantity": 8.0,
+              "quantity_unit": "MT",
+              "unit_price": 12.0,
+              "pricing_unit": "USD/KG",
+              "ship_term": "CIF",
+              "delivery_terms": "",
+              "shipment_date": "2026-11-30",
+              "shipping_address": "",
+              "packing": "25kg stitch paper bag",
+              "loading": "23MT/40'FCL",
+              "total": 96000.0
+            },
+            {
+              "sr_no": 2,
+              "description": "lecithin fat powder",
+              "quantity": 12.0,
+              "quantity_unit": "MT",
+              "unit_price": 12.0,
+              "pricing_unit": "USD/KG",
+              "ship_term": "CIF",
+              "delivery_terms": "",
+              "shipment_date": "2026-01-31",
+              "shipping_address": "",
+              "packing": "25kg stitch paper bag",
+              "loading": "23MT/40'FCL",
+              "total": 144000.0
+            }
+          ],
+          "do_date": "2026-01-31",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "by sea",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>08__2025-10-29__120363403571614155_g_us__8116ee59-5f7b-4c45-9818-5b3fabf0c9a4.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Red balloons",
+              "quantity": 0.5,
+              "quantity_unit": "MT",
+              "unit_price": 800.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Mundra",
+              "shipment_date": "2026-01-31",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 400.0
+            }
+          ],
+          "do_date": "2026-01-31",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "CIF Mundra",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        },
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Red balloons",
+              "quantity": 1.0,
+              "quantity_unit": "MT",
+              "unit_price": 1000.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "2025-11-15",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 1000.0
+            }
+          ],
+          "do_date": "2025-11-15",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>08__2025-10-29__120363403571614155_g_us__8116ee59-5f7b-4c45-9818-5b3fabf0c9a4.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Red balloons",
+              "quantity": 0.5,
+              "quantity_unit": "MT",
+              "unit_price": 800.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Mundra",
+              "shipment_date": "2026-01-31",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 400.0
+            }
+          ],
+          "do_date": "2026-01-31",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "CIF Mundra",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        },
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Red balloons",
+              "quantity": 1.0,
+              "quantity_unit": "MT",
+              "unit_price": 1000.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "2025-11-15",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 1000.0
+            }
+          ],
+          "do_date": "2025-11-15",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>09__2025-10-26__120363403571614155_g_us__64e00925-1a11-47da-bf00-9a015a992148.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Fat powder",
+              "quantity": 23.0,
+              "quantity_unit": "MT",
+              "unit_price": 1000.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "2026-01-15",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "23MT/40'FCL",
+              "total": 23000.0
+            }
+          ],
+          "do_date": "2026-01-15",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "CIF Busan",
+          "billing_address": "",
+          "shipping_method": "by sea",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>09__2025-10-26__120363403571614155_g_us__64e00925-1a11-47da-bf00-9a015a992148.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Fat powder",
+              "quantity": 23.0,
+              "quantity_unit": "MT",
+              "unit_price": 1000.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "2026-01-15",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "23MT/40'FCL",
+              "total": 23000.0
+            }
+          ],
+          "do_date": "2026-01-15",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "CIF Busan",
+          "billing_address": "",
+          "shipping_method": "by sea",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>10__2025-07-15__120363402282420119_g_us__7314e5d3-3439-43f2-be98-8023d8c6c168.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFEED PL-5",
+              "quantity": 2.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "2026-07-20",
+              "shipping_address": "",
+              "packing": "cardboard",
+              "loading": "",
+              "total": 2840.0
+            }
+          ],
+          "do_date": "2026-07-20",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "CIF Busan",
+          "billing_address": "",
+          "shipping_method": "by air",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>10__2025-07-15__120363402282420119_g_us__7314e5d3-3439-43f2-be98-8023d8c6c168.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFEED PL-5",
+              "quantity": 2.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "2026-07-20",
+              "shipping_address": "",
+              "packing": "cardboard",
+              "loading": "",
+              "total": 2840.0
+            }
+          ],
+          "do_date": "2026-07-20",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "CIF Busan",
+          "billing_address": "",
+          "shipping_method": "by air",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>11__2025-07-15__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFEED PL-5",
+              "quantity": 2.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "2026-07-20",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 2840.0
+            }
+          ],
+          "do_date": "2026-07-20",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "CIF Busan",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>11__2025-07-15__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFEED PL-5",
+              "quantity": 2.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "2026-07-20",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 2840.0
+            }
+          ],
+          "do_date": "2026-07-20",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "CIF Busan",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>12__2025-07-18__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFEED PL-5",
+              "quantity": 2.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "2026-07-20",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 2840.0
+            }
+          ],
+          "do_date": "2026-07-20",
+          "po_date": "2025-07-18",
+          "po_ref_no": "GIIOFEED PL-5-2025-3",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "CIF Busan",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>12__2025-07-18__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFEED PL-5",
+              "quantity": 2.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "2026-07-20",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 2840.0
+            }
+          ],
+          "do_date": "2026-07-20",
+          "po_date": "2025-07-18",
+          "po_ref_no": "GIIOFEED PL-5-2025-3",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "CIF Busan",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>13__2025-07-18__120363420625598220_g_us__f081da35-3b14-4328-86f6-0f569bc63b43.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFEED PL-5",
+              "quantity": 5.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Incheon",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "20 kg kraft paper bags",
+              "loading": "CIF Incheon",
+              "total": 7100.0
+            },
+            {
+              "sr_no": 2,
+              "description": "GIIOFEED PL-5",
+              "quantity": 2.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "cardboard packing",
+              "loading": "CIF Busan",
+              "total": 2840.0
+            },
+            {
+              "sr_no": 3,
+              "description": "GIIOFINE - L - SF",
+              "quantity": 1.1,
+              "quantity_unit": "MT",
+              "unit_price": 2980.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "2026-07-28",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 3278.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "2025-07-18",
+          "po_ref_no": "GIIOFEED PL-5-2025-5",
+          "vendor_name": "FeedBEST Company Limited",
+          "payment_date": "cod",
+          "delivery_terms": "CIF",
+          "billing_address": "",
+          "shipping_method": "shipping by air",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>13__2025-07-18__120363420625598220_g_us__f081da35-3b14-4328-86f6-0f569bc63b43.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFEED PL-5",
+              "quantity": 5.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Incheon",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "20 kg kraft paper bags",
+              "loading": "CIF Incheon",
+              "total": 7100.0
+            },
+            {
+              "sr_no": 2,
+              "description": "GIIOFEED PL-5",
+              "quantity": 2.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "cardboard packing",
+              "loading": "CIF Busan",
+              "total": 2840.0
+            },
+            {
+              "sr_no": 3,
+              "description": "GIIOFINE - L - SF",
+              "quantity": 1.1,
+              "quantity_unit": "MT",
+              "unit_price": 2980.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "2026-07-28",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 3278.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "2025-07-18",
+          "po_ref_no": "GIIOFEED PL-5-2025-5",
+          "vendor_name": "FeedBEST Company Limited",
+          "payment_date": "cod",
+          "delivery_terms": "CIF",
+          "billing_address": "",
+          "shipping_method": "shipping by air",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>14__2025-07-18__120363420625598220_g_us__f081da35-3b14-4328-86f6-0f569bc63b43.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFEED PL-5",
+              "quantity": 5.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Incheon",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "20 kg kraft paper bags",
+              "loading": "CIF Incheon",
+              "total": 7100.0
+            },
+            {
+              "sr_no": 2,
+              "description": "GIIOFEED PL-5",
+              "quantity": 2.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "cardboard packing",
+              "loading": "CIF Busan",
+              "total": 2840.0
+            },
+            {
+              "sr_no": 3,
+              "description": "GIIOFINE - L - SF",
+              "quantity": 1.1,
+              "quantity_unit": "MT",
+              "unit_price": 2980.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "2026-07-28",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 3278.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "2025-07-18",
+          "po_ref_no": "GIIOFEED PL-5-2025-5",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "cod",
+          "delivery_terms": "CIF",
+          "billing_address": "",
+          "shipping_method": "shipping by air",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>14__2025-07-18__120363420625598220_g_us__f081da35-3b14-4328-86f6-0f569bc63b43.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFEED PL-5",
+              "quantity": 5.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Incheon",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "20 kg kraft paper bags",
+              "loading": "CIF Incheon",
+              "total": 7100.0
+            },
+            {
+              "sr_no": 2,
+              "description": "GIIOFEED PL-5",
+              "quantity": 2.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "cardboard packing",
+              "loading": "CIF Busan",
+              "total": 2840.0
+            },
+            {
+              "sr_no": 3,
+              "description": "GIIOFINE - L - SF",
+              "quantity": 1.1,
+              "quantity_unit": "MT",
+              "unit_price": 2980.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "2026-07-28",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 3278.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "2025-07-18",
+          "po_ref_no": "GIIOFEED PL-5-2025-5",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "cod",
+          "delivery_terms": "CIF",
+          "billing_address": "",
+          "shipping_method": "shipping by air",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>15__2025-07-18__120363420625598220_g_us__f081da35-3b14-4328-86f6-0f569bc63b43.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFEED PL-5",
+              "quantity": 5.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Incheon",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "20 kg kraft paper bags",
+              "loading": "CIF Incheon",
+              "total": 7100.0
+            },
+            {
+              "sr_no": 2,
+              "description": "GIIOFEED PL-5",
+              "quantity": 2.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "cardboard packing",
+              "loading": "CIF Busan",
+              "total": 2840.0
+            },
+            {
+              "sr_no": 3,
+              "description": "GIIOFINE - L - SF",
+              "quantity": 1.1,
+              "quantity_unit": "MT",
+              "unit_price": 2980.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "2026-07-28",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 3278.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "2025-07-18",
+          "po_ref_no": "GIIOFEED PL-5-2025-5",
+          "vendor_name": "FeedBEST Company Limited",
+          "payment_date": "cod",
+          "delivery_terms": "CIF",
+          "billing_address": "",
+          "shipping_method": "shipping by air",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>15__2025-07-18__120363420625598220_g_us__f081da35-3b14-4328-86f6-0f569bc63b43.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFEED PL-5",
+              "quantity": 5.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Incheon",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "20 kg kraft paper bags",
+              "loading": "CIF Incheon",
+              "total": 7100.0
+            },
+            {
+              "sr_no": 2,
+              "description": "GIIOFEED PL-5",
+              "quantity": 2.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "cardboard packing",
+              "loading": "CIF Busan",
+              "total": 2840.0
+            },
+            {
+              "sr_no": 3,
+              "description": "GIIOFINE - L - SF",
+              "quantity": 1.1,
+              "quantity_unit": "MT",
+              "unit_price": 2980.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "2026-07-28",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 3278.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "2025-07-18",
+          "po_ref_no": "GIIOFEED PL-5-2025-5",
+          "vendor_name": "FeedBEST Company Limited",
+          "payment_date": "cod",
+          "delivery_terms": "CIF",
+          "billing_address": "",
+          "shipping_method": "shipping by air",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>16__2025-07-18__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFEED PL-5",
+              "quantity": 2.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "2025-07-20",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 2840.0
+            }
+          ],
+          "do_date": "2025-07-20",
+          "po_date": "2025-07-18",
+          "po_ref_no": "GIIOFEED PL-5-2025-3",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "CIF Busan",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>16__2025-07-18__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFEED PL-5",
+              "quantity": 2.0,
+              "quantity_unit": "MT",
+              "unit_price": 1420.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "2025-07-20",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 2840.0
+            }
+          ],
+          "do_date": "2025-07-20",
+          "po_date": "2025-07-18",
+          "po_ref_no": "GIIOFEED PL-5-2025-3",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "CIF Busan",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>17__2025-07-19__120363420625598220_g_us__f081da35-3b14-4328-86f6-0f569bc63b43.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE - L - SF in liquid form",
+              "quantity": 1.1,
+              "quantity_unit": "MT",
+              "unit_price": 2980.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "",
+              "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu",
+              "packing": "IBC",
+              "loading": "July 28th container",
+              "total": 3278.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "2025-07-18",
+          "po_ref_no": "GIIOFINE - L - SF in liquid form-2025-6",
+          "vendor_name": "AdityaTestinglabs",
+          "payment_date": "cod",
+          "delivery_terms": "CIF Busan",
+          "billing_address": "FeedBEST Company Limited",
+          "shipping_method": "",
+          "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>17__2025-07-19__120363420625598220_g_us__f081da35-3b14-4328-86f6-0f569bc63b43.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE - L - SF in liquid form",
+              "quantity": 1.1,
+              "quantity_unit": "MT",
+              "unit_price": 2980.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "",
+              "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu",
+              "packing": "IBC",
+              "loading": "July 28th container",
+              "total": 3278.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "2025-07-18",
+          "po_ref_no": "GIIOFINE - L - SF in liquid form-2025-6",
+          "vendor_name": "AdityaTestinglabs",
+          "payment_date": "cod",
+          "delivery_terms": "CIF Busan",
+          "billing_address": "FeedBEST Company Limited",
+          "shipping_method": "",
+          "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>18__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "BP102",
+              "quantity": 23.0,
+              "quantity_unit": "MT",
+              "unit_price": 1410.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "2025-11-15",
+              "shipping_address": "",
+              "packing": "25kg printed paper bag",
+              "loading": "23 MT / 40' FCL",
+              "total": 32430.0
+            }
+          ],
+          "do_date": "2025-11-15",
+          "po_date": "2025-09-29",
+          "po_ref_no": "BP102-2025-1",
+          "vendor_name": "AG Lipids Pte Ltd",
+          "payment_date": "Net 14 Days",
+          "delivery_terms": "CIF Busan",
+          "billing_address": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea",
+          "shipping_method": "",
+          "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>18__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "BP102",
+              "quantity": 23.0,
+              "quantity_unit": "MT",
+              "unit_price": 1410.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Busan",
+              "shipment_date": "2025-11-15",
+              "shipping_address": "",
+              "packing": "25kg printed paper bag",
+              "loading": "23 MT / 40' FCL",
+              "total": 32430.0
+            }
+          ],
+          "do_date": "2025-11-15",
+          "po_date": "2025-09-29",
+          "po_ref_no": "BP102-2025-1",
+          "vendor_name": "AG Lipids Pte Ltd",
+          "payment_date": "Net 14 Days",
+          "delivery_terms": "CIF Busan",
+          "billing_address": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea",
+          "shipping_method": "",
+          "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu Republic of Korea"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>19__2025-10-01__120363422613115487_g_us__31b110ba-8007-4099-b171-e58e35c97bfc.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "BP102",
+              "quantity": 23.0,
+              "quantity_unit": "MT",
+              "unit_price": 1360.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "25kg paper bag",
+              "loading": "23 MT/ 40' FCL",
+              "total": 31280.0
+            }
+          ],
+          "do_date": "2025-10-31",
+          "po_date": "2025-10-01",
+          "po_ref_no": "BP102-2025-1",
+          "vendor_name": "AG Lipids Pte Ltd",
+          "payment_date": "Net 14 Days",
+          "delivery_terms": "",
+          "billing_address": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu",
+          "shipping_method": "Unknown",
+          "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>19__2025-10-01__120363422613115487_g_us__31b110ba-8007-4099-b171-e58e35c97bfc.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "BP102",
+              "quantity": 23.0,
+              "quantity_unit": "MT",
+              "unit_price": 1360.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "25kg paper bag",
+              "loading": "23 MT/ 40' FCL",
+              "total": 31280.0
+            }
+          ],
+          "do_date": "2025-10-31",
+          "po_date": "2025-10-01",
+          "po_ref_no": "BP102-2025-1",
+          "vendor_name": "AG Lipids Pte Ltd",
+          "payment_date": "Net 14 Days",
+          "delivery_terms": "",
+          "billing_address": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu",
+          "shipping_method": "Unknown",
+          "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>20__2025-11-27__120363423137841545_g_us__13749097-9559-4fce-bd61-cdd1d978dc00.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE - L - S",
+              "quantity": 5.0,
+              "quantity_unit": "MT",
+              "unit_price": 339.0,
+              "pricing_unit": "USD/KG",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu",
+              "packing": "",
+              "loading": "23MT/40'FCL",
+              "total": 1695000.0
+            }
+          ],
+          "do_date": "2025-12-07",
+          "po_date": "2025-11-25",
+          "po_ref_no": "GIIOFINE - L - S-2025-2",
+          "vendor_name": "Qwerty",
+          "payment_date": "Net 14 Days",
+          "delivery_terms": "",
+          "billing_address": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu",
+          "shipping_method": "",
+          "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>20__2025-11-27__120363423137841545_g_us__13749097-9559-4fce-bd61-cdd1d978dc00.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE - L - S",
+              "quantity": 5.0,
+              "quantity_unit": "MT",
+              "unit_price": 339.0,
+              "pricing_unit": "USD/KG",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu",
+              "packing": "",
+              "loading": "23MT/40'FCL",
+              "total": 1695000.0
+            }
+          ],
+          "do_date": "2025-12-07",
+          "po_date": "2025-11-25",
+          "po_ref_no": "GIIOFINE - L - S-2025-2",
+          "vendor_name": "Qwerty",
+          "payment_date": "Net 14 Days",
+          "delivery_terms": "",
+          "billing_address": "FeedBEST Company Limited, Factory 354-58 Mojeon-1 Sobuk-gu",
+          "shipping_method": "",
+          "shipping_address": "Factory 354-58 Mojeon-1 Sobuk-gu"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>21__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "",
+              "quantity": 10.5,
+              "quantity_unit": "MT",
+              "unit_price": null,
+              "pricing_unit": "",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": null
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>21__2025-12-23__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "",
+              "quantity": 10.5,
+              "quantity_unit": "MT",
+              "unit_price": null,
+              "pricing_unit": "",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": null
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>22__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE-P-S",
+              "quantity": 1.8,
+              "quantity_unit": "MT",
+              "unit_price": 3.5,
+              "pricing_unit": "USD/KG",
+              "ship_term": "EXW",
+              "delivery_terms": "EXW",
+              "shipment_date": "2026-02-28",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 6300.0
+            }
+          ],
+          "do_date": "2026-02-28",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "EXW",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>22__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE-P-S",
+              "quantity": 1.8,
+              "quantity_unit": "MT",
+              "unit_price": 3.5,
+              "pricing_unit": "USD/KG",
+              "ship_term": "EXW",
+              "delivery_terms": "EXW",
+              "shipment_date": "2026-02-28",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 6300.0
+            }
+          ],
+          "do_date": "2026-02-28",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "EXW",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>23__2026-01-07__120363403571614155_g_us__c21c86dd-475b-49f4-8799-49743702a286.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Syrup",
+              "quantity": 40.0,
+              "quantity_unit": "MT",
+              "unit_price": 1500.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "FOB",
+              "delivery_terms": "FOB Chennai",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 60000.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "FOB Chennai",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>23__2026-01-07__120363403571614155_g_us__c21c86dd-475b-49f4-8799-49743702a286.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Syrup",
+              "quantity": 40.0,
+              "quantity_unit": "MT",
+              "unit_price": 1500.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "FOB",
+              "delivery_terms": "FOB Chennai",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 60000.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "FOB Chennai",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>24__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOIFNE-P-S",
+              "quantity": 26.0,
+              "quantity_unit": "MT",
+              "unit_price": 2850.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Nhava Sheva",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 74100.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "PO2526102",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "CIF Nhava Sheva",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>24__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOIFNE-P-S",
+              "quantity": 26.0,
+              "quantity_unit": "MT",
+              "unit_price": 2850.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Nhava Sheva",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 74100.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "PO2526102",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "CIF Nhava Sheva",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>25__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Bergapur",
+              "quantity": 10.5,
+              "quantity_unit": "MT",
+              "unit_price": 3.05,
+              "pricing_unit": "USD/KG",
+              "ship_term": "EXW",
+              "delivery_terms": "EXW",
+              "shipment_date": "2026-03-31",
+              "shipping_address": "",
+              "packing": "25kg bags in carton",
+              "loading": "",
+              "total": 32025.0
+            }
+          ],
+          "do_date": "2026-03-31",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "EXW",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        },
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Bergapur",
+              "quantity": 6.3,
+              "quantity_unit": "MT",
+              "unit_price": 3.05,
+              "pricing_unit": "USD/KG",
+              "ship_term": "EXW",
+              "delivery_terms": "EXW",
+              "shipment_date": "2026-03-31",
+              "shipping_address": "",
+              "packing": "25kg bags in carton",
+              "loading": "",
+              "total": 19215.0
+            }
+          ],
+          "do_date": "2026-03-31",
+          "po_date": "",
+          "po_ref_no": "4520000875",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "EXW",
+          "billing_address": "",
+          "shipping_method": "Collection against 4520000875",
+          "shipping_address": ""
+        },
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Bergapur",
+              "quantity": 4.2,
+              "quantity_unit": "MT",
+              "unit_price": 3.3,
+              "pricing_unit": "USD/KG",
+              "ship_term": "EXW",
+              "delivery_terms": "EXW",
+              "shipment_date": "2026-03-31",
+              "shipping_address": "",
+              "packing": "25 *1kg bags in carton",
+              "loading": "",
+              "total": 13860.0
+            }
+          ],
+          "do_date": "2026-03-31",
+          "po_date": "",
+          "po_ref_no": "4520000944",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "EXW",
+          "billing_address": "",
+          "shipping_method": "Collection against PO 4520000944",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>25__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Bergapur",
+              "quantity": 10.5,
+              "quantity_unit": "MT",
+              "unit_price": 3.05,
+              "pricing_unit": "USD/KG",
+              "ship_term": "EXW",
+              "delivery_terms": "EXW",
+              "shipment_date": "2026-03-31",
+              "shipping_address": "",
+              "packing": "25kg bags in carton",
+              "loading": "",
+              "total": 32025.0
+            }
+          ],
+          "do_date": "2026-03-31",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "EXW",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        },
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Bergapur",
+              "quantity": 6.3,
+              "quantity_unit": "MT",
+              "unit_price": 3.05,
+              "pricing_unit": "USD/KG",
+              "ship_term": "EXW",
+              "delivery_terms": "EXW",
+              "shipment_date": "2026-03-31",
+              "shipping_address": "",
+              "packing": "25kg bags in carton",
+              "loading": "",
+              "total": 19215.0
+            }
+          ],
+          "do_date": "2026-03-31",
+          "po_date": "",
+          "po_ref_no": "4520000875",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "EXW",
+          "billing_address": "",
+          "shipping_method": "Collection against 4520000875",
+          "shipping_address": ""
+        },
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Bergapur",
+              "quantity": 4.2,
+              "quantity_unit": "MT",
+              "unit_price": 3.3,
+              "pricing_unit": "USD/KG",
+              "ship_term": "EXW",
+              "delivery_terms": "EXW",
+              "shipment_date": "2026-03-31",
+              "shipping_address": "",
+              "packing": "25 *1kg bags in carton",
+              "loading": "",
+              "total": 13860.0
+            }
+          ],
+          "do_date": "2026-03-31",
+          "po_date": "",
+          "po_ref_no": "4520000944",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "EXW",
+          "billing_address": "",
+          "shipping_method": "Collection against PO 4520000944",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>26__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE-P-S",
+              "quantity": 9.0,
+              "quantity_unit": "MT",
+              "unit_price": 3.25,
+              "pricing_unit": "USD/KG",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Jakarta",
+              "shipment_date": "2026-02-28",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 29250.0
+            }
+          ],
+          "do_date": "2026-02-28",
+          "po_date": "",
+          "po_ref_no": "PO-IMP-BIB-2601-017",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "CIF Jakarta",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>26__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE-P-S",
+              "quantity": 9.0,
+              "quantity_unit": "MT",
+              "unit_price": 3.25,
+              "pricing_unit": "USD/KG",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Jakarta",
+              "shipment_date": "2026-02-28",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 29250.0
+            }
+          ],
+          "do_date": "2026-02-28",
+          "po_date": "",
+          "po_ref_no": "PO-IMP-BIB-2601-017",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "CIF Jakarta",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>27__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Soya Lecithin Powder",
+              "quantity": 39.0,
+              "quantity_unit": "MT",
+              "unit_price": 2850.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Nhava Sheva",
+              "shipment_date": "2026-02-28",
+              "shipping_address": "",
+              "packing": "25 kgs in PP bags",
+              "loading": "",
+              "total": 111150.0
+            }
+          ],
+          "do_date": "2026-02-28",
+          "po_date": "",
+          "po_ref_no": "2526116",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "CIF Nhava Sheva",
+          "billing_address": "GIIAVA (India) Pvt. Ltd., Plot No. C3, Wai MIDC, Dist – Satara, Maharashtra – 412803",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>27__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Soya Lecithin Powder",
+              "quantity": 39.0,
+              "quantity_unit": "MT",
+              "unit_price": 2850.0,
+              "pricing_unit": "USD/MT",
+              "ship_term": "CIF",
+              "delivery_terms": "CIF Nhava Sheva",
+              "shipment_date": "2026-02-28",
+              "shipping_address": "",
+              "packing": "25 kgs in PP bags",
+              "loading": "",
+              "total": 111150.0
+            }
+          ],
+          "do_date": "2026-02-28",
+          "po_date": "",
+          "po_ref_no": "2526116",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "CIF Nhava Sheva",
+          "billing_address": "GIIAVA (India) Pvt. Ltd., Plot No. C3, Wai MIDC, Dist – Satara, Maharashtra – 412803",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>28__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE-P-S",
+              "quantity": 1.8,
+              "quantity_unit": "MT",
+              "unit_price": 3.25,
+              "pricing_unit": "USD/KG",
+              "ship_term": "EXW",
+              "delivery_terms": "EXW",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 5850.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "EXW",
+          "billing_address": "",
+          "shipping_method": "Collection Against OPO 260012/EC",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>28__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "GIIOFINE-P-S",
+              "quantity": 1.8,
+              "quantity_unit": "MT",
+              "unit_price": 3.25,
+              "pricing_unit": "USD/KG",
+              "ship_term": "EXW",
+              "delivery_terms": "EXW",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 5850.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "EXW",
+          "billing_address": "",
+          "shipping_method": "Collection Against OPO 260012/EC",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>fs_acme_simple.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "KNM Coffee",
+              "quantity": 10.0,
+              "quantity_unit": "BAGS",
+              "unit_price": 25.0,
+              "pricing_unit": "USD/BAG",
+              "ship_term": "FOB",
+              "delivery_terms": "FOB Singapore",
+              "shipment_date": "2026-05-31",
+              "shipping_address": "100 Finance Ave",
+              "packing": "",
+              "loading": "",
+              "total": 250.0
+            }
+          ],
+          "do_date": "2026-05-31",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "FOB Singapore",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>fs_acme_simple.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "KNM Coffee",
+              "quantity": 10.0,
+              "quantity_unit": "BAGS",
+              "unit_price": 25.0,
+              "pricing_unit": "USD/BAG",
+              "ship_term": "FOB",
+              "delivery_terms": "FOB Singapore",
+              "shipment_date": "2026-05-31",
+              "shipping_address": "100 Finance Ave",
+              "packing": "",
+              "loading": "",
+              "total": 250.0
+            }
+          ],
+          "do_date": "2026-05-31",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "FOB Singapore",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>fs_nova_simple.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Ceylon tea",
+              "quantity": 15.0,
+              "quantity_unit": "CARTON",
+              "unit_price": 18.0,
+              "pricing_unit": "USD/CARTON",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 270.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>fs_nova_simple.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Ceylon tea",
+              "quantity": 15.0,
+              "quantity_unit": "CARTON",
+              "unit_price": 18.0,
+              "pricing_unit": "USD/CARTON",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "",
+              "packing": "",
+              "loading": "",
+              "total": 270.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>generated_acme_foods_001.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Arabica coffee bags",
+              "quantity": 8.0,
+              "quantity_unit": "BAG",
+              "unit_price": 24.0,
+              "pricing_unit": "USD",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "101 Market Street, Customer Hub",
+              "packing": "",
+              "loading": "",
+              "total": 192.0
+            }
+          ],
+          "do_date": "2026-06-05",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "Net 15",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": "101 Market Street, Customer Hub"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>generated_acme_foods_001.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Arabica coffee bags",
+              "quantity": 8.0,
+              "quantity_unit": "BAG",
+              "unit_price": 24.0,
+              "pricing_unit": "USD",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "101 Market Street, Customer Hub",
+              "packing": "",
+              "loading": "",
+              "total": 192.0
+            }
+          ],
+          "do_date": "2026-06-05",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "Net 15",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": "101 Market Street, Customer Hub"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>generated_acme_foods_002.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Robusta coffee bags",
+              "quantity": 12.0,
+              "quantity_unit": "BAG",
+              "unit_price": 21.0,
+              "pricing_unit": "USD",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "102 Market Street, Customer Hub",
+              "packing": "",
+              "loading": "",
+              "total": 252.0
+            },
+            {
+              "sr_no": 2,
+              "description": "Ceylon tea cartons",
+              "quantity": 20.0,
+              "quantity_unit": "CARTON",
+              "unit_price": 18.0,
+              "pricing_unit": "USD",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "102 Market Street, Customer Hub",
+              "packing": "",
+              "loading": "",
+              "total": 360.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "Net 30",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>generated_acme_foods_002.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Robusta coffee bags",
+              "quantity": 12.0,
+              "quantity_unit": "BAG",
+              "unit_price": 21.0,
+              "pricing_unit": "USD",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "102 Market Street, Customer Hub",
+              "packing": "",
+              "loading": "",
+              "total": 252.0
+            },
+            {
+              "sr_no": 2,
+              "description": "Ceylon tea cartons",
+              "quantity": 20.0,
+              "quantity_unit": "CARTON",
+              "unit_price": 18.0,
+              "pricing_unit": "USD",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "102 Market Street, Customer Hub",
+              "packing": "",
+              "loading": "",
+              "total": 360.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "Net 30",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>generated_acme_foods_003.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Espresso blend",
+              "quantity": 6.0,
+              "quantity_unit": "BAG",
+              "unit_price": 27.0,
+              "pricing_unit": "USD",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "103 Market Street, Customer Hub",
+              "packing": "",
+              "loading": "",
+              "total": 162.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "Immediate transfer",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": "103 Market Street, Customer Hub"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>generated_acme_foods_003.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Espresso blend",
+              "quantity": 6.0,
+              "quantity_unit": "BAG",
+              "unit_price": 27.0,
+              "pricing_unit": "USD",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "103 Market Street, Customer Hub",
+              "packing": "",
+              "loading": "",
+              "total": 162.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "Immediate transfer",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": "103 Market Street, Customer Hub"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>generated_acme_foods_004.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Green coffee beans",
+              "quantity": 80.0,
+              "quantity_unit": "SACKS",
+              "unit_price": 16.0,
+              "pricing_unit": "USD",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "104 Market Street, Customer Hub",
+              "packing": "",
+              "loading": "",
+              "total": 1280.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "Net 45",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": "104 Market Street, Customer Hub"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>generated_acme_foods_004.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Green coffee beans",
+              "quantity": 80.0,
+              "quantity_unit": "SACKS",
+              "unit_price": 16.0,
+              "pricing_unit": "USD",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "104 Market Street, Customer Hub",
+              "packing": "",
+              "loading": "",
+              "total": 1280.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "Net 45",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": "104 Market Street, Customer Hub"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>generated_acme_foods_005.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Specialty sample kits",
+              "quantity": 3.0,
+              "quantity_unit": "",
+              "unit_price": 55.0,
+              "pricing_unit": "USD",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "105 Market Street, Customer Hub",
+              "packing": "",
+              "loading": "",
+              "total": 165.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "50% advance",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": "105 Market Street, Customer Hub"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>generated_acme_foods_005.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Specialty sample kits",
+              "quantity": 3.0,
+              "quantity_unit": "",
+              "unit_price": 55.0,
+              "pricing_unit": "USD",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "105 Market Street, Customer Hub",
+              "packing": "",
+              "loading": "",
+              "total": 165.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "50% advance",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": "105 Market Street, Customer Hub"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>generated_acme_foods_006.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Premium cocoa packs",
+              "quantity": 25.0,
+              "quantity_unit": "",
+              "unit_price": 14.0,
+              "pricing_unit": "USD",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "106 Market Street, Customer Hub",
+              "packing": "",
+              "loading": "",
+              "total": 350.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "Net 20",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": "106 Market Street, Customer Hub"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>generated_acme_foods_006.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Premium cocoa packs",
+              "quantity": 25.0,
+              "quantity_unit": "",
+              "unit_price": 14.0,
+              "pricing_unit": "USD",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "106 Market Street, Customer Hub",
+              "packing": "",
+              "loading": "",
+              "total": 350.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "Net 20",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": "106 Market Street, Customer Hub"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>generated_acme_foods_007.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Assam tea cartons",
+              "quantity": 15.0,
+              "quantity_unit": "",
+              "unit_price": 19.0,
+              "pricing_unit": "USD",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "107 Market Street, Customer Hub",
+              "packing": "",
+              "loading": "",
+              "total": 285.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "Net 30",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": "107 Market Street, Customer Hub"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>generated_acme_foods_007.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Assam tea cartons",
+              "quantity": 15.0,
+              "quantity_unit": "",
+              "unit_price": 19.0,
+              "pricing_unit": "USD",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "107 Market Street, Customer Hub",
+              "packing": "",
+              "loading": "",
+              "total": 285.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "Net 30",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": "107 Market Street, Customer Hub"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>generated_acme_foods_008.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Instant coffee jars",
+              "quantity": 40.0,
+              "quantity_unit": "",
+              "unit_price": 9.0,
+              "pricing_unit": "USD",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "108 Market Street, Customer Hub",
+              "packing": "",
+              "loading": "",
+              "total": 360.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "Net 30",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": "108 Market Street, Customer Hub"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>generated_acme_foods_008.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Instant coffee jars",
+              "quantity": 40.0,
+              "quantity_unit": "",
+              "unit_price": 9.0,
+              "pricing_unit": "USD",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "108 Market Street, Customer Hub",
+              "packing": "",
+              "loading": "",
+              "total": 360.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "Net 30",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": "108 Market Street, Customer Hub"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>generated_acme_foods_009.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Herbal tea boxes",
+              "quantity": 30.0,
+              "quantity_unit": "",
+              "unit_price": 11.0,
+              "pricing_unit": "USD",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "109 Market Street, Customer Hub",
+              "packing": "",
+              "loading": "",
+              "total": 330.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "Net 30",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": "109 Market Street, Customer Hub"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>generated_acme_foods_009.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Herbal tea boxes",
+              "quantity": 30.0,
+              "quantity_unit": "",
+              "unit_price": 11.0,
+              "pricing_unit": "USD",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "109 Market Street, Customer Hub",
+              "packing": "",
+              "loading": "",
+              "total": 330.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "Net 30",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": "109 Market Street, Customer Hub"
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>generated_acme_foods_010.json</td><td>anthropic:opus-4-7</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Black tea cartons",
+              "quantity": 18.0,
+              "quantity_unit": "",
+              "unit_price": 17.0,
+              "pricing_unit": "USD",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "110 Market Street, Customer Hub",
+              "packing": "",
+              "loading": "",
+              "total": 306.0
+            },
+            {
+              "sr_no": 2,
+              "description": "Filter paper packs",
+              "quantity": 10.0,
+              "quantity_unit": "",
+              "unit_price": 6.0,
+              "pricing_unit": "USD",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "110 Market Street, Customer Hub",
+              "packing": "",
+              "loading": "",
+              "total": 60.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "Net 30",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr><tr><td>so_extraction</td><td>generated_acme_foods_010.json</td><td>anthropic:opus-4-8</td><td>0</td><td>2</td><td><pre>[
+  {
+    "path": "",
+    "expected": {
+      "data": [
+        {
+          "items": [
+            {
+              "sr_no": 1,
+              "description": "Black tea cartons",
+              "quantity": 18.0,
+              "quantity_unit": "",
+              "unit_price": 17.0,
+              "pricing_unit": "USD",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "110 Market Street, Customer Hub",
+              "packing": "",
+              "loading": "",
+              "total": 306.0
+            },
+            {
+              "sr_no": 2,
+              "description": "Filter paper packs",
+              "quantity": 10.0,
+              "quantity_unit": "",
+              "unit_price": 6.0,
+              "pricing_unit": "USD",
+              "ship_term": "",
+              "delivery_terms": "",
+              "shipment_date": "",
+              "shipping_address": "110 Market Street, Customer Hub",
+              "packing": "",
+              "loading": "",
+              "total": 60.0
+            }
+          ],
+          "do_date": "",
+          "po_date": "",
+          "po_ref_no": "",
+          "vendor_name": "Van Beethoven",
+          "payment_date": "Net 30",
+          "delivery_terms": "",
+          "billing_address": "",
+          "shipping_method": "",
+          "shipping_address": ""
+        }
+      ]
+    },
+    "actual": null
+  }
+]</pre></td></tr></tbody></table></div></div>
+</details>
+<details>
+  <summary>Layer-2 diagnostics (validator issues, stage timings, drift)</summary>
+  <div class="details-content"><p>No layer-2 diagnostics to surface.</p></div>
+</details>
+<footer>
+  <span>so_extraction · 20260603T064135Z</span>
+  <span>172 runs · 0.00% success · -100.00% field match</span>
+</footer>
+</div>
+<script>
+
+const MULTI_AGENT = false;
+const DATA = [["anthropic:opus-4-7", 0, 86, 2.038282558139535, 2.0, -1.0], ["anthropic:opus-4-8", 0, 86, 2.03828488372093, 2.0, -1.0]];
+const rows = DATA.map((row) => {
+  if (MULTI_AGENT) {
+    const parts = row[0].split(" · ");
+    const agent = parts[0] || "";
+    const model = parts.length > 1 ? parts.slice(1).join(" · ") : row[0];
+    return { agent, model, fs: row[1], runs: row[2], elapsed: row[3], mismatch: row[4], match: row[5] };
+  }
+  return { agent: "", model: row[0], fs: row[1], runs: row[2], elapsed: row[3], mismatch: row[4], match: row[5] };
+});
+const sortedMatches = [...rows.map((r) => r.match)].sort((a, b) => b - a);
+const topQuartile = sortedMatches.length ? sortedMatches[Math.floor(rows.length * 0.25)] : 0;
+const bottomQuartile = sortedMatches.length ? sortedMatches[Math.floor(rows.length * 0.75)] : 0;
+const modelFilter = document.getElementById("modelFilter");
+const models = [...new Set(rows.map((r) => r.model))].sort();
+models.forEach((m) => {
+  const opt = document.createElement("option");
+  opt.value = m;
+  opt.textContent = m;
+  modelFilter.appendChild(opt);
+});
+let state = { sort: "match", dir: "desc", fs: "all", model: "all", search: "" };
+function matchBarClass(v) {
+  if (v < 0.78) return "low";
+  if (v < 0.85) return "mid";
+  return "";
+}
+function render() {
+  let filtered = rows.filter((r) => {
+    if (state.fs !== "all" && r.fs !== Number(state.fs)) return false;
+    if (state.model !== "all" && r.model !== state.model) return false;
+    if (state.search) {
+      const q = state.search.toLowerCase();
+      const blob = (r.agent + " " + r.model).toLowerCase();
+      if (!blob.includes(q)) return false;
+    }
+    return true;
+  });
+  filtered.sort((a, b) => {
+    const av = a[state.sort];
+    const bv = b[state.sort];
+    if (typeof av === "string") {
+      return state.dir === "asc" ? av.localeCompare(bv) : bv.localeCompare(av);
+    }
+    return state.dir === "asc" ? av - bv : bv - av;
+  });
+  const tbody = document.getElementById("leaderboard-body");
+  const agentCell = (r) => (MULTI_AGENT ? `<td>${r.agent}</td>` : "");
+  tbody.innerHTML = filtered
+    .map((r) => {
+      const cls =
+        r.match >= topQuartile ? "top-quartile" : r.match <= bottomQuartile ? "bottom-quartile" : "";
+      const barCls = matchBarClass(r.match);
+      const barW = Math.round(r.match * 100) + "%";
+      return (
+        `<tr class="${cls}">${agentCell(r)}<td>${r.model}</td>` +
+        `<td class="numeric">${r.fs}</td>` +
+        `<td class="numeric">${r.runs}</td>` +
+        `<td class="numeric">${r.elapsed.toFixed(2)}</td>` +
+        `<td class="numeric">${r.mismatch.toFixed(2)}</td>` +
+        `<td class="numeric match-cell"><span class="match-bar ${barCls}" style="--w:${barW}"></span>${(r.match * 100).toFixed(2)}%</td></tr>`
+      );
+    })
+    .join("");
+  document.getElementById("rowCount").textContent = `${filtered.length} of ${rows.length} rows`;
+  document.querySelectorAll("thead th").forEach((th) => {
+    th.classList.remove("sort-asc", "sort-desc");
+    if (th.dataset.sort === state.sort) {
+      th.classList.add(state.dir === "asc" ? "sort-asc" : "sort-desc");
+    }
+  });
+}
+document.querySelectorAll("thead th").forEach((th) => {
+  th.addEventListener("click", () => {
+    const k = th.dataset.sort;
+    if (state.sort === k) {
+      state.dir = state.dir === "asc" ? "desc" : "asc";
+    } else {
+      state.sort = k;
+      state.dir = th.dataset.type === "num" ? "desc" : "asc";
+    }
+    render();
+  });
+});
+document.getElementById("fsFilter").addEventListener("change", (e) => {
+  state.fs = e.target.value;
+  render();
+});
+document.getElementById("modelFilter").addEventListener("change", (e) => {
+  state.model = e.target.value;
+  render();
+});
+document.getElementById("search").addEventListener("input", (e) => {
+  state.search = e.target.value;
+  render();
+});
+render();
+const modelAgg = {};
+rows.forEach((r) => {
+  const k = r.model;
+  if (!modelAgg[k]) modelAgg[k] = { elapsed: [], match: [], mismatch: [] };
+  modelAgg[k].elapsed.push(r.elapsed);
+  modelAgg[k].match.push(r.match);
+  modelAgg[k].mismatch.push(r.mismatch);
+});
+const avg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
+const modelPoints = Object.entries(modelAgg).map(([model, d]) => ({
+  model,
+  x: avg(d.elapsed),
+  y: avg(d.match) * 100,
+  r: 6 + avg(d.mismatch) * 1.5,
+}));
+const colorFor = (model) => {
+  if (model.startsWith("sonnet") || model.startsWith("opus")) return "#2d6b3f";
+  if (model.startsWith("openai:4")) return "#1a5490";
+  if (model.startsWith("openai")) return "#7a8aa8";
+  if (model.startsWith("gemini")) return "#b8341c";
+  return "#7a7a7a";
+};
+if (modelPoints.length) {
+  const ctx = document.getElementById("frontierChart").getContext("2d");
+  new Chart(ctx, {
+    type: "bubble",
+    data: {
+      datasets: modelPoints.map((p) => ({
+        label: p.model,
+        data: [{ x: p.x, y: p.y, r: p.r, model: p.model }],
+        backgroundColor: colorFor(p.model) + "cc",
+        borderColor: colorFor(p.model),
+        borderWidth: 1.5,
+      })),
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: "right",
+          labels: {
+            font: { family: "'JetBrains Mono', monospace", size: 11 },
+            color: "#4a4a4a",
+            boxWidth: 10,
+            boxHeight: 10,
+            padding: 8,
+          },
+        },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => {
+              const d = ctx.raw;
+              return `${d.model}: ${d.y.toFixed(1)}% match, ${d.x.toFixed(2)}s avg`;
+            },
+          },
+          bodyFont: { family: "'JetBrains Mono', monospace", size: 12 },
+          titleFont: { family: "'IBM Plex Sans', sans-serif" },
+        },
+      },
+      scales: {
+        x: {
+          type: "logarithmic",
+          title: {
+            display: true,
+            text: "Avg latency (s, log scale)",
+            font: { family: "'JetBrains Mono', monospace", size: 11, weight: 500 },
+            color: "#4a4a4a",
+          },
+          ticks: {
+            font: { family: "'JetBrains Mono', monospace", size: 10 },
+            color: "#7a7a7a",
+            callback: (v) => v + "s",
+          },
+          grid: { color: "#e8e2d2" },
+        },
+        y: {
+          title: {
+            display: true,
+            text: "Field match (%)",
+            font: { family: "'JetBrains Mono', monospace", size: 11, weight: 500 },
+            color: "#4a4a4a",
+          },
+          ticks: {
+            font: { family: "'JetBrains Mono', monospace", size: 10 },
+            color: "#7a7a7a",
+            callback: (v) => v + "%",
+          },
+          grid: { color: "#e8e2d2" },
+        },
+      },
+    },
+  });
+}
+
+
+const ppData = [{"label": "anthropic:opus-4-7", "fs": 0, "raw_pct": 0.0, "final_pct": -100.0, "baseline_pct": null}, {"label": "anthropic:opus-4-8", "fs": 0, "raw_pct": 0.0, "final_pct": -100.0, "baseline_pct": null}];
+if (ppData.length && document.getElementById("postprocessChart")) {
+  const labels = ppData.map((p) => p.label + " fs" + p.fs);
+  new Chart(document.getElementById("postprocessChart").getContext("2d"), {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [
+        
+        { label: "Agent Extraction", data: ppData.map((p) => p.raw_pct), backgroundColor: "#7a8aa8cc" },
+        { label: "Validation Layer", data: ppData.map((p) => p.final_pct), backgroundColor: "#2d6b3fcc" },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: { min: 0, max: 100, ticks: { callback: (v) => v + "%" } },
+      },
+    },
+  });
+}
+
+</script>
+</body>
+</html>

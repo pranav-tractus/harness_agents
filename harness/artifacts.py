@@ -318,6 +318,29 @@ def write_report(
     return path
 
 
+def write_pitch_report(
+    run_dir: Path,
+    run_id: str,
+    config: dict[str, Any],
+    summary: dict[str, Any],
+) -> Path:
+    """Executive pitch deck (charts only) — see ``harness/report_pitch_html.py``."""
+    from harness.report_dashboard_html import dashboard_generated_timestamp
+    from harness.report_pitch_html import render_pitch_report_html
+
+    path = run_dir / "report.html"
+    path.write_text(
+        render_pitch_report_html(
+            run_id,
+            dashboard_generated_timestamp(),
+            config,
+            summary,
+        ),
+        encoding="utf-8",
+    )
+    return path
+
+
 def write_token_report(
     run_dir: Path,
     run_id: str,

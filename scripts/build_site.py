@@ -102,9 +102,12 @@ def discover_reports(results_dir: Path) -> list[ReportEntry]:
         run_rel = _rel_posix(run_dir, root)
         aggregate = _load_aggregate(run_dir / "aggregate.json")
         cfg = aggregate.get("config", {}) if isinstance(aggregate, dict) else {}
+        title = run_rel
+        if cfg.get("report_style") == "pitch":
+            title = f"Pitch · {run_rel}"
         entries.append(
             ReportEntry(
-                title=run_rel,
+                title=title,
                 href=f"{run_rel}/report.html",
                 kind="run",
                 timestamp=_format_timestamp(run_dir.name),

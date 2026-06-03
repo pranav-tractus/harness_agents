@@ -5,6 +5,7 @@ Tabs:
 - Bulk Benchmark: configure a sweep and launch via the unified runner.
 - Results Browser: combine artifacts from one or more ``results/<run_id>/`` folders.
 - Seed Expected : draft new ``expected_results.py`` entries with diff vs current.
+- Auto Expected : run ``harness.auto_expected`` to write ``expected_results.py`` in place.
 
 Run:
     streamlit run dashboard/app.py
@@ -94,6 +95,60 @@ def _list_run_dirs() -> list[Path]:
     return out
 
 
+def _build_auto_expected_cmd(
+    *,
+    agent_id: str,
+    source_paths: list[str],
+    dataset_ids: list[str],
+    all_sources: bool,
+    from_jsonl: str,
+    from_field_data: bool,
+    fallback_llm: bool,
+    model: str,
+    runs: int,
+    few_shot_paths: list[str],
+    db_lim: int,
+    max_workers: int,
+    only_missing: bool,
+    overwrite_existing: bool,
+    sort_keys: bool,
+    prune_orphans: bool,
+    expected_source: str,
+    dry_run: bool,
+) -> list[str]:
+    cmd = [sys.executable, "-m", "harness.auto_expected", "--agent", agent_id, "--backup"]
+    for path in source_paths:
+        cmd += ["--source", path]
+    for ds_id in dataset_ids:
+        cmd += ["--dataset", ds_id]
+    if all_sources:
+        cmd.append("--all")
+    if from_jsonl:
+        cmd += ["--from-jsonl", from_jsonl]
+    if from_field_data:
+        cmd.append("--from-field-data")
+    if fallback_llm:
+        cmd.append("--fallback-llm")
+    cmd += ["--model", model]
+    cmd += ["--runs", str(int(runs))]
+    for path in few_shot_paths:
+        cmd += ["--few-shot", path]
+    cmd += ["--db-few-shot-limit", str(int(db_lim))]
+    cmd += ["--max-workers", str(int(max_workers))]
+    if only_missing:
+        cmd.append("--only-missing")
+    if overwrite_existing:
+        cmd.append("--overwrite-existing")
+    if sort_keys:
+        cmd.append("--sort-keys")
+    if prune_orphans:
+        cmd.append("--prune-orphans")
+    cmd += ["--expected-source", expected_source]
+    if dry_run:
+        cmd.append("--dry-run")
+    return cmd
+
+
 def _load_run_records(run_dir: Path) -> list[dict[str, Any]]:
     path = run_dir / "run.jsonl"
     if not path.exists():
@@ -159,11 +214,12 @@ with st.sidebar:
     )
 
 
-tab_single, tab_bulk, tab_results, tab_seed = st.tabs([
+tab_single, tab_bulk, tab_results, tab_seed, tab_auto = st.tabs([
     "Single Run",
     "Bulk Benchmark",
     "Results Browser",
     "Seed Expected",
+    "Auto Expected",
 ])
 
 
@@ -901,6 +957,218 @@ with tab_seed:
                 )
                 st.write("**Paste into agent's `expected_results.EXPECTED_BY_CHAT`:**")
                 st.code(copy_block, language="python")
+
+
+# Tab: Auto Expected --------------------------------------------------------
+
+with tab_auto:
+    st.subheader("Apply expected_results entries")
+    st.caption(
+        "Runs ``harness.auto_expected`` to write directly into the agent's "
+        "``expected_results.py`` (AST rewrite, backup always enabled)."
+    )
+    auto_agent_id = st.selectbox(
+        "Agent",
+        cfg.agent_ids(),
+        index=cfg.agent_ids().index(selected_agent_id),
+        key="auto_agent",
+    )
+    auto_agent = cfg.get_agent(auto_agent_id)
+    expected_path = auto_agent.expected_results_path()
+    if expected_path is None:
+        st.error(
+            f"Agent `{auto_agent_id}` has no `expected_results.py` file. "
+            "Create one or override `expected_results_path` before using this tab."
+        )
+        can_run_auto = False
+    else:
+        try:
+            rel_expected = expected_path.relative_to(auto_agent.repo_root)
+        except ValueError:
+            rel_expected = expected_path
+        st.caption(f"Target file: `{rel_expected}`")
+        can_run_auto = True
+
+    AUTO_SOURCE_MODES = {
+        "single": "Single source",
+        "datasets": "Datasets",
+        "all": "All sources",
+        "jsonl": "From JSONL (prior benchmark run)",
+        "field_data": "From field_data (embedded in chat JSON)",
+    }
+    auto_source_mode = st.radio(
+        "Source selection",
+        options=list(AUTO_SOURCE_MODES.keys()),
+        format_func=lambda k: AUTO_SOURCE_MODES[k],
+        key="auto_source_mode",
+        horizontal=False,
+    )
+
+    auto_source_paths: list[str] = []
+    auto_dataset_ids: list[str] = []
+    auto_all_sources = False
+    auto_from_jsonl = ""
+    auto_from_field_data = False
+    auto_fallback_llm = False
+
+    auto_sources = _agent_source_labels(auto_agent_id)
+    if auto_source_mode == "single":
+        if not auto_sources:
+            st.info("Selected agent has no source paths configured.")
+            can_run_auto = False
+        else:
+            auto_picked_label = st.selectbox(
+                "Source",
+                [label for label, *_ in auto_sources],
+                key="auto_single_source",
+            )
+            auto_source_paths = [next(p for label, p, _ in auto_sources if label == auto_picked_label)]
+    elif auto_source_mode == "datasets":
+        auto_datasets = [d.id for d in auto_agent.datasets()]
+        auto_dataset_ids = st.multiselect(
+            "Datasets",
+            auto_datasets,
+            default=auto_datasets,
+            key="auto_datasets",
+        )
+        if not auto_dataset_ids:
+            st.warning("Pick at least one dataset.")
+            can_run_auto = False
+        elif len(auto_dataset_ids) == 1:
+            cov = auto_agent.coverage(auto_dataset_ids[0])
+            have = sum(1 for v in cov.values() if v)
+            st.caption(f"Coverage: **{have}/{len(cov)}** chats have expected entries.")
+    elif auto_source_mode == "all":
+        auto_all_sources = True
+        cov = auto_agent.coverage()
+        have = sum(1 for v in cov.values() if v)
+        st.caption(f"Coverage: **{have}/{len(cov)}** chats have expected entries across all datasets.")
+    elif auto_source_mode == "jsonl":
+        run_dirs = _list_run_dirs()
+        if not run_dirs:
+            st.info("No benchmark runs found. Launch a bulk run first.")
+            can_run_auto = False
+        else:
+            auto_jsonl_dir = st.selectbox(
+                "Run folder",
+                run_dirs,
+                format_func=lambda p: p.name,
+                key="auto_jsonl_dir",
+            )
+            auto_from_jsonl = str((auto_jsonl_dir / "run.jsonl").relative_to(ROOT_DIR))
+            auto_datasets = [d.id for d in auto_agent.datasets()]
+            auto_jsonl_datasets = st.multiselect(
+                "Optional: restrict to dataset(s)",
+                auto_datasets,
+                default=[],
+                key="auto_jsonl_datasets",
+                help="Leave empty to use all entries in the JSONL for this agent.",
+            )
+            auto_dataset_ids = auto_jsonl_datasets
+    elif auto_source_mode == "field_data":
+        auto_from_field_data = True
+        auto_datasets = [d.id for d in auto_agent.datasets()]
+        auto_field_datasets = st.multiselect(
+            "Datasets",
+            auto_datasets,
+            default=auto_datasets,
+            key="auto_field_datasets",
+        )
+        auto_dataset_ids = auto_field_datasets
+        auto_fallback_llm = st.checkbox(
+            "LLM fallback when field_data is missing",
+            value=False,
+            key="auto_fallback_llm",
+        )
+        if not auto_dataset_ids:
+            st.warning("Pick at least one dataset.")
+            can_run_auto = False
+
+    show_llm_options = auto_source_mode in ("single", "datasets", "all", "field_data")
+    auto_runs = 1
+    auto_max_workers = 8
+    auto_fs_paths: list[str] = []
+    if show_llm_options and auto_source_mode != "jsonl":
+        st.subheader("Run options")
+        auto_runs = st.number_input(
+            "Runs (best-of-N)",
+            min_value=1,
+            max_value=10,
+            value=1,
+            key="auto_runs",
+        )
+        auto_max_workers = st.number_input(
+            "Max workers",
+            min_value=1,
+            max_value=32,
+            value=8,
+            key="auto_max_workers",
+        )
+        auto_pool = _agent_pool_labels(auto_agent_id)
+        auto_fs_labels = st.multiselect(
+            "Few-shot examples (cap 10)",
+            [label for label, _ in auto_pool],
+            max_selections=10,
+            key="auto_fs",
+        )
+        auto_fs_paths = [p for label, p in auto_pool if label in auto_fs_labels]
+
+    st.subheader("Write policy")
+    wp1, wp2 = st.columns(2)
+    with wp1:
+        auto_only_missing = st.checkbox("Only missing", value=True, key="auto_only_missing")
+        auto_overwrite = st.checkbox("Overwrite existing", value=False, key="auto_overwrite")
+    with wp2:
+        auto_sort_keys = st.checkbox("Sort keys", value=False, key="auto_sort_keys")
+        auto_prune_orphans = st.checkbox("Prune orphan downloads", value=False, key="auto_prune_orphans")
+    auto_expected_source = st.radio(
+        "Expected source",
+        options=["final", "raw"],
+        format_func=lambda k: "Final (post-processed)" if k == "final" else "Raw (LLM output only)",
+        horizontal=True,
+        key="auto_expected_source",
+    )
+    auto_dry_run = st.checkbox(
+        "Dry run (preview changes without writing)",
+        value=False,
+        key="auto_dry_run",
+    )
+
+    auto_btn_label = "Preview changes (dry-run)" if auto_dry_run else "Apply expected results"
+    if st.button(auto_btn_label, type="primary", key="auto_run_btn", disabled=not can_run_auto):
+        cmd = _build_auto_expected_cmd(
+            agent_id=auto_agent_id,
+            source_paths=auto_source_paths,
+            dataset_ids=auto_dataset_ids,
+            all_sources=auto_all_sources,
+            from_jsonl=auto_from_jsonl,
+            from_field_data=auto_from_field_data,
+            fallback_llm=auto_fallback_llm,
+            model=selected_model,
+            runs=int(auto_runs),
+            few_shot_paths=auto_fs_paths,
+            db_lim=int(db_lim),
+            max_workers=int(auto_max_workers),
+            only_missing=auto_only_missing,
+            overwrite_existing=auto_overwrite,
+            sort_keys=auto_sort_keys,
+            prune_orphans=auto_prune_orphans,
+            expected_source=auto_expected_source,
+            dry_run=auto_dry_run,
+        )
+        st.code(" ".join(cmd))
+        with st.spinner("Running auto_expected (may take several minutes)..."):
+            proc = subprocess.run(cmd, cwd=str(ROOT_DIR), capture_output=True, text=True)
+        st.subheader("stdout")
+        st.code(proc.stdout or "(empty)")
+        if proc.returncode != 0:
+            st.subheader("stderr")
+            st.code(proc.stderr or "(empty)")
+            st.error(f"Failed with exit code {proc.returncode}.")
+        elif auto_dry_run:
+            st.success("Dry-run complete — no file written.")
+        else:
+            st.success("Done. Backup saved alongside expected_results.py.")
 
 
 # Saved summaries history (DB-backed) --------------------------------------

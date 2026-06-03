@@ -16,9 +16,9 @@ AWS_REGION = "us-east-1"
 S3_BUCKET = "tractuslabs-data-sources"
 
 BEDROCK_ANTHROPIC_MODELS = {
-    # "sonnet-4-5": "us.anthropic.claude-sonnet-4-5-20250929-v1:0",
+    "sonnet-4-5": "us.anthropic.claude-sonnet-4-5-20250929-v1:0",
     "sonnet-4-6": "us.anthropic.claude-sonnet-4-6",
-    # "opus-4-5": "us.anthropic.claude-opus-4-5-20251101-v1:0",
+    "opus-4-5": "us.anthropic.claude-opus-4-5-20251101-v1:0",
     "opus-4-6": "us.anthropic.claude-opus-4-6-v1",
     "opus-4-7": "us.anthropic.claude-opus-4-7",
     "opus-4-8": "us.anthropic.claude-opus-4-8",
