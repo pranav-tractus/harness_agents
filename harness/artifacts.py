@@ -82,6 +82,11 @@ def record_to_row(rec: AgentRunResult) -> dict[str, Any]:
         "mismatch_count_baseline": score_baseline.get("mismatch_count", 0),
         "field_match_rate_baseline": _field_match_rate_from_score_dict(score_baseline),
         "baseline_output_json": rec.baseline_output_json,
+        "input_tokens": int((rec.token_usage or {}).get("input_tokens") or 0),
+        "output_tokens": int((rec.token_usage or {}).get("output_tokens") or 0),
+        "cache_read_tokens": int((rec.token_usage or {}).get("cache_read_tokens") or 0),
+        "cache_write_tokens": int((rec.token_usage or {}).get("cache_write_tokens") or 0),
+        "total_tokens": int((rec.token_usage or {}).get("total_tokens") or 0),
         "expected_available": score.get("expected_available", False),
         "mismatch_count": mismatch_final,
         "mismatch_count_raw": mismatch_raw,
@@ -129,6 +134,11 @@ def aggregate(records: list[AgentRunResult]) -> dict[str, Any]:
         baseline_rows = [r for r in with_expected if r.get("baseline_available")]
         total_mismatch_baseline = sum(r.get("mismatch_count_baseline", 0) for r in baseline_rows)
         total_compared_baseline = sum(r["compared_field_count"] for r in baseline_rows)
+        total_input_tokens = sum(r.get("input_tokens", 0) for r in rows_in)
+        total_output_tokens = sum(r.get("output_tokens", 0) for r in rows_in)
+        total_cache_read = sum(r.get("cache_read_tokens", 0) for r in rows_in)
+        total_cache_write = sum(r.get("cache_write_tokens", 0) for r in rows_in)
+        total_tokens_all = sum(r.get("total_tokens", 0) for r in rows_in)
         improved = [
             r for r in with_expected
             if r.get("improvement_mismatches") is not None and r["improvement_mismatches"] > 0
@@ -173,6 +183,11 @@ def aggregate(records: list[AgentRunResult]) -> dict[str, Any]:
             )
             if with_expected
             else None,
+            "total_input_tokens": total_input_tokens,
+            "total_output_tokens": total_output_tokens,
+            "total_cache_read_tokens": total_cache_read,
+            "total_cache_write_tokens": total_cache_write,
+            "total_tokens": total_tokens_all,
         }
 
     combo_buckets = _bucket(lambda r: (r["agent_id"], r["model_key"], r["few_shot_count"]))
