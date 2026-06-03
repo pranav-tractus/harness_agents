@@ -41,6 +41,92 @@ def test_provider_family_unknown():
     assert provider_family("") == "anthropic"
 
 
+from core.prompt_builder import build_prompt, build_validation_system_prompt, build_validation_user_prompt
+from core.prompt_strategy import PromptStrategy
+
+
+def test_build_prompt_current_strategy_contains_extraction_rules():
+    prompt = build_prompt(
+        "Test chat",
+        attempt=1,
+        iso_date="2026-06-03",
+        strategy=PromptStrategy.CURRENT,
+    )
+    assert "extraction rules" in prompt.lower() or "Extraction rules" in prompt
+
+
+def test_build_prompt_xml_neutral_uses_xml_tags():
+    prompt = build_prompt(
+        "Test chat",
+        attempt=1,
+        iso_date="2026-06-03",
+        strategy=PromptStrategy.XML_NEUTRAL,
+    )
+    assert "<extraction_task>" in prompt
+    assert "<rules>" in prompt
+
+
+def test_build_prompt_schema_driven_is_short():
+    prompt = build_prompt(
+        "Test chat",
+        attempt=1,
+        iso_date="2026-06-03",
+        strategy=PromptStrategy.SCHEMA_DRIVEN,
+    )
+    assert "Three rules" in prompt
+    assert len(prompt) < 9000  # schema-driven should be concise (schema JSON adds length)
+
+
+def test_build_prompt_provider_profile_anthropic_uses_current():
+    prompt = build_prompt(
+        "Test chat",
+        attempt=1,
+        iso_date="2026-06-03",
+        strategy=PromptStrategy.PROVIDER_PROFILE,
+        model_key="sonnet-4-6",
+    )
+    assert "extraction rules" in prompt.lower() or "Extraction rules" in prompt
+
+
+def test_build_prompt_provider_profile_openai_uses_xml():
+    prompt = build_prompt(
+        "Test chat",
+        attempt=1,
+        iso_date="2026-06-03",
+        strategy=PromptStrategy.PROVIDER_PROFILE,
+        model_key="openai:5.4",
+    )
+    assert "<extraction_task>" in prompt
+
+
+def test_build_validation_system_xml_neutral():
+    prompt = build_validation_system_prompt(strategy=PromptStrategy.XML_NEUTRAL)
+    assert "<rules>" in prompt
+
+
+def test_build_validation_system_current():
+    prompt = build_validation_system_prompt(strategy=PromptStrategy.CURRENT)
+    assert "<rules>" not in prompt or "Hard rules" in prompt
+
+
+def test_build_validation_user_xml_neutral():
+    prompt = build_validation_user_prompt(
+        source_text="Chat here",
+        extraction_json={"data": []},
+        strategy=PromptStrategy.XML_NEUTRAL,
+    )
+    assert "<chat_transcript>" in prompt
+
+
+def test_build_validation_user_current():
+    prompt = build_validation_user_prompt(
+        source_text="Chat here",
+        extraction_json={"data": []},
+        strategy=PromptStrategy.CURRENT,
+    )
+    assert "## Chat transcript" in prompt
+
+
 from core.models import LLMExtractContractProductItem, SalesOrderExtractContractKeyDetails
 
 
