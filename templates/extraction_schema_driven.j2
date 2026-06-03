@@ -1,0 +1,31 @@
+Extract a sales order from the chat transcript below.
+
+Three rules:
+1. Extract only terms both parties explicitly agreed to. Proposals and unanswered offers are not agreements.
+2. If a field is not clearly stated in the chat, return null or empty string — never guess.
+3. Preserve units, currencies, and string fields exactly as written in the chat — no conversion, no reformatting.
+
+{% if organization_info or customer_info %}
+<reference_context note="Use only to identify parties or fill vendor_name, billing_address, shipping_address when not stated in the chat.">
+{% if organization_info %}
+<vendor>{{ organization_info | jsonpretty }}</vendor>
+{% endif %}
+{% if customer_info %}
+<counterparty>{{ customer_info | jsonpretty }}</counterparty>
+{% endif %}
+</reference_context>
+{% endif %}
+
+<schema>
+{{ schema_json }}
+</schema>
+
+<chat>
+{{ input_text }}
+</chat>
+
+Return only valid JSON matching the schema. No text before or after the JSON.
+{% if attempt is defined and attempt > 1 %}
+
+Retry {{ attempt }}: previous attempt failed schema validation. Ensure every required field is present (null or "" if not found). Check all types match the schema.
+{% endif %}
