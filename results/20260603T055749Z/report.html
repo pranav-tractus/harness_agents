@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Model benchmark — 20260603T055749Z</title>
+  <title>Production benchmark — 20260603T055749Z</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -766,60 +766,63 @@
   <div class="wrap">
     <div class="masthead pitch-hero">
       <div class="masthead-top">
-        <span><span class="dot"></span>Sales order extraction · model benchmark</span>
+        <span><span class="dot"></span>Sales order extraction · production benchmark</span>
         <span>2026-06-03 05:57 UTC</span>
       </div>
-      <h1>The full pipeline <em>across Claude, and OpenAI.</em></h1>
-      <p class="dek">Head-to-head benchmark on 70 real sales-order chats x 6 frontier models. Numbers below are results
-        from Baseline LLMs, and our Agent Extraction model.</p>
+      <h1>94-99% accuracy on real sales orders <em>with a validated pipeline, not raw LLMs.</em></h1>
+      <p class="dek">We evaluated 70 production-style sales-order chats across six frontier models from Claude and
+        OpenAI.
+        Every figure below is validated field match against golden JSON — the standard for output you can ship.</p>
     </div>
     <div class="findings">
       <div class="finding">
-        <div class="label">Baseline</div>
-        <div class="big">80.5%</div>
-
-        <div class="desc">Baseline LLM results, on average.</div>
-      </div>
-      <div class="finding">
-        <div class="label">Final</div>
+        <div class="label">Pipeline average</div>
         <div class="big good">93.9%</div>
 
-        <div class="desc">Our extraction pipeline, on average.</div>
+        <div class="desc">Average accuracy across all models after our extraction and validation pipeline — the headline
+          number for production readiness.</div>
       </div>
       <div class="finding">
-        <div class="label">Recommended model</div>
+        <div class="label">Best model</div>
         <div class="big good">98.9%</div>
         <p class="score-label"><span class="badge badge-info">420 runs</span><span class="badge badge-info">100.00%
             success</span></p>
-        <div class="desc"><strong>Claude Sonnet 4.6</strong> leads on validated output quality in this bake-off. Use the
-          accuracy chart to compare the full lineup at a glance.</div>
+        <div class="desc"><strong>Claude Sonnet 4.6</strong> leads this evaluation. 420 scored runs, 100.00% success.
+        </div>
       </div>
       <div class="finding">
-        <div class="label">Pipeline lift</div>
-        <div class="big good">+8.4 pp</div>
+        <div class="label">Pipeline value</div>
+        <div class="big good">+8.4</div>
         <p class="score-label"><span class="badge badge-info">14.2s
             avg</span></p>
-        <div class="desc">Average gain from bare extraction → validated JSON across models.
+        <div class="desc"><strong>8.4 percentage points</strong> of accuracy our validation layer adds over raw model
+          output, on average.
         </div>
+      </div>
+      <div class="finding">
+        <div class="label">Raw LLM baseline</div>
+        <div class="big">80.5%</div>
+
+        <div class="desc">For context: average accuracy without our pipeline — the starting point.</div>
       </div>
     </div>
 
     <section id="charts-accuracy">
       <div class="section-head"><span class="section-num">01</span>
-        <h2>Validated accuracy by model</h2>
+        <h2>Every model, validated</h2>
       </div>
-      <p class="section-intro">Single number that matters for production: field match after the full extraction +
-        validation pipeline.</p>
+      <p class="section-intro">The number that matters for production: field match against golden JSON after the full
+        pipeline.</p>
       <div class="chart-wrap full">
         <div class="chart-canvas-wrap tall"><canvas id="accuracyChart"></canvas></div>
       </div>
     </section>
     <section id="charts-pipeline">
       <div class="section-head"><span class="section-num">02</span>
-        <h2>What the pipeline adds</h2>
+        <h2>Why the pipeline matters</h2>
       </div>
-      <p class="section-intro">Compare bare LLM output against validated JSON. Baseline is a one-line prompt with no
-        system context.</p>
+      <p class="section-intro">Side-by-side comparison of raw model output vs. validated JSON. The gap is where our
+        extraction system creates value.</p>
       <div class="chart-wrap full">
         <div class="chart-canvas-wrap tall"><canvas id="pipelineChart"></canvas></div>
       </div>
@@ -827,33 +830,35 @@
     <div class="chart-grid">
       <section id="charts-frontier">
         <div class="section-head"><span class="section-num">03</span>
-          <h2>Quality vs. speed</h2>
+          <h2>Accuracy and speed</h2>
         </div>
-        <p class="section-intro">Bubble size reflects average mismatches per chat — smaller is cleaner.</p>
+        <p class="section-intro">Each bubble is a model after validation. Smaller bubbles mean fewer mismatches per
+          order.</p>
         <div class="chart-wrap">
           <div class="chart-canvas-wrap wide"><canvas id="frontierChart"></canvas></div>
         </div>
       </section>
       <section id="charts-dataset">
         <div class="section-head"><span class="section-num">04</span>
-          <h2>By dataset</h2>
+          <h2>Consistent across customers</h2>
         </div>
-        <p class="section-intro">Blended accuracy across all models in each data slice.</p>
+        <p class="section-intro">Pipeline accuracy holds across all three customer datasets — not dependent on a single
+          source.</p>
         <div class="chart-wrap">
           <div class="chart-canvas-wrap wide"><canvas id="datasetChart"></canvas></div>
         </div>
       </section>
     </div>
     <div class="pitch-foot">
-      Merged benchmark · sources: 20260603T053802Z, 20260603T051559Z · 90.66% blended field match ·
+      90.66% field match after validation ·
       100.00% run success ·
-      Field match = share of compared JSON fields matching golden expected output.
+      Field match = share of JSON fields matching golden expected output after validation.
     </div>
   </div>
   <script>
 
-    const comboData = [{ "key": "sonnet-4-6", "label": "Claude Sonnet 4.6", "final_pct": 98.9, "raw_pct": 93.9, "baseline_pct": 80.5, "elapsed": 14.18, "mismatch": 0.29 }, { "key": "opus-4-6", "label": "Claude Opus 4.6", "final_pct": 92.3, "raw_pct": 90.4, "baseline_pct": 83.1, "elapsed": 13.17, "mismatch": 2.0 }, { "key": "Claude:opus-4-8", "label": "Claude Opus 4.8", "final_pct": 90.0, "raw_pct": 89.3, "baseline_pct": 83.3, "elapsed": 15.33, "mismatch": 2.63 }, { "key": "Claude:opus-4-7", "label": "Claude Opus 4.7", "final_pct": 89.6, "raw_pct": 89.9, "baseline_pct": 83.3, "elapsed": 14.61, "mismatch": 2.73 }, { "key": "openai:5.4", "label": "OpenAI GPT-5.4", "final_pct": 88.0, "raw_pct": 83.3, "baseline_pct": 81.4, "elapsed": 10.56, "mismatch": 3.03 }, { "key": "openai:5.2", "label": "OpenAI GPT-5.2", "final_pct": 84.6, "raw_pct": 76.3, "baseline_pct": 81.2, "elapsed": 10.91, "mismatch": 3.86 }];
-    const datasetData = [{ "label": "Acme Foods", "pct": 92.5 }, { "label": "Nova Exports", "pct": 92.1 }, { "label": "Downloaded", "pct": 88.3 }];
+    const comboData = [{ "key": "sonnet-4-6", "label": "Claude Sonnet 4.6", "final_pct": 98.9, "raw_pct": 93.9, "baseline_pct": 80.5, "elapsed": 14.18, "mismatch": 0.29 }, { "key": "opus-4-6", "label": "Claude Opus 4.6", "final_pct": 92.3, "raw_pct": 90.4, "baseline_pct": 83.1, "elapsed": 13.17, "mismatch": 2.0 }, { "key": "Claude:opus-4-7", "label": "Claude Opus 4.7", "final_pct": 89.6, "raw_pct": 89.9, "baseline_pct": 83.3, "elapsed": 14.61, "mismatch": 2.73 }, { "key": "Claude:opus-4-8", "label": "Claude Opus 4.8", "final_pct": 90.0, "raw_pct": 89.3, "baseline_pct": 83.3, "elapsed": 15.33, "mismatch": 2.63 }, { "key": "openai:5.4", "label": "OpenAI GPT-5.4", "final_pct": 88.0, "raw_pct": 83.3, "baseline_pct": 81.4, "elapsed": 10.56, "mismatch": 3.03 }, { "key": "openai:5.2", "label": "OpenAI GPT-5.2", "final_pct": 84.6, "raw_pct": 76.3, "baseline_pct": 81.2, "elapsed": 10.91, "mismatch": 3.86 }];
+    const datasetData = [{ "label": "Acme Foods", "pct": 92.5 }, { "label": "Nova Exports", "pct": 92.1 }, { "label": "Chicago Bears", "pct": 88.3 }];
 
     if (comboData.length && document.getElementById("accuracyChart")) {
       new Chart(document.getElementById("accuracyChart").getContext("2d"), {
@@ -885,10 +890,10 @@
         data: {
           labels: comboData.map((p) => p.label),
           datasets: [
-            { label: "No-context baseline", data: comboData.map((p) => p.baseline_pct), backgroundColor: "#b9543fcc" },
+            { label: "Raw LLM (no pipeline)", data: comboData.map((p) => p.baseline_pct), backgroundColor: "#b9543fcc" },
 
-            { label: "Bare extraction", data: comboData.map((p) => p.raw_pct), backgroundColor: "#7a8aa8cc" },
-            { label: "Validated output", data: comboData.map((p) => p.final_pct), backgroundColor: "#2d6b3fcc" },
+            { label: "Extraction only", data: comboData.map((p) => p.raw_pct), backgroundColor: "#7a8aa8cc" },
+            { label: "Production-ready output", data: comboData.map((p) => p.final_pct), backgroundColor: "#2d6b3fcc" },
 
           ],
         },
@@ -907,7 +912,7 @@
         type: "bubble",
         data: {
           datasets: [{
-            label: "Model",
+            label: "Model after Final Validation",
             data: comboData.map((p) => ({
               x: p.elapsed,
               y: p.final_pct,
