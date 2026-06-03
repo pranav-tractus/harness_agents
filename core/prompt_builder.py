@@ -36,7 +36,8 @@ def _extraction_template_name(strategy: PromptStrategy, model_key: str) -> str:
         return "extraction_schema_driven.j2"
     if strategy == PromptStrategy.PROVIDER_PROFILE:
         family = provider_family(model_key)
-        if family in ("anthropic", "bedrock"):
+        # provider_family() maps "bedrock" -> "anthropic" already
+        if family == "anthropic":
             return "extraction.j2"
         return "extraction_xml_neutral.j2"
     return "extraction.j2"  # CURRENT
@@ -47,7 +48,8 @@ def _validation_system_template_name(strategy: PromptStrategy, model_key: str) -
         return "validation_system.j2"
     if strategy == PromptStrategy.PROVIDER_PROFILE:
         family = provider_family(model_key)
-        if family in ("anthropic", "bedrock"):
+        # provider_family() maps "bedrock" -> "anthropic" already
+        if family == "anthropic":
             return "validation_system.j2"
         return "validation_system_xml_neutral.j2"
     return "validation_system_xml_neutral.j2"
@@ -58,7 +60,8 @@ def _validation_user_template_name(strategy: PromptStrategy, model_key: str) -> 
         return "validation_user.j2"
     if strategy == PromptStrategy.PROVIDER_PROFILE:
         family = provider_family(model_key)
-        if family in ("anthropic", "bedrock"):
+        # provider_family() maps "bedrock" -> "anthropic" already
+        if family == "anthropic":
             return "validation_user.j2"
         return "validation_user_xml_neutral.j2"
     return "validation_user_xml_neutral.j2"

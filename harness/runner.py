@@ -500,6 +500,7 @@ def main() -> None:
         "few_shot_seed": args.few_shot_seed,
         "db_few_shot_limit": args.db_few_shot_limit,
         "validation_model": args.validation_model or None,
+        "prompt_strategy": getattr(args, "prompt_strategy", "current"),
         "skip_without_expected": bool(args.skip_without_expected),
         "with_baseline": bool(args.with_baseline),
         "results_dir": str(run_dir),

@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+import logging
 from enum import Enum
 
 from core.utils import resolve_model_selection
+
+logger = logging.getLogger(__name__)
 
 
 class PromptStrategy(Enum):
@@ -20,6 +23,12 @@ class PromptStrategy(Enum):
         try:
             return cls(value.lower())
         except ValueError:
+            valid = [e.value for e in cls]
+            logger.warning(
+                "Unknown prompt_strategy %r — falling back to 'current'. Valid values: %s",
+                value,
+                valid,
+            )
             return cls.CURRENT
 
 
