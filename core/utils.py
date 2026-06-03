@@ -20,6 +20,8 @@ BEDROCK_ANTHROPIC_MODELS = {
     "sonnet-4-6": "us.anthropic.claude-sonnet-4-6",
     "opus-4-5": "us.anthropic.claude-opus-4-5-20251101-v1:0",
     "opus-4-6": "us.anthropic.claude-opus-4-6-v1",
+    "opus-4-7": "us.anthropic.claude-opus-4-7",
+    "opus-4-8": "us.anthropic.claude-opus-4-8",
 }
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -28,6 +30,17 @@ OPENAI_MODELS = {
     "5.2": "gpt-5.2-2025-12-11",
     "5-mini": "gpt-5-mini-2025-08-07",
     "5.4": "gpt-5.4-2026-03-05",
+}
+
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
+
+ANTHROPIC_DIRECT_MODELS = {
+    "sonnet-4-5": "claude-sonnet-4-5-20250929",
+    "sonnet-4-6": "claude-sonnet-4-6",
+    "opus-4-5": "claude-opus-4-5-20251101",
+    "opus-4-6": "claude-opus-4-6",
+    "opus-4-7": "claude-opus-4-7",
+    "opus-4-8": "claude-opus-4-8",
 }
 
 GEMINI_MODELS = {
@@ -201,6 +214,13 @@ def build_model_catalog() -> dict[str, dict[str, str]]:
             "model_id": model_id,
             "display_name": f"Gemini · {key}",
         }
+    for key, model_id in ANTHROPIC_DIRECT_MODELS.items():
+        full_key = f"anthropic:{key}"
+        catalog[full_key] = {
+            "provider": "anthropic",
+            "model_id": model_id,
+            "display_name": f"Anthropic · {key}",
+        }
     return catalog
 
 
@@ -244,6 +264,16 @@ def resolve_model_selection(model_key: str | None) -> dict[str, Any]:
                 "provider": "gemini",
                 "model_id": GEMINI_MODELS[short],
                 "display_name": f"Gemini · {short}",
+                "model_key": key,
+            }
+
+    if key.startswith("anthropic:"):
+        short = key.split(":", 1)[1]
+        if short in ANTHROPIC_DIRECT_MODELS:
+            return {
+                "provider": "anthropic",
+                "model_id": ANTHROPIC_DIRECT_MODELS[short],
+                "display_name": f"Anthropic · {short}",
                 "model_key": key,
             }
 
