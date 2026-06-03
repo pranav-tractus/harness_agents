@@ -137,6 +137,8 @@ def run_postprocess_pipeline(
         if stage.name == "validation_llm" and result.status == "ok":
             diagnostics["validation_issues"] = result.issues
             diagnostics["validation_notes"] = result.notes
+            if hasattr(result, "token_usage") and result.token_usage:
+                diagnostics["validation_token_usage"] = result.token_usage
         if stage.name == "validation_llm" and result.status == "failed":
             diagnostics["validation_error"] = result.error
         if result.changes and stage.name in ("normalize_units", "recompute_totals"):

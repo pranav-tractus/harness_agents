@@ -51,6 +51,7 @@ class StageResult:
     notes: str = ""
     error: str = ""
     elapsed_ms: float = 0.0
+    token_usage: dict | None = None
 
     def to_diag(self) -> dict[str, Any]:
         return {
@@ -127,7 +128,7 @@ class ValidationLLMStage:
                 elapsed_ms=round((time.perf_counter() - t0) * 1000, 3),
             )
         # Lazy import to keep stdlib-only stages testable without LLM creds.
-        from core.llm_client import call_llm
+        from core.llm_client import call_llm_with_usage
         from core.prompt_builder import (
             build_validation_system_prompt,
             build_validation_user_prompt,
@@ -143,7 +144,7 @@ class ValidationLLMStage:
                 source_text=ctx.source_text,
                 extraction_json=contract,
             )
-            result: SOValidationResult = call_llm(
+            result, val_usage = call_llm_with_usage(
                 user_prompt,
                 SOValidationResult,
                 model_key=ctx.validation_model_key,
@@ -156,6 +157,7 @@ class ValidationLLMStage:
                 issues=[i.model_dump() for i in result.issues],
                 notes=result.notes,
                 elapsed_ms=round((time.perf_counter() - t0) * 1000, 3),
+                token_usage=val_usage,
             )
         except (ValidationError, ValueError) as exc:
             logger.warning("Validation LLM returned an invalid payload: %s", exc)
