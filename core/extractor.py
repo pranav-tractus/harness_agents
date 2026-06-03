@@ -41,6 +41,7 @@ from core.prompt_builder import (
     build_system_prompt,
     build_update_prompt,
 )
+from core.prompt_strategy import PromptStrategy
 from core.utils import DEFAULT_MODEL_KEY, resolve_model_selection
 
 logger = logging.getLogger(__name__)
@@ -152,8 +153,10 @@ class ExtractionEngine:
         customer_info: dict | None = None,
         iso_date: str | None = None,
         db_path: Path = DB_PATH,
+        strategy: PromptStrategy = PromptStrategy.CURRENT,
     ) -> None:
         self.model_key = model_key
+        self.strategy = strategy
         resolved = resolve_model_selection(model_key)
         self.model_provider = resolved["provider"]
         self.organization_info = organization_info
@@ -191,8 +194,8 @@ class ExtractionEngine:
         )
 
         logger.info(
-            "Starting initial extraction: schema=%s chars=%d",
-            target_schema.__name__, len(text_to_extract),
+            "Starting initial extraction: schema=%s chars=%d strategy=%s",
+            target_schema.__name__, len(text_to_extract), self.strategy.value,
         )
 
         def _factory(attempt: int) -> str:
@@ -205,6 +208,8 @@ class ExtractionEngine:
                 extra_few_shot_examples=extra_few_shot_examples,
                 db_few_shot_limit=db_few_shot_limit,
                 db_path=self.db_path,
+                strategy=self.strategy,
+                model_key=self.model_key,
             )
 
         try:

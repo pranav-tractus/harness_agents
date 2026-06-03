@@ -149,3 +149,17 @@ def test_contract_field_descriptions_encode_rules():
     # vendor_name must mention null/empty
     assert "null" in props["vendor_name"]["description"].lower() or \
            "empty" in props["vendor_name"]["description"].lower()
+
+
+from core.extractor import ExtractionEngine
+from core.prompt_strategy import PromptStrategy
+
+
+def test_extraction_engine_accepts_strategy():
+    engine = ExtractionEngine(strategy=PromptStrategy.XML_NEUTRAL)
+    assert engine.strategy == PromptStrategy.XML_NEUTRAL
+
+
+def test_extraction_engine_default_strategy_is_current():
+    engine = ExtractionEngine()
+    assert engine.strategy == PromptStrategy.CURRENT
