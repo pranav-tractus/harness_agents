@@ -5,6 +5,9 @@ import kuzu
 
 logger = logging.getLogger(__name__)
 
+_VALID_TABLES = frozenset({"Customer", "Product", "Port", "Episode"})
+_VALID_PK_COLS = frozenset({"id", "name", "source_id"})
+
 _DDL = [
     "CREATE NODE TABLE IF NOT EXISTS Customer(id STRING, PRIMARY KEY(id))",
     "CREATE NODE TABLE IF NOT EXISTS Product(name STRING, PRIMARY KEY(name))",
@@ -29,6 +32,8 @@ class KuzuBackend:
             self._conn.execute(ddl)
 
     def _upsert_node(self, table: str, pk_col: str, pk_val: str) -> None:
+        if table not in _VALID_TABLES or pk_col not in _VALID_PK_COLS:
+            raise ValueError(f"Invalid table/column: {table!r}.{pk_col!r}")
         check = self._conn.execute(
             f"MATCH (n:{table} {{{pk_col}: $val}}) RETURN count(n) AS c",
             {"val": pk_val},
@@ -62,6 +67,7 @@ class KuzuBackend:
             {"sid": source_id, "cid": customer_id, "ts": timestamp},
         )
 
+        ports_written: set[str] = set()
         for product in entities.get("products", []):
             pname = product.get("name", "").strip()
             if not pname:
@@ -101,10 +107,11 @@ class KuzuBackend:
                      "inco": product.get("incoterm") or "",
                      "ts": timestamp, "sid": source_id},
                 )
+                ports_written.add(port)
 
         for port in entities.get("ports", []):
             port = port.strip()
-            if not port:
+            if not port or port in ports_written:
                 continue
             self._upsert_node("Port", "name", port)
             self._conn.execute(
@@ -114,11 +121,12 @@ class KuzuBackend:
                 """,
                 {"cid": customer_id, "port": port, "ts": timestamp, "sid": source_id},
             )
+            ports_written.add(port)
 
         payment_terms = entities.get("payment_terms") or ""
         packing = entities.get("packing") or ""
         loading = entities.get("loading") or ""
-        if any([payment_terms, packing, loading]):
+        if any((payment_terms, packing, loading)):
             self._conn.execute(
                 """
                 MATCH (c:Customer {id: $cid}), (e:Episode {source_id: $sid})

@@ -42,5 +42,5 @@ def answer_question(
     if not memory_block:
         return f"No history found for customer '{customer_id}'."
 
-    prompt = _QA_PROMPT.format(memory_block=memory_block, question=question)
+    prompt = _QA_PROMPT.replace("{memory_block}", memory_block).replace("{question}", question)
     return call_llm_text(prompt, model_key=model_key)

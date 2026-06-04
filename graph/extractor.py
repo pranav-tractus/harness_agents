@@ -1,9 +1,6 @@
-import logging
 from typing import Optional
 from pydantic import BaseModel, Field
 from core.llm_client import call_llm
-
-logger = logging.getLogger(__name__)
 
 _EXTRACTION_PROMPT = """\
 You are an expert at extracting structured facts from commodity trading chat messages.
@@ -51,8 +48,4 @@ class ExtractedFacts(BaseModel):
 
 def extract_entities(chat_text: str, model_key: str = "claude-sonnet-4-6") -> ExtractedFacts:
     prompt = _EXTRACTION_PROMPT.format(chat_text=chat_text)
-    try:
-        return call_llm(prompt, ExtractedFacts, model_key)
-    except Exception:
-        logger.exception("Entity extraction failed, returning empty facts")
-        return ExtractedFacts()
+    return call_llm(prompt, ExtractedFacts, model_key)

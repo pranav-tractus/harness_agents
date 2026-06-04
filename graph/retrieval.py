@@ -20,11 +20,13 @@ def get_memory_block(customer_id: str, backend: AbstractGraphBackend) -> str | N
     ports: dict[str, str] = {}
     terms_list: list[dict] = []
     sources: list[str] = []
+    _sources_seen: set[str] = set()
 
     for row in rows:
         src = row.get("source_id", "")
-        if src and src not in sources:
+        if src and src not in _sources_seen:
             sources.append(src)
+            _sources_seen.add(src)
 
         if row["type"] == "product":
             name = row["product_name"]
