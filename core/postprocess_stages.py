@@ -15,6 +15,7 @@ from typing import Any, Protocol
 
 from pydantic import ValidationError
 
+from core.prompt_strategy import PromptStrategy
 from core.postprocess_deterministic import (
     diff_date_fields,
     freeze_date_fields_from_raw,
@@ -36,6 +37,7 @@ class StageContext:
     validation_model_key: str | None = None
     organization_info: dict | None = None
     customer_info: dict | None = None
+    prompt_strategy: PromptStrategy = PromptStrategy.CURRENT
 
 
 @dataclass
@@ -139,10 +141,14 @@ class ValidationLLMStage:
             system_prompt = build_validation_system_prompt(
                 organization_info=ctx.organization_info,
                 customer_info=ctx.customer_info,
+                strategy=ctx.prompt_strategy,
+                model_key=ctx.validation_model_key or "",
             )
             user_prompt = build_validation_user_prompt(
                 source_text=ctx.source_text,
                 extraction_json=contract,
+                strategy=ctx.prompt_strategy,
+                model_key=ctx.validation_model_key or "",
             )
             result, val_usage = call_llm_with_usage(
                 user_prompt,

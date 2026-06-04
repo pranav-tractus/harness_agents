@@ -8,6 +8,7 @@ from pydantic import BaseModel
 
 from core.db import DB_PATH, get_recent_success_examples, get_recent_update_examples
 from core.models import SOExtractContractList, SOUpdateContractList
+from core.prompt_strategy import PromptStrategy, provider_family
 from core.utils import customer_info as utils_customer_info, team_info as utils_team_info
 
 logger = logging.getLogger(__name__)
@@ -25,6 +26,45 @@ UPDATE_FEW_SHOT_MAX_TOTAL = 18
 
 INITIAL_FEW_SHOT_DB_LIMIT_DEFAULT = 5
 INITIAL_FEW_SHOT_MAX_TOTAL = 18
+
+
+def _extraction_template_name(strategy: PromptStrategy, model_key: str) -> str:
+    """Return the Jinja2 template filename for the given strategy and model."""
+    if strategy == PromptStrategy.XML_NEUTRAL:
+        return "extraction_xml_neutral.j2"
+    if strategy == PromptStrategy.SCHEMA_DRIVEN:
+        return "extraction_schema_driven.j2"
+    if strategy == PromptStrategy.PROVIDER_PROFILE:
+        family = provider_family(model_key)
+        # provider_family() maps "bedrock" -> "anthropic" already
+        if family == "anthropic":
+            return "extraction.j2"
+        return "extraction_xml_neutral.j2"
+    return "extraction.j2"  # CURRENT
+
+
+def _validation_system_template_name(strategy: PromptStrategy, model_key: str) -> str:
+    if strategy == PromptStrategy.CURRENT:
+        return "validation_system.j2"
+    if strategy == PromptStrategy.PROVIDER_PROFILE:
+        family = provider_family(model_key)
+        # provider_family() maps "bedrock" -> "anthropic" already
+        if family == "anthropic":
+            return "validation_system.j2"
+        return "validation_system_xml_neutral.j2"
+    return "validation_system_xml_neutral.j2"
+
+
+def _validation_user_template_name(strategy: PromptStrategy, model_key: str) -> str:
+    if strategy == PromptStrategy.CURRENT:
+        return "validation_user.j2"
+    if strategy == PromptStrategy.PROVIDER_PROFILE:
+        family = provider_family(model_key)
+        # provider_family() maps "bedrock" -> "anthropic" already
+        if family == "anthropic":
+            return "validation_user.j2"
+        return "validation_user_xml_neutral.j2"
+    return "validation_user_xml_neutral.j2"
 
 
 def build_system_prompt(
@@ -55,19 +95,19 @@ def build_prompt(
     extra_few_shot_examples: list[dict] | None = None,
     db_few_shot_limit: int = INITIAL_FEW_SHOT_DB_LIMIT_DEFAULT,
     db_path: Path = DB_PATH,
+    strategy: PromptStrategy = PromptStrategy.CURRENT,
+    model_key: str = "",
 ) -> str:
     """Build a Jinja2-rendered initial extraction prompt.
 
-    The schema is locked to ``SOExtractContractList`` for the initial extraction flow.
-    ``extra_few_shot_examples`` are merged **before** database examples (from saved
-    summaries). Set ``db_few_shot_limit`` to ``0`` to use only file-based examples.
-    The merged list is capped at ``INITIAL_FEW_SHOT_MAX_TOTAL``.
+    ``strategy`` selects the template variant; defaults to CURRENT for backward compat.
     """
     target_schema = INITIAL_SCHEMA
+    template_name = _extraction_template_name(strategy, model_key)
     try:
-        template = _env.get_template("extraction.j2")
+        template = _env.get_template(template_name)
     except TemplateNotFound:
-        raise FileNotFoundError(f"extraction.j2 not found in {_TEMPLATES_DIR}")
+        raise FileNotFoundError(f"{template_name} not found in {_TEMPLATES_DIR}")
 
     schema_json = json.dumps(target_schema.model_json_schema(), indent=2)
     extra = list(extra_few_shot_examples or [])
@@ -98,8 +138,8 @@ def build_prompt(
     )
 
     logger.debug(
-        "Built initial extraction prompt (attempt=%d, schema=%s, chars=%d)",
-        attempt, target_schema.__name__, len(prompt),
+        "Built initial extraction prompt (attempt=%d, schema=%s, strategy=%s, chars=%d)",
+        attempt, target_schema.__name__, strategy.value, len(prompt),
     )
     return prompt
 
@@ -116,7 +156,7 @@ def build_update_prompt(
     synthetic_few_shot_examples: list[dict] | None = None,
     db_path: Path = DB_PATH,
 ) -> str:
-    """Build the human-in-the-loop update prompt."""
+    """Build the human-in-the-loop update prompt (always uses CURRENT template)."""
     target_schema = UPDATE_SCHEMA
     try:
         template = _env.get_template("update.j2")
@@ -152,12 +192,15 @@ def build_update_prompt(
 def build_validation_system_prompt(
     organization_info: dict | None = None,
     customer_info: dict | None = None,
+    strategy: PromptStrategy = PromptStrategy.CURRENT,
+    model_key: str = "",
 ) -> str:
     """System prompt for the validation / post-processing LLM layer."""
+    template_name = _validation_system_template_name(strategy, model_key)
     try:
-        template = _env.get_template("validation_system.j2")
+        template = _env.get_template(template_name)
     except TemplateNotFound:
-        raise FileNotFoundError(f"validation_system.j2 not found in {_TEMPLATES_DIR}")
+        raise FileNotFoundError(f"{template_name} not found in {_TEMPLATES_DIR}")
     return template.render(
         organization_info=organization_info if organization_info is not None else utils_team_info,
         customer_info=customer_info if customer_info is not None else utils_customer_info,
@@ -167,12 +210,15 @@ def build_validation_system_prompt(
 def build_validation_user_prompt(
     source_text: str,
     extraction_json: dict,
+    strategy: PromptStrategy = PromptStrategy.CURRENT,
+    model_key: str = "",
 ) -> str:
     """User prompt for validation LLM: chat + current extraction JSON."""
+    template_name = _validation_user_template_name(strategy, model_key)
     try:
-        template = _env.get_template("validation_user.j2")
+        template = _env.get_template(template_name)
     except TemplateNotFound:
-        raise FileNotFoundError(f"validation_user.j2 not found in {_TEMPLATES_DIR}")
+        raise FileNotFoundError(f"{template_name} not found in {_TEMPLATES_DIR}")
     return template.render(
         source_text=source_text.strip(),
         extraction_json=extraction_json,

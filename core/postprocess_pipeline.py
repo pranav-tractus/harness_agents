@@ -16,6 +16,7 @@ import logging
 import time
 from typing import Any
 
+from core.prompt_strategy import PromptStrategy
 from core.postprocess_stages import (
     DEFAULT_STAGES,
     PostprocessStage,
@@ -66,6 +67,7 @@ def run_postprocess_pipeline(
     enable_validation_llm: bool = True,
     organization_info: dict | None = None,
     customer_info: dict | None = None,
+    prompt_strategy: PromptStrategy | None = None,
     stages: list[PostprocessStage] | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """Run layer-2 refinement. Returns ``(final_contract, diagnostics)``.
@@ -103,6 +105,7 @@ def run_postprocess_pipeline(
         "enable_freeze_dates": True,
         "enable_structural_audit": True,
     }
+    _strategy = prompt_strategy if prompt_strategy is not None else PromptStrategy.CURRENT
     ctx = StageContext(
         source_text=source_text,
         reference_iso_date=reference_iso_date,
@@ -111,6 +114,7 @@ def run_postprocess_pipeline(
         validation_model_key=validation_model_key,
         organization_info=organization_info,
         customer_info=customer_info,
+        prompt_strategy=_strategy,
     )
 
     working = copy.deepcopy(raw_contract)

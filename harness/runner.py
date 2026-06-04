@@ -72,7 +72,7 @@ def _parse_args() -> argparse.Namespace:
         help="Model key for post-processing validation LLM (defaults to each extraction model).",
     )
     p.add_argument("--runs-per-chat", type=int, default=1)
-    p.add_argument("--max-workers", type=int, default=8)
+    p.add_argument("--max-workers", type=int, default=50)
     p.add_argument("--few-shot", nargs="*", default=[], help="Explicit few-shot chat paths (capped at 10). Builds a single variant applied to every chat.")
     p.add_argument(
         "--few-shot-walk",
@@ -128,6 +128,13 @@ def _parse_args() -> argparse.Namespace:
         default="sonnet-4-5",
         help="Model catalog key for report.html editorial layer (default: sonnet-4-5 on Bedrock).",
     )
+    p.add_argument(
+        "--prompt-strategy",
+        type=str,
+        default="current",
+        choices=["current", "xml_neutral", "provider_profile", "schema_driven"],
+        help="Prompt template strategy: current (default), xml_neutral, provider_profile, schema_driven.",
+    )
     return p.parse_args()
 
 
@@ -139,6 +146,7 @@ def _run_extra(args: argparse.Namespace, extraction_model_key: str) -> dict[str,
         "enable_validation_llm": True,
         "enable_deterministic_postprocess": True,
         "run_baseline": bool(getattr(args, "with_baseline", False)),
+        "prompt_strategy": getattr(args, "prompt_strategy", "current"),
     }
 
 
@@ -492,6 +500,7 @@ def main() -> None:
         "few_shot_seed": args.few_shot_seed,
         "db_few_shot_limit": args.db_few_shot_limit,
         "validation_model": args.validation_model or None,
+        "prompt_strategy": getattr(args, "prompt_strategy", "current"),
         "skip_without_expected": bool(args.skip_without_expected),
         "with_baseline": bool(args.with_baseline),
         "results_dir": str(run_dir),
