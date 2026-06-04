@@ -72,7 +72,7 @@ def _parse_args() -> argparse.Namespace:
         help="Model key for post-processing validation LLM (defaults to each extraction model).",
     )
     p.add_argument("--runs-per-chat", type=int, default=1)
-    p.add_argument("--max-workers", type=int, default=8)
+    p.add_argument("--max-workers", type=int, default=50)
     p.add_argument("--few-shot", nargs="*", default=[], help="Explicit few-shot chat paths (capped at 10). Builds a single variant applied to every chat.")
     p.add_argument(
         "--few-shot-walk",

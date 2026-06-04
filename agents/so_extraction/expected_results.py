@@ -3224,6 +3224,6 @@ def get_expected_for_chat(chat_filename: str) -> dict | None:
     val = EXPECTED_BY_CHAT.get(name)
     if val is not None:
         return val
-    from agents.so_extraction.expected_results1 import EXPECTED_BY_CHAT as _extra
+    from agents.so_extraction.expected_results import EXPECTED_BY_CHAT as _extra
 
     return _extra.get(name)
