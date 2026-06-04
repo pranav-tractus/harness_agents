@@ -40,7 +40,8 @@ class KuzuBackend:
                 {"val": pk_val},
             )
 
-    def write_episode(self, episode: dict) -> None:
+    def write_episode(self, episode: dict) -> bool:
+        """Write episode to the graph. Returns True if written, False if already exists."""
         source_id = episode["source_id"]
         customer_id = episode["customer_id"]
         timestamp = episode.get("timestamp", 0)
@@ -53,7 +54,7 @@ class KuzuBackend:
         )
         if existing.get_next()[0] > 0:
             logger.debug("Episode already exists, skipping: %s", source_id)
-            return
+            return False
 
         self._upsert_node("Customer", "id", customer_id)
         self._conn.execute(
@@ -128,6 +129,8 @@ class KuzuBackend:
                 {"cid": customer_id, "sid": source_id,
                  "pt": payment_terms, "pk": packing, "ld": loading},
             )
+
+        return True
 
     def query_customer(self, customer_id: str) -> list[dict]:
         rows: list[dict] = []
