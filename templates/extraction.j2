@@ -31,6 +31,16 @@ Assistant:
 {{ schema_json }}
 ```
 
+{% if memory_block %}
+## Customer history (graph memory)
+The following is a summary of this customer's past contracts. Use it only to
+disambiguate products, ports, packing/loading terms, and units mentioned in
+the chat below. Do not populate fields from memory unless the current chat
+explicitly confirms the value.
+
+{{ memory_block }}
+
+{% endif %}
 ## Input text
 
 {{ input_text }}

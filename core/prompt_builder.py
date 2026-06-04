@@ -50,6 +50,7 @@ def build_prompt(
     attempt: int = 1,
     *,
     iso_date: str,
+    memory_block: str | None = None,
     organization_info: dict | None = None,
     customer_info: dict | None = None,
     extra_few_shot_examples: list[dict] | None = None,
@@ -93,6 +94,7 @@ def build_prompt(
         few_shot_examples=merged,
         attempt=attempt,
         iso_date=iso_date,
+        memory_block=memory_block,
         organization_info=organization_info,
         customer_info=customer_info,
     )
