@@ -1,0 +1,48 @@
+{
+  "chat_id": "mr_ms_008",
+  "customer_id": "acme_foods",
+  "category": "memory_required",
+  "chat_type": "multiple_shipments",
+  "chat_text": "(BUYER): 10 bags KISAN Coffee now + 10 bags next quarter. Same price as always.\n(SELLER): Confirmed. FOB Singapore, Net 15.",
+  "messages": [
+    {
+      "from_whom": "(BUYER)",
+      "body": "10 bags KISAN Coffee now + 10 bags next quarter. Same price as always.",
+      "timestamp": 1
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Confirmed. FOB Singapore, Net 15.",
+      "timestamp": 2
+    }
+  ],
+  "mock_memory_block": "=== Customer History (acme_foods) ===\n- Products: KISAN Coffee 10.0 bags @ USD/bag 25.0\n- Ports: FOB Singapore, Singapore\n- Payment terms: Net 15\n- Packing: standard bags",
+  "expected_facts": {
+    "products": [
+      {
+        "quantity": 10.0,
+        "unit": "bags",
+        "price": 25.0,
+        "price_unit": "USD/bag",
+        "incoterm": "FOB",
+        "port": "Singapore",
+        "name": "KISAN Coffee"
+      },
+      {
+        "quantity": 10.0,
+        "unit": "bags",
+        "price": 25.0,
+        "price_unit": "USD/bag",
+        "incoterm": "FOB",
+        "port": "Singapore",
+        "name": "KISAN Coffee"
+      }
+    ],
+    "ports": [
+      "Singapore"
+    ],
+    "payment_terms": "Net 15",
+    "packing": "",
+    "loading": ""
+  }
+}

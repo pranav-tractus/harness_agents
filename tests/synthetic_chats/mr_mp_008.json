@@ -1,0 +1,48 @@
+{
+  "chat_id": "mr_mp_008",
+  "customer_id": "12a4f3a7-d506-4d32-ae06-3f76508c6abd",
+  "category": "memory_required",
+  "chat_type": "multiple_products",
+  "chat_text": "(BUYER): 39 MT soya lecithin powder in usual packing plus 2 extra MT, same terms.\n(SELLER): Confirmed. 25kg PP bags, CIF Busan.",
+  "messages": [
+    {
+      "from_whom": "(BUYER)",
+      "body": "39 MT soya lecithin powder in usual packing plus 2 extra MT, same terms.",
+      "timestamp": 1
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Confirmed. 25kg PP bags, CIF Busan.",
+      "timestamp": 2
+    }
+  ],
+  "mock_memory_block": "=== Customer History (12a4f3a7-d506-4d32-ae06-3f76508c6abd) ===\n- Products: GIIOFINE-P-S 13.0 MT @ USD/MT 2850.0\n- Ports: CIF Busan, Busan\n- Packing: 25kg PP bags\n- Loading: 2x20 FCL",
+  "expected_facts": {
+    "products": [
+      {
+        "quantity": 39.0,
+        "unit": "MT",
+        "price": 2850.0,
+        "price_unit": "USD/MT",
+        "incoterm": "CIF",
+        "port": "Busan",
+        "name": "GIIOFINE-P-S"
+      },
+      {
+        "quantity": 2.0,
+        "unit": "MT",
+        "price": 2850.0,
+        "price_unit": "USD/MT",
+        "incoterm": "CIF",
+        "port": "Busan",
+        "name": "GIIOFINE-P-S"
+      }
+    ],
+    "ports": [
+      "Busan"
+    ],
+    "payment_terms": "",
+    "packing": "25kg PP bags",
+    "loading": ""
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "chat_id": "mr_mp_006",
+  "customer_id": "acme_foods",
+  "category": "memory_required",
+  "chat_type": "multiple_products",
+  "chat_text": "(BUYER): The usual KISAN Coffee order. Also add 5 cartons of Arabica at same per-bag price.\n(SELLER): Done, FOB Singapore. Net 15 payment.",
+  "messages": [
+    {
+      "from_whom": "(BUYER)",
+      "body": "The usual KISAN Coffee order. Also add 5 cartons of Arabica at same per-bag price.",
+      "timestamp": 1
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Done, FOB Singapore. Net 15 payment.",
+      "timestamp": 2
+    }
+  ],
+  "mock_memory_block": "=== Customer History (acme_foods) ===\n- Products: KISAN Coffee 10.0 bags @ USD/bag 25.0\n- Ports: FOB Singapore, Singapore\n- Payment terms: Net 15\n- Packing: standard bags",
+  "expected_facts": {
+    "products": [
+      {
+        "quantity": 10.0,
+        "unit": "bags",
+        "price": 25.0,
+        "price_unit": "USD/bag",
+        "incoterm": "FOB",
+        "port": "Singapore",
+        "name": "KISAN Coffee"
+      },
+      {
+        "name": "Arabica",
+        "quantity": 5.0,
+        "unit": "cartons",
+        "price": 25.0,
+        "price_unit": "USD/bag",
+        "incoterm": "FOB",
+        "port": "Singapore"
+      }
+    ],
+    "ports": [
+      "Singapore"
+    ],
+    "payment_terms": "Net 15",
+    "packing": "",
+    "loading": ""
+  }
+}

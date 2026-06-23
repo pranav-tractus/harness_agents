@@ -1,0 +1,48 @@
+{
+  "chat_id": "mb_mp_005",
+  "customer_id": "acme_foods",
+  "category": "memory_boost",
+  "chat_type": "multiple_products",
+  "chat_text": "(BUYER): 10 bags KISAN Coffee at USD 25/bag + 5 cartons Ceylon tea at USD 18/carton. FOB Singapore.\n(SELLER): Confirmed. Net 15.",
+  "messages": [
+    {
+      "from_whom": "(BUYER)",
+      "body": "10 bags KISAN Coffee at USD 25/bag + 5 cartons Ceylon tea at USD 18/carton. FOB Singapore.",
+      "timestamp": 1
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Confirmed. Net 15.",
+      "timestamp": 2
+    }
+  ],
+  "mock_memory_block": "=== Customer History (acme_foods) ===\n- Products: KISAN Coffee 10.0 bags @ USD/bag 25.0\n- Ports: FOB Singapore, Singapore\n- Payment terms: Net 15\n- Packing: standard bags",
+  "expected_facts": {
+    "products": [
+      {
+        "quantity": 10.0,
+        "unit": "bags",
+        "price": 25.0,
+        "price_unit": "USD/bag",
+        "incoterm": "FOB",
+        "port": "Singapore",
+        "name": "KISAN Coffee"
+      },
+      {
+        "name": "Ceylon tea",
+        "quantity": 5.0,
+        "unit": "cartons",
+        "price": 18.0,
+        "price_unit": "USD/carton",
+        "incoterm": "FOB",
+        "port": "Singapore"
+      }
+    ],
+    "ports": [
+      "Singapore"
+    ],
+    "payment_terms": "Net 15",
+    "packing": "",
+    "loading": ""
+  }
+}

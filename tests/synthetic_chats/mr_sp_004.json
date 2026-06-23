@@ -1,0 +1,44 @@
+{
+  "chat_id": "mr_sp_004",
+  "customer_id": "d586d853-694c-42f9-93be-bc7ba5b2110c",
+  "category": "memory_required",
+  "chat_type": "single_product",
+  "chat_text": "(BUYER): Another order of BP102 please, 23 MT. Usual terms apply.\n(SELLER): Noted. Same price and packing as before?\n(BUYER): Yes exactly. CIF Busan.",
+  "messages": [
+    {
+      "from_whom": "(BUYER)",
+      "body": "Another order of BP102 please, 23 MT. Usual terms apply.",
+      "timestamp": 1
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Noted. Same price and packing as before?",
+      "timestamp": 2
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Yes exactly. CIF Busan.",
+      "timestamp": 3
+    }
+  ],
+  "mock_memory_block": "=== Customer History (d586d853-694c-42f9-93be-bc7ba5b2110c) ===\n- Products: BP102 23.0 MT @ USD/MT 1425.0\n- Ports: CIF Busan, Busan\n- Packing: 25kg printed paper bag\n- Loading: 23MT / 40' FCL",
+  "expected_facts": {
+    "products": [
+      {
+        "quantity": 23.0,
+        "unit": "MT",
+        "price": 1425.0,
+        "price_unit": "USD/MT",
+        "incoterm": "CIF",
+        "port": "Busan",
+        "name": "BP102"
+      }
+    ],
+    "ports": [
+      "Busan"
+    ],
+    "payment_terms": "",
+    "packing": "25kg printed paper bag",
+    "loading": "23MT / 40' FCL"
+  }
+}

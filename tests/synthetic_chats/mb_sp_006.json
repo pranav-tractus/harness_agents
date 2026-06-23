@@ -1,0 +1,39 @@
+{
+  "chat_id": "mb_sp_006",
+  "customer_id": "f081da35-3b14-4328-86f6-0f569bc63b43",
+  "category": "memory_boost",
+  "chat_type": "single_product",
+  "chat_text": "(BUYER): 1 IBC GIIOFINE - L - SF (liquid) at USD 2980/MT, CIF Busan.\n(SELLER): Confirmed. COD payment.",
+  "messages": [
+    {
+      "from_whom": "(BUYER)",
+      "body": "1 IBC GIIOFINE - L - SF (liquid) at USD 2980/MT, CIF Busan.",
+      "timestamp": 1
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Confirmed. COD payment.",
+      "timestamp": 2
+    }
+  ],
+  "mock_memory_block": "=== Customer History (f081da35-3b14-4328-86f6-0f569bc63b43) ===\n- Products: GIIOFEED PL-5 2.0 MT @ USD/MT 1420.0, GIIOFINE - L - SF 1.1 MT @ USD/MT 2980.0\n- Ports: CIF Busan, Busan\n- Payment terms: COD\n- Packing: IBC\n- Loading: 1x20 FCL",
+  "expected_facts": {
+    "products": [
+      {
+        "quantity": 1.1,
+        "unit": "MT",
+        "price": 2980.0,
+        "price_unit": "USD/MT",
+        "incoterm": "CIF",
+        "port": "Busan",
+        "name": "GIIOFINE - L - SF"
+      }
+    ],
+    "ports": [
+      "Busan"
+    ],
+    "payment_terms": "COD",
+    "packing": "IBC",
+    "loading": ""
+  }
+}

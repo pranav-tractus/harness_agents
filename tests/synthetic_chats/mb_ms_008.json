@@ -1,0 +1,57 @@
+{
+  "chat_id": "mb_ms_008",
+  "customer_id": "18965853-110b-40a3-9a9c-f6c29582e7b6",
+  "category": "memory_boost",
+  "chat_type": "multiple_shipments",
+  "chat_text": "(BUYER): 3 shipments: 1 MT July + 2 MT August + 1 MT September GIIOFEED PL-5 at USD 1420/MT. CIF Busan.\n(SELLER): All three confirmed.",
+  "messages": [
+    {
+      "from_whom": "(BUYER)",
+      "body": "3 shipments: 1 MT July + 2 MT August + 1 MT September GIIOFEED PL-5 at USD 1420/MT. CIF Busan.",
+      "timestamp": 1
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "All three confirmed.",
+      "timestamp": 2
+    }
+  ],
+  "mock_memory_block": "=== Customer History (18965853-110b-40a3-9a9c-f6c29582e7b6) ===\n- Products: GIIOFEED PL-5 2.0 MT @ USD/MT 1420.0\n- Ports: CIF Busan, Busan\n- Packing: 25kg PP bags\n- Loading: 1x20 FCL",
+  "expected_facts": {
+    "products": [
+      {
+        "quantity": 1.0,
+        "unit": "MT",
+        "price": 1420.0,
+        "price_unit": "USD/MT",
+        "incoterm": "CIF",
+        "port": "Busan",
+        "name": "GIIOFEED PL-5"
+      },
+      {
+        "quantity": 2.0,
+        "unit": "MT",
+        "price": 1420.0,
+        "price_unit": "USD/MT",
+        "incoterm": "CIF",
+        "port": "Busan",
+        "name": "GIIOFEED PL-5"
+      },
+      {
+        "quantity": 1.0,
+        "unit": "MT",
+        "price": 1420.0,
+        "price_unit": "USD/MT",
+        "incoterm": "CIF",
+        "port": "Busan",
+        "name": "GIIOFEED PL-5"
+      }
+    ],
+    "ports": [
+      "Busan"
+    ],
+    "payment_terms": "",
+    "packing": "",
+    "loading": ""
+  }
+}

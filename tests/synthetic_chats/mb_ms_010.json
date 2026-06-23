@@ -1,0 +1,57 @@
+{
+  "chat_id": "mb_ms_010",
+  "customer_id": "12a4f3a7-d506-4d32-ae06-3f76508c6abd",
+  "category": "memory_boost",
+  "chat_type": "multiple_shipments",
+  "chat_text": "(BUYER): 3 × 13MT GIIOFINE-P-S: July + August + September. USD 2850/MT, CIF Busan, 25kg PP bags.\n(SELLER): Confirmed all three. 2x20 FCL each.",
+  "messages": [
+    {
+      "from_whom": "(BUYER)",
+      "body": "3 × 13MT GIIOFINE-P-S: July + August + September. USD 2850/MT, CIF Busan, 25kg PP bags.",
+      "timestamp": 1
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Confirmed all three. 2x20 FCL each.",
+      "timestamp": 2
+    }
+  ],
+  "mock_memory_block": "=== Customer History (12a4f3a7-d506-4d32-ae06-3f76508c6abd) ===\n- Products: GIIOFINE-P-S 13.0 MT @ USD/MT 2850.0\n- Ports: CIF Busan, Busan\n- Packing: 25kg PP bags\n- Loading: 2x20 FCL",
+  "expected_facts": {
+    "products": [
+      {
+        "quantity": 13.0,
+        "unit": "MT",
+        "price": 2850.0,
+        "price_unit": "USD/MT",
+        "incoterm": "CIF",
+        "port": "Busan",
+        "name": "GIIOFINE-P-S"
+      },
+      {
+        "quantity": 13.0,
+        "unit": "MT",
+        "price": 2850.0,
+        "price_unit": "USD/MT",
+        "incoterm": "CIF",
+        "port": "Busan",
+        "name": "GIIOFINE-P-S"
+      },
+      {
+        "quantity": 13.0,
+        "unit": "MT",
+        "price": 2850.0,
+        "price_unit": "USD/MT",
+        "incoterm": "CIF",
+        "port": "Busan",
+        "name": "GIIOFINE-P-S"
+      }
+    ],
+    "ports": [
+      "Busan"
+    ],
+    "payment_terms": "",
+    "packing": "25kg PP bags",
+    "loading": "2x20 FCL"
+  }
+}

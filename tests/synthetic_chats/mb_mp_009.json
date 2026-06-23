@@ -1,0 +1,55 @@
+{
+  "chat_id": "mb_mp_009",
+  "customer_id": "8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f",
+  "category": "memory_boost",
+  "chat_type": "multiple_products",
+  "chat_text": "(BUYER): 10.5 MT + 6.3 MT + 4.2 MT Bergapur, all at USD 3.05/kg. EXW, 25kg bags.\n(SELLER): Confirmed all three lots. 40' FCL.",
+  "messages": [
+    {
+      "from_whom": "(BUYER)",
+      "body": "10.5 MT + 6.3 MT + 4.2 MT Bergapur, all at USD 3.05/kg. EXW, 25kg bags.",
+      "timestamp": 1
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Confirmed all three lots. 40' FCL.",
+      "timestamp": 2
+    }
+  ],
+  "mock_memory_block": "=== Customer History (8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f) ===\n- Products: Bergapur 10.5 MT @ USD/MT 3100.0\n- Packing: 25kg bags\n- Loading: 40' FCL",
+  "expected_facts": {
+    "products": [
+      {
+        "name": "Bergapur",
+        "quantity": 10.5,
+        "unit": "MT",
+        "price": 3.05,
+        "price_unit": "USD/kg",
+        "incoterm": "EXW",
+        "port": ""
+      },
+      {
+        "name": "Bergapur",
+        "quantity": 6.3,
+        "unit": "MT",
+        "price": 3.05,
+        "price_unit": "USD/kg",
+        "incoterm": "EXW",
+        "port": ""
+      },
+      {
+        "name": "Bergapur",
+        "quantity": 4.2,
+        "unit": "MT",
+        "price": 3.05,
+        "price_unit": "USD/kg",
+        "incoterm": "EXW",
+        "port": ""
+      }
+    ],
+    "ports": [],
+    "payment_terms": "",
+    "packing": "25kg bags",
+    "loading": ""
+  }
+}

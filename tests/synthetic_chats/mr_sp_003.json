@@ -1,0 +1,44 @@
+{
+  "chat_id": "mr_sp_003",
+  "customer_id": "f081da35-3b14-4328-86f6-0f569bc63b43",
+  "category": "memory_required",
+  "chat_type": "single_product",
+  "chat_text": "(BUYER): Standard order of GIIOFINE - L - SF please, same terms as last shipment.\n(SELLER): Got it, will book the IBC.\n(BUYER): Payment COD as agreed.",
+  "messages": [
+    {
+      "from_whom": "(BUYER)",
+      "body": "Standard order of GIIOFINE - L - SF please, same terms as last shipment.",
+      "timestamp": 1
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Got it, will book the IBC.",
+      "timestamp": 2
+    },
+    {
+      "from_whom": "(BUYER)",
+      "body": "Payment COD as agreed.",
+      "timestamp": 3
+    }
+  ],
+  "mock_memory_block": "=== Customer History (f081da35-3b14-4328-86f6-0f569bc63b43) ===\n- Products: GIIOFEED PL-5 2.0 MT @ USD/MT 1420.0, GIIOFINE - L - SF 1.1 MT @ USD/MT 2980.0\n- Ports: CIF Busan, Busan\n- Payment terms: COD\n- Packing: IBC\n- Loading: 1x20 FCL",
+  "expected_facts": {
+    "products": [
+      {
+        "quantity": 1.1,
+        "unit": "MT",
+        "price": 2980.0,
+        "price_unit": "USD/MT",
+        "incoterm": "CIF",
+        "port": "Busan",
+        "name": "GIIOFINE - L - SF"
+      }
+    ],
+    "ports": [
+      "Busan"
+    ],
+    "payment_terms": "COD",
+    "packing": "IBC",
+    "loading": ""
+  }
+}
