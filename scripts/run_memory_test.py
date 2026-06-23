@@ -168,11 +168,12 @@ def run_one(chat_file: Path, model_key: str) -> AgentRunResult:
         validation_model_key=None,
         # memory-assisted output is the "final" result
         output_json=memory_facts.model_dump(),
-        raw_llm_output_json=memory_facts.model_dump(),
-        # no-memory output is the "baseline"
+        raw_llm_output_json=baseline_facts.model_dump(),
+        # no-memory output is the "baseline" — maps to both score_raw_llm and score_baseline
+        # so that improvement_rate = fraction of chats where memory helped
         baseline_output_json=baseline_facts.model_dump(),
         score=score_facts(expected, memory_facts),
-        score_raw_llm=score_facts(expected, memory_facts),
+        score_raw_llm=score_facts(expected, baseline_facts),
         score_baseline=score_facts(expected, baseline_facts),
         flow_stage_ms={
             "baseline_extract_ms": round(baseline_ms, 3),
