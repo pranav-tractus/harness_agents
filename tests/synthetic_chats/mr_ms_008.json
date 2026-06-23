@@ -3,11 +3,11 @@
   "customer_id": "acme_foods",
   "category": "memory_required",
   "chat_type": "multiple_shipments",
-  "chat_text": "(BUYER): 10 bags KISAN Coffee now + 10 bags next quarter. Same price as always.\n(SELLER): Confirmed. FOB Singapore, Net 15.",
+  "chat_text": "(BUYER): Usual KISAN Coffee order now + same again next quarter. Same price as always.\n(SELLER): Confirmed. FOB Singapore, Net 15.",
   "messages": [
     {
       "from_whom": "(BUYER)",
-      "body": "10 bags KISAN Coffee now + 10 bags next quarter. Same price as always.",
+      "body": "Usual KISAN Coffee order now + same again next quarter. Same price as always.",
       "timestamp": 1
     },
     {

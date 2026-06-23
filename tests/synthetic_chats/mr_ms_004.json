@@ -3,16 +3,16 @@
   "customer_id": "fc1a5131-1287-4c0b-98c6-40d0d5012d72",
   "category": "memory_required",
   "chat_type": "multiple_shipments",
-  "chat_text": "(BUYER): Two batches of MGL8: 8 MT by November, remaining in January. Usual 25kg stitch paper bag.\n(SELLER): Confirmed. 10 MT total, split as requested.",
+  "chat_text": "(BUYER): Two batches of MGL8: first batch by November, remaining in January. Usual 25kg stitch paper bag.\n(SELLER): Confirmed. Split as requested.",
   "messages": [
     {
       "from_whom": "(BUYER)",
-      "body": "Two batches of MGL8: 8 MT by November, remaining in January. Usual 25kg stitch paper bag.",
+      "body": "Two batches of MGL8: first batch by November, remaining in January. Usual 25kg stitch paper bag.",
       "timestamp": 1
     },
     {
       "from_whom": "(SELLER)",
-      "body": "Confirmed. 10 MT total, split as requested.",
+      "body": "Confirmed. Split as requested.",
       "timestamp": 2
     }
   ],
@@ -21,8 +21,8 @@
     "products": [
       {
         "name": "MGL8",
-        "quantity": 8.0,
-        "unit": "MT",
+        "quantity": null,
+        "unit": null,
         "price": null,
         "price_unit": null,
         "incoterm": null,
@@ -30,8 +30,8 @@
       },
       {
         "name": "MGL8",
-        "quantity": 2.0,
-        "unit": "MT",
+        "quantity": null,
+        "unit": null,
         "price": null,
         "price_unit": null,
         "incoterm": null,

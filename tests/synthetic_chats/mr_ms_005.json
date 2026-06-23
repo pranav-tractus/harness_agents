@@ -3,11 +3,11 @@
   "customer_id": "8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f",
   "category": "memory_required",
   "chat_type": "multiple_shipments",
-  "chat_text": "(BUYER): 10.5 MT March + 6.3 MT late March + 4.2 MT April Bergapur. Standard January price.\n(SELLER): Confirmed all three. EXW, 25kg bags.",
+  "chat_text": "(BUYER): Three Bergapur lots: March, late March, and April. Standard January price.\n(SELLER): Confirmed all three. EXW, 25kg bags.",
   "messages": [
     {
       "from_whom": "(BUYER)",
-      "body": "10.5 MT March + 6.3 MT late March + 4.2 MT April Bergapur. Standard January price.",
+      "body": "Three Bergapur lots: March, late March, and April. Standard January price.",
       "timestamp": 1
     },
     {
@@ -29,7 +29,7 @@
         "name": "Bergapur"
       },
       {
-        "quantity": 6.3,
+        "quantity": 10.5,
         "unit": "MT",
         "price": 3100.0,
         "price_unit": "USD/MT",
@@ -38,7 +38,7 @@
         "name": "Bergapur"
       },
       {
-        "quantity": 4.2,
+        "quantity": 10.5,
         "unit": "MT",
         "price": 3100.0,
         "price_unit": "USD/MT",

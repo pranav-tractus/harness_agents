@@ -3,11 +3,11 @@
   "customer_id": "12a4f3a7-d506-4d32-ae06-3f76508c6abd",
   "category": "memory_required",
   "chat_type": "multiple_products",
-  "chat_text": "(BUYER): 39 MT soya lecithin powder in usual packing plus 2 extra MT, same terms.\n(SELLER): Confirmed. 25kg PP bags, CIF Busan.",
+  "chat_text": "(BUYER): Standard soya lecithin powder quantity in usual packing plus a small extra lot, same terms.\n(SELLER): Confirmed. 25kg PP bags, CIF Busan.",
   "messages": [
     {
       "from_whom": "(BUYER)",
-      "body": "39 MT soya lecithin powder in usual packing plus 2 extra MT, same terms.",
+      "body": "Standard soya lecithin powder quantity in usual packing plus a small extra lot, same terms.",
       "timestamp": 1
     },
     {
@@ -20,7 +20,7 @@
   "expected_facts": {
     "products": [
       {
-        "quantity": 39.0,
+        "quantity": 13.0,
         "unit": "MT",
         "price": 2850.0,
         "price_unit": "USD/MT",

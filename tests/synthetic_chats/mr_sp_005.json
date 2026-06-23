@@ -3,11 +3,11 @@
   "customer_id": "8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f",
   "category": "memory_required",
   "chat_type": "single_product",
-  "chat_text": "(BUYER): 10.5 MT Bergapur for March dispatch, same pricing as January.\n(SELLER): Confirmed for March, EXW.\n(BUYER): Standard packing, 25kg bags.",
+  "chat_text": "(BUYER): Usual quantity of Bergapur for March dispatch, same pricing as January.\n(SELLER): Confirmed for March, EXW.\n(BUYER): Standard packing, 25kg bags.",
   "messages": [
     {
       "from_whom": "(BUYER)",
-      "body": "10.5 MT Bergapur for March dispatch, same pricing as January.",
+      "body": "Usual quantity of Bergapur for March dispatch, same pricing as January.",
       "timestamp": 1
     },
     {

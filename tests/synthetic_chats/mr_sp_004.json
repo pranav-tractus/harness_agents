@@ -3,11 +3,11 @@
   "customer_id": "d586d853-694c-42f9-93be-bc7ba5b2110c",
   "category": "memory_required",
   "chat_type": "single_product",
-  "chat_text": "(BUYER): Another order of BP102 please, 23 MT. Usual terms apply.\n(SELLER): Noted. Same price and packing as before?\n(BUYER): Yes exactly. CIF Busan.",
+  "chat_text": "(BUYER): Another order of BP102 please, usual quantity. Usual terms apply.\n(SELLER): Noted. Same price and packing as before?\n(BUYER): Yes exactly. CIF Busan.",
   "messages": [
     {
       "from_whom": "(BUYER)",
-      "body": "Another order of BP102 please, 23 MT. Usual terms apply.",
+      "body": "Another order of BP102 please, usual quantity. Usual terms apply.",
       "timestamp": 1
     },
     {

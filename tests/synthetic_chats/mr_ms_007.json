@@ -3,11 +3,11 @@
   "customer_id": "d586d853-694c-42f9-93be-bc7ba5b2110c",
   "category": "memory_required",
   "chat_type": "multiple_shipments",
-  "chat_text": "(BUYER): 23 MT BP102 this month + additional 23 MT next month. Same everything.\n(SELLER): Both confirmed. CIF Busan, standard packing.",
+  "chat_text": "(BUYER): Usual BP102 quantity this month + same again next month. Same everything.\n(SELLER): Both confirmed. CIF Busan, standard packing.",
   "messages": [
     {
       "from_whom": "(BUYER)",
-      "body": "23 MT BP102 this month + additional 23 MT next month. Same everything.",
+      "body": "Usual BP102 quantity this month + same again next month. Same everything.",
       "timestamp": 1
     },
     {

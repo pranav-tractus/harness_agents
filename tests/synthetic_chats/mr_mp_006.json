@@ -3,11 +3,11 @@
   "customer_id": "acme_foods",
   "category": "memory_required",
   "chat_type": "multiple_products",
-  "chat_text": "(BUYER): The usual KISAN Coffee order. Also add 5 cartons of Arabica at same per-bag price.\n(SELLER): Done, FOB Singapore. Net 15 payment.",
+  "chat_text": "(BUYER): The usual KISAN Coffee order. Also add some Arabica at same per-bag price.\n(SELLER): Done, FOB Singapore. Net 15 payment.",
   "messages": [
     {
       "from_whom": "(BUYER)",
-      "body": "The usual KISAN Coffee order. Also add 5 cartons of Arabica at same per-bag price.",
+      "body": "The usual KISAN Coffee order. Also add some Arabica at same per-bag price.",
       "timestamp": 1
     },
     {
@@ -30,8 +30,8 @@
       },
       {
         "name": "Arabica",
-        "quantity": 5.0,
-        "unit": "cartons",
+        "quantity": null,
+        "unit": null,
         "price": 25.0,
         "price_unit": "USD/bag",
         "incoterm": "FOB",

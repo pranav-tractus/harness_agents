@@ -3,11 +3,11 @@
   "customer_id": "18965853-110b-40a3-9a9c-f6c29582e7b6",
   "category": "memory_required",
   "chat_type": "multiple_products",
-  "chat_text": "(BUYER): Need 2 MT PL-5 at the usual rate, plus a 500kg sample at same price.\n(SELLER): Confirmed. CIF Busan for both.",
+  "chat_text": "(BUYER): Usual PL-5 quantity at the usual rate, plus a small sample at same price.\n(SELLER): Confirmed. CIF Busan for both.",
   "messages": [
     {
       "from_whom": "(BUYER)",
-      "body": "Need 2 MT PL-5 at the usual rate, plus a 500kg sample at same price.",
+      "body": "Usual PL-5 quantity at the usual rate, plus a small sample at same price.",
       "timestamp": 1
     },
     {
@@ -21,15 +21,6 @@
     "products": [
       {
         "quantity": 2.0,
-        "unit": "MT",
-        "price": 1420.0,
-        "price_unit": "USD/MT",
-        "incoterm": "CIF",
-        "port": "Busan",
-        "name": "GIIOFEED PL-5"
-      },
-      {
-        "quantity": 0.5,
         "unit": "MT",
         "price": 1420.0,
         "price_unit": "USD/MT",

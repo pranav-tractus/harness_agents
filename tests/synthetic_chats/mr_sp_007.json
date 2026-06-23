@@ -3,11 +3,11 @@
   "customer_id": "12a4f3a7-d506-4d32-ae06-3f76508c6abd",
   "category": "memory_required",
   "chat_type": "single_product",
-  "chat_text": "(BUYER): Another 13MT of GIIOFINE-P-S, usual port and price.\n(SELLER): Confirmed. 25kg PP bags.\n(BUYER): Great, same FCL arrangement.",
+  "chat_text": "(BUYER): Another standard order of GIIOFINE-P-S, usual port and price.\n(SELLER): Confirmed. 25kg PP bags.\n(BUYER): Great, same FCL arrangement.",
   "messages": [
     {
       "from_whom": "(BUYER)",
-      "body": "Another 13MT of GIIOFINE-P-S, usual port and price.",
+      "body": "Another standard order of GIIOFINE-P-S, usual port and price.",
       "timestamp": 1
     },
     {

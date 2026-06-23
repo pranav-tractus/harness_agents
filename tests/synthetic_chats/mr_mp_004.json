@@ -3,11 +3,11 @@
   "customer_id": "d586d853-694c-42f9-93be-bc7ba5b2110c",
   "category": "memory_required",
   "chat_type": "multiple_products",
-  "chat_text": "(BUYER): 20 MT BP102 for October. Same price as before. Add 3 MT BP102 trial at same rate.\n(SELLER): Confirmed all. Same destination and packing.",
+  "chat_text": "(BUYER): Usual BP102 quantity for October. Same price as before. Add a small trial lot at same rate.\n(SELLER): Confirmed all. Same destination and packing.",
   "messages": [
     {
       "from_whom": "(BUYER)",
-      "body": "20 MT BP102 for October. Same price as before. Add 3 MT BP102 trial at same rate.",
+      "body": "Usual BP102 quantity for October. Same price as before. Add a small trial lot at same rate.",
       "timestamp": 1
     },
     {
@@ -20,16 +20,7 @@
   "expected_facts": {
     "products": [
       {
-        "quantity": 20.0,
-        "unit": "MT",
-        "price": 1425.0,
-        "price_unit": "USD/MT",
-        "incoterm": "CIF",
-        "port": "Busan",
-        "name": "BP102"
-      },
-      {
-        "quantity": 3.0,
+        "quantity": 23.0,
         "unit": "MT",
         "price": 1425.0,
         "price_unit": "USD/MT",

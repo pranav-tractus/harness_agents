@@ -221,7 +221,7 @@ CHAT_SPECS: list[dict] = [
         "chat_id": "mr_sp_004", "customer_id": C4,
         "category": "memory_required", "chat_type": "single_product",
         "messages": [
-            {"from_whom": "(BUYER)", "body": "Another order of BP102 please, 23 MT. Usual terms apply."},
+            {"from_whom": "(BUYER)", "body": "Another order of BP102 please, usual quantity. Usual terms apply."},
             {"from_whom": "(SELLER)", "body": "Noted. Same price and packing as before?"},
             {"from_whom": "(BUYER)", "body": "Yes exactly. CIF Busan."},
         ],
@@ -236,7 +236,7 @@ CHAT_SPECS: list[dict] = [
         "chat_id": "mr_sp_005", "customer_id": C5,
         "category": "memory_required", "chat_type": "single_product",
         "messages": [
-            {"from_whom": "(BUYER)", "body": "10.5 MT Bergapur for March dispatch, same pricing as January."},
+            {"from_whom": "(BUYER)", "body": "Usual quantity of Bergapur for March dispatch, same pricing as January."},
             {"from_whom": "(SELLER)", "body": "Confirmed for March, EXW."},
             {"from_whom": "(BUYER)", "body": "Standard packing, 25kg bags."},
         ],
@@ -265,7 +265,7 @@ CHAT_SPECS: list[dict] = [
         "chat_id": "mr_sp_007", "customer_id": C3,
         "category": "memory_required", "chat_type": "single_product",
         "messages": [
-            {"from_whom": "(BUYER)", "body": "Another 13MT of GIIOFINE-P-S, usual port and price."},
+            {"from_whom": "(BUYER)", "body": "Another standard order of GIIOFINE-P-S, usual port and price."},
             {"from_whom": "(SELLER)", "body": "Confirmed. 25kg PP bags."},
             {"from_whom": "(BUYER)", "body": "Great, same FCL arrangement."},
         ],
@@ -280,11 +280,11 @@ CHAT_SPECS: list[dict] = [
         "chat_id": "mr_sp_008", "customer_id": C1,
         "category": "memory_required", "chat_type": "single_product",
         "messages": [
-            {"from_whom": "(BUYER)", "body": "Need 1 MT of PL-5 this time, same price per MT as usual."},
+            {"from_whom": "(BUYER)", "body": "Usual quantity of PL-5 this time, same price as usual."},
             {"from_whom": "(SELLER)", "body": "Done. Destination Busan, CIF."},
         ],
         "expected_facts": _facts(
-            products=[_prod(C1, "GIIOFEED PL-5", quantity=1.0)],
+            products=[_prod(C1, "GIIOFEED PL-5")],
             ports=["Busan"],
         ),
     },
@@ -292,11 +292,11 @@ CHAT_SPECS: list[dict] = [
         "chat_id": "mr_sp_009", "customer_id": C4,
         "category": "memory_required", "chat_type": "single_product",
         "messages": [
-            {"from_whom": "(BUYER)", "body": "20 MT BP102, CIF Busan, usual packing and loading please."},
+            {"from_whom": "(BUYER)", "body": "Standard BP102 quantity, CIF Busan, usual packing and loading please."},
             {"from_whom": "(SELLER)", "body": "Confirmed at standard rate."},
         ],
         "expected_facts": _facts(
-            products=[_prod(C4, "BP102", quantity=20.0)],
+            products=[_prod(C4, "BP102")],
             ports=["Busan"],
             packing="25kg printed paper bag",
             loading="23MT / 40' FCL",
@@ -337,13 +337,12 @@ CHAT_SPECS: list[dict] = [
         "chat_id": "mr_mp_002", "customer_id": C1,
         "category": "memory_required", "chat_type": "multiple_products",
         "messages": [
-            {"from_whom": "(BUYER)", "body": "Need 2 MT PL-5 at the usual rate, plus a 500kg sample at same price."},
+            {"from_whom": "(BUYER)", "body": "Usual PL-5 quantity at the usual rate, plus a small sample at same price."},
             {"from_whom": "(SELLER)", "body": "Confirmed. CIF Busan for both."},
         ],
         "expected_facts": _facts(
             products=[
                 _prod(C1, "GIIOFEED PL-5"),
-                _prod(C1, "GIIOFEED PL-5", quantity=0.5, unit="MT"),
             ],
             ports=["Busan"],
         ),
@@ -366,13 +365,12 @@ CHAT_SPECS: list[dict] = [
         "chat_id": "mr_mp_004", "customer_id": C4,
         "category": "memory_required", "chat_type": "multiple_products",
         "messages": [
-            {"from_whom": "(BUYER)", "body": "20 MT BP102 for October. Same price as before. Add 3 MT BP102 trial at same rate."},
+            {"from_whom": "(BUYER)", "body": "Usual BP102 quantity for October. Same price as before. Add a small trial lot at same rate."},
             {"from_whom": "(SELLER)", "body": "Confirmed all. Same destination and packing."},
         ],
         "expected_facts": _facts(
             products=[
-                _prod(C4, "BP102", quantity=20.0),
-                _prod(C4, "BP102", quantity=3.0),
+                _prod(C4, "BP102"),
             ],
             ports=["Busan"],
             packing="25kg printed paper bag",
@@ -382,13 +380,13 @@ CHAT_SPECS: list[dict] = [
         "chat_id": "mr_mp_005", "customer_id": C5,
         "category": "memory_required", "chat_type": "multiple_products",
         "messages": [
-            {"from_whom": "(BUYER)", "body": "10.5 MT Bergapur + 6.3 MT additional Bergapur, January pricing."},
+            {"from_whom": "(BUYER)", "body": "Usual Bergapur plus additional Bergapur, January pricing."},
             {"from_whom": "(SELLER)", "body": "Confirmed. EXW, 25kg bags."},
         ],
         "expected_facts": _facts(
             products=[
                 _prod(C5, "Bergapur"),
-                _prod(C5, "Bergapur", quantity=6.3),
+                _prod(C5, "Bergapur"),
             ],
             ports=[],
             packing="25kg bags",
@@ -398,13 +396,13 @@ CHAT_SPECS: list[dict] = [
         "chat_id": "mr_mp_006", "customer_id": C6,
         "category": "memory_required", "chat_type": "multiple_products",
         "messages": [
-            {"from_whom": "(BUYER)", "body": "The usual KISAN Coffee order. Also add 5 cartons of Arabica at same per-bag price."},
+            {"from_whom": "(BUYER)", "body": "The usual KISAN Coffee order. Also add some Arabica at same per-bag price."},
             {"from_whom": "(SELLER)", "body": "Done, FOB Singapore. Net 15 payment."},
         ],
         "expected_facts": _facts(
             products=[
                 _prod(C6, "KISAN Coffee"),
-                {"name": "Arabica", "quantity": 5.0, "unit": "cartons",
+                {"name": "Arabica", "quantity": None, "unit": None,
                  "price": 25.0, "price_unit": "USD/bag", "incoterm": "FOB", "port": "Singapore"},
             ],
             ports=["Singapore"],
@@ -428,12 +426,12 @@ CHAT_SPECS: list[dict] = [
         "chat_id": "mr_mp_008", "customer_id": C3,
         "category": "memory_required", "chat_type": "multiple_products",
         "messages": [
-            {"from_whom": "(BUYER)", "body": "39 MT soya lecithin powder in usual packing plus 2 extra MT, same terms."},
+            {"from_whom": "(BUYER)", "body": "Standard soya lecithin powder quantity in usual packing plus a small extra lot, same terms."},
             {"from_whom": "(SELLER)", "body": "Confirmed. 25kg PP bags, CIF Busan."},
         ],
         "expected_facts": _facts(
             products=[
-                _prod(C3, "GIIOFINE-P-S", quantity=39.0),
+                _prod(C3, "GIIOFINE-P-S"),
                 _prod(C3, "GIIOFINE-P-S", quantity=2.0),
             ],
             ports=["Busan"],
@@ -444,13 +442,14 @@ CHAT_SPECS: list[dict] = [
         "chat_id": "mr_mp_009", "customer_id": C4,
         "category": "memory_required", "chat_type": "multiple_products",
         "messages": [
-            {"from_whom": "(BUYER)", "body": "Standard BP102 order. Also 2 MT BP102 trial sample, standard terms."},
+            {"from_whom": "(BUYER)", "body": "Standard BP102 order. Also a small BP102 trial sample, standard terms."},
             {"from_whom": "(SELLER)", "body": "All confirmed. Packing and loading as usual."},
         ],
         "expected_facts": _facts(
             products=[
                 _prod(C4, "BP102"),
-                _prod(C4, "BP102", quantity=2.0),
+                {"name": "BP102", "quantity": None, "unit": None,
+                 "price": 1425.0, "price_unit": "USD/MT", "incoterm": "CIF", "port": "Busan"},
             ],
             ports=["Busan"],
             packing="25kg printed paper bag",
@@ -461,7 +460,7 @@ CHAT_SPECS: list[dict] = [
         "chat_id": "mr_mp_010", "customer_id": C5,
         "category": "memory_required", "chat_type": "multiple_products",
         "messages": [
-            {"from_whom": "(BUYER)", "body": "March and April Bergapur splits, standard pricing. 10.5 MT each."},
+            {"from_whom": "(BUYER)", "body": "March and April Bergapur splits, standard pricing and quantity."},
             {"from_whom": "(SELLER)", "body": "Confirmed. EXW, same packing."},
         ],
         "expected_facts": _facts(
@@ -495,7 +494,7 @@ CHAT_SPECS: list[dict] = [
         "chat_id": "mr_ms_002", "customer_id": C1,
         "category": "memory_required", "chat_type": "multiple_shipments",
         "messages": [
-            {"from_whom": "(BUYER)", "body": "2 MT July + 2 MT August PL-5. Same price per MT as always."},
+            {"from_whom": "(BUYER)", "body": "Usual PL-5 quantity in July and August. Same price as always."},
             {"from_whom": "(SELLER)", "body": "CIF Busan confirmed for both."},
         ],
         "expected_facts": _facts(
@@ -526,14 +525,14 @@ CHAT_SPECS: list[dict] = [
         "chat_id": "mr_ms_004", "customer_id": "fc1a5131-1287-4c0b-98c6-40d0d5012d72",
         "category": "memory_required", "chat_type": "multiple_shipments",
         "messages": [
-            {"from_whom": "(BUYER)", "body": "Two batches of MGL8: 8 MT by November, remaining in January. Usual 25kg stitch paper bag."},
-            {"from_whom": "(SELLER)", "body": "Confirmed. 10 MT total, split as requested."},
+            {"from_whom": "(BUYER)", "body": "Two batches of MGL8: first batch by November, remaining in January. Usual 25kg stitch paper bag."},
+            {"from_whom": "(SELLER)", "body": "Confirmed. Split as requested."},
         ],
         "expected_facts": _facts(
             products=[
-                {"name": "MGL8", "quantity": 8.0, "unit": "MT",
+                {"name": "MGL8", "quantity": None, "unit": None,
                  "price": None, "price_unit": None, "incoterm": None, "port": None},
-                {"name": "MGL8", "quantity": 2.0, "unit": "MT",
+                {"name": "MGL8", "quantity": None, "unit": None,
                  "price": None, "price_unit": None, "incoterm": None, "port": None},
             ],
             ports=[],
@@ -544,14 +543,14 @@ CHAT_SPECS: list[dict] = [
         "chat_id": "mr_ms_005", "customer_id": C5,
         "category": "memory_required", "chat_type": "multiple_shipments",
         "messages": [
-            {"from_whom": "(BUYER)", "body": "10.5 MT March + 6.3 MT late March + 4.2 MT April Bergapur. Standard January price."},
+            {"from_whom": "(BUYER)", "body": "Three Bergapur lots: March, late March, and April. Standard January price."},
             {"from_whom": "(SELLER)", "body": "Confirmed all three. EXW, 25kg bags."},
         ],
         "expected_facts": _facts(
             products=[
                 _prod(C5, "Bergapur"),
-                _prod(C5, "Bergapur", quantity=6.3),
-                _prod(C5, "Bergapur", quantity=4.2),
+                _prod(C5, "Bergapur"),
+                _prod(C5, "Bergapur"),
             ],
             ports=[],
             packing="25kg bags",
@@ -578,7 +577,7 @@ CHAT_SPECS: list[dict] = [
         "chat_id": "mr_ms_007", "customer_id": C4,
         "category": "memory_required", "chat_type": "multiple_shipments",
         "messages": [
-            {"from_whom": "(BUYER)", "body": "23 MT BP102 this month + additional 23 MT next month. Same everything."},
+            {"from_whom": "(BUYER)", "body": "Usual BP102 quantity this month + same again next month. Same everything."},
             {"from_whom": "(SELLER)", "body": "Both confirmed. CIF Busan, standard packing."},
         ],
         "expected_facts": _facts(
@@ -595,7 +594,7 @@ CHAT_SPECS: list[dict] = [
         "chat_id": "mr_ms_008", "customer_id": C6,
         "category": "memory_required", "chat_type": "multiple_shipments",
         "messages": [
-            {"from_whom": "(BUYER)", "body": "10 bags KISAN Coffee now + 10 bags next quarter. Same price as always."},
+            {"from_whom": "(BUYER)", "body": "Usual KISAN Coffee order now + same again next quarter. Same price as always."},
             {"from_whom": "(SELLER)", "body": "Confirmed. FOB Singapore, Net 15."},
         ],
         "expected_facts": _facts(
@@ -611,13 +610,13 @@ CHAT_SPECS: list[dict] = [
         "chat_id": "mr_ms_009", "customer_id": C1,
         "category": "memory_required", "chat_type": "multiple_shipments",
         "messages": [
-            {"from_whom": "(BUYER)", "body": "First 1 MT July, then 1 MT August PL-5. Standard terms and port."},
+            {"from_whom": "(BUYER)", "body": "First shipment July, then second shipment August PL-5. Standard terms and port."},
             {"from_whom": "(SELLER)", "body": "Confirmed at usual rate, CIF Busan."},
         ],
         "expected_facts": _facts(
             products=[
-                _prod(C1, "GIIOFEED PL-5", quantity=1.0),
-                _prod(C1, "GIIOFEED PL-5", quantity=1.0),
+                _prod(C1, "GIIOFEED PL-5"),
+                _prod(C1, "GIIOFEED PL-5"),
             ],
             ports=["Busan"],
         ),
@@ -712,7 +711,7 @@ CHAT_SPECS: list[dict] = [
         "chat_id": "mb_sp_006", "customer_id": C2,
         "category": "memory_boost", "chat_type": "single_product",
         "messages": [
-            {"from_whom": "(BUYER)", "body": "1 IBC GIIOFINE - L - SF (liquid) at USD 2980/MT, CIF Busan."},
+            {"from_whom": "(BUYER)", "body": "1.1 MT (1 IBC) GIIOFINE - L - SF (liquid) at USD 2980/MT, CIF Busan."},
             {"from_whom": "(SELLER)", "body": "Confirmed. COD payment."},
         ],
         "expected_facts": _facts(
@@ -780,7 +779,7 @@ CHAT_SPECS: list[dict] = [
         "chat_id": "mb_mp_001", "customer_id": C2,
         "category": "memory_boost", "chat_type": "multiple_products",
         "messages": [
-            {"from_whom": "(BUYER)", "body": "2 MT GIIOFEED PL-5 at USD 1420/MT + 1 IBC GIIOFINE - L - SF at USD 2980/MT. CIF Busan."},
+            {"from_whom": "(BUYER)", "body": "2 MT GIIOFEED PL-5 at USD 1420/MT + 1.1 MT GIIOFINE - L - SF (1 IBC) at USD 2980/MT. CIF Busan."},
             {"from_whom": "(SELLER)", "body": "Confirmed both. COD."},
         ],
         "expected_facts": _facts(
@@ -861,7 +860,7 @@ CHAT_SPECS: list[dict] = [
         "chat_id": "mb_mp_006", "customer_id": C1,
         "category": "memory_boost", "chat_type": "multiple_products",
         "messages": [
-            {"from_whom": "(BUYER)", "body": "2 MT GIIOFEED PL-5 at USD 1420/MT + 500kg sample at USD 1500/MT. CIF Busan."},
+            {"from_whom": "(BUYER)", "body": "2 MT GIIOFEED PL-5 at USD 1420/MT + 0.5 MT (500kg) sample at USD 1500/MT. CIF Busan."},
             {"from_whom": "(SELLER)", "body": "Confirmed."},
         ],
         "expected_facts": _facts(

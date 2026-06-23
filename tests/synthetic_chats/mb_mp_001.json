@@ -3,11 +3,11 @@
   "customer_id": "f081da35-3b14-4328-86f6-0f569bc63b43",
   "category": "memory_boost",
   "chat_type": "multiple_products",
-  "chat_text": "(BUYER): 2 MT GIIOFEED PL-5 at USD 1420/MT + 1 IBC GIIOFINE - L - SF at USD 2980/MT. CIF Busan.\n(SELLER): Confirmed both. COD.",
+  "chat_text": "(BUYER): 2 MT GIIOFEED PL-5 at USD 1420/MT + 1.1 MT GIIOFINE - L - SF (1 IBC) at USD 2980/MT. CIF Busan.\n(SELLER): Confirmed both. COD.",
   "messages": [
     {
       "from_whom": "(BUYER)",
-      "body": "2 MT GIIOFEED PL-5 at USD 1420/MT + 1 IBC GIIOFINE - L - SF at USD 2980/MT. CIF Busan.",
+      "body": "2 MT GIIOFEED PL-5 at USD 1420/MT + 1.1 MT GIIOFINE - L - SF (1 IBC) at USD 2980/MT. CIF Busan.",
       "timestamp": 1
     },
     {
