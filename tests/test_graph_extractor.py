@@ -33,13 +33,38 @@ def test_extract_entities_calls_llm(monkeypatch):
         loading="",
     )
     monkeypatch.setattr("graph.extractor.call_llm", lambda *a, **kw: fake_facts)
-    result = extract_entities(SAMPLE_CHAT, model_key="claude-sonnet-4-6")
+    result = extract_entities(SAMPLE_CHAT, model_key="sonnet-4-6")
     assert result.products[0].name == "Rice"
     assert result.payment_terms == "100% Advance"
 
 
 def test_extract_entities_returns_empty_on_no_data(monkeypatch):
     monkeypatch.setattr("graph.extractor.call_llm", lambda *a, **kw: ExtractedFacts())
-    result = extract_entities("Just a greeting, no contract data.", model_key="claude-sonnet-4-6")
+    result = extract_entities("Just a greeting, no contract data.", model_key="sonnet-4-6")
     assert result.products == []
     assert result.payment_terms == ""
+
+
+def test_extract_entities_injects_memory_block(monkeypatch):
+    captured_prompt = {}
+
+    def fake_call_llm(prompt, schema, model_key):
+        captured_prompt["prompt"] = prompt
+        return ExtractedFacts()
+
+    monkeypatch.setattr("graph.extractor.call_llm", fake_call_llm)
+    block = "=== Customer History (acme_foods) ===\n- Products: KNM Coffee 10 MT @ USD/bag 25"
+    extract_entities("Hi, need coffee.", memory_block=block)
+    assert block in captured_prompt["prompt"]
+
+
+def test_extract_entities_no_memory_block_omits_section(monkeypatch):
+    captured_prompt = {}
+
+    def fake_call_llm(prompt, schema, model_key):
+        captured_prompt["prompt"] = prompt
+        return ExtractedFacts()
+
+    monkeypatch.setattr("graph.extractor.call_llm", fake_call_llm)
+    extract_entities("Hi, need coffee.")
+    assert "Customer History" not in captured_prompt["prompt"]

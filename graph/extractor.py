@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 from typing import Optional
 from pydantic import BaseModel, Field
 from core.llm_client import call_llm
 
 _EXTRACTION_PROMPT = """\
 You are an expert at extracting structured facts from commodity trading chat messages.
-
+{memory_section}
 Extract the entities below from the chat. Return ONLY agreed/confirmed values.
 Return empty strings or empty lists when a field is not confirmed in the chat.
 
@@ -46,6 +48,14 @@ class ExtractedFacts(BaseModel):
     )
 
 
-def extract_entities(chat_text: str, model_key: str = "claude-sonnet-4-6") -> ExtractedFacts:
-    prompt = _EXTRACTION_PROMPT.format(chat_text=chat_text)
+def extract_entities(
+    chat_text: str,
+    model_key: str = "openai:5.5",
+    memory_block: str | None = None,
+) -> ExtractedFacts:
+    memory_section = f"\n{memory_block}\n" if memory_block else ""
+    prompt = _EXTRACTION_PROMPT.format(
+        memory_section=memory_section,
+        chat_text=chat_text,
+    )
     return call_llm(prompt, ExtractedFacts, model_key)
