@@ -66,9 +66,12 @@ def _score_facts(expected: dict, actual: ExtractedFacts) -> float:
     total = 0
     matched = 0
 
-    # Products
+    # Products (consumed-match: each actual product can only be matched once)
+    remaining_products = list(actual.products)
     for ep in expected.get("products", []):
-        ap = _find_best_product_match(ep, actual.products)
+        ap = _find_best_product_match(ep, remaining_products)
+        if ap is not None:
+            remaining_products.remove(ap)
         m, t = _score_product(ep, ap)
         matched += m
         total += t
@@ -164,7 +167,7 @@ def _print_delta_report() -> Any:
 
 @pytest.mark.memory_eval
 @pytest.mark.parametrize("chat_file", _ALL_CHAT_FILES, ids=lambda p: p.stem)
-def test_memory_extraction_delta(chat_file: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_memory_extraction_delta(chat_file: Path) -> None:
     """For each synthetic chat, run extraction twice and record accuracy delta."""
     data = json.loads(chat_file.read_text())
     chat_text: str = data["chat_text"]

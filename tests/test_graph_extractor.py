@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 import pytest
 from unittest.mock import patch, MagicMock
 from graph.extractor import ExtractedFacts, ExtractedProduct, extract_entities
 
-SAMPLE_CHAT = """(TEAM2): Need 10 MT KNM Coffee, CIF Busan, USD 500/MT.
+SAMPLE_CHAT = """(TEAM2): Need 10 MT KISAN Coffee, CIF Busan, USD 500/MT.
 (TEAM1): Confirmed. Packing: 25kg PP bags. Loading: 1x20 FCL.
 (TEAM2): Payment: Net 30.
 (TEAM1): Done."""
@@ -10,7 +12,7 @@ SAMPLE_CHAT = """(TEAM2): Need 10 MT KNM Coffee, CIF Busan, USD 500/MT.
 
 def test_extracted_facts_model():
     facts = ExtractedFacts(
-        products=[ExtractedProduct(name="KNM Coffee", quantity=10.0, unit="MT",
+        products=[ExtractedProduct(name="KISAN Coffee", quantity=10.0, unit="MT",
                                    price=500.0, price_unit="USD/MT",
                                    incoterm="CIF", port="Busan")],
         ports=["Busan"],
@@ -18,7 +20,7 @@ def test_extracted_facts_model():
         packing="25kg PP bags",
         loading="1x20 FCL",
     )
-    assert facts.products[0].name == "KNM Coffee"
+    assert facts.products[0].name == "KISAN Coffee"
     assert facts.payment_terms == "Net 30"
 
 
@@ -53,7 +55,7 @@ def test_extract_entities_injects_memory_block(monkeypatch):
         return ExtractedFacts()
 
     monkeypatch.setattr("graph.extractor.call_llm", fake_call_llm)
-    block = "=== Customer History (acme_foods) ===\n- Products: KNM Coffee 10 MT @ USD/bag 25"
+    block = "=== Customer History (acme_foods) ===\n- Products: KISAN Coffee 10 MT @ USD/bag 25"
     extract_entities("Hi, need coffee.", memory_block=block)
     assert block in captured_prompt["prompt"]
 
