@@ -260,37 +260,34 @@ def main() -> None:
 
     records: list[AgentRunResult] = []
     errors: list[tuple[Path, Exception]] = []
+    completed = 0
 
-    # Progress tracking for threaded output
-    lock_print = __import__("threading").Lock()
-    completed = [0]
-
-    def _run_and_record(chat_file: Path) -> AgentRunResult | None:
+    # Workers only do LLM calls — all file I/O and list mutations stay on the main thread
+    def _run_chat(chat_file: Path) -> AgentRunResult | Exception:
         try:
-            result = run_one(chat_file, args.model_key)
-            artifacts.append_record(run_dir, result)
-            with lock_print:
-                completed[0] += 1
+            return run_one(chat_file, args.model_key)
+        except Exception as exc:
+            return exc
+
+    with ThreadPoolExecutor(max_workers=args.workers) as pool:
+        futures = {pool.submit(_run_chat, f): f for f in selected}
+        for future in as_completed(futures):
+            chat_file = futures[future]
+            completed += 1
+            result = future.result()
+            if isinstance(result, Exception):
+                print(f"  [{completed:3d}/{len(selected)}] {chat_file.stem:<20} ERROR: {result}")
+                errors.append((chat_file, result))
+            else:
+                # File write and list append both happen on the main thread — no races
+                artifacts.append_record(run_dir, result)
+                records.append(result)
                 b = result.score_baseline.field_match_rate() or 0.0
                 m = result.score.field_match_rate() or 0.0
                 print(
-                    f"  [{completed[0]:3d}/{len(selected)}] {chat_file.stem:<20} "
+                    f"  [{completed:3d}/{len(selected)}] {chat_file.stem:<20} "
                     f"baseline={b:.2f}  memory={m:.2f}  delta={m - b:+.2f}"
                 )
-            return result
-        except Exception as exc:
-            with lock_print:
-                completed[0] += 1
-                print(f"  [{completed[0]:3d}/{len(selected)}] {chat_file.stem:<20} ERROR: {exc}")
-            errors.append((chat_file, exc))
-            return None
-
-    with ThreadPoolExecutor(max_workers=args.workers) as pool:
-        futures = {pool.submit(_run_and_record, f): f for f in selected}
-        for future in as_completed(futures):
-            result = future.result()
-            if result is not None:
-                records.append(result)
 
     # Sort records to match file order for deterministic reports
     order = {str(f): i for i, f in enumerate(selected)}
