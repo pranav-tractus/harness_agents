@@ -37,10 +37,12 @@ ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 ANTHROPIC_DIRECT_MODELS = {
     "sonnet-4-5": "claude-sonnet-4-5-20250929",
     "sonnet-4-6": "claude-sonnet-4-6",
+    "sonnet-5": "claude-sonnet-5",
     "opus-4-5": "claude-opus-4-5-20251101",
     "opus-4-6": "claude-opus-4-6",
     "opus-4-7": "claude-opus-4-7",
     "opus-4-8": "claude-opus-4-8",
+    "fable-5": "claude-fable-5",
 }
 
 GEMINI_MODELS = {
@@ -176,12 +178,16 @@ def get_gemini_response(
         )
         response = gemini_api.chat.completions.create(
             model=api_model,
-            response_model=SOExtractContractList if not is_update else SOUpdateContractList,
+            response_model=SOExtractContractList
+            if not is_update
+            else SOUpdateContractList,
             messages=messages,
         )
         return response
     except Exception as e:
-        logger.exception("get_gemini_response::3:: Error during Gemini processing %s", e)
+        logger.exception(
+            "get_gemini_response::3:: Error during Gemini processing %s", e
+        )
         raise ValueError(e) from e
 
 
@@ -196,6 +202,7 @@ def _get_anthropic_client():
         raise ValueError("ANTHROPIC_API_KEY is not set")
     import anthropic as anthropic_sdk
     import instructor
+
     return instructor.from_anthropic(anthropic_sdk.Anthropic(api_key=ANTHROPIC_API_KEY))
 
 
