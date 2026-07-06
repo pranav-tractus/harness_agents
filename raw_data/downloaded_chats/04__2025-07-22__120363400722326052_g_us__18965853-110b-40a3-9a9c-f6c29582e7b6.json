@@ -28,22 +28,7 @@
         "device_id": 30,
         "chat_name": "BB",
         "text": {
-          "body": "These are the key terms of the trade you have just negotiated \n\n\n\nItems :\nProduct 1:\nDescription : *GIIOFEED PL-5*\nQuantity : *2*\nQuantity Unit : *MT*\nUnit Price : *1420*\nPricing Unit : *USD/MT*\nShip Term : *CIF*\nPacking : *Unknown*\nLoading : *Unknown*\nTotal : *2840.0*\nPo Date : *2025-07-18*\nPo Ref No : *GIIOFEED PL-5-2025-5*\n\n\nSeller : *Beauxbatons Agricultural Solutions*\nBill To : *Dumbledore Army*\nShip To : *Dumbledore Army*\nSo Date : *2025-07-18*\nSo Number : *GIIOFEED PL-5-2025-5*\nVendor Name : *Roadrunner Inc*\nDelivery Date : *July 20th*\nPayment Terms : *Unknown*\nDelivery Terms : *CIF Busan*\nShipping Method : *Unknown*"
-        },
-        "from": "16506464893",
-        "from_name": "Abhinav"
-      },
-      {
-        "id": "PrALpgc3FfG6aWY-gg0Bq53gEAMiJA",
-        "from_me": false,
-        "type": "text",
-        "chat_id": "120363400722326052@g.us",
-        "timestamp": 1753155664,
-        "source": "web",
-        "device_id": 30,
-        "chat_name": "BB",
-        "text": {
-          "body": "Items :\nProduct 1:\nDescription : *GIIOFEED PL-5*\nQuantity : *2000*\nQuantity Unit : *KG*\nUnit Price : *1420*\nPricing Unit : *USD/MT*\nShip Term : *CIF*\nPacking : *Unknown*\nLoading : *Unknown*\nAmount : *2840.0*\nPo Date : *2025-07-22*\nPo Ref No : *GIIOFEED PL-5-2025-6*\n\n\nSeller : *Beauxbatons Agricultural Solutions*\nBill To : *Dumbledore Army*\nShip To : *Dumbledore Army*\nSo Date : *2025-07-22*\nSo Number : *GIIOFEED PL-5-2025-6*\nVendor Name : *Roadrunner Inc*\nDelivery Date : *July 20th*\nPayment Terms : *Unknown*\nDelivery Terms : *CIF Busan*\nShipping Method : *Unknown*"
+          "body": "These are the key terms of the trade you have just negotiated \n\n\n\nItems :\nProduct 1:\nDescription : *GIIOFEED PL-5*\nQuantity : *2*\nQuantity Unit : *MT*\nUnit Price : *1420*\nPricing Unit : *USD/MT*\nShip Term : *CIF*\nPacking : *Unknown*\nLoading : *Unknown*\nTotal : *2840.0*\nPo Date : *2026-07-18*\nPo Ref No : *GIIOFEED PL-5-2026-5*\n\n\nSeller : *Beauxbatons Agricultural Solutions*\nBill To : *Dumbledore Army*\nShip To : *Dumbledore Army*\nSo Date : *2026-07-18*\nSo Number : *GIIOFEED PL-5-2026-5*\nVendor Name : *Roadrunner Inc*\nDelivery Date : *July 20th*\nPayment Terms : *Unknown*\nDelivery Terms : *CIF Busan*\nShipping Method : *Unknown*"
         },
         "from": "16506464893",
         "from_name": "Abhinav"

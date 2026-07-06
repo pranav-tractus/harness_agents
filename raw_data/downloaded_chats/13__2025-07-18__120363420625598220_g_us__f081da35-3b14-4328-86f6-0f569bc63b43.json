@@ -19,20 +19,6 @@
   "chats": [
     [
       {
-        "id": "OlYH5Ox5HRY1jw-gqwBq53kslb3DA",
-        "from_me": false,
-        "type": "text",
-        "chat_id": "120363420625598220@g.us",
-        "timestamp": 1752812840,
-        "source": "mobile",
-        "chat_name": "Testing Prod 11",
-        "text": {
-          "body": "These are the key terms of the trade you have just negotiated \n\n\n\nItems :\nProduct 1:\nDescription : *GIIOFEED PL-5*\nQuantity : *5*\nQuantity Unit : *MT*\nUnit Price : *1420*\nPricing Unit : *USD/MT*\nShip Term : *CIF*\nPacking : *20 kg kraft paper bags*\nLoading : *CIF Incheon*\nTotal : *7100*\nPo Date : *2025-07-18*\nPo Ref No : *GIIOFEED PL-5-2025-5*\nProduct 2:\nDescription : *GIIOFEED PL-5*\nQuantity : *2*\nQuantity Unit : *MT*\nUnit Price : *1420*\nPricing Unit : *USD/MT*\nShip Term : *CIF*\nPacking : *cardboard packing*\nLoading : *CIF Busan*\nTotal : *2840*\nPo Date : *2025-07-18*\nPo Ref No : *GIIOFEED PL-5-2025-5*\n\n\nPo Date : *2025-07-18*\nPo Number : *GIIOFEED PL-5-2025-5*\nGst Amount : *Unknown*\nReferences : *Unknown*\nVendor Name : *FeedBEST Company Limited*\nTotal Amount : *9940*\nVendor Email : *aditya+sign1@tractuslabs.com*\nVendor Phone : *Unknown*\nPayment Terms : *Unknown*\nShipment Date : *Unknown*\nShipping Terms : *CIF*\nVendor Address : *Factory 354-58 Mojeon-1 Sobuk-gu*\nShipping Method : *shipping by air*"
-        },
-        "from": "917980321298",
-        "from_name": "Aditya Pandey"
-      },
-      {
         "id": "OngPLcJ_t7bsAQ-gucBq53kslb3DA",
         "from_me": false,
         "type": "text",

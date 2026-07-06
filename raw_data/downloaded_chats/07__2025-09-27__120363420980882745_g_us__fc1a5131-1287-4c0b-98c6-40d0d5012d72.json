@@ -57,7 +57,7 @@
         "device_id": 20,
         "chat_name": "Core Trading <> FeedBest Production Test Group",
         "text": {
-          "body": "could you please quote us the availability for lecithin fat powder?"
+          "body": "could you please quote us the availability for lecithin fat powder TG - MGL8?"
         },
         "from": "917980321298",
         "from_name": "Aditya Pandey"
@@ -105,35 +105,6 @@
         },
         "from": "917980321298",
         "from_name": "Aditya Pandey"
-      },
-      {
-        "id": "PrBZrKpqz1vj3R0-glgBq53kx4QtOQ",
-        "from_me": false,
-        "type": "text",
-        "chat_id": "120363420980882745@g.us",
-        "timestamp": 1758940549,
-        "source": "web",
-        "device_id": 20,
-        "chat_name": "Core Trading <> FeedBest Production Test Group",
-        "text": {
-          "body": "that's too high. can you do $11/kg?"
-        },
-        "from": "917980321298",
-        "from_name": "Aditya Pandey"
-      },
-      {
-        "id": "OkEhFbKISR_aHw-glUBq53kx4QtOQ",
-        "from_me": false,
-        "type": "text",
-        "chat_id": "120363420980882745@g.us",
-        "timestamp": 1758940585,
-        "source": "mobile",
-        "chat_name": "Core Trading <> FeedBest Production Test Group",
-        "text": {
-          "body": "We can do that"
-        },
-        "from": "18572336857",
-        "from_name": "Apoorva"
       },
       {
         "id": "OhHcBTysdPKgZA-gh4Bq53kx4QtOQ",
@@ -343,7 +314,7 @@
         "source": "mobile",
         "chat_name": "Core Trading <> FeedBest Production Test Group",
         "text": {
-          "body": "Change loading to 23MT/40’FCL"
+          "body": "Change loading to 23MT/40'FCL"
         },
         "from": "18572336857",
         "from_name": "Apoorva"
@@ -355,7 +326,7 @@
       {
         "sr_no": 1,
         "total": 144000,
-        "loading": "23MT/40’FCL",
+        "loading": "23MT/40'FCL",
         "packing": "25kg stitch paper bag",
         "quantity": 12000,
         "ship_term": "CIF",

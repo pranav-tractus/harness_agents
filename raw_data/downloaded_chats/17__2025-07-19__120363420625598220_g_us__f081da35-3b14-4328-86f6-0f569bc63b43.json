@@ -31,20 +31,6 @@
         },
         "from": "917980321298",
         "from_name": "Aditya Pandey"
-      },
-      {
-        "id": "OlxFno2.moKnKw-gsMBq53kslb3DA",
-        "from_me": false,
-        "type": "text",
-        "chat_id": "120363420625598220@g.us",
-        "timestamp": 1752897812,
-        "source": "mobile",
-        "chat_name": "Testing Prod 11",
-        "text": {
-          "body": "These are the key terms of the trade you have just negotiated \n\n\n\nItems :\nProduct 1:\nDescription : *GIIOFINE - L - SF in liquid form*\nQuantity : *1.1*\nQuantity Unit : *MT*\nUnit Price : *2980*\nPricing Unit : *USD/MT*\nShip Term : *CIF*\nPacking : *IBC*\nLoading : *July 28th container*\nTotal : *3278.0*\nPo Date : *2025-07-18*\nPo Ref No : *GIIOFINE - L - SF in liquid form-2025-6*\n\n\nSeller : *AdityaTestinglabs*\nBill To : *FeedBEST Company Limited*\nShip To : *Factory 354-58 Mojeon-1 Sobuk-gu*\nSo Date : *2025-07-18*\nSo Number : *GIIOFINE - L - SF in liquid form-2025-6*\nVendor Name : *FeedBEST Company Limited*\nDelivery Date : *Unknown*\nPayment Terms : *cod*\nDelivery Terms : *CIF Busan*\nShipping Method : *Unknown*"
-        },
-        "from": "917980321298",
-        "from_name": "Aditya Pandey"
       }
     ]
   ]

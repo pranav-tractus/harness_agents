@@ -25,12 +25,7 @@ BEDROCK_ANTHROPIC_MODELS = {
 }
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_MODELS = {
-    "4.1": "gpt-4.1-2025-04-14",
-    "5.2": "gpt-5.2-2025-12-11",
-    "5-mini": "gpt-5-mini-2025-08-07",
-    "5.4": "gpt-5.4-2026-03-05",
-}
+OPENAI_MODELS = {"5.4": "gpt-5.4-2026-03-05", "5.5": "gpt-5.5-2026-04-23"}
 
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 

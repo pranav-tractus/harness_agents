@@ -116,6 +116,9 @@ def _parse_downloaded_chats_format(data: dict[str, Any]) -> str:
     Only ``chats[0]`` is used for the extraction input. Additional groups in
     ``chats`` hold synthetic TEAM-format history (``from_whom``/``body``) or
     archived slices and are not merged into the LLM prompt.
+
+    When ``chats[0]`` has no WhatsApp API text messages, falls back to the
+    TEAM ``from_whom``/``body`` shape used under ``raw_data/chats/``.
     """
     chat_groups: list[list[dict]] = data.get("chats", [])
     chat_name = data.get("chat_name", "")
@@ -129,6 +132,14 @@ def _parse_downloaded_chats_format(data: dict[str, Any]) -> str:
             body = (msg.get("text") or {}).get("body", "").strip()
             if body:
                 flat.append(msg)
+
+    if not flat:
+        team_text = _parse_chats_format({"messages": chat_groups[0]})
+        if not team_text:
+            return ""
+        if chat_name:
+            return f"Chat: {chat_name}\n\n{team_text}"
+        return team_text
 
     sequenced = add_seq_numbers(flat)
 

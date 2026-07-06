@@ -25,52 +25,6 @@
   "chats": [
     [
       {
-        "id": "OiNgRA5M5VjNhw-ko4Bq53gCPhwIg-1bvkFhI",
-        "from_me": false,
-        "type": "text",
-        "chat_id": "120363400604184610@g.us",
-        "timestamp": 1752319537,
-        "source": "mobile",
-        "chat_name": "Test prod 11",
-        "text": {
-          "body": "Hi let’s start"
-        },
-        "from": "917980321298",
-        "from_name": "Aditya Pandey"
-      },
-      {
-        "id": "PrCUchL86mDlClo-ktkBq53gCPhwIg-1bvkFhI",
-        "from_me": false,
-        "type": "text",
-        "chat_id": "120363400604184610@g.us",
-        "timestamp": 1752321330,
-        "source": "web",
-        "device_id": 20,
-        "chat_name": "Test prod 11",
-        "text": {
-          "body": "shipping by air"
-        },
-        "from": "917980321298",
-        "from_name": "Aditya Pandey"
-      },
-      {
-        "id": "PrAzx_j1gI2qylM-ktQBq53gCPhwIg-1bvkFhI",
-        "from_me": false,
-        "type": "text",
-        "chat_id": "120363400604184610@g.us",
-        "timestamp": 1752321342,
-        "source": "web",
-        "device_id": 20,
-        "chat_name": "Test prod 11",
-        "text": {
-          "body": "delivery terms is cif"
-        },
-        "from": "917980321298",
-        "from_name": "Aditya Pandey"
-      }
-    ],
-    [
-      {
         "from_whom": "(TEAM1)",
         "body": "Dr. Yashodhan, Our cosmetics division asked about sunflower lecithin. Do you have GIIOFINE - L - SF in liquid form?",
         "timestamp": 1751273800
@@ -97,7 +51,7 @@
       },
       {
         "from_whom": "(TEAM2)",
-        "body": "Yes — sending via email now. You’ll get PC content, moisture, acid value, etc.",
+        "body": "Yes — sending via email now. You'll get PC content, moisture, acid value, etc.",
         "timestamp": 1751274000
       },
       {
