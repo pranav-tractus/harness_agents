@@ -136,25 +136,25 @@ def test_create_product_conflict(client):
 def test_create_product_syncs_graph(client, monkeypatch):
     calls = []
     monkeypatch.setattr("apps.api.routers.products.product_graph_service.resync_product",
-                        lambda code, description, spec, *a, **k: calls.append(("resync", code)))
+                        lambda code, description, spec, *a, **k: calls.append((code, description, spec)))
     r = client.post("/api/products", json={"code": "NEW-2", "description": "New", "spec": "s"})
     assert r.status_code == 201
-    assert ("resync", "NEW-2") in calls
+    assert ("NEW-2", "New", "s") in calls
 
 
 def test_update_product_syncs_graph(client, monkeypatch):
     calls = []
     monkeypatch.setattr("apps.api.routers.products.product_graph_service.resync_product",
-                        lambda code, description, spec, *a, **k: calls.append(("resync", code)))
+                        lambda code, description, spec, *a, **k: calls.append((code, description, spec)))
     r = client.put("/api/products/TG-BPPC", json={"description": "Updated", "spec": "v2"})
     assert r.status_code == 200
-    assert ("resync", "TG-BPPC") in calls
+    assert ("TG-BPPC", "Updated", "v2") in calls
 
 
 def test_delete_product_removes_from_graph(client, monkeypatch):
     calls = []
     monkeypatch.setattr("apps.api.routers.products.product_graph_service.remove_product",
-                        lambda code, *a, **k: calls.append(("remove", code)))
+                        lambda code, *a, **k: calls.append(code))
     r = client.delete("/api/products/TG-MGL8")
     assert r.status_code == 204
-    assert ("remove", "TG-MGL8") in calls
+    assert "TG-MGL8" in calls
