@@ -1,8 +1,12 @@
+import logging
+
 from fastapi import APIRouter, HTTPException, Response
 
 from apps.api.db import mongo
 from apps.api.models import ProductCreate, ProductOut, ProductUpdate
 from apps.api.services import product_graph_service
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/products", tags=["products"])
 
@@ -25,7 +29,10 @@ def create_product(body: ProductCreate) -> ProductOut:
         raise HTTPException(409, "product already exists")
     doc = {"_id": code, "code": code, "description": body.description, "spec": body.spec}
     mongo.products().insert_one(doc)
-    product_graph_service.resync_product(code, body.description, body.spec)
+    try:
+        product_graph_service.resync_product(code, body.description, body.spec)
+    except Exception:
+        logger.warning("Failed to sync product graph for %s", code, exc_info=True)
     return _out(mongo.products().find_one({"_id": code}))
 
 
@@ -46,7 +53,10 @@ def update_product(product_id: str, body: ProductUpdate) -> ProductOut:
     if changes:
         mongo.products().update_one({"_id": product_id}, {"$set": changes})
     updated = mongo.products().find_one({"_id": product_id})
-    product_graph_service.resync_product(updated["code"], updated["description"], updated.get("spec"))
+    try:
+        product_graph_service.resync_product(updated["code"], updated["description"], updated.get("spec"))
+    except Exception:
+        logger.warning("Failed to sync product graph for %s", product_id, exc_info=True)
     return _out(updated)
 
 
@@ -55,5 +65,8 @@ def delete_product(product_id: str) -> Response:
     res = mongo.products().delete_one({"_id": product_id})
     if res.deleted_count == 0:
         raise HTTPException(404, "product not found")
-    product_graph_service.remove_product(product_id)
+    try:
+        product_graph_service.remove_product(product_id)
+    except Exception:
+        logger.warning("Failed to remove product graph for %s", product_id, exc_info=True)
     return Response(status_code=204)

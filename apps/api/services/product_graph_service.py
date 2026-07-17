@@ -96,12 +96,18 @@ def catalog_block() -> str | None:
     lines = ["=== Product Catalog ==="]
     for code, description in products:
         specs: list[str] = []
-        sres = conn.execute("MATCH (p:Product {code: $c})-[:HAS_SPEC]->(s:SpecAttr) RETURN s.key, s.value", {"c": code})
+        sres = conn.execute(
+            "MATCH (p:Product {code: $c})-[:HAS_SPEC]->(s:SpecAttr) RETURN s.key, s.value ORDER BY s.key",
+            {"c": code},
+        )
         while sres.has_next():
             k, v = sres.get_next()
             specs.append(f"{k}: {v}")
         aliases: list[str] = []
-        ares = conn.execute("MATCH (p:Product {code: $c})-[:HAS_ALIAS]->(a:Alias) RETURN a.name", {"c": code})
+        ares = conn.execute(
+            "MATCH (p:Product {code: $c})-[:HAS_ALIAS]->(a:Alias) RETURN a.name ORDER BY a.name",
+            {"c": code},
+        )
         while ares.has_next():
             aliases.append(ares.get_next()[0])
 

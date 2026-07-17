@@ -51,7 +51,7 @@ def read_block(customer_id: str) -> str | None:
     conn = kuzu.Connection(kuzu.Database(str(path)))
     for ddl in _DDL:
         conn.execute(ddl)
-    res = conn.execute("MATCH (a:Attribute) RETURN a.key, a.value")
+    res = conn.execute("MATCH (a:Attribute) RETURN a.key, a.value ORDER BY a.key")
     rows: list[tuple[str, str]] = []
     while res.has_next():
         row = res.get_next()

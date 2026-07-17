@@ -145,6 +145,16 @@ def test_create_product_syncs_graph(client, monkeypatch):
     assert ("NEW-2", "New", "s") in calls
 
 
+def test_create_product_succeeds_when_graph_sync_fails(client, monkeypatch):
+    def raise_sync_error(*args, **kwargs):
+        raise RuntimeError("graph unavailable")
+
+    monkeypatch.setattr("apps.api.routers.products.product_graph_service.resync_product", raise_sync_error)
+    r = client.post("/api/products", json={"code": "NEW-3", "description": "New product"})
+    assert r.status_code == 201
+    assert client.get("/api/products/NEW-3").status_code == 200
+
+
 def test_update_product_syncs_graph(client, monkeypatch):
     calls = []
     monkeypatch.setattr("apps.api.routers.products.product_graph_service.resync_product",
@@ -161,3 +171,12 @@ def test_delete_product_removes_from_graph(client, monkeypatch):
     r = client.delete("/api/products/TG-MGL8")
     assert r.status_code == 204
     assert "TG-MGL8" in calls
+
+
+def test_delete_product_succeeds_when_graph_sync_fails(client, monkeypatch):
+    def raise_remove_error(*args, **kwargs):
+        raise RuntimeError("graph unavailable")
+
+    monkeypatch.setattr("apps.api.routers.products.product_graph_service.remove_product", raise_remove_error)
+    r = client.delete("/api/products/TG-MGL8")
+    assert r.status_code == 204
