@@ -39,6 +39,9 @@ def client(monkeypatch):
                         lambda *a, **k: {"source_id": "x", "entities": {}, "written": True})
     monkeypatch.setattr(command_service.summary_service, "generate",
                         lambda *a, **k: make_extract(items=[make_item(description="TG-BPPC")]))
+    monkeypatch.setattr(command_service.summary_context_service, "assemble",
+                        lambda *a, **k: {"profile_block": None, "history_block": None,
+                                         "product_block": None})
     from apps.api.main import create_app
     with TestClient(create_app()) as c:
         yield c
