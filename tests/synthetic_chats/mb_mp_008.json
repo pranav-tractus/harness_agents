@@ -1,0 +1,48 @@
+{
+  "chat_id": "mb_mp_008",
+  "customer_id": "d586d853-694c-42f9-93be-bc7ba5b2110c",
+  "category": "memory_boost",
+  "chat_type": "multiple_products",
+  "chat_text": "(BUYER): 23 MT BP102 at USD 1425/MT + 2 MT trial BP102 at USD 1450/MT. CIF Busan.\n(SELLER): Confirmed. 25kg printed paper bag.",
+  "messages": [
+    {
+      "from_whom": "(BUYER)",
+      "body": "23 MT BP102 at USD 1425/MT + 2 MT trial BP102 at USD 1450/MT. CIF Busan.",
+      "timestamp": 1
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Confirmed. 25kg printed paper bag.",
+      "timestamp": 2
+    }
+  ],
+  "mock_memory_block": "=== Customer History (d586d853-694c-42f9-93be-bc7ba5b2110c) ===\n- Products: BP102 23.0 MT @ USD/MT 1425.0\n- Ports: CIF Busan, Busan\n- Packing: 25kg printed paper bag\n- Loading: 23MT / 40' FCL",
+  "expected_facts": {
+    "products": [
+      {
+        "quantity": 23.0,
+        "unit": "MT",
+        "price": 1425.0,
+        "price_unit": "USD/MT",
+        "incoterm": "CIF",
+        "port": "Busan",
+        "name": "BP102"
+      },
+      {
+        "name": "BP102",
+        "quantity": 2.0,
+        "unit": "MT",
+        "price": 1450.0,
+        "price_unit": "USD/MT",
+        "incoterm": "CIF",
+        "port": "Busan"
+      }
+    ],
+    "ports": [
+      "Busan"
+    ],
+    "payment_terms": "",
+    "packing": "25kg printed paper bag",
+    "loading": ""
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "chat_id": "mr_ms_004",
+  "customer_id": "fc1a5131-1287-4c0b-98c6-40d0d5012d72",
+  "category": "memory_required",
+  "chat_type": "multiple_shipments",
+  "chat_text": "(BUYER): Two batches of MGL8: first batch by November, remaining in January. Usual 25kg stitch paper bag.\n(SELLER): Confirmed. Split as requested.",
+  "messages": [
+    {
+      "from_whom": "(BUYER)",
+      "body": "Two batches of MGL8: first batch by November, remaining in January. Usual 25kg stitch paper bag.",
+      "timestamp": 1
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Confirmed. Split as requested.",
+      "timestamp": 2
+    }
+  ],
+  "mock_memory_block": null,
+  "expected_facts": {
+    "products": [
+      {
+        "name": "MGL8",
+        "quantity": null,
+        "unit": null,
+        "price": null,
+        "price_unit": null,
+        "incoterm": null,
+        "port": null
+      },
+      {
+        "name": "MGL8",
+        "quantity": null,
+        "unit": null,
+        "price": null,
+        "price_unit": null,
+        "incoterm": null,
+        "port": null
+      }
+    ],
+    "ports": [],
+    "payment_terms": "",
+    "packing": "25kg stitch paper bag",
+    "loading": ""
+  }
+}

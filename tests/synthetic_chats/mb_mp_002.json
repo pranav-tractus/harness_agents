@@ -1,0 +1,48 @@
+{
+  "chat_id": "mb_mp_002",
+  "customer_id": "12a4f3a7-d506-4d32-ae06-3f76508c6abd",
+  "category": "memory_boost",
+  "chat_type": "multiple_products",
+  "chat_text": "(BUYER): 13 MT GIIOFINE-P-S at USD 2850/MT + 5 MT soya powder at USD 2500/MT. CIF Busan, 25kg PP bags.\n(SELLER): Confirmed.",
+  "messages": [
+    {
+      "from_whom": "(BUYER)",
+      "body": "13 MT GIIOFINE-P-S at USD 2850/MT + 5 MT soya powder at USD 2500/MT. CIF Busan, 25kg PP bags.",
+      "timestamp": 1
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Confirmed.",
+      "timestamp": 2
+    }
+  ],
+  "mock_memory_block": "=== Customer History (12a4f3a7-d506-4d32-ae06-3f76508c6abd) ===\n- Products: GIIOFINE-P-S 13.0 MT @ USD/MT 2850.0\n- Ports: CIF Busan, Busan\n- Packing: 25kg PP bags\n- Loading: 2x20 FCL",
+  "expected_facts": {
+    "products": [
+      {
+        "quantity": 13.0,
+        "unit": "MT",
+        "price": 2850.0,
+        "price_unit": "USD/MT",
+        "incoterm": "CIF",
+        "port": "Busan",
+        "name": "GIIOFINE-P-S"
+      },
+      {
+        "name": "soya powder",
+        "quantity": 5.0,
+        "unit": "MT",
+        "price": 2500.0,
+        "price_unit": "USD/MT",
+        "incoterm": "CIF",
+        "port": "Busan"
+      }
+    ],
+    "ports": [
+      "Busan"
+    ],
+    "payment_terms": "",
+    "packing": "25kg PP bags",
+    "loading": ""
+  }
+}

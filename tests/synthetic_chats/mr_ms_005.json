@@ -1,0 +1,55 @@
+{
+  "chat_id": "mr_ms_005",
+  "customer_id": "8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f",
+  "category": "memory_required",
+  "chat_type": "multiple_shipments",
+  "chat_text": "(BUYER): Three Bergapur lots: March, late March, and April. Standard January price.\n(SELLER): Confirmed all three. EXW, 25kg bags.",
+  "messages": [
+    {
+      "from_whom": "(BUYER)",
+      "body": "Three Bergapur lots: March, late March, and April. Standard January price.",
+      "timestamp": 1
+    },
+    {
+      "from_whom": "(SELLER)",
+      "body": "Confirmed all three. EXW, 25kg bags.",
+      "timestamp": 2
+    }
+  ],
+  "mock_memory_block": "=== Customer History (8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f) ===\n- Products: Bergapur 10.5 MT @ USD/MT 3100.0\n- Packing: 25kg bags\n- Loading: 40' FCL",
+  "expected_facts": {
+    "products": [
+      {
+        "quantity": 10.5,
+        "unit": "MT",
+        "price": 3100.0,
+        "price_unit": "USD/MT",
+        "incoterm": "EXW",
+        "port": "",
+        "name": "Bergapur"
+      },
+      {
+        "quantity": 10.5,
+        "unit": "MT",
+        "price": 3100.0,
+        "price_unit": "USD/MT",
+        "incoterm": "EXW",
+        "port": "",
+        "name": "Bergapur"
+      },
+      {
+        "quantity": 10.5,
+        "unit": "MT",
+        "price": 3100.0,
+        "price_unit": "USD/MT",
+        "incoterm": "EXW",
+        "port": "",
+        "name": "Bergapur"
+      }
+    ],
+    "ports": [],
+    "payment_terms": "",
+    "packing": "25kg bags",
+    "loading": ""
+  }
+}
