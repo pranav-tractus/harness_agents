@@ -71,36 +71,14 @@ def test_chat_graph_nodes_and_edges(tmp_path, monkeypatch):
 
 # ── profile graph ─────────────────────────────────────────────────────────────
 
-def test_profile_graph_empty_when_no_db(tmp_path, monkeypatch):
-    monkeypatch.setattr(graph_reader_service, "GRAPH_ROOT", tmp_path)
-    result = graph_reader_service.read_profile_graph("cust-1")
-    assert result == {"nodes": [], "edges": []}
+@pytest.mark.skip(reason="Kuzu profile graph retired; profile data now in FalkorDB")
+def test_profile_graph_empty_when_no_db():
+    pass
 
 
-def test_profile_graph_nodes_and_edges(tmp_path, monkeypatch):
-    from apps.api.services import profile_graph_service
-
-    monkeypatch.setattr(graph_reader_service, "GRAPH_ROOT", tmp_path)
-    monkeypatch.setattr(profile_graph_service, "GRAPH_ROOT", tmp_path)
-
-    profile_graph_service.resync(
-        "cust-1",
-        "Dummy Corp",
-        {"email": "dummy@example.com", "phone": "+1234567890"},
-    )
-
-    result = graph_reader_service.read_profile_graph("cust-1")
-
-    node_types = {n["type"] for n in result["nodes"]}
-    assert "Customer" in node_types
-    assert "Attribute" in node_types
-
-    attr_labels = {n["label"] for n in result["nodes"] if n["type"] == "Attribute"}
-    assert "email" in attr_labels
-    assert "phone" in attr_labels
-
-    edge_types = {e["type"] for e in result["edges"]}
-    assert "HAS_ATTRIBUTE" in edge_types
+@pytest.mark.skip(reason="Kuzu profile graph retired; profile data now in FalkorDB")
+def test_profile_graph_nodes_and_edges():
+    pass
 
 
 # ── product catalog graph ─────────────────────────────────────────────────────
