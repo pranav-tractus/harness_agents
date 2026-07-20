@@ -138,10 +138,10 @@ One Ctrl+C stops both servers.
 3. `/create-sales-order` — builds the chat-facts graph (Step A), then generates a pending summary (Step B).
 4. `/edit <instructions>` — revises the pending summary.
 5. `/approve` — finalizes the summary and advances the contract checkpoint.
-6. Edit customer profile fields in the details panel (updates `profile.db` only).
+6. Edit customer profile fields in the details panel (updates Mongo profile and resyncs FalkorDB attribute nodes).
 7. Use the **Products** tab to edit or delete catalog entries.
 
-Each customer gets an isolated FalkorDB graph (`customer_<id>`); the product catalog lives in a shared `catalog` graph. Profile attributes are stored in FalkorDB alongside chat-derived contract data.
+Each customer gets an isolated FalkorDB graph (`customer:<id>`); the product catalog lives in a shared `catalog` graph. Profile attributes are stored in FalkorDB alongside chat-derived contract data.
 
 ### Tests
 
