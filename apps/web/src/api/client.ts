@@ -36,6 +36,10 @@ export type CommandResult = { messages: Message[]; summary: unknown | null };
 export type GraphNode = { id: string; label: string; type: string; properties: Record<string, unknown> };
 export type GraphEdge = { id: string; source: string; target: string; type: string; properties: Record<string, unknown> };
 export type GraphData = { nodes: GraphNode[]; edges: GraphEdge[] };
+export type Slot = {
+  slot: string; value: string | null; source: string;
+  confidence: string; agreed_by: string[];
+};
 
 async function req<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, {
@@ -91,6 +95,11 @@ export const api = {
     req<CommandResult>(`/api/customers/${id}/commands`, {
       method: "POST",
       body: JSON.stringify({ command, args, model_key }),
+    }),
+  invokeAgent: (id: string, model_key: string, action: "ask" | "approve") =>
+    req<CommandResult>(`/api/customers/${id}/agent`, {
+      method: "POST",
+      body: JSON.stringify({ model_key, action }),
     }),
   listModels: () => req<ModelOption[]>("/api/models"),
   getGraphChat: (customerId: string) =>
