@@ -5,8 +5,16 @@ import { ChatPage } from "@/pages/ChatPage";
 import { ProductsPage } from "@/pages/ProductsPage";
 import { GraphsPage } from "@/pages/GraphsPage";
 
+type GraphNav = { customerId: string; seq: number };
+
 export default function App() {
   const [tab, setTab] = useState("chat");
+  const [graphNav, setGraphNav] = useState<GraphNav | null>(null);
+
+  function handleNavigateToMessage(customerId: string, seq: number) {
+    setGraphNav({ customerId, seq });
+    setTab("chat");
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -25,13 +33,13 @@ export default function App() {
         </header>
         <main className="flex-1 overflow-hidden border-t">
           <TabsContent value="chat" className="mt-0">
-            <ChatPage />
+            <ChatPage focusMessage={graphNav} onFocusHandled={() => setGraphNav(null)} />
           </TabsContent>
           <TabsContent value="products" className="mt-0">
             <ProductsPage />
           </TabsContent>
           <TabsContent value="graphs" className="mt-0">
-            <GraphsPage />
+            <GraphsPage onNavigateToMessage={handleNavigateToMessage} />
           </TabsContent>
         </main>
       </Tabs>

@@ -9,6 +9,7 @@ const NEAR_BOTTOM_PX = 80;
 
 type Props = {
   messages: Message[];
+  scrollToSeq?: number | null;
 };
 
 function roleLabel(role: string) {
@@ -26,7 +27,7 @@ function isAgentRole(role: string) {
   return role === "agent" || role === "assistant";
 }
 
-export function ChatPane({ messages }: Props) {
+export function ChatPane({ messages, scrollToSeq }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const stickToBottom = useRef(true);
@@ -44,6 +45,19 @@ export function ChatPane({ messages }: Props) {
     }
   }, [messages]);
 
+  // Depends on scrollToSeq only (not messages): ChatPage sets scrollToSeq after
+  // the target message is already loaded, so re-scrolling on later message
+  // updates (e.g. a new chat message) would be wrong.
+  useEffect(() => {
+    if (scrollToSeq == null) return;
+    const el = scrollRef.current?.querySelector<HTMLElement>(`[data-seq="${scrollToSeq}"]`);
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    el.classList.add("ring-2", "ring-primary");
+    const timer = setTimeout(() => el.classList.remove("ring-2", "ring-primary"), 1600);
+    return () => clearTimeout(timer);
+  }, [scrollToSeq]);
+
   return (
     <div
       ref={scrollRef}
@@ -58,7 +72,7 @@ export function ChatPane({ messages }: Props) {
           const label = message.kind === "final" ? "Finalized contract"
             : message.kind === "draft" ? "Draft contract" : "AI Summary";
           return (
-            <Card key={message.id} className="border-primary/20 bg-primary/5">
+            <Card key={message.id} data-seq={message.seq} className="border-primary/20 bg-primary/5">
               <CardContent className="space-y-2 p-4">
                 <Badge variant="secondary">{label}</Badge>
                 <pre className="whitespace-pre-wrap text-sm">{message.body}</pre>
@@ -81,6 +95,7 @@ export function ChatPane({ messages }: Props) {
           return (
             <div
               key={message.id}
+              data-seq={message.seq}
               className="mx-auto w-full max-w-full rounded-lg border-l-2 border-primary/40 bg-primary/5 px-4 py-2.5 text-sm"
             >
               <div className="mb-1 flex items-center gap-2">
@@ -97,6 +112,7 @@ export function ChatPane({ messages }: Props) {
         return (
           <div
             key={message.id}
+            data-seq={message.seq}
             className={cn(
               "max-w-[40%] rounded-md px-3.5 py-2.5 text-sm",
               isSellerRole(message.role) &&

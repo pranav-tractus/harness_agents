@@ -33,13 +33,19 @@ function showApprove(pending: PendingSummary | null): boolean {
   );
 }
 
-export function ChatPage() {
+type Props = {
+  focusMessage?: { customerId: string; seq: number } | null;
+  onFocusHandled?: () => void;
+};
+
+export function ChatPage({ focusMessage, onFocusHandled }: Props) {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [selectedId, setSelectedId] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [modelKey, setModelKey] = useState("sonnet-4-6");
   const [role, setRole] = useState<"seller" | "customer">("seller");
   const [pendingSummary, setPendingSummary] = useState<PendingSummary | null>(null);
+  const [scrollToSeq, setScrollToSeq] = useState<number | null>(null);
 
   const selectedCustomer = customers.find((c) => c.id === selectedId) ?? null;
 
@@ -68,6 +74,21 @@ export function ChatPage() {
       loadMessages(selectedId).catch(console.error);
     }
   }, [selectedId, loadMessages]);
+
+  useEffect(() => {
+    if (focusMessage) setSelectedId(focusMessage.customerId);
+  }, [focusMessage]);
+
+  useEffect(() => {
+    if (!focusMessage) return;
+    // Wait until the loaded messages actually belong to the target customer,
+    // otherwise we'd check a stale list mid-switch.
+    if (messages.length === 0 || messages[0].customer_id !== focusMessage.customerId) return;
+    const found = messages.some((m) => m.seq === focusMessage.seq);
+    if (found) setScrollToSeq(focusMessage.seq);
+    else toast.error("Message not found");
+    onFocusHandled?.();
+  }, [focusMessage, messages, onFocusHandled]);
 
   async function handleMessage(body: string) {
     if (!selectedId) return;
@@ -146,7 +167,7 @@ export function ChatPage() {
           </h1>
           <ModelPicker value={modelKey} onChange={setModelKey} />
         </div>
-        <ChatPane key={selectedId} messages={messages} />
+        <ChatPane key={selectedId} messages={messages} scrollToSeq={scrollToSeq} />
         <MessageComposer
           role={role}
           onRoleChange={setRole}
