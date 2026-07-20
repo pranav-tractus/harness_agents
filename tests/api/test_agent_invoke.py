@@ -24,8 +24,13 @@ def _decider(decision):
     return lambda name, messages, ctx, model_key, previous_json=None: decision
 
 
+def _chat(customer_id="dummy-01"):
+    return chat_service.ensure_default_chat(customer_id)
+
+
 def test_clarify_writes_question_only():
-    chat_service.add_message("dummy-01", "seller", "need choline")
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "seller", "need choline")
     dec = AgentDecision(mode="clarify", message="What quantity and incoterm?",
                         questions=[AgentQuestion(slot="quantity", directed_to="customer", text="qty?")])
     out = agent_service.invoke("dummy-01", "sonnet-4-6",
@@ -36,7 +41,8 @@ def test_clarify_writes_question_only():
 
 
 def test_draft_upserts_pending_with_ledger():
-    chat_service.add_message("dummy-01", "seller", "10MT TG-BPPC CIF Busan")
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "seller", "10MT TG-BPPC CIF Busan")
     contract = SOExtractContractList(data=[])
     dec = AgentDecision(mode="draft", message="Draft ready", contract=contract,
                         ledger=[SlotBelief(slot="ship_term", value="CIF", source="chat",
@@ -49,8 +55,9 @@ def test_draft_upserts_pending_with_ledger():
 
 
 def test_invoke_includes_prior_agent_question_in_decider_window():
-    chat_service.add_message("dummy-01", "seller", "need choline")
-    chat_service.add_message("dummy-01", "agent", "What quantity?", kind="question")
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "seller", "need choline")
+    chat_service.add_message("dummy-01", ch, "agent", "What quantity?", kind="question")
     seen = []
 
     def capture(name, messages, ctx, model_key, previous_json=None):
@@ -63,7 +70,8 @@ def test_invoke_includes_prior_agent_question_in_decider_window():
 
 
 def test_invoke_auto_finalizes_when_ready():
-    chat_service.add_message("dummy-01", "seller", "10MT CIF Busan")
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "seller", "10MT CIF Busan")
     calls = []
     dec = AgentDecision(mode="finalize", message="Both confirmed. Finalizing.",
                         contract=SOExtractContractList(data=[]), ready_to_finalize=True,
@@ -76,6 +84,6 @@ def test_invoke_auto_finalizes_when_ready():
     out = agent_service.invoke("dummy-01", "sonnet-4-6",
                                decider=_decider(dec), context_fn=_ctx, graph_fn=_graph)
     assert calls == [1]
-    assert chat_service.get_last_contract_seq("dummy-01") == 1
+    assert chat_service.get_last_contract_seq(ch) == 1
     assert out["messages"][-1]["kind"] == "final"
     assert mongo.summaries().count_documents({"status": "approved"}) == 1

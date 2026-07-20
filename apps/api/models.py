@@ -156,3 +156,17 @@ def cap_questions(decision: AgentDecision, limit: int = 3) -> AgentDecision:
 class AgentInvokeIn(BaseModel):
     model_key: str
     action: str = "ask"     # "ask" | "approve"
+
+
+class ChatOut(BaseModel):
+    id: str
+    customer_id: str
+    title: str
+    status: str
+    channel: str
+    created_at: str
+    last_contract_seq: int
+
+
+class ChatCreate(BaseModel):
+    title: str

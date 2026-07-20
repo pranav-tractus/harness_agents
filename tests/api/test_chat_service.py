@@ -20,32 +20,37 @@ def _fake_mongo(monkeypatch):
     mongo.reset_client()
 
 
-def test_seq_is_monotonic_per_customer():
-    a = chat_service.add_message("dummy-01", "me", "hi")
-    b = chat_service.add_message("dummy-01", "customer", "hello")
-    c = chat_service.add_message("dummy-02", "me", "hi")
+def test_seq_is_monotonic_per_chat():
+    ch = chat_service.ensure_default_chat("dummy-01")
+    other = chat_service.ensure_default_chat("dummy-02")
+    a = chat_service.add_message("dummy-01", ch, "me", "hi")
+    b = chat_service.add_message("dummy-01", ch, "customer", "hello")
+    c = chat_service.add_message("dummy-02", other, "me", "hi")
     assert a["seq"] == 1 and b["seq"] == 2
-    assert c["seq"] == 1  # independent per customer
+    assert c["seq"] == 1  # independent per chat
 
 
 def test_since_filters_by_kind_and_seq():
-    chat_service.add_message("dummy-01", "me", "old")           # seq 1
-    chat_service.add_message("dummy-01", "me", "/cmd", kind="command")  # seq 2
-    chat_service.add_message("dummy-01", "customer", "new")     # seq 3
-    since = chat_service.chat_messages_since("dummy-01", 1)
+    ch = chat_service.ensure_default_chat("dummy-01")
+    chat_service.add_message("dummy-01", ch, "me", "old")           # seq 1
+    chat_service.add_message("dummy-01", ch, "me", "/cmd", kind="command")  # seq 2
+    chat_service.add_message("dummy-01", ch, "customer", "new")     # seq 3
+    since = chat_service.chat_messages_since(ch, 1)
     bodies = [m["body"] for m in since]
     assert bodies == ["new"]  # command excluded, old excluded
 
 
 def test_messages_since_accepts_kind_filter():
-    chat_service.add_message("dummy-01", "seller", "hi")                    # seq 1 chat
-    chat_service.add_message("dummy-01", "agent", "qty?", kind="question")  # seq 2
-    chat_service.add_message("dummy-01", "me", "/cmd", kind="command")      # seq 3
-    since = chat_service.messages_since("dummy-01", 0, kinds=["chat", "question"])
+    ch = chat_service.ensure_default_chat("dummy-01")
+    chat_service.add_message("dummy-01", ch, "seller", "hi")                    # seq 1 chat
+    chat_service.add_message("dummy-01", ch, "agent", "qty?", kind="question")  # seq 2
+    chat_service.add_message("dummy-01", ch, "me", "/cmd", kind="command")      # seq 3
+    since = chat_service.messages_since(ch, 0, kinds=["chat", "question"])
     assert [m["kind"] for m in since] == ["chat", "question"]
 
 
 def test_checkpoint_roundtrip():
-    assert chat_service.get_last_contract_seq("dummy-01") == 0
-    chat_service.set_last_contract_seq("dummy-01", 7)
-    assert chat_service.get_last_contract_seq("dummy-01") == 7
+    ch = chat_service.ensure_default_chat("dummy-01")
+    assert chat_service.get_last_contract_seq(ch) == 0
+    chat_service.set_last_contract_seq(ch, 7)
+    assert chat_service.get_last_contract_seq(ch) == 7

@@ -33,6 +33,7 @@ def test_agent_approve_returns_final(client, monkeypatch):
     from core.models import SOExtractContractList
 
     client.post("/api/customers/dummy-01/messages", json={"role": "seller", "body": "10MT CIF"})
+    ch = chat_service.ensure_default_chat("dummy-01")
     monkeypatch.setattr(chat_graph_service, "build_and_write",
                         lambda *a, **k: {"written": True})
     sid = mongo.summaries().insert_one({
@@ -41,7 +42,7 @@ def test_agent_approve_returns_final(client, monkeypatch):
         "content": SOExtractContractList(data=[]).model_dump(),
         "rendered_markdown": "draft", "slots": [], "created_at": "t", "approved_at": None,
     }).inserted_id
-    chat_service.add_message("dummy-01", "agent", "draft card", kind="draft",
+    chat_service.add_message("dummy-01", ch, "agent", "draft card", kind="draft",
                              summary_id=str(sid))
     r = client.post("/api/customers/dummy-01/agent", json={"model_key": "sonnet-4-6", "action": "approve"})
     assert r.status_code == 200

@@ -8,7 +8,8 @@ router = APIRouter(prefix="/api/customers/{customer_id}/commands", tags=["comman
 
 @router.post("")
 def run_command(customer_id: str, body: CommandIn) -> dict:
-    chat_service.add_message(customer_id, "me", f"/{body.command} {body.args or ''}".strip(),
+    chat_id = chat_service.ensure_default_chat(customer_id)
+    chat_service.add_message(customer_id, chat_id, "me", f"/{body.command} {body.args or ''}".strip(),
                              kind="command")
     return command_service.dispatch(customer_id, body.command, body.args, body.model_key)
 

@@ -43,10 +43,15 @@ def _record_graph(order):
     return _fn
 
 
+def _chat(customer_id="dummy-01"):
+    return chat_service.ensure_default_chat(customer_id)
+
+
 def test_create_runs_graph_before_summary_and_posts_pending():
+    ch = _chat()
     order = []
-    chat_service.add_message("dummy-01", "me", "need 10MT TG-BPPC")   # seq 1
-    chat_service.add_message("dummy-01", "customer", "ok")            # seq 2
+    chat_service.add_message("dummy-01", ch, "me", "need 10MT TG-BPPC")   # seq 1
+    chat_service.add_message("dummy-01", ch, "customer", "ok")            # seq 2
 
     def _gen(*a, **k):
         order.append(("summary", None))
@@ -65,7 +70,8 @@ def test_create_runs_graph_before_summary_and_posts_pending():
 
 
 def test_create_blocked_when_pending_exists():
-    chat_service.add_message("dummy-01", "me", "x")
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "me", "x")
     command_service.dispatch("dummy-01", "create-sales-order", None, "sonnet-4-6",
                              graph_fn=_record_graph([]), summary_gen=_fake_summary, context_fn=_ctx)
     out = command_service.dispatch("dummy-01", "create-sales-order", None, "sonnet-4-6",
@@ -75,17 +81,19 @@ def test_create_blocked_when_pending_exists():
 
 
 def test_approve_advances_checkpoint_and_persists():
-    chat_service.add_message("dummy-01", "me", "x")   # seq 1
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "me", "x")   # seq 1
     command_service.dispatch("dummy-01", "create-sales-order", None, "sonnet-4-6",
                              graph_fn=_record_graph([]), summary_gen=_fake_summary, context_fn=_ctx)
     command_service.dispatch("dummy-01", "approve", None, "sonnet-4-6")
-    assert chat_service.get_last_contract_seq("dummy-01") == 1
+    assert chat_service.get_last_contract_seq(ch) == 1
     assert mongo.summaries().count_documents({"status": "approved"}) == 1
     assert mongo.summaries().count_documents({"status": "pending"}) == 0
 
 
 def test_edit_requires_pending_and_bumps_revision():
-    chat_service.add_message("dummy-01", "me", "x")
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "me", "x")
     command_service.dispatch("dummy-01", "create-sales-order", None, "sonnet-4-6",
                              graph_fn=_record_graph([]), summary_gen=_fake_summary, context_fn=_ctx)
     command_service.dispatch("dummy-01", "edit", "qty 20", "sonnet-4-6",
@@ -96,8 +104,9 @@ def test_edit_requires_pending_and_bumps_revision():
 
 
 def test_create_forwards_context_blocks_to_summary_gen():
+    ch = _chat()
     captured = {}
-    chat_service.add_message("dummy-01", "me", "need 10MT TG-BPPC")
+    chat_service.add_message("dummy-01", ch, "me", "need 10MT TG-BPPC")
 
     def _gen(name, window, product_block, model_key, *, profile_block=None, history_block=None, **k):
         captured.update(product_block=product_block, profile_block=profile_block,
@@ -111,8 +120,9 @@ def test_create_forwards_context_blocks_to_summary_gen():
 
 
 def test_edit_forwards_context_blocks_to_summary_revise():
+    ch = _chat()
     captured = {}
-    chat_service.add_message("dummy-01", "me", "x")
+    chat_service.add_message("dummy-01", ch, "me", "x")
     command_service.dispatch("dummy-01", "create-sales-order", None, "sonnet-4-6",
                              graph_fn=_record_graph([]), summary_gen=_fake_summary, context_fn=_ctx)
 

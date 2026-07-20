@@ -78,8 +78,8 @@ def _summary_out(doc: dict) -> dict:
     return doc
 
 
-def _agent_msg(customer_id, body, kind, summary_id=None, summary_json=None):
-    return chat_service.add_message(customer_id, "agent", body, kind=kind,
+def _agent_msg(customer_id, chat_id, body, kind, summary_id=None, summary_json=None):
+    return chat_service.add_message(customer_id, chat_id, "agent", body, kind=kind,
                                     summary_id=summary_id, summary_json=summary_json)
 
 
@@ -94,11 +94,12 @@ def _draft_to_seq(window: list[dict]) -> int:
 def invoke(customer_id, model_key, *, decider=None, context_fn=None, graph_fn=None) -> dict:
     decider = decider or decide
     context_fn = context_fn or summary_context_service.assemble
+    chat_id = chat_service.ensure_default_chat(customer_id)
 
-    last = chat_service.get_last_contract_seq(customer_id)
-    window = chat_service.messages_since(customer_id, last, kinds=list(_AGENT_WINDOW_KINDS))
+    last = chat_service.get_last_contract_seq(chat_id)
+    window = chat_service.messages_since(chat_id, last, kinds=list(_AGENT_WINDOW_KINDS))
     if not window:
-        return {"messages": [_agent_msg(customer_id, "No new messages since the last contract.", "chat")],
+        return {"messages": [_agent_msg(customer_id, chat_id, "No new messages since the last contract.", "chat")],
                 "summary": None}
 
     ctx = context_fn(customer_id)
@@ -110,7 +111,7 @@ def invoke(customer_id, model_key, *, decider=None, context_fn=None, graph_fn=No
                        previous_json=previous_json)
 
     if decision.mode == "clarify":
-        msg = _agent_msg(customer_id, decision.message, "question")
+        msg = _agent_msg(customer_id, chat_id, decision.message, "question")
         return {"messages": [msg], "summary": None}
 
     if decision.mode == "finalize":
@@ -136,7 +137,7 @@ def invoke(customer_id, model_key, *, decider=None, context_fn=None, graph_fn=No
                "slots": slots, "created_at": _now(), "approved_at": None}
         doc["_id"] = mongo.summaries().insert_one(doc).inserted_id
 
-    card = _agent_msg(customer_id, decision.message + "\n\n" + markdown, "draft",
+    card = _agent_msg(customer_id, chat_id, decision.message + "\n\n" + markdown, "draft",
                       summary_id=str(doc["_id"]), summary_json=contract.model_dump_json(indent=2))
     return {"messages": [card], "summary": _summary_out(doc)}
 
@@ -153,8 +154,9 @@ def _persist_final(customer_id, contract, slots, from_seq, to_seq, model_key) ->
 
 def finalize(customer_id, *, decision=None, window=None, model_key="", graph_fn=None) -> dict:
     graph_fn = graph_fn or chat_graph_service.build_and_write
-    window = window or chat_service.chat_messages_since(customer_id, chat_service.get_last_contract_seq(customer_id))
-    to_seq = window[-1]["seq"] if window else chat_service.get_last_contract_seq(customer_id)
+    chat_id = chat_service.ensure_default_chat(customer_id)
+    window = window or chat_service.chat_messages_since(chat_id, chat_service.get_last_contract_seq(chat_id))
+    to_seq = window[-1]["seq"] if window else chat_service.get_last_contract_seq(chat_id)
     contract = (decision.contract if decision else None) or SOExtractContractList(data=[])
     slots = [s.model_dump() for s in decision.ledger] if decision else []
 
@@ -162,26 +164,27 @@ def finalize(customer_id, *, decision=None, window=None, model_key="", graph_fn=
     doc = _persist_final(customer_id, contract, slots,
                          from_seq=(window[0]["seq"] if window else to_seq),
                          to_seq=to_seq, model_key=model_key)
-    chat_service.set_last_contract_seq(customer_id, to_seq)
+    chat_service.set_last_contract_seq(chat_id, to_seq)
     # clear any stale pending draft
     mongo.summaries().delete_many({"customer_id": customer_id, "status": "pending"})
-    msg = _agent_msg(customer_id, (decision.message if decision else "Finalized.") + "\n\n"
+    msg = _agent_msg(customer_id, chat_id, (decision.message if decision else "Finalized.") + "\n\n"
                      + doc["rendered_markdown"], "final", summary_id=str(doc["_id"]))
     return {"messages": [msg], "summary": _summary_out(doc)}
 
 
 def approve(customer_id, *, graph_fn=None) -> dict:
+    chat_id = chat_service.ensure_default_chat(customer_id)
     pending = _pending(customer_id)
     if not pending:
-        return {"messages": [_agent_msg(customer_id, "No draft to finalize.", "chat")], "summary": None}
+        return {"messages": [_agent_msg(customer_id, chat_id, "No draft to finalize.", "chat")], "summary": None}
     graph_fn = graph_fn or chat_graph_service.build_and_write
-    window = chat_service.chat_messages_since(customer_id, pending["from_seq"] - 1)
+    window = chat_service.chat_messages_since(chat_id, pending["from_seq"] - 1)
     contract = SOExtractContractList(**pending["content"])
     graph_fn(customer_id, window, pending["to_seq"], pending["model_key"])
     mongo.summaries().update_one({"_id": pending["_id"]},
         {"$set": {"status": "approved", "approved_at": _now()}})
-    chat_service.set_last_contract_seq(customer_id, pending["to_seq"])
+    chat_service.set_last_contract_seq(chat_id, pending["to_seq"])
     approved = mongo.summaries().find_one({"_id": pending["_id"]})
-    msg = _agent_msg(customer_id, "Approved and finalized.\n\n" + approved["rendered_markdown"],
+    msg = _agent_msg(customer_id, chat_id, "Approved and finalized.\n\n" + approved["rendered_markdown"],
                      "final", summary_id=str(approved["_id"]))
     return {"messages": [msg], "summary": _summary_out(approved)}
