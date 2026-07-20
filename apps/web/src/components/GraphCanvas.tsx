@@ -7,6 +7,7 @@ import {
   BackgroundVariant,
   useNodesState,
   useEdgesState,
+  useReactFlow,
   type Node,
   type Edge,
   type NodeMouseHandler,
@@ -85,6 +86,15 @@ function applyLayout(nodes: Node[], edges: Edge[]): Node[] {
   });
 }
 
+function FitViewOnChange({ deps }: { deps: unknown }) {
+  const { fitView } = useReactFlow();
+  useEffect(() => {
+    const t = requestAnimationFrame(() => fitView({ duration: 200, padding: 0.2 }));
+    return () => cancelAnimationFrame(t);
+  }, [deps, fitView]);
+  return null;
+}
+
 type Props = {
   data: GraphData;
   emptySubtitle: string;
@@ -110,6 +120,11 @@ export function GraphCanvas({
   const visible = useMemo(
     () => computeVisibleNodeIds(data.nodes, data.edges, expanded),
     [data, expanded],
+  );
+
+  const visibleNodeKey = useMemo(
+    () => [...visible].sort().join(","),
+    [visible],
   );
 
   useEffect(() => {
@@ -169,8 +184,8 @@ export function GraphCanvas({
       onEdgesChange={onEdgesChange}
       onNodeClick={handleNodeClick}
       onEdgeClick={handleEdgeClick}
-      fitView
     >
+      <FitViewOnChange deps={visibleNodeKey} />
       <MiniMap />
       <Controls />
       <Background variant={BackgroundVariant.Dots} />
