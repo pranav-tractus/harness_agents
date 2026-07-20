@@ -46,12 +46,14 @@ export function ChatPage({ focusMessage, onFocusHandled }: Props) {
   const [role, setRole] = useState<"seller" | "customer">("seller");
   const [pendingSummary, setPendingSummary] = useState<PendingSummary | null>(null);
   const [scrollToSeq, setScrollToSeq] = useState<number | null>(null);
+  const [loadedMessagesCustomerId, setLoadedMessagesCustomerId] = useState<string | null>(null);
 
   const selectedCustomer = customers.find((c) => c.id === selectedId) ?? null;
 
   const loadMessages = useCallback(async (customerId: string) => {
     const rows = await api.listMessages(customerId);
     setMessages(rows);
+    setLoadedMessagesCustomerId(customerId);
     setPendingSummary(pendingFromMessages(rows));
   }, []);
 
@@ -80,15 +82,28 @@ export function ChatPage({ focusMessage, onFocusHandled }: Props) {
   }, [focusMessage]);
 
   useEffect(() => {
+    setScrollToSeq(null);
+  }, [selectedId]);
+
+  useEffect(() => {
+    if (scrollToSeq == null) return;
+    const timer = setTimeout(() => setScrollToSeq(null), 1800);
+    return () => clearTimeout(timer);
+  }, [scrollToSeq]);
+
+  useEffect(() => {
     if (!focusMessage) return;
-    // Wait until the loaded messages actually belong to the target customer,
-    // otherwise we'd check a stale list mid-switch.
-    if (messages.length === 0 || messages[0].customer_id !== focusMessage.customerId) return;
+    if (loadedMessagesCustomerId !== focusMessage.customerId) return;
+    if (messages.length === 0) {
+      toast.error("Message not found");
+      onFocusHandled?.();
+      return;
+    }
     const found = messages.some((m) => m.seq === focusMessage.seq);
     if (found) setScrollToSeq(focusMessage.seq);
     else toast.error("Message not found");
     onFocusHandled?.();
-  }, [focusMessage, messages, onFocusHandled]);
+  }, [focusMessage, messages, loadedMessagesCustomerId, onFocusHandled]);
 
   async function handleMessage(body: string) {
     if (!selectedId) return;
@@ -143,7 +158,10 @@ export function ChatPage({ focusMessage, onFocusHandled }: Props) {
       const rows = await loadCustomers();
       if (id === selectedId) {
         setSelectedId(rows.length > 0 ? rows[0].id : "");
-        if (rows.length === 0) setMessages([]);
+        if (rows.length === 0) {
+          setMessages([]);
+          setLoadedMessagesCustomerId(null);
+        }
       }
       toast.success("Customer deleted");
     } catch (err) {
