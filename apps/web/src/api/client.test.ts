@@ -39,3 +39,19 @@ describe("invokeAgent", () => {
     vi.unstubAllGlobals();
   });
 });
+
+describe("buildProduct", () => {
+  it("posts to the product build endpoint", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: "PX-100", code: "PX-100", description: "d", spec: null, build_status: "built" }),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    const result = await api.buildProduct("PX-100");
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(url).toBe("/api/products/PX-100/build");
+    expect(init.method).toBe("POST");
+    expect(result.build_status).toBe("built");
+    vi.unstubAllGlobals();
+  });
+});

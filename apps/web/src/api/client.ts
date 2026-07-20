@@ -19,6 +19,7 @@ export type Product = {
   code: string;
   description: string;
   spec: string | null;
+  build_status?: string;
 };
 export type Message = {
   id: string;
@@ -33,7 +34,7 @@ export type Message = {
 };
 export type ModelOption = { key: string; display_name: string; provider: string };
 export type CommandResult = { messages: Message[]; summary: unknown | null };
-export type GraphNode = { id: string; label: string; type: string; properties: Record<string, unknown> };
+export type GraphNode = { id: string; label: string; type: string; properties: Record<string, unknown>; chat_id?: string };
 export type GraphEdge = { id: string; source: string; target: string; type: string; properties: Record<string, unknown> };
 export type GraphData = { nodes: GraphNode[]; edges: GraphEdge[] };
 export type Slot = {
@@ -106,5 +107,9 @@ export const api = {
     req<GraphData>(`/api/customers/${customerId}/graph`),
   getGraphProfile: (customerId: string) =>
     req<GraphData>(`/api/customers/${customerId}/graph`),
+  getCustomerGraph: (customerId: string) =>
+    req<GraphData>(`/api/customers/${customerId}/graph`),
+  buildProduct: (code: string) =>
+    req<Product>(`/api/products/${code}/build`, { method: "POST" }),
   getGraphProducts: () => req<GraphData>("/api/graph/products"),
 };
