@@ -47,7 +47,7 @@ def _chat(customer_id="dummy-01"):
     return chat_service.ensure_default_chat(customer_id)
 
 
-def test_create_runs_graph_before_summary_and_posts_pending():
+def test_create_posts_pending_without_graph_write():
     ch = _chat()
     order = []
     chat_service.add_message("dummy-01", ch, "me", "need 10MT TG-BPPC")   # seq 1
@@ -60,8 +60,9 @@ def test_create_runs_graph_before_summary_and_posts_pending():
     out = command_service.dispatch("dummy-01", "create-sales-order", None, "sonnet-4-6",
                                    graph_fn=_record_graph(order), summary_gen=_gen, context_fn=_ctx)
 
-    assert [step[0] for step in order] == ["graph", "summary"]  # A before B
+    assert [step[0] for step in order] == ["summary"]  # no graph write on create
     assert out["summary"]["status"] == "pending"
+    assert out["summary"]["chat_id"] == ch
     assert mongo.summaries().count_documents({"status": "pending"}) == 1
     # the raw model response (JSON) is shared alongside the rendered card
     card = out["messages"][-1]
@@ -73,9 +74,9 @@ def test_create_blocked_when_pending_exists():
     ch = _chat()
     chat_service.add_message("dummy-01", ch, "me", "x")
     command_service.dispatch("dummy-01", "create-sales-order", None, "sonnet-4-6",
-                             graph_fn=_record_graph([]), summary_gen=_fake_summary, context_fn=_ctx)
+                             summary_gen=_fake_summary, context_fn=_ctx)
     out = command_service.dispatch("dummy-01", "create-sales-order", None, "sonnet-4-6",
-                                   graph_fn=_record_graph([]), summary_gen=_fake_summary, context_fn=_ctx)
+                                   summary_gen=_fake_summary, context_fn=_ctx)
     assert out["summary"] is None
     assert "pending" in out["messages"][-1]["body"].lower()
 
@@ -84,8 +85,9 @@ def test_approve_advances_checkpoint_and_persists():
     ch = _chat()
     chat_service.add_message("dummy-01", ch, "me", "x")   # seq 1
     command_service.dispatch("dummy-01", "create-sales-order", None, "sonnet-4-6",
-                             graph_fn=_record_graph([]), summary_gen=_fake_summary, context_fn=_ctx)
-    command_service.dispatch("dummy-01", "approve", None, "sonnet-4-6")
+                             summary_gen=_fake_summary, context_fn=_ctx)
+    command_service.dispatch("dummy-01", "approve", None, "sonnet-4-6",
+                             graph_fn=_record_graph([]))
     assert chat_service.get_last_contract_seq(ch) == 1
     assert mongo.summaries().count_documents({"status": "approved"}) == 1
     assert mongo.summaries().count_documents({"status": "pending"}) == 0
@@ -95,7 +97,7 @@ def test_edit_requires_pending_and_bumps_revision():
     ch = _chat()
     chat_service.add_message("dummy-01", ch, "me", "x")
     command_service.dispatch("dummy-01", "create-sales-order", None, "sonnet-4-6",
-                             graph_fn=_record_graph([]), summary_gen=_fake_summary, context_fn=_ctx)
+                             summary_gen=_fake_summary, context_fn=_ctx)
     command_service.dispatch("dummy-01", "edit", "qty 20", "sonnet-4-6",
                              summary_revise=_fake_revision, context_fn=_ctx)
     pending = mongo.summaries().find_one({"status": "pending"})
@@ -114,7 +116,7 @@ def test_create_forwards_context_blocks_to_summary_gen():
         return _fake_summary()
 
     command_service.dispatch("dummy-01", "create-sales-order", None, "sonnet-4-6",
-                             graph_fn=_record_graph([]), summary_gen=_gen, context_fn=_ctx)
+                             summary_gen=_gen, context_fn=_ctx)
     assert captured == {"product_block": "CATALOG", "profile_block": "PROFILE",
                         "history_block": "HISTORY"}
 
@@ -124,7 +126,7 @@ def test_edit_forwards_context_blocks_to_summary_revise():
     captured = {}
     chat_service.add_message("dummy-01", ch, "me", "x")
     command_service.dispatch("dummy-01", "create-sales-order", None, "sonnet-4-6",
-                             graph_fn=_record_graph([]), summary_gen=_fake_summary, context_fn=_ctx)
+                             summary_gen=_fake_summary, context_fn=_ctx)
 
     def _rev(name, previous, instructions, window, model_key, *, product_block=None,
              profile_block=None, history_block=None, **k):

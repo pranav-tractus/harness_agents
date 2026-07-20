@@ -35,6 +35,21 @@ def test_customer_graph_reads_branch_and_tags_chat(cid):
     assert line["chat_id"] == "chat-1"
 
 
+def test_reader_emits_supersedes_edge(cid):
+    _skip()
+    pg.resync(cid, "T", {})
+    empty = {"items": []}
+    cg.write_contract(cid, "chat-1", "A", empty, [], [], to_seq=1)
+    cg.write_contract(cid, "chat-1", "A", empty, [], [], to_seq=2)
+    data = gr.read_customer_graph(cid)
+    supersedes = [e for e in data["edges"] if e["type"] == "SUPERSEDES"]
+    assert len(supersedes) == 1
+    contracts = {n["id"]: n for n in data["nodes"] if n["type"] == "Contract"}
+    assert supersedes[0]["source"] in contracts and supersedes[0]["target"] in contracts
+    assert contracts[supersedes[0]["source"]]["properties"]["revision"] == 1
+    assert contracts[supersedes[0]["target"]]["properties"]["revision"] == 0
+
+
 def test_empty_customer_graph(cid):
     _skip()
     assert gr.read_customer_graph("no-such") == {"nodes": [], "edges": []}

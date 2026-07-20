@@ -3,8 +3,8 @@ from datetime import datetime, timezone
 
 from apps.api.db import falkor
 
-_SOFT_TO_SLOT = {"shipping_address": "shipping_address", "packing": "packing",
-                 "loading": "loading", "payment_date": "payment_date"}
+# Term kind "payment" is backed by the ledger slot "payment_date"
+_TERM_KIND_TO_SLOT = {"payment": "payment_date", "packing": "packing", "loading": "loading"}
 
 
 def _now() -> str:
@@ -26,7 +26,11 @@ def write_contract(customer_id, chat_id, chat_title, contract, slots, source_seq
     _ensure_chat(g, customer_id, chat_id, chat_title)
 
     contract_id = uuid.uuid4().hex
-    # revision lineage: newest previous contract in this chat -> SUPERSEDES
+    # revision = count of all prior contracts in this chat (not LIMIT 1)
+    count_rows = g.query(
+        "MATCH (ch:Chat {id: $chat})-[:HAS_CONTRACT]->(pc:Contract) RETURN count(pc)",
+        {"chat": chat_id}).result_set
+    revision = int(count_rows[0][0]) if count_rows else 0
     prev = g.query(
         "MATCH (ch:Chat {id: $chat})-[:HAS_CONTRACT]->(pc:Contract) "
         "RETURN pc.id ORDER BY pc.created_at DESC LIMIT 1", {"chat": chat_id}).result_set
@@ -35,7 +39,7 @@ def write_contract(customer_id, chat_id, chat_title, contract, slots, source_seq
         "CREATE (ct:Contract {id: $cid, status: 'finalized', revision: $rev, "
         "created_at: $now, finalized_at: $now}) "
         "MERGE (ch)-[:HAS_CONTRACT]->(ct)",
-        {"chat": chat_id, "cid": contract_id, "rev": (len(prev)), "now": _now()})
+        {"chat": chat_id, "cid": contract_id, "rev": revision, "now": _now()})
     if prev:
         g.query("MATCH (a:Contract {id:$new}),(b:Contract {id:$old}) MERGE (a)-[:SUPERSEDES]->(b)",
                 {"new": contract_id, "old": prev[0][0]})
@@ -65,12 +69,13 @@ def write_contract(customer_id, chat_id, chat_title, contract, slots, source_seq
                         ("packing", (contract.get("items") or [{}])[0].get("packing")),
                         ("loading", (contract.get("items") or [{}])[0].get("loading"))):
         if value:
+            slot_key = _TERM_KIND_TO_SLOT.get(kind, kind)
             g.query(
                 "MATCH (ct:Contract {id:$cid}) "
                 "CREATE (t:Term {kind:$kind, value:$value, agreed_by:$agreed}) "
                 "MERGE (ct)-[:HAS_TERM]->(t)",
                 {"cid": contract_id, "kind": kind, "value": str(value),
-                 "agreed": agreed.get(kind, [])})
+                 "agreed": agreed.get(slot_key, [])})
 
     for ref in source_seqs:
         g.query(

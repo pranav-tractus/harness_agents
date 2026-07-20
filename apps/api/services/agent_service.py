@@ -85,8 +85,10 @@ def _customer_name(customer_id: str) -> str:
     return doc["name"] if doc else customer_id
 
 
-def _pending(customer_id: str) -> dict | None:
-    return mongo.summaries().find_one({"customer_id": customer_id, "status": "pending"})
+def _pending(customer_id: str, chat_id: str | None = None) -> dict | None:
+    chat_id = chat_id or chat_service.ensure_default_chat(customer_id)
+    return mongo.summaries().find_one(
+        {"customer_id": customer_id, "chat_id": chat_id, "status": "pending"})
 
 
 def _summary_out(doc: dict) -> dict:
@@ -120,7 +122,7 @@ def invoke(customer_id, model_key, *, decider=None, context_fn=None, graph_fn=No
                 "summary": None}
 
     ctx = context_fn(customer_id)
-    pending = _pending(customer_id)
+    pending = _pending(customer_id, chat_id)
     previous_json = None
     if pending:
         previous_json = SOExtractContractList(**pending["content"]).model_dump_json(indent=2)
@@ -144,12 +146,12 @@ def invoke(customer_id, model_key, *, decider=None, context_fn=None, graph_fn=No
         mongo.summaries().update_one(
             {"_id": pending["_id"]},
             {"$set": {"content": contract.model_dump(), "rendered_markdown": markdown,
-                      "slots": slots, "to_seq": to_seq, "model_key": model_key},
+                      "slots": slots, "to_seq": to_seq, "model_key": model_key, "chat_id": chat_id},
              "$inc": {"revision": 1}})
         doc = mongo.summaries().find_one({"_id": pending["_id"]})
     else:
-        doc = {"customer_id": customer_id, "status": "pending", "model_key": model_key,
-               "from_seq": window[0]["seq"], "to_seq": to_seq, "revision": 0,
+        doc = {"customer_id": customer_id, "chat_id": chat_id, "status": "pending",
+               "model_key": model_key, "from_seq": window[0]["seq"], "to_seq": to_seq, "revision": 0,
                "content": contract.model_dump(), "rendered_markdown": markdown,
                "slots": slots, "created_at": _now(), "approved_at": None}
         doc["_id"] = mongo.summaries().insert_one(doc).inserted_id
@@ -159,10 +161,10 @@ def invoke(customer_id, model_key, *, decider=None, context_fn=None, graph_fn=No
     return {"messages": [card], "summary": _summary_out(doc)}
 
 
-def _persist_final(customer_id, contract, slots, from_seq, to_seq, model_key) -> dict:
+def _persist_final(customer_id, chat_id, contract, slots, from_seq, to_seq, model_key) -> dict:
     markdown = render_summary_markdown(contract, _customer_name(customer_id))
-    doc = {"customer_id": customer_id, "status": "approved", "model_key": model_key,
-           "from_seq": from_seq, "to_seq": to_seq, "revision": 0,
+    doc = {"customer_id": customer_id, "chat_id": chat_id, "status": "approved",
+           "model_key": model_key, "from_seq": from_seq, "to_seq": to_seq, "revision": 0,
            "content": contract.model_dump(), "rendered_markdown": markdown,
            "slots": slots, "created_at": _now(), "approved_at": _now()}
     doc["_id"] = mongo.summaries().insert_one(doc).inserted_id
@@ -179,12 +181,13 @@ def finalize(customer_id, *, decision=None, window=None, model_key="", graph_fn=
 
     graph_fn(customer_id, chat_id, _chat_title(chat_id), _contract_dict(contract), slots,
              _source_seqs(window), to_seq)          # Step A before persist
-    doc = _persist_final(customer_id, contract, slots,
+    doc = _persist_final(customer_id, chat_id, contract, slots,
                          from_seq=(window[0]["seq"] if window else to_seq),
                          to_seq=to_seq, model_key=model_key)
     chat_service.set_last_contract_seq(chat_id, to_seq)
-    # clear any stale pending draft
-    mongo.summaries().delete_many({"customer_id": customer_id, "status": "pending"})
+    # clear any stale pending draft for this chat
+    mongo.summaries().delete_many(
+        {"customer_id": customer_id, "chat_id": chat_id, "status": "pending"})
     msg = _agent_msg(customer_id, chat_id, (decision.message if decision else "Finalized.") + "\n\n"
                      + doc["rendered_markdown"], "final", summary_id=str(doc["_id"]))
     return {"messages": [msg], "summary": _summary_out(doc)}
@@ -192,7 +195,7 @@ def finalize(customer_id, *, decision=None, window=None, model_key="", graph_fn=
 
 def approve(customer_id, *, graph_fn=None) -> dict:
     chat_id = chat_service.ensure_default_chat(customer_id)
-    pending = _pending(customer_id)
+    pending = _pending(customer_id, chat_id)
     if not pending:
         return {"messages": [_agent_msg(customer_id, chat_id, "No draft to finalize.", "chat")], "summary": None}
     graph_fn = graph_fn or chat_graph_service.write_contract
@@ -202,7 +205,7 @@ def approve(customer_id, *, graph_fn=None) -> dict:
     graph_fn(customer_id, chat_id, _chat_title(chat_id), _contract_dict(contract), slots,
              _source_seqs(window), pending["to_seq"])
     mongo.summaries().update_one({"_id": pending["_id"]},
-        {"$set": {"status": "approved", "approved_at": _now()}})
+        {"$set": {"status": "approved", "approved_at": _now(), "chat_id": chat_id}})
     chat_service.set_last_contract_seq(chat_id, pending["to_seq"])
     approved = mongo.summaries().find_one({"_id": pending["_id"]})
     msg = _agent_msg(customer_id, chat_id, "Approved and finalized.\n\n" + approved["rendered_markdown"],

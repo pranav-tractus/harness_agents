@@ -9,7 +9,9 @@ def _hash(description: str, spec: str | None) -> str:
 
 
 def _delete(g, code: str) -> None:
-    g.query("MATCH (p:Product {code:$c})-[r]->(n) WHERE n:Alias OR n:SpecAttr OR n:Category OR n:Application "
+    # Categories are MERGE-shared across products — detach edges only
+    g.query("MATCH (p:Product {code:$c})-[r:IN_CATEGORY]->(:Category) DELETE r", {"c": code})
+    g.query("MATCH (p:Product {code:$c})-[r]->(n) WHERE n:Alias OR n:SpecAttr OR n:Application "
             "DELETE r, n", {"c": code})
     g.query("MATCH (p:Product {code:$c}) DELETE p", {"c": code})
 

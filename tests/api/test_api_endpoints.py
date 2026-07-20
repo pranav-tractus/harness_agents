@@ -35,7 +35,7 @@ def client(monkeypatch):
     monkeypatch.setattr("apps.api.routers.products.product_graph_service.remove_product",
                         lambda *a, **k: None)
     _seed_fixture_data()
-    monkeypatch.setattr(command_service.chat_graph_service, "write_contract",
+    monkeypatch.setattr("apps.api.services.agent_service.chat_graph_service.write_contract",
                         lambda *a, **k: "contract-id")
     monkeypatch.setattr(command_service.summary_service, "generate",
                         lambda *a, **k: make_extract(items=[make_item(description="TG-BPPC")]))
@@ -113,11 +113,13 @@ def test_create_customer_slug_collision(client):
 def test_delete_customer_cascades(client):
     client.post("/api/customers/dummy-01/messages", json={"role": "me", "body": "hi"})
     assert mongo.messages().count_documents({"customer_id": "dummy-01"}) == 1
+    assert mongo.chats().count_documents({"customer_id": "dummy-01"}) >= 1
     r = client.delete("/api/customers/dummy-01")
     assert r.status_code == 204
     assert client.get("/api/customers/dummy-01").status_code == 404
     assert mongo.messages().count_documents({"customer_id": "dummy-01"}) == 0
     assert mongo.summaries().count_documents({"customer_id": "dummy-01"}) == 0
+    assert mongo.chats().count_documents({"customer_id": "dummy-01"}) == 0
 
 
 def test_delete_missing_customer_404(client):

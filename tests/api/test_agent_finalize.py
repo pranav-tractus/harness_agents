@@ -48,10 +48,23 @@ def test_approve_finalizes_pending_draft():
     ch = _chat()
     chat_service.add_message("dummy-01", ch, "seller", "x")
     mongo.summaries().insert_one({
-        "customer_id": "dummy-01", "status": "pending", "model_key": "sonnet-4-6",
+        "customer_id": "dummy-01", "chat_id": ch, "status": "pending", "model_key": "sonnet-4-6",
         "from_seq": 1, "to_seq": 1, "revision": 0,
         "content": SOExtractContractList(data=[]).model_dump(),
         "rendered_markdown": "draft", "slots": [], "created_at": "t", "approved_at": None})
     out = agent_service.approve("dummy-01", graph_fn=_graph([]))
     assert out["summary"]["status"] == "approved"
     assert chat_service.get_last_contract_seq(ch) == 1
+    assert out["summary"]["chat_id"] == ch
+
+
+def test_finalize_stamps_chat_id_on_approved_summary():
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "seller", "10MT CIF Busan")
+    dec = AgentDecision(mode="finalize", message="Done.",
+                        contract=SOExtractContractList(data=[]), ready_to_finalize=True, ledger=[])
+    window = chat_service.chat_messages_since(ch, 0)
+    out = agent_service.finalize("dummy-01", decision=dec, window=window,
+                                 model_key="sonnet-4-6", graph_fn=_graph([]))
+    assert out["summary"]["chat_id"] == ch
+    assert mongo.summaries().find_one({"status": "approved"})["chat_id"] == ch

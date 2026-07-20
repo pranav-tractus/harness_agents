@@ -56,6 +56,11 @@ def read_customer_graph(customer_id: str) -> dict:
                                {"id": con_id, "revision": rev, "status": cstatus}, chat_id=chat_id))
             _edge(edges, f"Chat::{chat_id}", f"Contract::{con_id}", "HAS_CONTRACT")
 
+            for (old_id,) in g.query(
+                    "MATCH (ct:Contract {id:$c})-[:SUPERSEDES]->(old:Contract) RETURN old.id",
+                    {"c": con_id}).result_set:
+                _edge(edges, f"Contract::{con_id}", f"Contract::{old_id}", "SUPERSEDES")
+
             for (li, code, qty, unit, price, punit, inco, agreed) in g.query(
                     "MATCH (ct:Contract {id:$c})-[:HAS_LINE]->(li:LineItem) "
                     "RETURN li.id, li.product_code, li.quantity, li.unit, li.price, li.price_unit, "

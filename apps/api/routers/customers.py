@@ -1,3 +1,4 @@
+import logging
 import re
 from datetime import datetime, timezone
 
@@ -6,6 +7,8 @@ from fastapi import APIRouter, HTTPException, Response
 from apps.api.db import falkor, mongo
 from apps.api.models import CustomerCreate, CustomerOut, ProfileUpdate
 from apps.api.services import profile_graph_service
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/customers", tags=["customers"])
 
@@ -44,7 +47,10 @@ def create_customer(body: CustomerCreate) -> CustomerOut:
         "updated_at": datetime.now(timezone.utc).isoformat(),
     }
     mongo.customers().insert_one(doc)
-    profile_graph_service.resync(cid, name, {})
+    try:
+        profile_graph_service.resync(cid, name, {})
+    except Exception:
+        logger.warning("Failed to resync profile graph for %s", cid, exc_info=True)
     return _out(mongo.customers().find_one({"_id": cid}))
 
 
@@ -66,7 +72,10 @@ def update_profile(customer_id: str, body: ProfileUpdate) -> CustomerOut:
         {"_id": customer_id},
         {"$set": {"profile": profile, "updated_at": datetime.now(timezone.utc).isoformat()}},
     )
-    profile_graph_service.resync(customer_id, doc["name"], profile)
+    try:
+        profile_graph_service.resync(customer_id, doc["name"], profile)
+    except Exception:
+        logger.warning("Failed to resync profile graph for %s", customer_id, exc_info=True)
     return _out(mongo.customers().find_one({"_id": customer_id}))
 
 
@@ -77,6 +86,7 @@ def delete_customer(customer_id: str) -> Response:
         raise HTTPException(404, "customer not found")
     mongo.messages().delete_many({"customer_id": customer_id})
     mongo.summaries().delete_many({"customer_id": customer_id})
+    mongo.chats().delete_many({"customer_id": customer_id})
     if falkor.is_available():
         try:
             falkor.customer_graph(customer_id).delete()

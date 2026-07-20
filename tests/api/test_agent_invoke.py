@@ -50,6 +50,7 @@ def test_draft_upserts_pending_with_ledger():
     out = agent_service.invoke("dummy-01", "sonnet-4-6",
                                decider=_decider(dec), context_fn=_ctx)
     assert out["summary"]["status"] == "pending"
+    assert out["summary"]["chat_id"] == ch
     assert out["summary"]["slots"][0]["slot"] == "ship_term"
     assert out["messages"][-1]["kind"] == "draft"
 
