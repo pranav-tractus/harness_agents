@@ -1,184 +1,117 @@
-from pathlib import Path
 from typing import Any
 
-import kuzu
-
-GRAPH_ROOT = Path("graph_dbs")
+from apps.api.db import falkor
 
 
-def _empty() -> dict[str, list]:
+def _empty():
     return {"nodes": [], "edges": []}
 
 
-def _node(node_id: str, label: str, node_type: str, props: dict[str, Any]) -> dict:
-    return {"id": node_id, "label": label, "type": node_type, "properties": props}
+def _node(node_id, label, node_type, props, chat_id=None):
+    n = {"id": node_id, "label": label, "type": node_type, "properties": props}
+    if chat_id is not None:
+        n["chat_id"] = chat_id
+    return n
 
 
-def _edge(source: str, target: str, edge_type: str, props: dict[str, Any], seen: set[str]) -> dict:
-    base = f"{source}__{edge_type}__{target}"
-    eid, n = base, 1
-    while eid in seen:
-        eid = f"{base}__{n}"
-        n += 1
-    seen.add(eid)
-    return {"id": eid, "source": source, "target": target, "type": edge_type, "properties": props}
+def _edge(edges, source, target, etype):
+    edges.append({"id": f"{source}__{etype}__{target}", "source": source,
+                  "target": target, "type": etype, "properties": {}})
 
 
-def read_chat_graph(customer_id: str) -> dict:
-    path = GRAPH_ROOT / customer_id / "chat.db"
-    if not path.exists():
+def read_customer_graph(customer_id: str) -> dict:
+    if not falkor.is_available():
         return _empty()
+    g = falkor.customer_graph(customer_id)
+    nodes, edges = [], []
 
-    conn = kuzu.Connection(kuzu.Database(str(path)))
-    nodes: list[dict] = []
-    edges: list[dict] = []
-    seen: set[str] = set()
-
-    res = conn.execute("MATCH (c:Customer) RETURN c.id")
-    while res.has_next():
-        cid = res.get_next()[0]
-        nodes.append(_node(f"Customer::{cid}", cid, "Customer", {"id": cid}))
-
-    res = conn.execute("MATCH (p:Product) RETURN p.name")
-    while res.has_next():
-        name = res.get_next()[0]
-        nodes.append(_node(f"Product::{name}", name, "Product", {"name": name}))
-
-    res = conn.execute("MATCH (po:Port) RETURN po.name")
-    while res.has_next():
-        name = res.get_next()[0]
-        nodes.append(_node(f"Port::{name}", name, "Port", {"name": name}))
-
-    res = conn.execute(
-        "MATCH (e:Episode) RETURN e.source_id, e.customer_id, e.timestamp"
-    )
-    while res.has_next():
-        sid, cid, ts = res.get_next()
-        nodes.append(_node(
-            f"Episode::{sid}", sid, "Episode",
-            {"source_id": sid, "customer_id": cid, "timestamp": ts},
-        ))
-
-    res = conn.execute(
-        "MATCH (c:Customer)-[b:BUYS]->(p:Product) "
-        "RETURN c.id, p.name, b.quantity, b.unit, b.price, b.price_unit, "
-        "b.incoterm, b.timestamp, b.source_id"
-    )
-    while res.has_next():
-        row = res.get_next()
-        edges.append(_edge(
-            f"Customer::{row[0]}", f"Product::{row[1]}", "BUYS",
-            {"quantity": row[2], "unit": row[3], "price": row[4],
-             "price_unit": row[5], "incoterm": row[6],
-             "timestamp": row[7], "source_id": row[8]},
-            seen,
-        ))
-
-    res = conn.execute(
-        "MATCH (c:Customer)-[s:SHIPS_TO]->(po:Port) "
-        "RETURN c.id, po.name, s.incoterm, s.timestamp, s.source_id"
-    )
-    while res.has_next():
-        row = res.get_next()
-        edges.append(_edge(
-            f"Customer::{row[0]}", f"Port::{row[1]}", "SHIPS_TO",
-            {"incoterm": row[2], "timestamp": row[3], "source_id": row[4]},
-            seen,
-        ))
-
-    res = conn.execute(
-        "MATCH (c:Customer)-[t:HAS_TERMS]->(e:Episode) "
-        "RETURN c.id, e.source_id, t.payment_terms, t.packing, t.loading"
-    )
-    while res.has_next():
-        row = res.get_next()
-        edges.append(_edge(
-            f"Customer::{row[0]}", f"Episode::{row[1]}", "HAS_TERMS",
-            {"payment_terms": row[2], "packing": row[3], "loading": row[4]},
-            seen,
-        ))
-
-    return {"nodes": nodes, "edges": edges}
-
-
-def read_profile_graph(customer_id: str) -> dict:
-    path = GRAPH_ROOT / customer_id / "profile.db"
-    if not path.exists():
+    cust = g.query("MATCH (c:Customer {id:$id}) RETURN c.id, c.name", {"id": customer_id}).result_set
+    if not cust:
         return _empty()
+    cid, cname = cust[0]
+    nodes.append(_node(f"Customer::{cid}", cname or cid, "Customer", {"id": cid, "name": cname}))
 
-    conn = kuzu.Connection(kuzu.Database(str(path)))
-    nodes: list[dict] = []
-    edges: list[dict] = []
-    seen: set[str] = set()
-
-    res = conn.execute("MATCH (c:Customer) RETURN c.id, c.name")
-    while res.has_next():
-        cid, name = res.get_next()
-        nodes.append(_node(f"Customer::{cid}", name, "Customer", {"id": cid, "name": name}))
-
-    res = conn.execute("MATCH (a:Attribute) RETURN a.key, a.value")
-    while res.has_next():
-        key, value = res.get_next()
+    for key, value in g.query("MATCH (:Customer {id:$id})-[:HAS_ATTRIBUTE]->(a:Attribute) "
+                              "RETURN a.key, a.value", {"id": customer_id}).result_set:
         nodes.append(_node(f"Attribute::{key}", key, "Attribute", {"key": key, "value": value}))
+        _edge(edges, f"Customer::{cid}", f"Attribute::{key}", "HAS_ATTRIBUTE")
 
-    res = conn.execute(
-        "MATCH (c:Customer)-[:HAS_ATTRIBUTE]->(a:Attribute) RETURN c.id, a.key"
-    )
-    while res.has_next():
-        cid, key = res.get_next()
-        edges.append(_edge(
-            f"Customer::{cid}", f"Attribute::{key}", "HAS_ATTRIBUTE", {}, seen,
-        ))
+    for slot, val, sup in g.query("MATCH (:Customer {id:$id})-[:PREFERS]->(pr:Preference) "
+                                  "RETURN pr.slot, pr.value, pr.support", {"id": customer_id}).result_set:
+        nodes.append(_node(f"Preference::{slot}", f"{slot}={val}", "Preference",
+                           {"slot": slot, "value": val, "support": sup}))
+        _edge(edges, f"Customer::{cid}", f"Preference::{slot}", "PREFERS")
+
+    for chat_id, title, status in g.query(
+            "MATCH (:Customer {id:$id})-[:HAS_CHAT]->(ch:Chat) RETURN ch.id, ch.title, ch.status",
+            {"id": customer_id}).result_set:
+        nodes.append(_node(f"Chat::{chat_id}", title or chat_id, "Chat",
+                           {"id": chat_id, "status": status}, chat_id=chat_id))
+        _edge(edges, f"Customer::{cid}", f"Chat::{chat_id}", "HAS_CHAT")
+
+        for (con_id, rev, cstatus) in g.query(
+                "MATCH (ch:Chat {id:$ch})-[:HAS_CONTRACT]->(ct:Contract) "
+                "RETURN ct.id, ct.revision, ct.status", {"ch": chat_id}).result_set:
+            nodes.append(_node(f"Contract::{con_id}", f"Contract rev{rev}", "Contract",
+                               {"id": con_id, "revision": rev, "status": cstatus}, chat_id=chat_id))
+            _edge(edges, f"Chat::{chat_id}", f"Contract::{con_id}", "HAS_CONTRACT")
+
+            for (li, code, qty, unit, price, punit, inco, agreed) in g.query(
+                    "MATCH (ct:Contract {id:$c})-[:HAS_LINE]->(li:LineItem) "
+                    "RETURN li.id, li.product_code, li.quantity, li.unit, li.price, li.price_unit, "
+                    "li.incoterm, li.agreed_by", {"c": con_id}).result_set:
+                label = f"{code} · {qty or '?'} {unit or ''} · {inco or ''}".strip()
+                nodes.append(_node(f"LineItem::{li}", label, "LineItem",
+                    {"product_code": code, "quantity": qty, "unit": unit, "price": price,
+                     "price_unit": punit, "incoterm": inco, "agreed_by": agreed}, chat_id=chat_id))
+                _edge(edges, f"Contract::{con_id}", f"LineItem::{li}", "HAS_LINE")
+                if code:
+                    nid = f"Product::{code}"
+                    if not any(n["id"] == nid for n in nodes):
+                        nodes.append(_node(nid, code, "Product", {"code": code}, chat_id=chat_id))
+                    _edge(edges, f"LineItem::{li}", nid, "OF_PRODUCT")
+                for (pname,) in g.query("MATCH (li:LineItem {id:$li})-[:SHIP_TO]->(po:Port) RETURN po.name",
+                                        {"li": li}).result_set:
+                    pid = f"Port::{pname}"
+                    if not any(n["id"] == pid for n in nodes):
+                        nodes.append(_node(pid, pname, "Port", {"name": pname}, chat_id=chat_id))
+                    _edge(edges, f"LineItem::{li}", pid, "SHIP_TO")
+
+            for i, (kind, value, agreed) in enumerate(g.query(
+                    "MATCH (ct:Contract {id:$c})-[:HAS_TERM]->(t:Term) RETURN t.kind, t.value, t.agreed_by",
+                    {"c": con_id}).result_set):
+                tid = f"Term::{con_id}::{kind}::{i}"
+                nodes.append(_node(tid, f"{kind}: {value}", "Term",
+                                   {"kind": kind, "value": value, "agreed_by": agreed}, chat_id=chat_id))
+                _edge(edges, f"Contract::{con_id}", tid, "HAS_TERM")
+
+            for i, (seq, role, snip) in enumerate(g.query(
+                    "MATCH (ct:Contract {id:$c})-[:DERIVED_FROM]->(m:MessageRef) "
+                    "RETURN m.seq, m.role, m.snippet", {"c": con_id}).result_set):
+                mid = f"MessageRef::{con_id}::{i}"
+                nodes.append(_node(mid, f"#{seq} {role}", "MessageRef",
+                                   {"seq": seq, "role": role, "snippet": snip}, chat_id=chat_id))
+                _edge(edges, f"Contract::{con_id}", mid, "DERIVED_FROM")
 
     return {"nodes": nodes, "edges": edges}
 
 
 def read_product_graph() -> dict:
-    path = GRAPH_ROOT / "_catalog" / "product.db"
-    if not path.exists():
+    if not falkor.is_available():
         return _empty()
-
-    conn = kuzu.Connection(kuzu.Database(str(path)))
-    nodes: list[dict] = []
-    edges: list[dict] = []
-    seen: set[str] = set()
-
-    res = conn.execute("MATCH (p:Product) RETURN p.code, p.description, p.spec")
-    while res.has_next():
-        code, desc, spec = res.get_next()
-        nodes.append(_node(
-            f"Product::{code}", code, "Product",
-            {"code": code, "description": desc, "spec": spec},
-        ))
-
-    res = conn.execute("MATCH (a:Alias) RETURN a.id, a.code, a.name")
-    while res.has_next():
-        aid, code, name = res.get_next()
-        nodes.append(_node(
-            f"Alias::{aid}", name, "Alias",
-            {"id": aid, "code": code, "name": name},
-        ))
-
-    res = conn.execute("MATCH (s:SpecAttr) RETURN s.id, s.code, s.key, s.value")
-    while res.has_next():
-        sid, code, key, value = res.get_next()
-        nodes.append(_node(
-            f"SpecAttr::{sid}", f"{key}: {value}", "SpecAttr",
-            {"id": sid, "code": code, "key": key, "value": value},
-        ))
-
-    res = conn.execute(
-        "MATCH (p:Product)-[:HAS_ALIAS]->(a:Alias) RETURN p.code, a.id"
-    )
-    while res.has_next():
-        code, aid = res.get_next()
-        edges.append(_edge(f"Product::{code}", f"Alias::{aid}", "HAS_ALIAS", {}, seen))
-
-    res = conn.execute(
-        "MATCH (p:Product)-[:HAS_SPEC]->(s:SpecAttr) RETURN p.code, s.id"
-    )
-    while res.has_next():
-        code, sid = res.get_next()
-        edges.append(_edge(f"Product::{code}", f"SpecAttr::{sid}", "HAS_SPEC", {}, seen))
-
+    g = falkor.catalog_graph()
+    nodes, edges = [], []
+    prods = g.query("MATCH (p:Product) RETURN p.code, p.description, p.spec").result_set
+    if not prods:
+        return _empty()
+    for code, desc, spec in prods:
+        nodes.append(_node(f"Product::{code}", code, "Product", {"code": code, "description": desc, "spec": spec}))
+    for (rel, ntype, label_cypher) in (
+        ("HAS_ALIAS", "Alias", "a.name"), ("HAS_SPEC", "SpecAttr", "a.key + ': ' + a.value"),
+        ("IN_CATEGORY", "Category", "a.name"), ("USED_FOR", "Application", "a.name")):
+        rows = g.query(f"MATCH (p:Product)-[:{rel}]->(a:{ntype}) RETURN p.code, id(a), {label_cypher}").result_set
+        for code, aid, label in rows:
+            nid = f"{ntype}::{aid}"
+            nodes.append(_node(nid, label, ntype, {"label": label}))
+            _edge(edges, f"Product::{code}", nid, rel)
     return {"nodes": nodes, "edges": edges}

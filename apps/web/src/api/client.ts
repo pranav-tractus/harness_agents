@@ -103,8 +103,8 @@ export const api = {
     }),
   listModels: () => req<ModelOption[]>("/api/models"),
   getGraphChat: (customerId: string) =>
-    req<GraphData>(`/api/customers/${customerId}/graph/chat`),
+    req<GraphData>(`/api/customers/${customerId}/graph`),
   getGraphProfile: (customerId: string) =>
-    req<GraphData>(`/api/customers/${customerId}/graph/profile`),
+    req<GraphData>(`/api/customers/${customerId}/graph`),
   getGraphProducts: () => req<GraphData>("/api/graph/products"),
 };

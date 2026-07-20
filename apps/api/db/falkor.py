@@ -19,7 +19,20 @@ def reset_client() -> None:
 
 
 def customer_graph(customer_id: str):
-    return get_client().select_graph(f"customer:{customer_id}")
+    g = get_client().select_graph(f"customer:{customer_id}")
+    name = f"customer:{customer_id}"
+    orig_delete = g.delete
+
+    def delete():
+        if name not in get_client().list_graphs():
+            return
+        try:
+            orig_delete()
+        except Exception:
+            pass
+
+    g.delete = delete
+    return g
 
 
 def catalog_graph():

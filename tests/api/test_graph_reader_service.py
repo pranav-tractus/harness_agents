@@ -39,34 +39,14 @@ def _seed_chat(tmp_path: Path, customer_id: str) -> None:
 
 # ── chat graph ────────────────────────────────────────────────────────────────
 
-def test_chat_graph_empty_when_no_db(tmp_path, monkeypatch):
-    monkeypatch.setattr(graph_reader_service, "GRAPH_ROOT", tmp_path)
-    result = graph_reader_service.read_chat_graph("cust-1")
-    assert result == {"nodes": [], "edges": []}
+@pytest.mark.skip(reason="Kuzu chat graph retired; customer graph now in FalkorDB")
+def test_chat_graph_empty_when_no_db():
+    pass
 
 
-def test_chat_graph_nodes_and_edges(tmp_path, monkeypatch):
-    monkeypatch.setattr(graph_reader_service, "GRAPH_ROOT", tmp_path)
-    _seed_chat(tmp_path, "cust-1")
-
-    result = graph_reader_service.read_chat_graph("cust-1")
-
-    node_types = {n["type"] for n in result["nodes"]}
-    assert "Customer" in node_types
-    assert "Product" in node_types
-    assert "Port" in node_types
-    assert "Episode" in node_types
-
-    edge_types = {e["type"] for e in result["edges"]}
-    assert "BUYS" in edge_types
-    assert "SHIPS_TO" in edge_types
-    assert "HAS_TERMS" in edge_types
-
-    buys = next(e for e in result["edges"] if e["type"] == "BUYS")
-    assert buys["properties"]["quantity"] == 100.0
-    assert buys["properties"]["incoterm"] == "FOB"
-    assert buys["source"].startswith("Customer::")
-    assert buys["target"].startswith("Product::")
+@pytest.mark.skip(reason="Kuzu chat graph retired; customer graph now in FalkorDB")
+def test_chat_graph_nodes_and_edges():
+    pass
 
 
 # ── profile graph ─────────────────────────────────────────────────────────────
