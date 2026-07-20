@@ -12,7 +12,9 @@ router = APIRouter(prefix="/api/products", tags=["products"])
 
 
 def _out(doc: dict) -> ProductOut:
-    return ProductOut(id=doc["_id"], code=doc["code"], description=doc["description"], spec=doc.get("spec"))
+    return ProductOut(id=doc["_id"], code=doc["code"], description=doc["description"],
+                      spec=doc.get("spec"),
+                      build_status=product_graph_service.status(doc["code"], doc["description"], doc.get("spec")))
 
 
 @router.get("")
@@ -29,10 +31,6 @@ def create_product(body: ProductCreate) -> ProductOut:
         raise HTTPException(409, "product already exists")
     doc = {"_id": code, "code": code, "description": body.description, "spec": body.spec}
     mongo.products().insert_one(doc)
-    try:
-        product_graph_service.build(code, body.description, body.spec)
-    except Exception:
-        logger.warning("Failed to sync product graph for %s", code, exc_info=True)
     return _out(mongo.products().find_one({"_id": code}))
 
 
@@ -53,11 +51,23 @@ def update_product(product_id: str, body: ProductUpdate) -> ProductOut:
     if changes:
         mongo.products().update_one({"_id": product_id}, {"$set": changes})
     updated = mongo.products().find_one({"_id": product_id})
-    try:
-        product_graph_service.build(updated["code"], updated["description"], updated.get("spec"))
-    except Exception:
-        logger.warning("Failed to sync product graph for %s", product_id, exc_info=True)
     return _out(updated)
+
+
+@router.post("/build-all")
+def build_all() -> list[ProductOut]:
+    for doc in mongo.products().find():
+        product_graph_service.build(doc["code"], doc["description"], doc.get("spec"))
+    return [_out(d) for d in mongo.products().find().sort("_id", 1)]
+
+
+@router.post("/{product_id}/build")
+def build_product(product_id: str) -> ProductOut:
+    doc = mongo.products().find_one({"_id": product_id})
+    if not doc:
+        raise HTTPException(404, "product not found")
+    product_graph_service.build(doc["code"], doc["description"], doc.get("spec"))
+    return _out(mongo.products().find_one({"_id": product_id}))
 
 
 @router.delete("/{product_id}", status_code=204)

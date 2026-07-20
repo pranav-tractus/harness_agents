@@ -42,6 +42,7 @@ class ProductOut(BaseModel):
     code: str
     description: str
     spec: str | None = None
+    build_status: str = "not built"
 
 
 class ProductCreate(BaseModel):

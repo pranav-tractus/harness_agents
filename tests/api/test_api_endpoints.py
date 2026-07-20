@@ -136,32 +136,33 @@ def test_create_product_conflict(client):
     assert r.status_code == 409
 
 
-def test_create_product_syncs_graph(client, monkeypatch):
+def test_create_product_does_not_sync_graph(client, monkeypatch):
     calls = []
     monkeypatch.setattr("apps.api.routers.products.product_graph_service.build",
                         lambda code, description, spec, *a, **k: calls.append((code, description, spec)))
     r = client.post("/api/products", json={"code": "NEW-2", "description": "New", "spec": "s"})
     assert r.status_code == 201
-    assert ("NEW-2", "New", "s") in calls
+    assert calls == []
 
 
-def test_create_product_succeeds_when_graph_sync_fails(client, monkeypatch):
-    def raise_sync_error(*args, **kwargs):
-        raise RuntimeError("graph unavailable")
+def test_build_product_syncs_graph(client, monkeypatch):
+    calls = []
+    monkeypatch.setattr("apps.api.routers.products.product_graph_service.build",
+                        lambda code, description, spec, *a, **k: calls.append((code, description, spec)))
+    monkeypatch.setattr("apps.api.routers.products.product_graph_service.status",
+                        lambda *a, **k: "built")
+    r = client.post("/api/products/TG-BPPC/build")
+    assert r.status_code == 200
+    assert ("TG-BPPC", "Rumen bypass Phosphotidyl Choline", None) in calls
 
-    monkeypatch.setattr("apps.api.routers.products.product_graph_service.build", raise_sync_error)
-    r = client.post("/api/products", json={"code": "NEW-3", "description": "New product"})
-    assert r.status_code == 201
-    assert client.get("/api/products/NEW-3").status_code == 200
 
-
-def test_update_product_syncs_graph(client, monkeypatch):
+def test_update_product_does_not_sync_graph(client, monkeypatch):
     calls = []
     monkeypatch.setattr("apps.api.routers.products.product_graph_service.build",
                         lambda code, description, spec, *a, **k: calls.append((code, description, spec)))
     r = client.put("/api/products/TG-BPPC", json={"description": "Updated", "spec": "v2"})
     assert r.status_code == 200
-    assert ("TG-BPPC", "Updated", "v2") in calls
+    assert calls == []
 
 
 def test_delete_product_removes_from_graph(client, monkeypatch):
