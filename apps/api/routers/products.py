@@ -30,7 +30,7 @@ def create_product(body: ProductCreate) -> ProductOut:
     doc = {"_id": code, "code": code, "description": body.description, "spec": body.spec}
     mongo.products().insert_one(doc)
     try:
-        product_graph_service.resync_product(code, body.description, body.spec)
+        product_graph_service.build(code, body.description, body.spec)
     except Exception:
         logger.warning("Failed to sync product graph for %s", code, exc_info=True)
     return _out(mongo.products().find_one({"_id": code}))
@@ -54,7 +54,7 @@ def update_product(product_id: str, body: ProductUpdate) -> ProductOut:
         mongo.products().update_one({"_id": product_id}, {"$set": changes})
     updated = mongo.products().find_one({"_id": product_id})
     try:
-        product_graph_service.resync_product(updated["code"], updated["description"], updated.get("spec"))
+        product_graph_service.build(updated["code"], updated["description"], updated.get("spec"))
     except Exception:
         logger.warning("Failed to sync product graph for %s", product_id, exc_info=True)
     return _out(updated)

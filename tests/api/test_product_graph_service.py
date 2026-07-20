@@ -1,3 +1,7 @@
+import pytest
+
+pytestmark = pytest.mark.skip(reason="Kuzu product catalog retired; see test_product_graph_falkor.py")
+
 import kuzu
 
 from apps.api.services import product_graph_service as pgs

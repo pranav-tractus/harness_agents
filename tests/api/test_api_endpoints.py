@@ -30,7 +30,7 @@ def client(monkeypatch):
     monkeypatch.setattr(mongo, "_client", mongomock.MongoClient())
     monkeypatch.setattr("apps.api.routers.customers.profile_graph_service.resync",
                         lambda *a, **k: None)
-    monkeypatch.setattr("apps.api.routers.products.product_graph_service.resync_product",
+    monkeypatch.setattr("apps.api.routers.products.product_graph_service.build",
                         lambda *a, **k: None)
     monkeypatch.setattr("apps.api.routers.products.product_graph_service.remove_product",
                         lambda *a, **k: None)
@@ -138,7 +138,7 @@ def test_create_product_conflict(client):
 
 def test_create_product_syncs_graph(client, monkeypatch):
     calls = []
-    monkeypatch.setattr("apps.api.routers.products.product_graph_service.resync_product",
+    monkeypatch.setattr("apps.api.routers.products.product_graph_service.build",
                         lambda code, description, spec, *a, **k: calls.append((code, description, spec)))
     r = client.post("/api/products", json={"code": "NEW-2", "description": "New", "spec": "s"})
     assert r.status_code == 201
@@ -149,7 +149,7 @@ def test_create_product_succeeds_when_graph_sync_fails(client, monkeypatch):
     def raise_sync_error(*args, **kwargs):
         raise RuntimeError("graph unavailable")
 
-    monkeypatch.setattr("apps.api.routers.products.product_graph_service.resync_product", raise_sync_error)
+    monkeypatch.setattr("apps.api.routers.products.product_graph_service.build", raise_sync_error)
     r = client.post("/api/products", json={"code": "NEW-3", "description": "New product"})
     assert r.status_code == 201
     assert client.get("/api/products/NEW-3").status_code == 200
@@ -157,7 +157,7 @@ def test_create_product_succeeds_when_graph_sync_fails(client, monkeypatch):
 
 def test_update_product_syncs_graph(client, monkeypatch):
     calls = []
-    monkeypatch.setattr("apps.api.routers.products.product_graph_service.resync_product",
+    monkeypatch.setattr("apps.api.routers.products.product_graph_service.build",
                         lambda code, description, spec, *a, **k: calls.append((code, description, spec)))
     r = client.put("/api/products/TG-BPPC", json={"description": "Updated", "spec": "v2"})
     assert r.status_code == 200

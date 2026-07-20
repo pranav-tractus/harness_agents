@@ -83,12 +83,14 @@ def test_profile_graph_nodes_and_edges():
 
 # ── product catalog graph ─────────────────────────────────────────────────────
 
+@pytest.mark.skip(reason="Kuzu product catalog retired; product graph now in FalkorDB")
 def test_product_graph_empty_when_no_db(tmp_path, monkeypatch):
     monkeypatch.setattr(graph_reader_service, "GRAPH_ROOT", tmp_path)
     result = graph_reader_service.read_product_graph()
     assert result == {"nodes": [], "edges": []}
 
 
+@pytest.mark.skip(reason="Kuzu product catalog retired; product graph now in FalkorDB")
 def test_product_graph_nodes_and_edges(tmp_path, monkeypatch):
     from graph.product_extractor import ProductFacts
     from apps.api.services import product_graph_service
