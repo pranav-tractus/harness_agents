@@ -1,15 +1,13 @@
 import kuzu
 
 from apps.api.services import profile_graph_service as pg
-from apps.api.services import chat_graph_service as cg
 
 
 def test_resync_writes_profile_and_leaves_chat_db_untouched(tmp_path, monkeypatch):
     monkeypatch.setattr(pg, "GRAPH_ROOT", tmp_path)
-    monkeypatch.setattr(cg, "GRAPH_ROOT", tmp_path)
 
-    # a pre-existing chat.db sentinel that must not be modified
-    chat_dir = cg.chat_db_path("dummy-01").parent
+    # a pre-existing sibling sentinel that must not be modified
+    chat_dir = tmp_path / "dummy-01"
     chat_dir.mkdir(parents=True, exist_ok=True)
     sentinel = chat_dir / "SENTINEL"
     sentinel.write_text("keep")

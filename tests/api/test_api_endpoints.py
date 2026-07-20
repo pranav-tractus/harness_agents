@@ -35,8 +35,8 @@ def client(monkeypatch):
     monkeypatch.setattr("apps.api.routers.products.product_graph_service.remove_product",
                         lambda *a, **k: None)
     _seed_fixture_data()
-    monkeypatch.setattr(command_service.chat_graph_service, "build_and_write",
-                        lambda *a, **k: {"source_id": "x", "entities": {}, "written": True})
+    monkeypatch.setattr(command_service.chat_graph_service, "write_contract",
+                        lambda *a, **k: "contract-id")
     monkeypatch.setattr(command_service.summary_service, "generate",
                         lambda *a, **k: make_extract(items=[make_item(description="TG-BPPC")]))
     monkeypatch.setattr(command_service.summary_context_service, "assemble",

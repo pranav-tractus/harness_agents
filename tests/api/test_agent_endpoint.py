@@ -34,8 +34,8 @@ def test_agent_approve_returns_final(client, monkeypatch):
 
     client.post("/api/customers/dummy-01/messages", json={"role": "seller", "body": "10MT CIF"})
     ch = chat_service.ensure_default_chat("dummy-01")
-    monkeypatch.setattr(chat_graph_service, "build_and_write",
-                        lambda *a, **k: {"written": True})
+    monkeypatch.setattr(chat_graph_service, "write_contract",
+                        lambda *a, **k: "contract-id")
     sid = mongo.summaries().insert_one({
         "customer_id": "dummy-01", "status": "pending", "model_key": "sonnet-4-6",
         "from_seq": 1, "to_seq": 1, "revision": 0,

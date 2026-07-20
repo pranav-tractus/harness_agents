@@ -1,5 +1,7 @@
 from datetime import datetime, timezone
 
+from bson import ObjectId
+
 from apps.api.db import mongo
 from apps.api.models import AgentDecision, cap_questions, render_summary_markdown
 from apps.api.services import chat_graph_service, chat_service, summary_context_service
@@ -61,6 +63,21 @@ def decide(customer_name, messages, ctx, model_key, *, previous_json=None, llm=N
 
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+
+def _chat_title(chat_id: str) -> str:
+    doc = mongo.chats().find_one({"_id": ObjectId(chat_id)}, projection={"title": 1})
+    if doc and doc.get("title"):
+        return doc["title"]
+    return "Chat 1"
+
+
+def _source_seqs(window: list[dict]) -> list[dict]:
+    return [{"seq": m["seq"], "role": m["role"], "snippet": (m.get("body") or "")[:60]} for m in window]
+
+
+def _contract_dict(contract: SOExtractContractList) -> dict:
+    return contract.model_dump()["data"][0] if contract.data else {"items": []}
 
 
 def _customer_name(customer_id: str) -> str:
@@ -153,14 +170,15 @@ def _persist_final(customer_id, contract, slots, from_seq, to_seq, model_key) ->
 
 
 def finalize(customer_id, *, decision=None, window=None, model_key="", graph_fn=None) -> dict:
-    graph_fn = graph_fn or chat_graph_service.build_and_write
+    graph_fn = graph_fn or chat_graph_service.write_contract
     chat_id = chat_service.ensure_default_chat(customer_id)
     window = window or chat_service.chat_messages_since(chat_id, chat_service.get_last_contract_seq(chat_id))
     to_seq = window[-1]["seq"] if window else chat_service.get_last_contract_seq(chat_id)
     contract = (decision.contract if decision else None) or SOExtractContractList(data=[])
     slots = [s.model_dump() for s in decision.ledger] if decision else []
 
-    graph_fn(customer_id, window, to_seq, model_key)          # Step A before persist
+    graph_fn(customer_id, chat_id, _chat_title(chat_id), _contract_dict(contract), slots,
+             _source_seqs(window), to_seq)          # Step A before persist
     doc = _persist_final(customer_id, contract, slots,
                          from_seq=(window[0]["seq"] if window else to_seq),
                          to_seq=to_seq, model_key=model_key)
@@ -177,10 +195,12 @@ def approve(customer_id, *, graph_fn=None) -> dict:
     pending = _pending(customer_id)
     if not pending:
         return {"messages": [_agent_msg(customer_id, chat_id, "No draft to finalize.", "chat")], "summary": None}
-    graph_fn = graph_fn or chat_graph_service.build_and_write
+    graph_fn = graph_fn or chat_graph_service.write_contract
     window = chat_service.chat_messages_since(chat_id, pending["from_seq"] - 1)
     contract = SOExtractContractList(**pending["content"])
-    graph_fn(customer_id, window, pending["to_seq"], pending["model_key"])
+    slots = pending.get("slots", [])
+    graph_fn(customer_id, chat_id, _chat_title(chat_id), _contract_dict(contract), slots,
+             _source_seqs(window), pending["to_seq"])
     mongo.summaries().update_one({"_id": pending["_id"]},
         {"$set": {"status": "approved", "approved_at": _now()}})
     chat_service.set_last_contract_seq(chat_id, pending["to_seq"])

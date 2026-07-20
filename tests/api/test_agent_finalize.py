@@ -17,9 +17,9 @@ def _fake_mongo(monkeypatch):
 
 
 def _graph(order):
-    def _fn(customer_id, messages, to_seq, model_key):
+    def _fn(customer_id, chat_id, chat_title, contract, slots, source_seqs, to_seq):
         order.append(to_seq)
-        return {"source_id": "x", "entities": {}, "written": True}
+        return "contract-id"
     return _fn
 
 

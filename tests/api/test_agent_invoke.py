@@ -78,7 +78,7 @@ def test_invoke_auto_finalizes_when_ready():
                         ledger=[SlotBelief(slot="ship_term", value="CIF", source="chat",
                                            confidence="high", agreed_by=["seller", "customer"])])
 
-    def _graph(customer_id, messages, to_seq, model_key):
+    def _graph(customer_id, chat_id, chat_title, contract, slots, source_seqs, to_seq):
         calls.append(to_seq)
 
     out = agent_service.invoke("dummy-01", "sonnet-4-6",

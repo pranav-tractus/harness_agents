@@ -32,9 +32,22 @@ def _customer_name(customer_id: str) -> str:
     return doc["name"] if doc else customer_id
 
 
+def _chat_title(chat_id: str) -> str:
+    from bson import ObjectId
+    from apps.api.db import mongo
+    doc = mongo.chats().find_one({"_id": ObjectId(chat_id)}, projection={"title": 1})
+    if doc and doc.get("title"):
+        return doc["title"]
+    return "Chat 1"
+
+
+def _source_seqs(window: list[dict]) -> list[dict]:
+    return [{"seq": m["seq"], "role": m["role"], "snippet": (m.get("body") or "")[:60]} for m in window]
+
+
 def dispatch(customer_id, command, args, model_key,
              *, graph_fn=None, summary_gen=None, summary_revise=None, context_fn=None) -> dict:
-    graph_fn = graph_fn or chat_graph_service.build_and_write
+    graph_fn = graph_fn or chat_graph_service.write_contract
     summary_gen = summary_gen or summary_service.generate
     summary_revise = summary_revise or summary_service.revise
     context_fn = context_fn or summary_context_service.assemble
@@ -64,7 +77,8 @@ def _create(customer_id, chat_id, model_key, graph_fn, summary_gen, context_fn) 
 
     to_seq = window[-1]["seq"]
     # Step A — graph (must complete before Step B)
-    graph_fn(customer_id, window, to_seq, model_key)
+    graph_fn(customer_id, chat_id, _chat_title(chat_id), {"items": []}, [],
+             _source_seqs(window), to_seq)
 
     # Step B — summary (grounded on assembled graph context)
     name = _customer_name(customer_id)
