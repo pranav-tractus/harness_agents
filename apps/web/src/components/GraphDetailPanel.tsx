@@ -48,6 +48,12 @@ export function GraphDetailPanel({
 }: Props) {
   const node = selected?.kind === "node" ? selected.element : null;
   const element = selected?.element ?? null;
+  const displayTitle =
+    selected?.kind === "node"
+      ? selected.element.label
+      : selected?.kind === "edge"
+        ? selected.element.type
+        : "";
   const properties = element
     ? Object.entries(element.properties).filter(([, v]) => v !== null && v !== "")
     : [];
@@ -64,7 +70,7 @@ export function GraphDetailPanel({
         <SheetHeader className="mb-4">
           <div className="flex items-center gap-2">
             <Badge variant="outline">{element?.type ?? ""}</Badge>
-            <SheetTitle className="text-base font-medium">{element?.label ?? ""}</SheetTitle>
+            <SheetTitle className="text-base font-medium">{displayTitle}</SheetTitle>
           </div>
         </SheetHeader>
 
