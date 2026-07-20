@@ -82,10 +82,81 @@ python -m harness.runner --agent so_extraction --bulk --datasets acme \
 streamlit run dashboard/app.py
 ```
 
+## Graph store (FalkorDB)
+
+The API needs FalkorDB running:
+
+    docker compose up -d falkordb   # or: docker run -d -p 6379:6379 falkordb/falkordb
+
+Config via env: `FALKORDB_HOST` (default `localhost`), `FALKORDB_PORT` (default `6379`).
+Graph-touching tests skip automatically when FalkorDB is unreachable.
+
+If port 6379 is already in use (e.g. from an existing `docker run` container), the API and tests can use that instance — stop the other container first if you need compose to bind the port.
+
+## Chat Simulation
+
+A React + FastAPI app for role-playing sales conversations with 3 fixed customers,
+building per-customer FalkorDB graphs and a shared catalog graph, and generating LLM sales-order summaries.
+
+### Prerequisites
+
+- Python 3.13+ with repo dependencies installed (`pip install -r requirements.txt`)
+- Node.js 18+ and npm
+- MongoDB running and reachable
+
+### Environment
+
+Add to `.env` (or use the defaults):
+
+```
+MONGODB_URI=mongodb://localhost:27017
+MONGO_DB_NAME=chat_sim
+WEB_ORIGIN=http://localhost:5173
+FALKORDB_HOST=localhost
+FALKORDB_PORT=6379
+```
+
+Existing LLM API keys in `.env` are reused for summary generation.
+
+### Run
+
+```bash
+cd apps/web && npm install
+cd ../..
+python run.py
+```
+
+- API docs: http://localhost:8000/docs
+- Web UI: http://localhost:5173
+
+One Ctrl+C stops both servers.
+
+### Usage
+
+1. Pick a customer (`dummy-01`, `dummy-02`, `dummy-03`) and an LLM model.
+2. Toggle **Me** / **Customer** and post chat messages describing an order.
+3. `/create-sales-order` — builds the chat-facts graph (Step A), then generates a pending summary (Step B).
+4. `/edit <instructions>` — revises the pending summary.
+5. `/approve` — finalizes the summary and advances the contract checkpoint.
+6. Edit customer profile fields in the details panel (updates `profile.db` only).
+7. Use the **Products** tab to edit or delete catalog entries.
+
+Each customer gets an isolated FalkorDB graph (`customer_<id>`); the product catalog lives in a shared `catalog` graph. Profile attributes are stored in FalkorDB alongside chat-derived contract data.
+
+### Tests
+
+```bash
+PYTHONPATH=. pytest tests/api -v
+cd apps/web && npm run test
+```
+
 ## Key files
 
 | Area | Path |
 |------|------|
+| Chat API | [`apps/api/main.py`](apps/api/main.py) |
+| Chat web | [`apps/web/src/App.tsx`](apps/web/src/App.tsx) |
+| Dev launcher | [`run.py`](run.py) |
 | Schemas | [`core/models.py`](core/models.py), [`core/validation_models.py`](core/validation_models.py) |
 | Post-process | [`core/postprocess_pipeline.py`](core/postprocess_pipeline.py) |
 | Agent | [`agents/so_extraction/agent.py`](agents/so_extraction/agent.py) |
