@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from apps.api.routers import commands, customers, graphs, messages, models_router, products
+from apps.api.routers import chats, commands, customers, graphs, messages, models_router, products
 from apps.api.settings import get_settings
 
 
@@ -16,6 +16,7 @@ def create_app() -> FastAPI:
 
     app.include_router(customers.router)
     app.include_router(products.router)
+    app.include_router(chats.router)
     app.include_router(messages.router)
     app.include_router(commands.router)
     app.include_router(commands.agent_router)
