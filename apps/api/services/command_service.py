@@ -119,18 +119,8 @@ def _edit(customer_id, args, model_key, summary_revise, context_fn) -> dict:
     return {"messages": [card], "summary": _summary_out(updated)}
 
 
-def _approve(customer_id) -> dict:
-    pending = _pending_summary(customer_id)
-    if not pending:
-        return {"messages": [_assistant(customer_id, "No pending summary to approve.")], "summary": None}
-    mongo.summaries().update_one(
-        {"_id": pending["_id"]},
-        {"$set": {"status": "approved", "approved_at": _now()}},
-    )
-    chat_service.set_last_contract_seq(customer_id, pending["to_seq"])
-    approved = mongo.summaries().find_one({"_id": pending["_id"]})
-    msg = _assistant(customer_id, "Sales order approved and saved. Checkpoint advanced.")
-    return {"messages": [msg], "summary": _summary_out(approved)}
+def _approve(customer_id, *, graph_fn=None) -> dict:
+    return agent_service.approve(customer_id, graph_fn=graph_fn)
 
 
 def invoke_agent(customer_id, model_key) -> dict:

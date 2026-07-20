@@ -8,9 +8,21 @@ import { MessageComposer } from "@/components/MessageComposer";
 import { ModelPicker } from "@/components/ModelPicker";
 
 type PendingSummary = {
+  id?: string;
   status?: string;
   slots?: Slot[];
 };
+
+function pendingFromMessages(rows: Message[]): PendingSummary | null {
+  for (let i = rows.length - 1; i >= 0; i--) {
+    const m = rows[i];
+    if (m.kind === "final") return null;
+    if (m.kind === "draft" && m.summary_id) {
+      return { id: m.summary_id, status: "pending", slots: [] };
+    }
+  }
+  return null;
+}
 
 function showApprove(pending: PendingSummary | null): boolean {
   if (!pending || pending.status !== "pending") return false;
@@ -34,6 +46,7 @@ export function ChatPage() {
   const loadMessages = useCallback(async (customerId: string) => {
     const rows = await api.listMessages(customerId);
     setMessages(rows);
+    setPendingSummary(pendingFromMessages(rows));
   }, []);
 
   const loadCustomers = useCallback(async () => {
@@ -52,7 +65,6 @@ export function ChatPage() {
 
   useEffect(() => {
     if (selectedId) {
-      setPendingSummary(null);
       loadMessages(selectedId).catch(console.error);
     }
   }, [selectedId, loadMessages]);

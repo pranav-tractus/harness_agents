@@ -83,12 +83,20 @@ def _agent_msg(customer_id, body, kind, summary_id=None, summary_json=None):
                                     summary_id=summary_id, summary_json=summary_json)
 
 
+_AGENT_WINDOW_KINDS = ("chat", "question", "draft", "final")
+
+
+def _draft_to_seq(window: list[dict]) -> int:
+    chat_seqs = [m["seq"] for m in window if m["kind"] == "chat"]
+    return chat_seqs[-1] if chat_seqs else window[-1]["seq"]
+
+
 def invoke(customer_id, model_key, *, decider=None, context_fn=None, graph_fn=None) -> dict:
     decider = decider or decide
     context_fn = context_fn or summary_context_service.assemble
 
     last = chat_service.get_last_contract_seq(customer_id)
-    window = chat_service.chat_messages_since(customer_id, last)
+    window = chat_service.messages_since(customer_id, last, kinds=list(_AGENT_WINDOW_KINDS))
     if not window:
         return {"messages": [_agent_msg(customer_id, "No new messages since the last contract.", "chat")],
                 "summary": None}
@@ -113,7 +121,7 @@ def invoke(customer_id, model_key, *, decider=None, context_fn=None, graph_fn=No
     contract = decision.contract or SOExtractContractList(data=[])
     markdown = render_summary_markdown(contract, _customer_name(customer_id))
     slots = [s.model_dump() for s in decision.ledger]
-    to_seq = window[-1]["seq"]
+    to_seq = _draft_to_seq(window)
     if pending:
         mongo.summaries().update_one(
             {"_id": pending["_id"]},
