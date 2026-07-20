@@ -151,3 +151,8 @@ def cap_questions(decision: AgentDecision, limit: int = 3) -> AgentDecision:
     ordered = sorted(decision.questions, key=lambda q: q.slot not in CRITICAL_SLOTS)
     decision.questions = ordered[:limit]
     return decision
+
+
+class AgentInvokeIn(BaseModel):
+    model_key: str
+    action: str = "ask"     # "ask" | "approve"

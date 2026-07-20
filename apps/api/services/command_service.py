@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 
 from apps.api.db import mongo
 from apps.api.models import render_summary_markdown
-from apps.api.services import chat_service
+from apps.api.services import agent_service, chat_service
 from apps.api.services import chat_graph_service, summary_context_service, summary_service
 from core.models import SOExtractContractList
 
@@ -131,3 +131,11 @@ def _approve(customer_id) -> dict:
     approved = mongo.summaries().find_one({"_id": pending["_id"]})
     msg = _assistant(customer_id, "Sales order approved and saved. Checkpoint advanced.")
     return {"messages": [msg], "summary": _summary_out(approved)}
+
+
+def invoke_agent(customer_id, model_key) -> dict:
+    return agent_service.invoke(customer_id, model_key)
+
+
+def approve(customer_id) -> dict:
+    return agent_service.approve(customer_id)
