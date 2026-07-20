@@ -1,4 +1,5 @@
 from apps.api.models import AgentDecision, cap_questions
+from core.llm_client import call_llm
 
 SYSTEM = (
     "You are a neutral contract agent in a group chat with a seller and a customer. "
@@ -41,3 +42,13 @@ def build_prompt(customer_name, messages, ctx, previous_json=None) -> str:
         "Return the AgentDecision now."
     )
     return prompt
+
+
+def decide(customer_name, messages, ctx, model_key, *, previous_json=None, llm=None) -> AgentDecision:
+    llm = llm or call_llm
+    prompt = build_prompt(customer_name, messages, ctx, previous_json)
+    decision: AgentDecision = llm(prompt, AgentDecision, model_key, system_prompt=SYSTEM)
+    decision = cap_questions(decision)
+    if decision.mode == "finalize" and not decision.ready_to_finalize:
+        decision.mode = "draft"
+    return decision
