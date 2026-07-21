@@ -183,3 +183,10 @@ def test_delete_product_succeeds_when_graph_sync_fails(client, monkeypatch):
     monkeypatch.setattr("apps.api.routers.products.product_graph_service.remove_product", raise_remove_error)
     r = client.delete("/api/products/TG-MGL8")
     assert r.status_code == 204
+
+
+def test_messages_include_chat_id_and_status(client):
+    client.post("/api/customers/dummy-01/messages", json={"role": "seller", "body": "hello"})
+    rows = client.get("/api/customers/dummy-01/messages").json()
+    assert rows[-1]["chat_id"]
+    assert rows[-1]["chat_status"] == "active"

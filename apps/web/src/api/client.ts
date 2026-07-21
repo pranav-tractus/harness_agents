@@ -24,6 +24,8 @@ export type Product = {
 export type Message = {
   id: string;
   customer_id: string;
+  chat_id: string;
+  chat_status: string;
   seq: number;
   role: string;
   kind: string;

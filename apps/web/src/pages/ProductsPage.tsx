@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { api, type Product } from "@/api/client";
 import { Button } from "@/components/ui/button";
+import { BuildBadge } from "@/components/graph/nodes/parts";
 import {
   Dialog,
   DialogContent,
@@ -32,6 +33,7 @@ export function ProductsPage() {
   const [description, setDescription] = useState("");
   const [spec, setSpec] = useState("");
   const [saving, setSaving] = useState(false);
+  const [buildingCode, setBuildingCode] = useState<string | null>(null);
 
   async function loadProducts() {
     const rows = await api.listProducts();
@@ -88,6 +90,19 @@ export function ProductsPage() {
     }
   }
 
+  async function buildGraph(product: Product) {
+    setBuildingCode(product.code);
+    try {
+      await api.buildProduct(product.code);
+      await loadProducts();
+      toast.success(`Built graph for ${product.code}`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to build graph");
+    } finally {
+      setBuildingCode(null);
+    }
+  }
+
   async function confirmDelete() {
     if (!deleteProduct) return;
     setSaving(true);
@@ -115,7 +130,8 @@ export function ProductsPage() {
             <TableHead>Code</TableHead>
             <TableHead>Description</TableHead>
             <TableHead>Spec</TableHead>
-            <TableHead className="w-[140px]">Actions</TableHead>
+            <TableHead>Graph</TableHead>
+            <TableHead className="w-[220px]">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -125,7 +141,22 @@ export function ProductsPage() {
               <TableCell>{product.description}</TableCell>
               <TableCell>{product.spec ?? "—"}</TableCell>
               <TableCell>
+                <BuildBadge status={product.build_status ?? "not built"} />
+              </TableCell>
+              <TableCell>
                 <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={buildingCode === product.code}
+                    onClick={() => buildGraph(product)}
+                  >
+                    {buildingCode === product.code
+                      ? "Building…"
+                      : product.build_status && product.build_status !== "not built"
+                        ? "Rebuild"
+                        : "Build Graph"}
+                  </Button>
                   <Button variant="outline" size="sm" onClick={() => openEdit(product)}>
                     Edit
                   </Button>

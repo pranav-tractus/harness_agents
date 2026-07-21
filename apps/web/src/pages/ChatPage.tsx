@@ -1,37 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { api, type Customer, type Message, type Slot } from "@/api/client";
+import { api, type Customer, type Message } from "@/api/client";
 import { ChatPane } from "@/components/ChatPane";
 import { CustomerDetails } from "@/components/CustomerDetails";
 import { CustomerSidebar } from "@/components/CustomerSidebar";
 import { MessageComposer } from "@/components/MessageComposer";
 import { ModelPicker } from "@/components/ModelPicker";
-
-type PendingSummary = {
-  id?: string;
-  status?: string;
-  slots?: Slot[];
-};
-
-function pendingFromMessages(rows: Message[]): PendingSummary | null {
-  for (let i = rows.length - 1; i >= 0; i--) {
-    const m = rows[i];
-    if (m.kind === "final") return null;
-    if (m.kind === "draft" && m.summary_id) {
-      return { id: m.summary_id, status: "pending", slots: [] };
-    }
-  }
-  return null;
-}
-
-function showApprove(pending: PendingSummary | null): boolean {
-  if (!pending || pending.status !== "pending") return false;
-  const slots = pending.slots;
-  if (!slots || slots.length === 0) return true;
-  return slots.some(
-    (s) => !s.agreed_by.includes("seller") || !s.agreed_by.includes("customer"),
-  );
-}
+import { parseAgentTag } from "@/lib/agentTag";
 
 type Props = {
   focusMessage?: { customerId: string; seq: number } | null;
@@ -44,7 +19,6 @@ export function ChatPage({ focusMessage, onFocusHandled }: Props) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [modelKey, setModelKey] = useState("sonnet-4-6");
   const [role, setRole] = useState<"seller" | "customer">("seller");
-  const [pendingSummary, setPendingSummary] = useState<PendingSummary | null>(null);
   const [scrollToSeq, setScrollToSeq] = useState<number | null>(null);
   const [loadedMessagesCustomerId, setLoadedMessagesCustomerId] = useState<string | null>(null);
 
@@ -54,7 +28,6 @@ export function ChatPage({ focusMessage, onFocusHandled }: Props) {
     const rows = await api.listMessages(customerId);
     setMessages(rows);
     setLoadedMessagesCustomerId(customerId);
-    setPendingSummary(pendingFromMessages(rows));
   }, []);
 
   const loadCustomers = useCallback(async () => {
@@ -109,31 +82,13 @@ export function ChatPage({ focusMessage, onFocusHandled }: Props) {
     if (!selectedId) return;
     try {
       await api.postMessage(selectedId, role, body);
+      const { isAgent, action } = parseAgentTag(body);
+      if (isAgent) {
+        await api.invokeAgent(selectedId, modelKey, action);
+      }
       await loadMessages(selectedId);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to send message");
-    }
-  }
-
-  async function handleAskAgent() {
-    if (!selectedId) return;
-    try {
-      const result = await api.invokeAgent(selectedId, modelKey, "ask");
-      if (result.summary) setPendingSummary(result.summary as PendingSummary);
-      await loadMessages(selectedId);
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Agent unavailable");
-    }
-  }
-
-  async function handleApprove() {
-    if (!selectedId) return;
-    try {
-      await api.invokeAgent(selectedId, modelKey, "approve");
-      setPendingSummary(null);
-      await loadMessages(selectedId);
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Approve failed");
     }
   }
 
@@ -186,14 +141,7 @@ export function ChatPage({ focusMessage, onFocusHandled }: Props) {
           <ModelPicker value={modelKey} onChange={setModelKey} />
         </div>
         <ChatPane key={selectedId} messages={messages} scrollToSeq={scrollToSeq} />
-        <MessageComposer
-          role={role}
-          onRoleChange={setRole}
-          onMessage={handleMessage}
-          onAskAgent={handleAskAgent}
-          onApprove={handleApprove}
-          showApprove={showApprove(pendingSummary)}
-        />
+        <MessageComposer role={role} onRoleChange={setRole} onMessage={handleMessage} />
       </div>
       <CustomerDetails customer={selectedCustomer} onUpdated={handleCustomerUpdated} />
     </div>

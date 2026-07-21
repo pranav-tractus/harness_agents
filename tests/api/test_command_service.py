@@ -81,11 +81,19 @@ def test_create_blocked_when_pending_exists():
     assert "pending" in out["messages"][-1]["body"].lower()
 
 
+def _ready_slots():
+    return [{"slot": s, "value": "x", "source": "chat", "confidence": "high",
+             "agreed_by": ["seller", "customer"]}
+            for s in ["description", "quantity", "unit_price", "ship_term"]]
+
+
 def test_approve_advances_checkpoint_and_persists():
     ch = _chat()
     chat_service.add_message("dummy-01", ch, "me", "x")   # seq 1
     command_service.dispatch("dummy-01", "create-sales-order", None, "sonnet-4-6",
                              summary_gen=_fake_summary, context_fn=_ctx)
+    mongo.summaries().update_one({"chat_id": ch, "status": "pending"},
+                                 {"$set": {"slots": _ready_slots()}})
     command_service.dispatch("dummy-01", "approve", None, "sonnet-4-6",
                              graph_fn=_record_graph([]))
     assert chat_service.get_last_contract_seq(ch) == 1

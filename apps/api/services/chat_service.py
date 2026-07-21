@@ -30,6 +30,44 @@ def ensure_default_chat(customer_id: str) -> str:
     return create_chat(customer_id, "Chat 1")["id"]
 
 
+def _chat_count(customer_id: str) -> int:
+    return mongo.chats().count_documents({"customer_id": customer_id})
+
+
+def active_chat(customer_id: str) -> dict | None:
+    return mongo.chats().find_one(
+        {"customer_id": customer_id, "status": {"$ne": "finished"}},
+        sort=[("created_at", -1)])
+
+
+def start_new_chat(customer_id: str) -> dict:
+    return create_chat(customer_id, f"Chat {_chat_count(customer_id) + 1}")
+
+
+def ensure_active_chat(customer_id: str) -> str:
+    doc = active_chat(customer_id)
+    return str(doc["_id"]) if doc else start_new_chat(customer_id)["id"]
+
+
+def finish_chat(chat_id: str) -> None:
+    mongo.chats().update_one({"_id": ObjectId(chat_id)},
+        {"$set": {"status": "finished", "last_activity": _now()}})
+
+
+def all_messages(customer_id: str) -> list[dict]:
+    chats = list(mongo.chats().find({"customer_id": customer_id}).sort("created_at", 1))
+    order = {str(c["_id"]): i for i, c in enumerate(chats)}
+    status = {str(c["_id"]): c.get("status", "active") for c in chats}
+    msgs = list(mongo.messages().find({"customer_id": customer_id}))
+    msgs.sort(key=lambda m: (order.get(m["chat_id"], len(order)), m["seq"]))
+    out = []
+    for m in msgs:
+        d = _to_out(m)
+        d["chat_status"] = status.get(m["chat_id"], "active")
+        out.append(d)
+    return out
+
+
 def list_chats(customer_id: str) -> list[dict]:
     cur = mongo.chats().find({"customer_id": customer_id}).sort("created_at", 1)
     return [_chat_out(d) for d in cur]

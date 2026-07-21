@@ -7,12 +7,9 @@ type Props = {
   role: "seller" | "customer";
   onRoleChange: (r: "seller" | "customer") => void;
   onMessage: (body: string) => void;
-  onAskAgent: () => void;
-  onApprove: () => void;
-  showApprove: boolean;
 };
 
-export function MessageComposer({ role, onRoleChange, onMessage, onAskAgent, onApprove, showApprove }: Props) {
+export function MessageComposer({ role, onRoleChange, onMessage }: Props) {
   const [text, setText] = useState("");
 
   function submit(e: React.FormEvent) {
@@ -33,8 +30,6 @@ export function MessageComposer({ role, onRoleChange, onMessage, onAskAgent, onA
       <Input value={text} onChange={(e) => setText(e.target.value)}
         placeholder="Message…" className="flex-1" />
       <Button type="submit" size="sm" variant="secondary">Send</Button>
-      <Button type="button" size="sm" onClick={onAskAgent}>Ask agent</Button>
-      {showApprove && <Button type="button" size="sm" variant="outline" onClick={onApprove}>Approve</Button>}
     </form>
   );
 }

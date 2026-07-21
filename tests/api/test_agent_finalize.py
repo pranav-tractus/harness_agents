@@ -3,7 +3,7 @@ import pytest
 
 from apps.api import seed
 from apps.api.db import mongo
-from apps.api.models import AgentDecision, SlotBelief
+from apps.api.models import AgentDecision, CRITICAL_SLOTS_ORDER, SlotBelief
 from apps.api.services import agent_service, chat_service
 from core.models import SOExtractContractList
 
@@ -44,18 +44,40 @@ def test_auto_finalize_advances_checkpoint_and_writes_graph():
     assert mongo.summaries().count_documents({"status": "approved"}) == 1
 
 
-def test_approve_finalizes_pending_draft():
-    ch = _chat()
-    chat_service.add_message("dummy-01", ch, "seller", "x")
+def _ready_slots():
+    return [{"slot": s, "value": "x", "source": "chat", "confidence": "high",
+             "agreed_by": ["seller", "customer"]} for s in CRITICAL_SLOTS_ORDER]
+
+
+def _seed_pending(ch, slots):
     mongo.summaries().insert_one({
         "customer_id": "dummy-01", "chat_id": ch, "status": "pending", "model_key": "sonnet-4-6",
         "from_seq": 1, "to_seq": 1, "revision": 0,
         "content": SOExtractContractList(data=[]).model_dump(),
-        "rendered_markdown": "draft", "slots": [], "created_at": "t", "approved_at": None})
-    out = agent_service.approve("dummy-01", graph_fn=_graph([]))
+        "rendered_markdown": "draft", "slots": slots, "created_at": "t", "approved_at": None})
+
+
+def test_approve_refuses_when_not_ready():
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "seller", "x")
+    _seed_pending(ch, [])  # nothing agreed
+    out = agent_service.approve("dummy-01", graph_fn=_graph([]), branch_fn=lambda *a, **k: None)
+    assert out["summary"] is None
+    assert out["messages"][-1]["kind"] == "chat"
+    assert "Not ready" in out["messages"][-1]["body"]
+    assert chat_service.get_last_contract_seq(ch) == 0
+
+
+def test_approve_finalizes_ready_draft_and_branches():
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "seller", "10MT CIF Busan")
+    _seed_pending(ch, _ready_slots())
+    out = agent_service.approve("dummy-01", graph_fn=_graph([]), branch_fn=lambda *a, **k: None)
     assert out["summary"]["status"] == "approved"
-    assert chat_service.get_last_contract_seq(ch) == 1
-    assert out["summary"]["chat_id"] == ch
+    assert out["messages"][-1]["summary_json"]  # JSON attached
+    # current chat finished, a fresh active chat now exists
+    from apps.api.services import chat_service as cs
+    assert cs.active_chat("dummy-01")["_id"].__str__() != ch
 
 
 def test_finalize_stamps_chat_id_on_approved_summary():

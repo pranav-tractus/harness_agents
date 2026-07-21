@@ -40,7 +40,11 @@ def test_agent_approve_returns_final(client, monkeypatch):
         "customer_id": "dummy-01", "chat_id": ch, "status": "pending", "model_key": "sonnet-4-6",
         "from_seq": 1, "to_seq": 1, "revision": 0,
         "content": SOExtractContractList(data=[]).model_dump(),
-        "rendered_markdown": "draft", "slots": [], "created_at": "t", "approved_at": None,
+        "rendered_markdown": "draft",
+        "slots": [{"slot": s, "value": "x", "source": "chat", "confidence": "high",
+                   "agreed_by": ["seller", "customer"]}
+                  for s in ["description", "quantity", "unit_price", "ship_term"]],
+        "created_at": "t", "approved_at": None,
     }).inserted_id
     chat_service.add_message("dummy-01", ch, "agent", "draft card", kind="draft",
                              summary_id=str(sid))

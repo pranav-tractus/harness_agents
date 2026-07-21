@@ -98,6 +98,11 @@ def read_customer_graph(customer_id: str) -> dict:
                                    {"seq": seq, "role": role, "snippet": snip}, chat_id=chat_id))
                 _edge(edges, f"Contract::{con_id}", mid, "DERIVED_FROM")
 
+    for new_id, old_id in g.query(
+            "MATCH (:Customer {id:$id})-[:HAS_CHAT]->(a:Chat)-[:CONTINUES]->(b:Chat) "
+            "RETURN a.id, b.id", {"id": customer_id}).result_set:
+        _edge(edges, f"Chat::{new_id}", f"Chat::{old_id}", "CONTINUES")
+
     return {"nodes": nodes, "edges": edges}
 
 

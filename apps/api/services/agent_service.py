@@ -3,7 +3,8 @@ from datetime import datetime, timezone
 from bson import ObjectId
 
 from apps.api.db import mongo
-from apps.api.models import AgentDecision, cap_questions, render_summary_markdown
+from apps.api.models import (AgentDecision, cap_questions, is_ready,
+                             missing_agreement, render_summary_markdown)
 from apps.api.services import chat_graph_service, chat_service, summary_context_service
 from core.llm_client import call_llm
 from core.models import SOExtractContractList
@@ -22,6 +23,8 @@ SYSTEM = (
     "'draft' and fill contract. Set ready_to_finalize=true ONLY when every material slot "
     "is agreed_by both seller and customer; then set mode='finalize'. Never invent "
     "quantities, prices, or terms."
+    " Keep the `message` field to one short sentence; never restate the full "
+    "order details in `message` (the structured summary is rendered separately)."
 )
 
 
@@ -86,7 +89,7 @@ def _customer_name(customer_id: str) -> str:
 
 
 def _pending(customer_id: str, chat_id: str | None = None) -> dict | None:
-    chat_id = chat_id or chat_service.ensure_default_chat(customer_id)
+    chat_id = chat_id or chat_service.ensure_active_chat(customer_id)
     return mongo.summaries().find_one(
         {"customer_id": customer_id, "chat_id": chat_id, "status": "pending"})
 
@@ -113,13 +116,13 @@ def _draft_to_seq(window: list[dict]) -> int:
 def invoke(customer_id, model_key, *, decider=None, context_fn=None, graph_fn=None) -> dict:
     decider = decider or decide
     context_fn = context_fn or summary_context_service.assemble
-    chat_id = chat_service.ensure_default_chat(customer_id)
+    chat_id = chat_service.ensure_active_chat(customer_id)
 
     last = chat_service.get_last_contract_seq(chat_id)
     window = chat_service.messages_since(chat_id, last, kinds=list(_AGENT_WINDOW_KINDS))
     if not window:
-        return {"messages": [_agent_msg(customer_id, chat_id, "No new messages since the last contract.", "chat")],
-                "summary": None}
+        return {"messages": [_agent_msg(customer_id, chat_id,
+                "No new messages since the last contract.", "chat")], "summary": None}
 
     ctx = context_fn(customer_id)
     pending = _pending(customer_id, chat_id)
@@ -128,18 +131,19 @@ def invoke(customer_id, model_key, *, decider=None, context_fn=None, graph_fn=No
         previous_json = SOExtractContractList(**pending["content"]).model_dump_json(indent=2)
     decision = decider(_customer_name(customer_id), window, ctx, model_key,
                        previous_json=previous_json)
+    decision_json = decision.model_dump_json(indent=2)
 
     if decision.mode == "clarify":
-        msg = _agent_msg(customer_id, chat_id, decision.message, "question")
+        msg = _agent_msg(customer_id, chat_id, decision.message, "question",
+                         summary_json=decision_json)
         return {"messages": [msg], "summary": None}
 
-    if decision.mode == "finalize":
-        return finalize(customer_id, decision=decision, window=window,
-                        model_key=model_key, graph_fn=graph_fn)
-
-    # draft
+    # draft — the agent NEVER auto-finalizes; a ready decision still drafts.
     contract = decision.contract or SOExtractContractList(data=[])
     markdown = render_summary_markdown(contract, _customer_name(customer_id))
+    body = decision.message.strip() + "\n\n" + markdown
+    if decision.ready_to_finalize or decision.mode == "finalize":
+        body += "\n\n_Ready to finalize — send `@agent confirm` to finalize._"
     slots = [s.model_dump() for s in decision.ledger]
     to_seq = _draft_to_seq(window)
     if pending:
@@ -156,8 +160,8 @@ def invoke(customer_id, model_key, *, decider=None, context_fn=None, graph_fn=No
                "slots": slots, "created_at": _now(), "approved_at": None}
         doc["_id"] = mongo.summaries().insert_one(doc).inserted_id
 
-    card = _agent_msg(customer_id, chat_id, decision.message + "\n\n" + markdown, "draft",
-                      summary_id=str(doc["_id"]), summary_json=contract.model_dump_json(indent=2))
+    card = _agent_msg(customer_id, chat_id, body, "draft",
+                      summary_id=str(doc["_id"]), summary_json=decision_json)
     return {"messages": [card], "summary": _summary_out(doc)}
 
 
@@ -171,33 +175,52 @@ def _persist_final(customer_id, chat_id, contract, slots, from_seq, to_seq, mode
     return doc
 
 
-def finalize(customer_id, *, decision=None, window=None, model_key="", graph_fn=None) -> dict:
+def _finish_and_branch(customer_id: str, finished_chat_id: str, *, branch_fn=None) -> dict:
+    branch_fn = branch_fn or chat_graph_service.open_branch
+    chat_service.finish_chat(finished_chat_id)
+    new_chat = chat_service.start_new_chat(customer_id)
+    branch_fn(customer_id, new_chat["id"], new_chat["title"], finished_chat_id)
+    return new_chat
+
+
+def finalize(customer_id, *, decision=None, window=None, model_key="", graph_fn=None, branch_fn=None) -> dict:
     graph_fn = graph_fn or chat_graph_service.write_contract
-    chat_id = chat_service.ensure_default_chat(customer_id)
+    chat_id = chat_service.ensure_active_chat(customer_id)
     window = window or chat_service.chat_messages_since(chat_id, chat_service.get_last_contract_seq(chat_id))
     to_seq = window[-1]["seq"] if window else chat_service.get_last_contract_seq(chat_id)
     contract = (decision.contract if decision else None) or SOExtractContractList(data=[])
     slots = [s.model_dump() for s in decision.ledger] if decision else []
 
     graph_fn(customer_id, chat_id, _chat_title(chat_id), _contract_dict(contract), slots,
-             _source_seqs(window), to_seq)          # Step A before persist
+             _source_seqs(window), to_seq)
     doc = _persist_final(customer_id, chat_id, contract, slots,
                          from_seq=(window[0]["seq"] if window else to_seq),
                          to_seq=to_seq, model_key=model_key)
     chat_service.set_last_contract_seq(chat_id, to_seq)
-    # clear any stale pending draft for this chat
     mongo.summaries().delete_many(
         {"customer_id": customer_id, "chat_id": chat_id, "status": "pending"})
+    decision_json = (decision.model_dump_json(indent=2) if decision
+                     else contract.model_dump_json(indent=2))
     msg = _agent_msg(customer_id, chat_id, (decision.message if decision else "Finalized.") + "\n\n"
-                     + doc["rendered_markdown"], "final", summary_id=str(doc["_id"]))
+                     + doc["rendered_markdown"], "final", summary_id=str(doc["_id"]),
+                     summary_json=decision_json)
+    _finish_and_branch(customer_id, chat_id, branch_fn=branch_fn)
     return {"messages": [msg], "summary": _summary_out(doc)}
 
 
-def approve(customer_id, *, graph_fn=None) -> dict:
-    chat_id = chat_service.ensure_default_chat(customer_id)
+def approve(customer_id, *, graph_fn=None, branch_fn=None) -> dict:
+    chat_id = chat_service.ensure_active_chat(customer_id)
     pending = _pending(customer_id, chat_id)
     if not pending:
-        return {"messages": [_agent_msg(customer_id, chat_id, "No draft to finalize.", "chat")], "summary": None}
+        return {"messages": [_agent_msg(customer_id, chat_id,
+                "There's no draft to finalize yet. Send `@agent create sales order` first.",
+                "chat")], "summary": None}
+    if not is_ready(pending.get("slots", [])):
+        missing = missing_agreement(pending.get("slots", []))
+        body = ("Not ready to finalize. Still need both parties to agree on: "
+                + ", ".join(missing) + ".")
+        return {"messages": [_agent_msg(customer_id, chat_id, body, "chat")], "summary": None}
+
     graph_fn = graph_fn or chat_graph_service.write_contract
     window = chat_service.chat_messages_since(chat_id, pending["from_seq"] - 1)
     contract = SOExtractContractList(**pending["content"])
@@ -209,5 +232,7 @@ def approve(customer_id, *, graph_fn=None) -> dict:
     chat_service.set_last_contract_seq(chat_id, pending["to_seq"])
     approved = mongo.summaries().find_one({"_id": pending["_id"]})
     msg = _agent_msg(customer_id, chat_id, "Approved and finalized.\n\n" + approved["rendered_markdown"],
-                     "final", summary_id=str(approved["_id"]))
+                     "final", summary_id=str(approved["_id"]),
+                     summary_json=contract.model_dump_json(indent=2))
+    _finish_and_branch(customer_id, chat_id, branch_fn=branch_fn)
     return {"messages": [msg], "summary": _summary_out(approved)}

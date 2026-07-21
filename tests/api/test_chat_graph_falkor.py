@@ -55,3 +55,25 @@ def test_second_write_increments_revision_and_supersedes(graph_name):
     supersedes = g.query(
         "MATCH (a:Contract)-[:SUPERSEDES]->(b:Contract) RETURN a.revision, b.revision").result_set
     assert [1, 0] in [list(r) for r in supersedes]
+
+
+def test_open_branch_links_continues(graph_name):
+    _skip_if_down()
+    cg.write_contract(graph_name, "chat-1", "Chat 1", {"items": []}, [], [], to_seq=1)
+    cg.open_branch(graph_name, "chat-2", "Chat 2", "chat-1")
+    g = falkor.customer_graph(graph_name)
+    rows = g.query(
+        "MATCH (a:Chat)-[:CONTINUES]->(b:Chat) RETURN a.id, b.id").result_set
+    assert [list(r) for r in rows] == [["chat-2", "chat-1"]]
+    chats = {r[0] for r in g.query("MATCH (:Customer)-[:HAS_CHAT]->(ch:Chat) RETURN ch.id").result_set}
+    assert {"chat-1", "chat-2"} <= chats
+
+
+def test_reader_emits_continues_edges(graph_name):
+    _skip_if_down()
+    from apps.api.services import graph_reader_service
+    cg.write_contract(graph_name, "chat-1", "Chat 1", {"items": []}, [], [], to_seq=1)
+    cg.open_branch(graph_name, "chat-2", "Chat 2", "chat-1")
+    g = graph_reader_service.read_customer_graph(graph_name)
+    cont = [(e["source"], e["target"]) for e in g["edges"] if e["type"] == "CONTINUES"]
+    assert ("Chat::chat-2", "Chat::chat-1") in cont

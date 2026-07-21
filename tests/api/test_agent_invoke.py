@@ -70,21 +70,26 @@ def test_invoke_includes_prior_agent_question_in_decider_window():
     assert "What quantity?" in bodies
 
 
-def test_invoke_auto_finalizes_when_ready():
+def test_invoke_never_finalizes_even_when_ready():
     ch = _chat()
     chat_service.add_message("dummy-01", ch, "seller", "10MT CIF Busan")
-    calls = []
-    dec = AgentDecision(mode="finalize", message="Both confirmed. Finalizing.",
+    dec = AgentDecision(mode="finalize", message="Both confirmed.",
                         contract=SOExtractContractList(data=[]), ready_to_finalize=True,
                         ledger=[SlotBelief(slot="ship_term", value="CIF", source="chat",
                                            confidence="high", agreed_by=["seller", "customer"])])
-
-    def _graph(customer_id, chat_id, chat_title, contract, slots, source_seqs, to_seq):
-        calls.append(to_seq)
-
     out = agent_service.invoke("dummy-01", "sonnet-4-6",
-                               decider=_decider(dec), context_fn=_ctx, graph_fn=_graph)
-    assert calls == [1]
-    assert chat_service.get_last_contract_seq(ch) == 1
-    assert out["messages"][-1]["kind"] == "final"
-    assert mongo.summaries().count_documents({"status": "approved"}) == 1
+                               decider=_decider(dec), context_fn=_ctx)
+    assert out["messages"][-1]["kind"] == "draft"
+    assert "@agent confirm" in out["messages"][-1]["body"]
+    assert chat_service.get_last_contract_seq(ch) == 0
+    assert mongo.summaries().count_documents({"status": "approved"}) == 0
+
+
+def test_agent_messages_carry_decision_json():
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "seller", "need choline")
+    dec = AgentDecision(mode="clarify", message="Which product?",
+                        questions=[AgentQuestion(slot="description", directed_to="seller", text="?")])
+    out = agent_service.invoke("dummy-01", "sonnet-4-6",
+                               decider=_decider(dec), context_fn=_ctx)
+    assert '"mode": "clarify"' in out["messages"][-1]["summary_json"]

@@ -96,3 +96,13 @@ def write_contract(customer_id, chat_id, chat_title, contract, slots, source_seq
                 "MERGE (c)-[:PREFERS]->(pr)",
                 {"id": customer_id, "slot": s["slot"], "value": s["value"], "now": _now()})
     return contract_id
+
+
+def open_branch(customer_id, new_chat_id, new_chat_title, prev_chat_id) -> None:
+    if not falkor.is_available():
+        return
+    g = falkor.customer_graph(customer_id)
+    _ensure_chat(g, customer_id, new_chat_id, new_chat_title)
+    g.query(
+        "MATCH (a:Chat {id:$new}),(b:Chat {id:$old}) MERGE (a)-[:CONTINUES]->(b)",
+        {"new": new_chat_id, "old": prev_chat_id})

@@ -56,6 +56,12 @@ function countsByNode(nodes: GraphNode[], edges: GraphEdge[]): Map<string, NodeC
   return out;
 }
 
+export function edgeStroke(type: string): string {
+  if (type === "SUPERSEDES") return "#f43f5e";
+  if (type === "CONTINUES") return "#6366f1";
+  return "#cbd5e1";
+}
+
 function toFlowEdges(gedges: GraphEdge[]): Edge[] {
   return gedges.map((e) => ({
     id: e.id,
@@ -64,7 +70,7 @@ function toFlowEdges(gedges: GraphEdge[]): Edge[] {
     label: e.type,
     data: { graphEdge: e },
     type: "smoothstep",
-    style: { stroke: e.type === "SUPERSEDES" ? "#f43f5e" : "#cbd5e1" },
+    style: { stroke: edgeStroke(e.type) },
     labelStyle: { fontSize: 9, fill: "#94a3b8" },
   }));
 }

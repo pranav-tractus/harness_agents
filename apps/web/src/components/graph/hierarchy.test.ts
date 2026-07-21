@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 import type { GraphData } from "@/api/client";
 import {
   assignChatColors,
+  childrenMap,
   computeVisibleNodeIds,
+  CONTAINMENT_EDGE_TYPES,
   hasHierarchyChildren,
   provenanceFor,
   rootIds,
@@ -78,5 +80,15 @@ describe("assignChatColors", () => {
     expect(colors.ch1).toBeTruthy();
     expect(colors.ch2).toBeTruthy();
     expect(colors.ch1).not.toBe(colors.ch2);
+  });
+});
+
+describe("cross-link edges", () => {
+  it("treats CONTINUES as a cross-link, not containment", () => {
+    expect(CONTAINMENT_EDGE_TYPES.has("CONTINUES")).toBe(false);
+    const kids = childrenMap([
+      { id: "e", source: "Chat::b", target: "Chat::a", type: "CONTINUES", properties: {} },
+    ]);
+    expect(kids.size).toBe(0); // CONTINUES does not create parent→child nesting
   });
 });

@@ -54,3 +54,30 @@ def test_checkpoint_roundtrip():
     assert chat_service.get_last_contract_seq(ch) == 0
     chat_service.set_last_contract_seq(ch, 7)
     assert chat_service.get_last_contract_seq(ch) == 7
+
+
+def test_ensure_active_chat_reuses_then_creates_after_finish():
+    a = chat_service.ensure_active_chat("dummy-01")
+    assert chat_service.ensure_active_chat("dummy-01") == a  # reuse while active
+    chat_service.finish_chat(a)
+    b = chat_service.ensure_active_chat("dummy-01")
+    assert b != a  # new chat once finished
+
+
+def test_start_new_chat_numbers_titles():
+    first = chat_service.ensure_active_chat("dummy-02")  # "Chat 1"
+    chat_service.finish_chat(first)
+    second = chat_service.start_new_chat("dummy-02")
+    assert second["title"] == "Chat 2"
+
+
+def test_all_messages_spans_chats_in_order_with_status():
+    a = chat_service.ensure_active_chat("dummy-03")
+    chat_service.add_message("dummy-03", a, "seller", "in chat 1")
+    chat_service.finish_chat(a)
+    b = chat_service.start_new_chat("dummy-03")["id"]
+    chat_service.add_message("dummy-03", b, "seller", "in chat 2")
+    rows = chat_service.all_messages("dummy-03")
+    assert [r["body"] for r in rows] == ["in chat 1", "in chat 2"]
+    assert rows[0]["chat_id"] == a and rows[0]["chat_status"] == "finished"
+    assert rows[1]["chat_id"] == b and rows[1]["chat_status"] == "active"

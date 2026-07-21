@@ -122,7 +122,21 @@ def render_summary_markdown(summary: SalesOrderSummary, customer_name: str | Non
     return "\n".join(lines).rstrip()
 
 
-CRITICAL_SLOTS = {"description", "quantity", "unit_price", "ship_term"}
+CRITICAL_SLOTS_ORDER = ["description", "quantity", "unit_price", "ship_term"]
+CRITICAL_SLOTS = set(CRITICAL_SLOTS_ORDER)
+
+
+def _agreed_by_both(slots: list[dict]) -> dict[str, set[str]]:
+    return {s["slot"]: set(s.get("agreed_by", [])) for s in slots}
+
+
+def missing_agreement(slots: list[dict]) -> list[str]:
+    by_slot = _agreed_by_both(slots)
+    return [s for s in CRITICAL_SLOTS_ORDER if not {"seller", "customer"} <= by_slot.get(s, set())]
+
+
+def is_ready(slots: list[dict]) -> bool:
+    return bool(slots) and missing_agreement(slots) == []
 
 
 class SlotBelief(BaseModel):

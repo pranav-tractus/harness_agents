@@ -12,7 +12,7 @@ def _now() -> str:
 
 
 def _pending_summary(customer_id: str, chat_id: str | None = None) -> dict | None:
-    chat_id = chat_id or chat_service.ensure_default_chat(customer_id)
+    chat_id = chat_id or chat_service.ensure_active_chat(customer_id)
     return mongo.summaries().find_one(
         {"customer_id": customer_id, "chat_id": chat_id, "status": "pending"})
 
@@ -39,7 +39,7 @@ def dispatch(customer_id, command, args, model_key,
     summary_gen = summary_gen or summary_service.generate
     summary_revise = summary_revise or summary_service.revise
     context_fn = context_fn or summary_context_service.assemble
-    chat_id = chat_service.ensure_default_chat(customer_id)
+    chat_id = chat_service.ensure_active_chat(customer_id)
 
     if command == "create-sales-order":
         return _create(customer_id, chat_id, model_key, summary_gen, context_fn)
