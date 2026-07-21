@@ -1,7 +1,9 @@
+from datetime import date
+
 from core.llm_client import call_llm
 from core.models import SOExtractContractList, SOUpdateContractList
 
-_SYSTEM = (
+_SYSTEM_BASE = (
     "You extract a structured sales order from a customer chat, matching the "
     "provided JSON schema exactly. Prefer values explicitly stated in the chat. "
     "When a field is not stated in the chat, you may fill it from the provided "
@@ -9,8 +11,14 @@ _SYSTEM = (
     "the chat when they conflict. Only use products from the provided catalog. "
     "Group line items into one contract per distinct purchase order. Leave string "
     "fields empty and numeric fields null when a value appears in none of these "
-    "sources. Do not invent quantities, prices, or terms."
+    "sources. Do not invent quantities, prices, or terms. "
+    "Normalize all dates to ISO 8601 (YYYY-MM-DD). For partial months use the "
+    "last day of that month. Today is {today}."
 )
+
+
+def _system() -> str:
+    return _SYSTEM_BASE.format(today=date.today().isoformat())
 
 
 def _chat_block(messages: list[dict]) -> str:
@@ -32,7 +40,7 @@ def generate(customer_name, messages, product_block, model_key,
         + f"Chat since last contract:\n{_chat_block(messages)}\n\n"
         "Produce the sales order contract list."
     )
-    return llm(prompt, SOExtractContractList, model_key, system_prompt=_SYSTEM)
+    return llm(prompt, SOExtractContractList, model_key, system_prompt=_system())
 
 
 def revise(customer_name, previous, instructions, messages, model_key,
@@ -47,4 +55,4 @@ def revise(customer_name, previous, instructions, messages, model_key,
         + f"Chat since last contract:\n{_chat_block(messages)}\n\n"
         + f"Apply these edit instructions and return the corrected contract list:\n{instructions}"
     )
-    return llm(prompt, SOUpdateContractList, model_key, system_prompt=_SYSTEM)
+    return llm(prompt, SOUpdateContractList, model_key, system_prompt=_system())

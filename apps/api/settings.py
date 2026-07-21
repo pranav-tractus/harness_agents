@@ -1,6 +1,12 @@
 import os
 from dataclasses import dataclass
 from functools import lru_cache
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+# Repo-root .env (MONGODB_URI / Atlas, LLM keys, etc.)
+load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
 
 @dataclass(frozen=True)
