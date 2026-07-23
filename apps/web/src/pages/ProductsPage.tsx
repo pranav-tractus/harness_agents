@@ -22,7 +22,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-type MetaRow = { key: string; value: string };
+type MetaRow = { id: string; key: string; value: string };
 
 function MetaEditor({
   rows,
@@ -34,7 +34,7 @@ function MetaEditor({
   return (
     <div className="grid gap-2">
       {rows.map((r, i) => (
-        <div key={r.key || i} className="flex gap-2">
+        <div key={r.id} className="flex gap-2">
           <Input
             placeholder="key (e.g. density)"
             value={r.key}
@@ -54,7 +54,7 @@ function MetaEditor({
           </Button>
         </div>
       ))}
-      <Button variant="outline" size="sm" onClick={() => setRows([...rows, { key: "", value: "" }])}>
+      <Button variant="outline" size="sm" onClick={() => setRows([...rows, { id: `new-${Date.now()}`, key: "", value: "" }])}>
         Add metadata field
       </Button>
     </div>
@@ -90,7 +90,7 @@ export function ProductsPage() {
   }
 
   function metaToRows(meta: Record<string, string>): MetaRow[] {
-    return Object.entries(meta ?? {}).map(([key, value]) => ({ key, value }));
+    return Object.entries(meta ?? {}).map(([key, value]) => ({ id: `meta-${key}`, key, value }));
   }
 
   async function loadProducts() {
