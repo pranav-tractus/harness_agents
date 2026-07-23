@@ -1,11 +1,16 @@
 import hashlib
+import json
 
 from apps.api.db import falkor
 from graph.product_extractor import extract_product_facts
 
 
-def _hash(description: str, spec: str | None) -> str:
-    return hashlib.sha256(f"{description}\x00{spec or ''}".encode()).hexdigest()[:16]
+def _hash(name, short_description, long_description, spec, metadata) -> str:
+    payload = json.dumps(
+        {"name": name or "", "short": short_description or "", "long": long_description or "",
+         "spec": spec or "", "metadata": metadata or {}},
+        sort_keys=True, ensure_ascii=False)
+    return hashlib.sha256(payload.encode()).hexdigest()[:16]
 
 
 def _delete(g, code: str) -> None:
@@ -16,20 +21,27 @@ def _delete(g, code: str) -> None:
     g.query("MATCH (p:Product {code:$c}) DELETE p", {"c": code})
 
 
-def build(code, description, spec, model_key="openai:5.5", *, extractor=None) -> None:
+def build(code, *, name, short_description, long_description, spec, metadata,
+          model_key="openai:5.5", extractor=None) -> None:
     extractor = extractor or extract_product_facts
-    facts = extractor(description, spec, model_key)
+    metadata = metadata or {}
+    facts = extractor(name, short_description, long_description, spec, metadata, model_key)
     g = falkor.catalog_graph()
     _delete(g, code)
-    g.query("CREATE (:Product {code:$c, description:$d, spec:$s, built_hash:$h})",
-            {"c": code, "d": description or "", "s": spec or "", "h": _hash(description, spec)})
-    for name in dict.fromkeys(a for a in facts.aliases if a):
+    g.query(
+        "CREATE (:Product {code:$c, name:$n, short_description:$sd, long_description:$ld, "
+        "spec:$s, built_hash:$h})",
+        {"c": code, "n": name or "", "sd": short_description or "", "ld": long_description or "",
+         "s": spec or "", "h": _hash(name, short_description, long_description, spec, metadata)})
+    for alias in dict.fromkeys(a for a in facts.aliases if a):
         g.query("MATCH (p:Product {code:$c}) CREATE (a:Alias {name:$n}) MERGE (p)-[:HAS_ALIAS]->(a)",
-                {"c": code, "n": name})
-    for key, value in (("grade", facts.grade), ("packing_size", facts.packing_size), ("unit", facts.unit)):
+                {"c": code, "n": alias})
+    spec_pairs = [("grade", facts.grade), ("packing_size", facts.packing_size), ("unit", facts.unit)]
+    spec_pairs += [(k, v) for k, v in metadata.items()]   # metadata → queryable SpecAttr nodes
+    for key, value in spec_pairs:
         if value:
-            g.query("MATCH (p:Product {code:$c}) CREATE (s:SpecAttr {key:$k, value:$v}) MERGE (p)-[:HAS_SPEC]->(s)",
-                    {"c": code, "k": key, "v": str(value)})
+            g.query("MATCH (p:Product {code:$c}) CREATE (s:SpecAttr {key:$k, value:$v}) "
+                    "MERGE (p)-[:HAS_SPEC]->(s)", {"c": code, "k": key, "v": str(value)})
     cat = facts.attributes.get("category")
     if cat:
         g.query("MATCH (p:Product {code:$c}) MERGE (cat:Category {name:$n}) MERGE (p)-[:IN_CATEGORY]->(cat)",
@@ -40,14 +52,32 @@ def build(code, description, spec, model_key="openai:5.5", *, extractor=None) ->
                 {"c": code, "n": app})
 
 
-def status(code, description, spec) -> str:
+def status(code, *, name, short_description, long_description, spec, metadata) -> str:
     if not falkor.is_available():
         return "not built"
     rows = falkor.catalog_graph().query(
         "MATCH (p:Product {code:$c}) RETURN p.built_hash", {"c": code}).result_set
     if not rows:
         return "not built"
-    return "built" if rows[0][0] == _hash(description, spec) else "stale"
+    return "built" if rows[0][0] == _hash(name, short_description, long_description, spec, metadata) else "stale"
+
+
+def _doc_fields(doc: dict) -> dict:
+    return {
+        "name": doc.get("name"),
+        "short_description": doc.get("short_description") or doc.get("description") or "",
+        "long_description": doc.get("long_description"),
+        "spec": doc.get("spec"),
+        "metadata": doc.get("metadata") or {},
+    }
+
+
+def build_from_doc(doc: dict, *, model_key="openai:5.5", extractor=None) -> None:
+    build(doc["code"], model_key=model_key, extractor=extractor, **_doc_fields(doc))
+
+
+def status_for_doc(doc: dict) -> str:
+    return status(doc["code"], **_doc_fields(doc))
 
 
 def remove_product(code) -> None:

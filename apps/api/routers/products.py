@@ -12,9 +12,10 @@ router = APIRouter(prefix="/api/products", tags=["products"])
 
 
 def _out(doc: dict) -> ProductOut:
-    return ProductOut(id=doc["_id"], code=doc["code"], description=doc["description"],
+    return ProductOut(id=doc["_id"], code=doc["code"],
+                      description=doc.get("short_description") or doc.get("description") or "",
                       spec=doc.get("spec"),
-                      build_status=product_graph_service.status(doc["code"], doc["description"], doc.get("spec")))
+                      build_status=product_graph_service.status_for_doc(doc))
 
 
 @router.get("")
@@ -57,7 +58,7 @@ def update_product(product_id: str, body: ProductUpdate) -> ProductOut:
 @router.post("/build-all")
 def build_all() -> list[ProductOut]:
     for doc in mongo.products().find():
-        product_graph_service.build(doc["code"], doc["description"], doc.get("spec"))
+        product_graph_service.build_from_doc(doc)
     return [_out(d) for d in mongo.products().find().sort("_id", 1)]
 
 
@@ -66,7 +67,7 @@ def build_product(product_id: str) -> ProductOut:
     doc = mongo.products().find_one({"_id": product_id})
     if not doc:
         raise HTTPException(404, "product not found")
-    product_graph_service.build(doc["code"], doc["description"], doc.get("spec"))
+    product_graph_service.build_from_doc(doc)
     return _out(mongo.products().find_one({"_id": product_id}))
 
 

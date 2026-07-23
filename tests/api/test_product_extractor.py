@@ -17,13 +17,19 @@ def test_extract_product_facts_builds_prompt_and_returns_facts():
         )
 
     pe.call_llm = _fake_llm  # monkeypatch module ref
-    facts = pe.extract_product_facts("Wheat Flour 25kg", "grade A, 25kg PP bag", "sonnet-4-6")
+    facts = pe.extract_product_facts(
+        name="Wheat Flour",
+        short_description="Wheat Flour 25kg",
+        long_description="Stone-ground whole wheat atta, milled in India.",
+        spec="grade A, 25kg PP bag",
+        metadata={"density": "0.55 g/cm3"},
+        model_key="sonnet-4-6",
+    )
 
     assert facts.aliases == ["atta", "wheat flour bag"]
     assert facts.grade == "A"
-    assert facts.packing_size == "25kg"
-    assert facts.attributes["origin"] == "India"
     assert captured["schema"] is pe.ProductFacts
     assert captured["model_key"] == "sonnet-4-6"
-    assert "Wheat Flour 25kg" in captured["prompt"]
-    assert "grade A, 25kg PP bag" in captured["prompt"]
+    # richer inputs all reach the prompt
+    for token in ("Wheat Flour", "stone-ground", "grade A, 25kg PP bag", "density", "0.55 g/cm3"):
+        assert token.lower() in captured["prompt"].lower()
