@@ -34,6 +34,62 @@ export function ProductsPage() {
   const [spec, setSpec] = useState("");
   const [saving, setSaving] = useState(false);
   const [buildingCode, setBuildingCode] = useState<string | null>(null);
+  const [name, setName] = useState("");
+  const [longDescription, setLongDescription] = useState("");
+  const [metaRows, setMetaRows] = useState<{ key: string; value: string }[]>([]);
+  const [newName, setNewName] = useState("");
+  const [newLongDescription, setNewLongDescription] = useState("");
+  const [newMetaRows, setNewMetaRows] = useState<{ key: string; value: string }[]>([]);
+
+  function rowsToMeta(rows: { key: string; value: string }[]): Record<string, string> {
+    const out: Record<string, string> = {};
+    for (const r of rows) {
+      const k = r.key.trim();
+      if (k) out[k] = r.value;
+    }
+    return out;
+  }
+
+  function metaToRows(meta: Record<string, string>): { key: string; value: string }[] {
+    return Object.entries(meta ?? {}).map(([key, value]) => ({ key, value }));
+  }
+
+  function MetaEditor({
+    rows,
+    setRows,
+  }: {
+    rows: { key: string; value: string }[];
+    setRows: (r: { key: string; value: string }[]) => void;
+  }) {
+    return (
+      <div className="grid gap-2">
+        {rows.map((r, i) => (
+          <div key={i} className="flex gap-2">
+            <Input
+              placeholder="key (e.g. density)"
+              value={r.key}
+              onChange={(e) =>
+                setRows(rows.map((x, j) => (j === i ? { ...x, key: e.target.value } : x)))
+              }
+            />
+            <Input
+              placeholder="value (e.g. 0.92 g/cm³)"
+              value={r.value}
+              onChange={(e) =>
+                setRows(rows.map((x, j) => (j === i ? { ...x, value: e.target.value } : x)))
+              }
+            />
+            <Button variant="outline" size="sm" onClick={() => setRows(rows.filter((_, j) => j !== i))}>
+              ✕
+            </Button>
+          </div>
+        ))}
+        <Button variant="outline" size="sm" onClick={() => setRows([...rows, { key: "", value: "" }])}>
+          Add metadata field
+        </Button>
+      </div>
+    );
+  }
 
   async function loadProducts() {
     const rows = await api.listProducts();
@@ -46,8 +102,11 @@ export function ProductsPage() {
 
   function openEdit(product: Product) {
     setEditProduct(product);
-    setDescription(product.description);
+    setName(product.name ?? "");
+    setDescription(product.short_description);
+    setLongDescription(product.long_description ?? "");
     setSpec(product.spec ?? "");
+    setMetaRows(metaToRows(product.metadata));
   }
 
   async function saveEdit() {
@@ -55,8 +114,11 @@ export function ProductsPage() {
     setSaving(true);
     try {
       await api.updateProduct(editProduct.id, {
-        description,
+        name: name.trim() || null,
+        short_description: description,
+        long_description: longDescription.trim() || null,
         spec: spec.trim() || null,
+        metadata: rowsToMeta(metaRows),
       });
       setEditProduct(null);
       await loadProducts();
@@ -74,13 +136,19 @@ export function ProductsPage() {
     try {
       await api.createProduct({
         code: newCode.trim(),
-        description: newDescription.trim(),
+        name: newName.trim() || null,
+        short_description: newDescription.trim(),
+        long_description: newLongDescription.trim() || null,
         spec: newSpec.trim() || null,
+        metadata: rowsToMeta(newMetaRows),
       });
       setAddOpen(false);
       setNewCode("");
       setNewDescription("");
       setNewSpec("");
+      setNewName("");
+      setNewLongDescription("");
+      setNewMetaRows([]);
       await loadProducts();
       toast.success("Product added");
     } catch (err) {
@@ -128,8 +196,8 @@ export function ProductsPage() {
         <TableHeader>
           <TableRow>
             <TableHead>Code</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead>Spec</TableHead>
+            <TableHead>Name</TableHead>
+            <TableHead>Short description</TableHead>
             <TableHead>Graph</TableHead>
             <TableHead className="w-[220px]">Actions</TableHead>
           </TableRow>
@@ -138,8 +206,8 @@ export function ProductsPage() {
           {products.map((product) => (
             <TableRow key={product.id}>
               <TableCell className="font-medium">{product.code}</TableCell>
-              <TableCell>{product.description}</TableCell>
-              <TableCell>{product.spec ?? "—"}</TableCell>
+              <TableCell>{product.name ?? "—"}</TableCell>
+              <TableCell>{product.short_description}</TableCell>
               <TableCell>
                 <BuildBadge status={product.build_status ?? "not built"} />
               </TableCell>
@@ -189,12 +257,25 @@ export function ProductsPage() {
               />
             </div>
             <div className="grid gap-1">
-              <Label htmlFor="new-description">Description</Label>
+              <Label htmlFor="new-name">Name</Label>
+              <Input id="new-name" value={newName} onChange={(e) => setNewName(e.target.value)} />
+            </div>
+            <div className="grid gap-1">
+              <Label htmlFor="new-description">Short description</Label>
               <Textarea
                 id="new-description"
                 value={newDescription}
                 onChange={(e) => setNewDescription(e.target.value)}
               />
+            </div>
+            <div className="grid gap-1">
+              <Label htmlFor="new-long">Long description</Label>
+              <Textarea id="new-long" value={newLongDescription}
+                onChange={(e) => setNewLongDescription(e.target.value)} />
+            </div>
+            <div className="grid gap-1">
+              <Label>Metadata</Label>
+              <MetaEditor rows={newMetaRows} setRows={setNewMetaRows} />
             </div>
             <div className="grid gap-1">
               <Label htmlFor="new-spec">Spec</Label>
@@ -230,12 +311,25 @@ export function ProductsPage() {
               <Input value={editProduct?.code ?? ""} readOnly disabled />
             </div>
             <div className="grid gap-1">
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="edit-name">Name</Label>
+              <Input id="edit-name" value={name} onChange={(e) => setName(e.target.value)} />
+            </div>
+            <div className="grid gap-1">
+              <Label htmlFor="description">Short description</Label>
               <Textarea
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
+            </div>
+            <div className="grid gap-1">
+              <Label htmlFor="long">Long description</Label>
+              <Textarea id="long" value={longDescription}
+                onChange={(e) => setLongDescription(e.target.value)} />
+            </div>
+            <div className="grid gap-1">
+              <Label>Metadata</Label>
+              <MetaEditor rows={metaRows} setRows={setMetaRows} />
             </div>
             <div className="grid gap-1">
               <Label htmlFor="spec">Spec</Label>

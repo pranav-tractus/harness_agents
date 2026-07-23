@@ -44,7 +44,7 @@ describe("buildProduct", () => {
   it("posts to the product build endpoint", async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({ id: "PX-100", code: "PX-100", description: "d", spec: null, build_status: "built" }),
+      json: async () => ({ id: "PX-100", code: "PX-100", name: "P", short_description: "d", long_description: null, spec: null, metadata: {}, build_status: "built" }),
     });
     vi.stubGlobal("fetch", fetchMock);
     const result = await api.buildProduct("PX-100");

@@ -17,8 +17,11 @@ export type Profile = {
 export type Product = {
   id: string;
   code: string;
-  description: string;
+  name: string | null;
+  short_description: string;
+  long_description: string | null;
   spec: string | null;
+  metadata: Record<string, string>;
   build_status?: string;
 };
 export type Message = {
@@ -71,14 +74,27 @@ export const api = {
       body: JSON.stringify({ profile }),
     }),
   listProducts: () => req<Product[]>("/api/products"),
-  createProduct: (payload: { code: string; description: string; spec: string | null }) =>
+  createProduct: (payload: {
+    code: string;
+    name?: string | null;
+    short_description: string;
+    long_description?: string | null;
+    spec?: string | null;
+    metadata?: Record<string, string>;
+  }) =>
     req<Product>("/api/products", {
       method: "POST",
       body: JSON.stringify(payload),
     }),
   updateProduct: (
     id: string,
-    patch: { description?: string | null; spec?: string | null },
+    patch: {
+      name?: string | null;
+      short_description?: string | null;
+      long_description?: string | null;
+      spec?: string | null;
+      metadata?: Record<string, string>;
+    },
   ) =>
     req<Product>(`/api/products/${id}`, {
       method: "PUT",
