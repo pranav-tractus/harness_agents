@@ -29,8 +29,16 @@ def _section(label: str, block: str | None) -> str:
     return f"{label}:\n{block}\n\n" if block else ""
 
 
-def generate(customer_name, messages, product_block, model_key,
-             *, profile_block=None, history_block=None, llm=None) -> SOExtractContractList:
+def generate(
+    customer_name,
+    messages,
+    product_block,
+    model_key,
+    *,
+    profile_block=None,
+    history_block=None,
+    llm=None,
+) -> SOExtractContractList:
     llm = llm or call_llm
     prompt = (
         f"Customer: {customer_name}\n\n"
@@ -43,8 +51,18 @@ def generate(customer_name, messages, product_block, model_key,
     return llm(prompt, SOExtractContractList, model_key, system_prompt=_system())
 
 
-def revise(customer_name, previous, instructions, messages, model_key,
-           *, product_block=None, profile_block=None, history_block=None, llm=None) -> SOUpdateContractList:
+def revise(
+    customer_name,
+    previous,
+    instructions,
+    messages,
+    model_key,
+    *,
+    product_block=None,
+    profile_block=None,
+    history_block=None,
+    llm=None,
+) -> SOUpdateContractList:
     llm = llm or call_llm
     prompt = (
         f"Customer: {customer_name}\n\n"

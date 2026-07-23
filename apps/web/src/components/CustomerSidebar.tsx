@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { type Customer } from "@/api/client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -51,9 +51,9 @@ export function CustomerSidebar({ customers, selectedId, onSelect, onAdd, onDele
   }
 
   return (
-    <div className="flex w-56 flex-col gap-2 border-r p-3">
-      <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-muted-foreground">Customers</h2>
+    <div className="flex w-56 flex-col gap-2 border-r bg-background p-3">
+      <div className="flex items-center justify-between pb-1">
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Customers</h2>
         <Button size="sm" variant="outline" onClick={() => setAddOpen(true)}>
           Add
         </Button>
@@ -63,13 +63,13 @@ export function CustomerSidebar({ customers, selectedId, onSelect, onAdd, onDele
           key={customer.id}
           className={cn(
             "cursor-pointer transition-colors hover:bg-muted/50",
-            selectedId === customer.id && "border-primary bg-muted/50",
+            selectedId === customer.id && "border-primary/60 bg-accent/40",
           )}
           onClick={() => onSelect(customer.id)}
         >
-          <CardHeader className="p-3 pb-1">
-            <div className="flex items-start justify-between gap-2">
-              <CardTitle className="text-sm">{customer.name}</CardTitle>
+          <CardHeader className="p-3">
+            <div className="flex items-center justify-between gap-2">
+              <CardTitle className="text-sm font-medium">{customer.name}</CardTitle>
               <Button
                 variant="ghost"
                 size="sm"
@@ -79,13 +79,10 @@ export function CustomerSidebar({ customers, selectedId, onSelect, onAdd, onDele
                   setDeleteTarget(customer);
                 }}
               >
-                Delete
+                ✕
               </Button>
             </div>
           </CardHeader>
-          <CardContent className="p-3 pt-0 text-xs text-muted-foreground">
-            {customer.id}
-          </CardContent>
         </Card>
       ))}
 

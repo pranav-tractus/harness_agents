@@ -8,13 +8,17 @@ def _history_block(customer_id: str) -> str | None:
     g = falkor.customer_graph(customer_id)
     rows = g.query(
         "MATCH (:Customer {id:$id})-[:PREFERS]->(pr:Preference) "
-        "RETURN pr.slot, pr.value, pr.support", {"id": customer_id}).result_set
+        "RETURN pr.slot, pr.value, pr.support",
+        {"id": customer_id},
+    ).result_set
     if not rows:
         return None
     return "Typical terms:\n" + "\n".join(f"- {s}: {v} (seen {n}x)" for s, v, n in rows)
 
 
-def assemble(customer_id, *, profile_reader=None, history_reader=None, product_reader=None) -> dict:
+def assemble(
+    customer_id, *, profile_reader=None, history_reader=None, product_reader=None
+) -> dict:
     profile_reader = profile_reader or profile_graph_service.read_block
     history_reader = history_reader or _history_block
     return {

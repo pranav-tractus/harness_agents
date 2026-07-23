@@ -19,19 +19,20 @@ export default function App() {
   return (
     <div className="min-h-screen bg-background">
       <Tabs value={tab} onValueChange={(value) => value && setTab(value)} className="flex flex-col">
-        <header className="flex items-center justify-between max-w-7xl w-full mx-auto bg-card px-6 py-2">
+        <header className="flex h-14 items-center justify-between w-full bg-card border-b border-border px-6 shrink-0">
           <div className="flex items-center gap-2.5">
-            <h1 className="text-sm font-semibold tracking-tight">Chat Simulation</h1>
+            <div className="flex h-6 w-6 items-center justify-center rounded bg-primary text-[10px] font-bold text-primary-foreground select-none">
+              CS
+            </div>
+            <span className="text-sm font-semibold text-foreground tracking-tight">Chat Simulation</span>
           </div>
-          <div className="">
-            <TabsList>
-              <TabsTrigger value="chat">Chat</TabsTrigger>
-              <TabsTrigger value="products">Products</TabsTrigger>
-              <TabsTrigger value="graphs">Graphs</TabsTrigger>
-            </TabsList>
-          </div>
+          <TabsList variant="line" className="nav-tabs h-full gap-0 border-none bg-transparent p-0">
+            <TabsTrigger value="chat" className="h-full rounded-none px-5 text-sm">Chat</TabsTrigger>
+            <TabsTrigger value="products" className="h-full rounded-none px-5 text-sm">Products</TabsTrigger>
+            <TabsTrigger value="graphs" className="h-full rounded-none px-5 text-sm">Graphs</TabsTrigger>
+          </TabsList>
         </header>
-        <main className="flex-1 overflow-hidden border-t">
+        <main className="flex-1 overflow-hidden">
           <TabsContent value="chat" className="mt-0">
             <ChatPage focusMessage={graphNav} onFocusHandled={() => setGraphNav(null)} />
           </TabsContent>

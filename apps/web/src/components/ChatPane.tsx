@@ -48,7 +48,7 @@ function MessageText({ body }: { body: string }) {
     <div className="whitespace-pre-wrap leading-relaxed">
       <span
         data-testid="agent-mention"
-        className="rounded bg-indigo-500/15 px-1 font-medium text-indigo-600 dark:text-indigo-300"
+        className="rounded bg-accent px-1 font-medium text-accent-foreground"
       >
         {mention}
       </span>
@@ -141,11 +141,11 @@ export function ChatPane({ messages, scrollToSeq }: Props) {
       <div
         data-seq={message.seq}
         className={cn(
-          "max-w-[40%] rounded-md px-3.5 py-2.5 text-sm",
+          "max-w-[55%] rounded-md px-3.5 py-2.5 text-sm",
           isSellerRole(message.role) &&
             "ml-auto bg-primary text-primary-foreground shadow-sm",
           message.role === "customer" &&
-            "mr-auto border bg-card shadow-sm",
+            "mr-auto border border-border bg-white shadow-sm",
           isAgentRole(message.role) &&
             "mx-auto w-full max-w-full rounded-lg border-l-2 border-primary/40 bg-primary/5 px-4",
           message.kind === "command" && "opacity-70",

@@ -1,7 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from apps.api.routers import chats, commands, customers, graphs, messages, models_router, products
+from apps.api.routers import (
+    chats,
+    commands,
+    customers,
+    graphs,
+    messages,
+    models_router,
+    products,
+)
 from apps.api.settings import get_settings
 
 
