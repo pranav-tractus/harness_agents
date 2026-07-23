@@ -74,8 +74,15 @@ def _history_pool(customer_id: str) -> list[ProductCandidate]:
 def _dedup(cands: list[ProductCandidate]) -> list[ProductCandidate]:
     by_code: dict[str, ProductCandidate] = {}
     for c in cands:
-        if c.code not in by_code or c.score > by_code[c.code].score:
+        if c.code not in by_code:
             by_code[c.code] = c
+        else:
+            existing = by_code[c.code]
+            by_code[c.code] = ProductCandidate(
+                code=c.code,
+                name=existing.name if len(existing.name) >= len(c.name) else c.name,
+                score=max(existing.score, c.score),
+            )
     return list(by_code.values())
 
 
@@ -92,6 +99,7 @@ def _guard(result: ProductMatchResult, valid_codes: set[str]) -> ProductMatchRes
         if m.status == "confident" and (m.resolved_code not in valid_codes):
             m.status = "no_match"
             m.resolved_code = None
+            m.canonical_name = None
             m.question = m.question or f"Could not match '{m.mention}' to a catalog product. Which SKU is it?"
     return result
 
