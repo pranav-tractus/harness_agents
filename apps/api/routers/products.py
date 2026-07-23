@@ -13,8 +13,11 @@ router = APIRouter(prefix="/api/products", tags=["products"])
 
 def _out(doc: dict) -> ProductOut:
     return ProductOut(id=doc["_id"], code=doc["code"],
-                      description=doc.get("short_description") or doc.get("description") or "",
+                      name=doc.get("name"),
+                      short_description=doc.get("short_description") or doc.get("description") or "",
+                      long_description=doc.get("long_description"),
                       spec=doc.get("spec"),
+                      metadata=doc.get("metadata") or {},
                       build_status=product_graph_service.status_for_doc(doc))
 
 
@@ -30,7 +33,9 @@ def create_product(body: ProductCreate) -> ProductOut:
         raise HTTPException(422, "code is required")
     if mongo.products().find_one({"_id": code}):
         raise HTTPException(409, "product already exists")
-    doc = {"_id": code, "code": code, "description": body.description, "spec": body.spec}
+    doc = {"_id": code, "code": code, "name": body.name,
+           "short_description": body.short_description, "long_description": body.long_description,
+           "spec": body.spec, "metadata": body.metadata or {}}
     mongo.products().insert_one(doc)
     return _out(mongo.products().find_one({"_id": code}))
 

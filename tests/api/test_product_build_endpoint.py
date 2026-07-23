@@ -27,5 +27,5 @@ def test_build_single(client):
 
 
 def test_create_does_not_autosync(client):
-    client.post("/api/products", json={"code": "NEW-1", "description": "x", "spec": None})
+    client.post("/api/products", json={"code": "NEW-1", "short_description": "x", "spec": None})
     assert "NEW-1" not in client.calls   # build only happens on explicit request

@@ -40,20 +40,29 @@ class CustomerCreate(BaseModel):
 class ProductOut(BaseModel):
     id: str
     code: str
-    description: str
+    name: str | None = None
+    short_description: str
+    long_description: str | None = None
     spec: str | None = None
+    metadata: dict[str, str] = Field(default_factory=dict)
     build_status: str = "not built"
 
 
 class ProductCreate(BaseModel):
     code: str
-    description: str
+    name: str | None = None
+    short_description: str
+    long_description: str | None = None
     spec: str | None = None
+    metadata: dict[str, str] = Field(default_factory=dict)
 
 
 class ProductUpdate(BaseModel):
-    description: str | None = None
+    name: str | None = None
+    short_description: str | None = None
+    long_description: str | None = None
     spec: str | None = None
+    metadata: dict[str, str] | None = None
 
 
 class MessageIn(BaseModel):
