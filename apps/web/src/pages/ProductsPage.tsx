@@ -22,6 +22,45 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+type MetaRow = { key: string; value: string };
+
+function MetaEditor({
+  rows,
+  setRows,
+}: {
+  rows: MetaRow[];
+  setRows: (r: MetaRow[]) => void;
+}) {
+  return (
+    <div className="grid gap-2">
+      {rows.map((r, i) => (
+        <div key={r.key || i} className="flex gap-2">
+          <Input
+            placeholder="key (e.g. density)"
+            value={r.key}
+            onChange={(e) =>
+              setRows(rows.map((x, j) => (j === i ? { ...x, key: e.target.value } : x)))
+            }
+          />
+          <Input
+            placeholder="value (e.g. 0.92 g/cm³)"
+            value={r.value}
+            onChange={(e) =>
+              setRows(rows.map((x, j) => (j === i ? { ...x, value: e.target.value } : x)))
+            }
+          />
+          <Button variant="outline" size="sm" onClick={() => setRows(rows.filter((_, j) => j !== i))}>
+            ✕
+          </Button>
+        </div>
+      ))}
+      <Button variant="outline" size="sm" onClick={() => setRows([...rows, { key: "", value: "" }])}>
+        Add metadata field
+      </Button>
+    </div>
+  );
+}
+
 export function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [editProduct, setEditProduct] = useState<Product | null>(null);
@@ -36,12 +75,12 @@ export function ProductsPage() {
   const [buildingCode, setBuildingCode] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [longDescription, setLongDescription] = useState("");
-  const [metaRows, setMetaRows] = useState<{ key: string; value: string }[]>([]);
+  const [metaRows, setMetaRows] = useState<MetaRow[]>([]);
   const [newName, setNewName] = useState("");
   const [newLongDescription, setNewLongDescription] = useState("");
-  const [newMetaRows, setNewMetaRows] = useState<{ key: string; value: string }[]>([]);
+  const [newMetaRows, setNewMetaRows] = useState<MetaRow[]>([]);
 
-  function rowsToMeta(rows: { key: string; value: string }[]): Record<string, string> {
+  function rowsToMeta(rows: MetaRow[]): Record<string, string> {
     const out: Record<string, string> = {};
     for (const r of rows) {
       const k = r.key.trim();
@@ -50,45 +89,8 @@ export function ProductsPage() {
     return out;
   }
 
-  function metaToRows(meta: Record<string, string>): { key: string; value: string }[] {
+  function metaToRows(meta: Record<string, string>): MetaRow[] {
     return Object.entries(meta ?? {}).map(([key, value]) => ({ key, value }));
-  }
-
-  function MetaEditor({
-    rows,
-    setRows,
-  }: {
-    rows: { key: string; value: string }[];
-    setRows: (r: { key: string; value: string }[]) => void;
-  }) {
-    return (
-      <div className="grid gap-2">
-        {rows.map((r, i) => (
-          <div key={i} className="flex gap-2">
-            <Input
-              placeholder="key (e.g. density)"
-              value={r.key}
-              onChange={(e) =>
-                setRows(rows.map((x, j) => (j === i ? { ...x, key: e.target.value } : x)))
-              }
-            />
-            <Input
-              placeholder="value (e.g. 0.92 g/cm³)"
-              value={r.value}
-              onChange={(e) =>
-                setRows(rows.map((x, j) => (j === i ? { ...x, value: e.target.value } : x)))
-              }
-            />
-            <Button variant="outline" size="sm" onClick={() => setRows(rows.filter((_, j) => j !== i))}>
-              ✕
-            </Button>
-          </div>
-        ))}
-        <Button variant="outline" size="sm" onClick={() => setRows([...rows, { key: "", value: "" }])}>
-          Add metadata field
-        </Button>
-      </div>
-    );
   }
 
   async function loadProducts() {
