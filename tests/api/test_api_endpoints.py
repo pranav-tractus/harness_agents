@@ -59,9 +59,9 @@ def test_products(client):
 
 
 def test_edit_product(client):
-    r = client.put("/api/products/TG-BPPC", json={"description": "Updated choline", "spec": "v2"})
+    r = client.put("/api/products/TG-BPPC", json={"short_description": "Updated choline", "spec": "v2"})
     assert r.status_code == 200
-    assert r.json()["description"] == "Updated choline"
+    assert r.json()["short_description"] == "Updated choline"
     assert r.json()["spec"] == "v2"
 
 
@@ -127,42 +127,42 @@ def test_delete_missing_customer_404(client):
 
 
 def test_create_product(client):
-    r = client.post("/api/products", json={"code": "NEW-1", "description": "New product", "spec": "s1"})
+    r = client.post("/api/products", json={"code": "NEW-1", "short_description": "New product", "spec": "s1"})
     assert r.status_code == 201
     assert r.json()["id"] == "NEW-1"
     assert len(client.get("/api/products").json()) == 5
 
 
 def test_create_product_conflict(client):
-    r = client.post("/api/products", json={"code": "TG-BPPC", "description": "dup"})
+    r = client.post("/api/products", json={"code": "TG-BPPC", "short_description": "dup"})
     assert r.status_code == 409
 
 
 def test_create_product_does_not_sync_graph(client, monkeypatch):
     calls = []
-    monkeypatch.setattr("apps.api.routers.products.product_graph_service.build",
-                        lambda code, description, spec, *a, **k: calls.append((code, description, spec)))
-    r = client.post("/api/products", json={"code": "NEW-2", "description": "New", "spec": "s"})
+    monkeypatch.setattr("apps.api.routers.products.product_graph_service.build_from_doc",
+                        lambda doc, **k: calls.append(doc["code"]))
+    r = client.post("/api/products", json={"code": "NEW-2", "short_description": "New", "spec": "s"})
     assert r.status_code == 201
     assert calls == []
 
 
 def test_build_product_syncs_graph(client, monkeypatch):
     calls = []
-    monkeypatch.setattr("apps.api.routers.products.product_graph_service.build",
-                        lambda code, description, spec, *a, **k: calls.append((code, description, spec)))
-    monkeypatch.setattr("apps.api.routers.products.product_graph_service.status",
-                        lambda *a, **k: "built")
+    monkeypatch.setattr("apps.api.routers.products.product_graph_service.build_from_doc",
+                        lambda doc, **k: calls.append(doc["code"]))
+    monkeypatch.setattr("apps.api.routers.products.product_graph_service.status_for_doc",
+                        lambda doc: "built")
     r = client.post("/api/products/TG-BPPC/build")
     assert r.status_code == 200
-    assert ("TG-BPPC", "Rumen bypass Phosphotidyl Choline", None) in calls
+    assert "TG-BPPC" in calls
 
 
 def test_update_product_does_not_sync_graph(client, monkeypatch):
     calls = []
-    monkeypatch.setattr("apps.api.routers.products.product_graph_service.build",
-                        lambda code, description, spec, *a, **k: calls.append((code, description, spec)))
-    r = client.put("/api/products/TG-BPPC", json={"description": "Updated", "spec": "v2"})
+    monkeypatch.setattr("apps.api.routers.products.product_graph_service.build_from_doc",
+                        lambda doc, **k: calls.append(doc["code"]))
+    r = client.put("/api/products/TG-BPPC", json={"short_description": "Updated", "spec": "v2"})
     assert r.status_code == 200
     assert calls == []
 
