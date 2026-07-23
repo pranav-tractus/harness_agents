@@ -23,3 +23,12 @@ def test_assemble_passes_through_none_blocks():
         product_reader=lambda: None,
     )
     assert out == {"profile_block": None, "history_block": None, "product_block": None}
+
+
+def test_assemble_defaults_product_block_to_none():
+    out = scs.assemble(
+        "dummy-01",
+        profile_reader=lambda cid: None,
+        history_reader=lambda cid: None,
+    )
+    assert out["product_block"] is None

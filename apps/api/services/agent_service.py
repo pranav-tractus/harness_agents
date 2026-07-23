@@ -5,7 +5,8 @@ from bson import ObjectId
 from apps.api.db import mongo
 from apps.api.models import (AgentDecision, cap_questions, is_ready,
                              missing_agreement, render_summary_markdown)
-from apps.api.services import chat_graph_service, chat_service, summary_context_service
+from apps.api.services import (chat_graph_service, chat_service, product_matcher_service,
+                              summary_context_service)
 from core.llm_client import call_llm
 from core.models import SOExtractContractList
 
@@ -108,14 +109,45 @@ def _agent_msg(customer_id, chat_id, body, kind, summary_id=None, summary_json=N
 _AGENT_WINDOW_KINDS = ("chat", "question", "draft", "final")
 
 
+def _resolved_product_block(matches) -> str:
+    lines = []
+    for m in matches:
+        doc = mongo.products().find_one({"_id": m.resolved_code}) or {}
+        name = m.canonical_name or doc.get("name") or m.resolved_code
+        short = doc.get("short_description") or doc.get("description") or ""
+        meta = doc.get("metadata") or {}
+        line = f"- {m.resolved_code}: {name}"
+        if short:
+            line += f" — {short}"
+        if meta:
+            line += " [" + ", ".join(f"{k}={v}" for k, v in sorted(meta.items())) + "]"
+        lines.append(line)
+    return "Resolved products for this order:\n" + "\n".join(lines) if lines else ""
+
+
+def _match_question(unresolved) -> str:
+    parts = ["I need to pin down the product before drafting:"]
+    for m in unresolved:
+        if m.question:
+            parts.append(f"- {m.question}")
+        elif m.candidates:
+            opts = " or ".join(f"{c.name} ({c.code})" for c in m.candidates)
+            parts.append(f"- For \"{m.mention}\": did you mean {opts}?")
+        else:
+            parts.append(f"- I couldn't match \"{m.mention}\" to the catalog. Which product is it?")
+    return "\n".join(parts)
+
+
 def _draft_to_seq(window: list[dict]) -> int:
     chat_seqs = [m["seq"] for m in window if m["kind"] == "chat"]
     return chat_seqs[-1] if chat_seqs else window[-1]["seq"]
 
 
-def invoke(customer_id, model_key, *, decider=None, context_fn=None, graph_fn=None) -> dict:
+def invoke(customer_id, model_key, *, decider=None, context_fn=None, graph_fn=None,
+           matcher_fn=None) -> dict:
     decider = decider or decide
     context_fn = context_fn or summary_context_service.assemble
+    matcher_fn = matcher_fn or product_matcher_service.resolve_products
     chat_id = chat_service.ensure_active_chat(customer_id)
 
     last = chat_service.get_last_contract_seq(chat_id)
@@ -124,7 +156,18 @@ def invoke(customer_id, model_key, *, decider=None, context_fn=None, graph_fn=No
         return {"messages": [_agent_msg(customer_id, chat_id,
                 "No new messages since the last contract.", "chat")], "summary": None}
 
+    match_result = matcher_fn(customer_id, window, model_key)
+    unresolved = match_result.unresolved()
+    if unresolved:
+        msg = _agent_msg(customer_id, chat_id, _match_question(unresolved), "question",
+                         summary_json=match_result.model_dump_json(indent=2))
+        return {"messages": [msg], "summary": None}
+
     ctx = context_fn(customer_id)
+    resolved_block = _resolved_product_block(match_result.resolved())
+    if resolved_block:
+        ctx["product_block"] = resolved_block
+    _match_docs = [m.model_dump() for m in match_result.matches]
     pending = _pending(customer_id, chat_id)
     previous_json = None
     if pending:
@@ -150,14 +193,15 @@ def invoke(customer_id, model_key, *, decider=None, context_fn=None, graph_fn=No
         mongo.summaries().update_one(
             {"_id": pending["_id"]},
             {"$set": {"content": contract.model_dump(), "rendered_markdown": markdown,
-                      "slots": slots, "to_seq": to_seq, "model_key": model_key, "chat_id": chat_id},
+                      "slots": slots, "to_seq": to_seq, "model_key": model_key, "chat_id": chat_id,
+                      "product_matches": _match_docs},
              "$inc": {"revision": 1}})
         doc = mongo.summaries().find_one({"_id": pending["_id"]})
     else:
         doc = {"customer_id": customer_id, "chat_id": chat_id, "status": "pending",
                "model_key": model_key, "from_seq": window[0]["seq"], "to_seq": to_seq, "revision": 0,
                "content": contract.model_dump(), "rendered_markdown": markdown,
-               "slots": slots, "created_at": _now(), "approved_at": None}
+               "slots": slots, "product_matches": _match_docs, "created_at": _now(), "approved_at": None}
         doc["_id"] = mongo.summaries().insert_one(doc).inserted_id
 
     card = _agent_msg(customer_id, chat_id, body, "draft",
