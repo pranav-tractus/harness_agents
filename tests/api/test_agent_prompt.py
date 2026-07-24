@@ -20,3 +20,11 @@ def test_prompt_embeds_previous_when_revising():
     prompt = agent_service.build_prompt("Dummy-01", [], {"profile_block": None,
         "history_block": None, "product_block": None}, previous_json='{"data": []}')
     assert '"data": []' in prompt
+
+
+def test_system_prompt_carries_hard_rules_and_date_pin():
+    from apps.api.services import agent_service
+    system = agent_service.SYSTEM
+    assert "Chat is the only source of truth" in system
+    assert "Empty is a valid answer" in system
+    assert "Today is" in system
