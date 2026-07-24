@@ -30,7 +30,7 @@ def test_generate_embeds_all_context_blocks():
     assert "TG-BPPC: Choline" in captured["prompt"]
     assert "approved_credit_term: Net 30" in captured["prompt"]
     assert "Customer History" in captured["prompt"]
-    assert "Prefer values explicitly stated in the chat" in captured["system_prompt"]
+    assert "Chat is the only source of truth" in captured["system_prompt"]
 
 
 def test_generate_omits_missing_blocks():
