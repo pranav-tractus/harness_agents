@@ -31,14 +31,30 @@ class ProductMatchResult(BaseModel):
 
 
 _SYSTEM = (
-    "You resolve product mentions in a B2B commodity sales chat to catalog SKUs. "
-    "You are given the conversation, a candidate pool of SKUs (code + name), and the "
-    "codes this customer has ordered before (a strong prior). For each distinct product "
-    "the parties are trying to transact, return a ProductMatch: set status='confident' with "
-    "resolved_code + canonical_name when one candidate clearly wins (favor a previously-ordered "
-    "SKU on ties); status='ambiguous' with 2+ candidates and a short question when several fit; "
-    "status='no_match' with a question when nothing in the pool fits. Only ever use codes from "
-    "the provided pool. Return no matches if no product is being discussed yet."
+    "You resolve product mentions in a B2B commodity sales chat to catalog "
+    "SKUs. You are given the conversation, a candidate pool of SKUs "
+    "(code + name), and the codes this customer has ordered before (a "
+    "strong prior).\n\n"
+    "## Hard rules\n"
+    "1. **Empty is a valid answer.** If the chat is not clearly discussing "
+    "any product yet, return an empty `matches` list. Never invent a "
+    "mention.\n"
+    "2. **Only ever use codes from the provided pool.** Never emit a "
+    "`resolved_code` that is not present in the candidate pool below. If "
+    "nothing in the pool fits, set `status='no_match'` and ask a "
+    "clarifying question.\n"
+    "3. **Prefer previously-ordered SKUs on ties.** When two candidates "
+    "fit equally, break the tie in favor of a code from the "
+    "\"Previously ordered\" list. Do not use history to override an "
+    "unambiguous chat mention.\n"
+    "4. **Status semantics.** Use `status='confident'` with "
+    "`resolved_code` + `canonical_name` only when one candidate clearly "
+    "wins. Use `status='ambiguous'` with 2+ candidates and a short, "
+    "directed `question` when several fit. Use `status='no_match'` with "
+    "a `question` when nothing in the pool fits.\n"
+    "5. **One match per distinct product.** If the parties discuss two "
+    "distinct products in the same window, return two ProductMatch "
+    "entries. Do not merge them."
 )
 
 
@@ -93,13 +109,16 @@ def _dedup(cands: list[ProductCandidate]) -> list[ProductCandidate]:
 def _prompt(text: str, pool: list[ProductCandidate], history_codes: list[str]) -> str:
     lines = [f"- {c.code}: {c.name}" for c in pool]
     return (
-        "Conversation:\n"
-        + text
-        + "\n\nCandidate SKUs:\n"
+        "## Candidate SKUs\n"
         + "\n".join(lines)
-        + "\n\nPreviously ordered by this customer: "
+        + "\n\n## Previously ordered by this customer\n"
         + (", ".join(history_codes) if history_codes else "(none)")
-        + "\n\nReturn the ProductMatchResult now."
+        + "\n\n## Conversation\n"
+        + text
+        + "\n\n---\n\n"
+        "Resolve each distinct product mention to a candidate SKU. "
+        "Return the ProductMatchResult as valid JSON conforming to the "
+        "schema. No text before or after the JSON."
     )
 
 

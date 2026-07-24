@@ -71,3 +71,10 @@ def test_empty_pool_skips_llm_and_returns_no_matches():
                               catalog_pool_fn=_pool(), history_fn=_hist(), llm=_fake_llm)
     assert out.matches == []
     assert called["n"] == 0
+
+
+def test_system_prompt_carries_hard_rules():
+    from apps.api.services import product_matcher_service
+    system = product_matcher_service._SYSTEM
+    assert "Only ever use codes from the provided pool" in system
+    assert "Empty is a valid answer" in system
