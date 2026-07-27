@@ -148,7 +148,6 @@ export function ChatPane({ messages, scrollToSeq }: Props) {
             "mr-auto border border-border bg-white shadow-sm",
           isAgentRole(message.role) &&
             "mx-auto w-full max-w-full rounded-lg border-l-2 border-primary/40 bg-primary/5 px-4",
-          message.kind === "command" && "opacity-70",
         )}
       >
         <div
@@ -158,7 +157,6 @@ export function ChatPane({ messages, scrollToSeq }: Props) {
           )}
         >
           {roleLabel(message.role)}
-          {message.kind === "command" ? " · command" : ""}
         </div>
         {isAgentRole(message.role) ? (
           <Markdown className="leading-relaxed">{message.body}</Markdown>
