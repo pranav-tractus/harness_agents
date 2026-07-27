@@ -134,12 +134,11 @@ One Ctrl+C stops both servers.
 ### Usage
 
 1. Pick a customer (`dummy-01`, `dummy-02`, `dummy-03`) and an LLM model.
-2. Toggle **Me** / **Customer** and post chat messages describing an order.
-3. `/create-sales-order` — builds the chat-facts graph (Step A), then generates a pending summary (Step B).
-4. `/edit <instructions>` — revises the pending summary.
-5. `/approve` — finalizes the summary and advances the contract checkpoint.
-6. Edit customer profile fields in the details panel (updates Mongo profile and resyncs FalkorDB attribute nodes).
-7. Use the **Products** tab to edit or delete catalog entries.
+2. Toggle **Me** / **Customer** and post ordinary chat messages (UI or `POST /messages`) describing an order.
+3. `@agent create sales order` (or any `@agent …` that is not a confirm word) — builds the chat-facts graph and generates a pending summary (ask/draft). The `@agent` tag must start the message.
+4. `@agent confirm` / `finalize` / `approve` — finalizes the summary and advances the contract checkpoint. The confirm word must be the first word after the tag.
+5. Edit customer profile fields in the details panel (updates Mongo profile and resyncs FalkorDB attribute nodes).
+6. Use the **Products** tab to edit or delete catalog entries.
 
 Each customer gets an isolated FalkorDB graph (`customer:<id>`); the product catalog lives in a shared `catalog` graph. Profile attributes are stored in FalkorDB alongside chat-derived contract data.
 

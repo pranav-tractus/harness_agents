@@ -45,8 +45,4 @@ describe("ChatPage message posting", () => {
     );
     expect(api.postMessage).toHaveBeenCalledTimes(1);
   });
-
-  it("no longer exposes a separate agent endpoint", () => {
-    expect("invokeAgent" in api).toBe(false);
-  });
 });

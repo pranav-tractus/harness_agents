@@ -16,6 +16,13 @@ describe("api client", () => {
     expect(global.fetch).toHaveBeenCalledWith("/api/customers", expect.anything());
     expect(rows[0].id).toBe("dummy-01");
   });
+
+  it("does not expose legacy command or agent write helpers", () => {
+    const legacy = ["run" + "Command", "invoke" + "Agent"] as const;
+    for (const name of legacy) {
+      expect(Object.prototype.hasOwnProperty.call(api, name)).toBe(false);
+    }
+  });
 });
 
 describe("postMessage", () => {
