@@ -49,7 +49,7 @@ React 19 + Vite single-page app. Tabbed shell: Chat, Products, Graphs, Architect
 
 **Reads:** `GET /api/customers`, `GET /api/customers/{id}/messages`, `GET /api/models`
 
-**Writes:** `POST /api/customers/{id}/messages`, `POST /api/customers/{id}/agent`
+**Writes:** `POST /api/customers/{id}/messages`
 
 #### FastAPI app
 
@@ -88,16 +88,13 @@ Which code runs when a request hits each entrypoint.
 flowchart LR
   subgraph Entrypoints["Entrypoints"]
     flow_messages["POST /messages"]
-    flow_agent["POST /agent"]
-    flow_commands["POST /commands"]
+    flow_agent_tag{{"agent_tag.parse"}}
   end
   subgraph Services["Services"]
-    flow_command_service["command_service"]
     flow_agent_service["agent_service"]
     flow_chat_service["chat_service"]
     flow_matcher["product_matcher_service"]
     flow_context_service["summary_context_service"]
-    flow_summary_service["summary_service"]
     flow_chat_graph["chat_graph_service"]
     flow_graph_reader["graph_reader_service"]
   end
@@ -109,24 +106,21 @@ flowchart LR
     flow_llm(["core.llm_client"])
   end
   flow_messages -->|"append chat message"| flow_chat_service
-  flow_agent -->|"action: ask | approve"| flow_command_service
-  flow_commands -->|"dispatch"| flow_command_service
-  flow_command_service -->|"invoke_agent / approve"| flow_agent_service
-  flow_command_service -->|"generate / revise"| flow_summary_service
-  flow_command_service -->|"/approve"| flow_agent_service
+  flow_messages -->|"@agent …"| flow_agent_tag
+  flow_agent_tag -->|"ask | approve"| flow_agent_service
   flow_agent_service -->|"window"| flow_chat_service
   flow_agent_service -->|"resolve products"| flow_matcher
   flow_agent_service -->|"grounding"| flow_context_service
   flow_agent_service -->|"decide()"| flow_llm
   flow_agent_service -->|"write_contract"| flow_chat_graph
-  flow_summary_service -->|"generate / revise"| flow_llm
-  flow_summary_service -->|"grounding"| flow_context_service
   flow_chat_service -->|"chats · messages"| flow_mongo
   flow_agent_service -->|"upsert pending summary"| flow_mongo
   flow_matcher -->|"catalog + prior orders"| flow_falkor
   flow_context_service -->|"profile + preferences"| flow_falkor
   flow_chat_graph -->|"Contract subgraph"| flow_falkor
   flow_graph_reader -->|"read"| flow_falkor
+  classDef gate stroke:#f43f5e,stroke-dasharray:5 4,fill:#fff1f2;
+  class flow_agent_tag gate;
 ```
 
 ### Components
@@ -135,31 +129,21 @@ flowchart LR
 
 `apps/api/routers/messages.py::post_message`
 
-Appends one kind="chat" message (role me or customer) to the active chat. This is how the conversation the agent later reads gets built.
+The only entrypoint. Appends one kind="chat" message, then parses the body for an @agent tag and runs the agent when it finds one. Returns {messages, summary} either way.
 
-#### POST /agent
+#### agent_tag.parse
 
-`apps/api/routers/commands.py::agent`
+`apps/api/services/agent_tag.py::parse`
 
-The agent entrypoint. Body carries model_key and action: "ask" drafts or asks, "approve" finalizes the pending draft. Triggered in the UI by an @agent mention.
+Deterministic keyword gate. "@agent confirm|finalize|approve" → approve; any other "@agent …" → ask; untagged → the message is just appended.
 
-#### POST /commands
-
-`apps/api/routers/commands.py::commands`
-
-Manual path: /create-sales-order, /edit <instructions>, /approve. Produces the same kind of summary card without the agent's slot-ledger reasoning.
-
-#### command_service
-
-`apps/api/services/command_service.py::dispatch`
-
-Routes both entrypoints. dispatch() handles the manual commands; invoke_agent() and approve() delegate to agent_service.
+> **Invariant:** Finalization is never model-decided — only an explicit confirm word commits.
 
 #### agent_service
 
 `apps/api/services/agent_service.py::invoke`
 
-The agent itself: invoke() drafts or asks, approve() finalizes, finalize() commits a decision directly. Both the autonomous and manual paths converge on approve().
+The agent itself: invoke() drafts or asks, approve() finalizes, finalize() commits a decision directly. Reached only through an @agent tag on a chat message.
 
 > **Invariant:** Never auto-commits. A ready_to_finalize decision still only drafts.
 
@@ -182,12 +166,6 @@ Resolves product mentions to catalog SKUs. Builds a candidate pool from the cata
 `apps/api/services/summary_context_service.py::assemble`
 
 Assembles grounding context: profile block, preference history block, and product block. Any block is None when FalkorDB is unavailable.
-
-#### summary_service
-
-`apps/api/services/summary_service.py::generate`
-
-The manual path's LLM calls: generate() builds a contract from the chat window, revise() applies natural-language edit instructions. No product matching, no slot ledger.
 
 #### chat_graph_service
 
