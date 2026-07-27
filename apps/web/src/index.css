@@ -1,0 +1,108 @@
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/geist";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* CSS vars store bare HSL channels so `hsl(var(--name))` resolves correctly */
+  :root {
+    --background: 220 14% 96%;
+    --foreground: 224 20% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 20% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 20% 11%;
+    --primary: 155 56% 30%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 12% 91%;
+    --secondary-foreground: 224 14% 28%;
+    --muted: 220 10% 93%;
+    --muted-foreground: 220 8% 50%;
+    --accent: 155 38% 92%;
+    --accent-foreground: 155 48% 24%;
+    --destructive: 4 76% 52%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 10% 86%;
+    --input: 220 10% 86%;
+    --ring: 155 56% 30%;
+    --radius: 0.5rem;
+    --chart-1: 155 56% 36%;
+    --chart-2: 198 74% 46%;
+    --chart-3: 40 85% 52%;
+    --chart-4: 262 72% 58%;
+    --chart-5: 14 75% 52%;
+    --sidebar: 220 14% 97%;
+    --sidebar-foreground: 224 20% 11%;
+    --sidebar-primary: 155 56% 30%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 155 38% 92%;
+    --sidebar-accent-foreground: 155 48% 24%;
+    --sidebar-border: 220 10% 86%;
+    --sidebar-ring: 155 56% 30%;
+  }
+
+  .dark {
+    --background: 224 22% 9%;
+    --foreground: 220 14% 94%;
+    --card: 224 22% 12%;
+    --card-foreground: 220 14% 94%;
+    --popover: 224 22% 12%;
+    --popover-foreground: 220 14% 94%;
+    --primary: 155 52% 46%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 224 16% 20%;
+    --secondary-foreground: 220 14% 90%;
+    --muted: 224 16% 20%;
+    --muted-foreground: 220 10% 62%;
+    --accent: 155 30% 22%;
+    --accent-foreground: 155 38% 88%;
+    --destructive: 4 65% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 224 16% 24%;
+    --input: 224 16% 24%;
+    --ring: 155 52% 46%;
+    --chart-1: 155 52% 50%;
+    --chart-2: 198 68% 60%;
+    --chart-3: 40 78% 60%;
+    --chart-4: 262 65% 66%;
+    --chart-5: 14 70% 60%;
+    --sidebar: 224 22% 12%;
+    --sidebar-foreground: 220 14% 90%;
+    --sidebar-primary: 155 52% 46%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 155 30% 22%;
+    --sidebar-accent-foreground: 155 38% 88%;
+    --sidebar-border: 224 16% 24%;
+    --sidebar-ring: 155 52% 46%;
+  }
+
+  .theme {
+    --font-heading: var(--font-sans);
+    --font-sans: 'Geist Variable', sans-serif;
+  }
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    margin: 0;
+  }
+  #root {
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  /* Nav-level line tabs: primary-colored underline flush with bar bottom */
+  .nav-tabs [data-slot="tabs-trigger"]::after {
+    background-color: hsl(var(--primary)) !important;
+    bottom: -1px !important;
+    height: 2px !important;
+  }
+  .nav-tabs [data-slot="tabs-trigger"][data-active] {
+    color: hsl(var(--primary));
+    font-weight: 500;
+  }
+}
