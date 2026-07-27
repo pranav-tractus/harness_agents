@@ -231,6 +231,19 @@ So each finalized order closes its chat and opens a linked successor. In the UI 
 the "✓ Contract finalized · new chat started" checkpoint divider
 (`ChatPane.tsx:60`).
 
+### What `write_contract` puts in the graph (`chat_graph_service.py:29`)
+- Ensures `Customer` and `Chat` nodes (`MERGE`).
+- Creates a `Contract` node with `revision` = count of prior contracts in the chat;
+  links `SUPERSEDES` to the previous contract.
+- One `LineItem` per contract item (`product_code, quantity, price, incoterm,
+  agreed_by`), with `OF_PRODUCT → Product` and optional `SHIP_TO → Port`.
+- `Term` nodes for payment/packing/loading.
+- `MessageRef` nodes (`DERIVED_FROM`) recording the source message seqs/snippets —
+  the provenance trail back to the chat.
+- **Derived preferences**: for every slot agreed by *both* parties, `MERGE` a
+  `Preference {slot}` and bump its `support` count. These feed back into the
+  `history_block` grounding on future drafts — the "learning" loop.
+
 Contracts render through `render_summary_markdown` (`models.py:97`), which handles
 either `SOExtractContractList` or `SOUpdateContractList` since they share a field
 layout.
