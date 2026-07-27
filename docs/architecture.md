@@ -1,0 +1,385 @@
+<!--
+  GENERATED FILE — do not edit by hand.
+  Source: apps/web/src/architecture/spec.ts
+  Regenerate: cd apps/web && npm run gen:arch
+-->
+
+# Customer-Chat Agent — Architecture
+
+Three views of the agent under `apps/`. For the prose walkthrough, see
+[`customer-chat-agent.md`](customer-chat-agent.md). For an interactive version with
+click-to-inspect and flow highlighting, open the **Architecture** tab in the web app
+(`cd apps/web && npm run dev`).
+
+Dashed red edges are **early returns** — the points where the agent stops and asks
+instead of proceeding.
+
+## System context
+
+What the system is made of and what it talks to.
+
+```mermaid
+flowchart LR
+  subgraph Client["Client"]
+    ctx_web["Web UI"]
+  end
+  subgraph Server["Server"]
+    ctx_api["FastAPI app"]
+  end
+  subgraph Stores["Stores"]
+    ctx_mongo[("MongoDB")]
+    ctx_falkor[("FalkorDB")]
+  end
+  subgraph External["External"]
+    ctx_llm(["LLM providers"])
+  end
+  ctx_web -->|"HTTP /api"| ctx_api
+  ctx_api -->|"chats · messages · summaries"| ctx_mongo
+  ctx_api -->|"read graph · write contract"| ctx_falkor
+  ctx_api -->|"structured calls"| ctx_llm
+```
+
+### Components
+
+#### Web UI
+
+`apps/web/src/App.tsx::App`
+
+React 19 + Vite single-page app. Tabbed shell: Chat, Products, Graphs, Architecture. Polls the API for messages and renders draft/final contract cards.
+
+**Reads:** `GET /api/customers`, `GET /api/customers/{id}/messages`, `GET /api/models`
+
+**Writes:** `POST /api/customers/{id}/messages`, `POST /api/customers/{id}/agent`
+
+#### FastAPI app
+
+`apps/api/main.py::app`
+
+Wires every router: messages, commands, chats, customers, products, graphs, models. CORS is restricted to WEB_ORIGIN.
+
+#### MongoDB
+
+`apps/api/db/mongo.py::db`
+
+Live mutable state. Collections: customers, chats, messages, summaries, products. The current draft contract lives here as a pending summary until it is approved.
+
+> **Invariant:** Everything before finalize lives in Mongo, not the graph.
+
+#### FalkorDB
+
+`apps/api/db/falkor.py::graph`
+
+The knowledge graph — committed truth only. One graph per customer (customer:<id>) plus a shared catalog graph. Written only at finalize time.
+
+> **Invariant:** Guarded by falkor.is_available() everywhere; if it is down, grounding is empty and the agent degrades to chat-only reasoning rather than erroring.
+
+#### LLM providers
+
+`core/llm_client.py::call_llm`
+
+Bedrock / Anthropic / OpenAI / Gemini behind one call. Uses instructor to coerce every response into a Pydantic schema. Model chosen per-request via model_key through core.utils.MODEL_CATALOG.
+
+
+## Request flows
+
+Which code runs when a request hits each entrypoint.
+
+```mermaid
+flowchart LR
+  subgraph Entrypoints["Entrypoints"]
+    flow_messages["POST /messages"]
+    flow_agent["POST /agent"]
+    flow_commands["POST /commands"]
+  end
+  subgraph Services["Services"]
+    flow_command_service["command_service"]
+    flow_agent_service["agent_service"]
+    flow_chat_service["chat_service"]
+    flow_matcher["product_matcher_service"]
+    flow_context_service["summary_context_service"]
+    flow_summary_service["summary_service"]
+    flow_chat_graph["chat_graph_service"]
+    flow_graph_reader["graph_reader_service"]
+  end
+  subgraph Stores["Stores"]
+    flow_mongo[("MongoDB")]
+    flow_falkor[("FalkorDB")]
+  end
+  subgraph External["External"]
+    flow_llm(["core.llm_client"])
+  end
+  flow_messages -->|"append chat message"| flow_chat_service
+  flow_agent -->|"action: ask | approve"| flow_command_service
+  flow_commands -->|"dispatch"| flow_command_service
+  flow_command_service -->|"invoke_agent / approve"| flow_agent_service
+  flow_command_service -->|"generate / revise"| flow_summary_service
+  flow_command_service -->|"/approve"| flow_agent_service
+  flow_agent_service -->|"window"| flow_chat_service
+  flow_agent_service -->|"resolve products"| flow_matcher
+  flow_agent_service -->|"grounding"| flow_context_service
+  flow_agent_service -->|"decide()"| flow_llm
+  flow_agent_service -->|"write_contract"| flow_chat_graph
+  flow_summary_service -->|"generate / revise"| flow_llm
+  flow_summary_service -->|"grounding"| flow_context_service
+  flow_chat_service -->|"chats · messages"| flow_mongo
+  flow_agent_service -->|"upsert pending summary"| flow_mongo
+  flow_matcher -->|"catalog + prior orders"| flow_falkor
+  flow_context_service -->|"profile + preferences"| flow_falkor
+  flow_chat_graph -->|"Contract subgraph"| flow_falkor
+  flow_graph_reader -->|"read"| flow_falkor
+```
+
+### Components
+
+#### POST /messages
+
+`apps/api/routers/messages.py::post_message`
+
+Appends one kind="chat" message (role me or customer) to the active chat. This is how the conversation the agent later reads gets built.
+
+#### POST /agent
+
+`apps/api/routers/commands.py::agent`
+
+The agent entrypoint. Body carries model_key and action: "ask" drafts or asks, "approve" finalizes the pending draft. Triggered in the UI by an @agent mention.
+
+#### POST /commands
+
+`apps/api/routers/commands.py::commands`
+
+Manual path: /create-sales-order, /edit <instructions>, /approve. Produces the same kind of summary card without the agent's slot-ledger reasoning.
+
+#### command_service
+
+`apps/api/services/command_service.py::dispatch`
+
+Routes both entrypoints. dispatch() handles the manual commands; invoke_agent() and approve() delegate to agent_service.
+
+#### agent_service
+
+`apps/api/services/agent_service.py::invoke`
+
+The agent itself: invoke() drafts or asks, approve() finalizes, finalize() commits a decision directly. Both the autonomous and manual paths converge on approve().
+
+> **Invariant:** Never auto-commits. A ready_to_finalize decision still only drafts.
+
+#### chat_service
+
+`apps/api/services/chat_service.py::ensure_active_chat`
+
+Chat lifecycle and the message window. Assigns per-chat monotonic seq numbers, reuses or opens the active chat, and slices messages since the last contract watermark.
+
+#### product_matcher_service
+
+`apps/api/services/product_matcher_service.py::resolve_products`
+
+Resolves product mentions to catalog SKUs. Builds a candidate pool from the catalog graph plus this customer's prior orders, then has the LLM classify each mention as confident, ambiguous, or no_match.
+
+> **Invariant:** _guard() drops any resolved_code outside the pool — product codes are never invented.
+
+#### summary_context_service
+
+`apps/api/services/summary_context_service.py::assemble`
+
+Assembles grounding context: profile block, preference history block, and product block. Any block is None when FalkorDB is unavailable.
+
+#### summary_service
+
+`apps/api/services/summary_service.py::generate`
+
+The manual path's LLM calls: generate() builds a contract from the chat window, revise() applies natural-language edit instructions. No product matching, no slot ledger.
+
+#### chat_graph_service
+
+`apps/api/services/chat_graph_service.py::write_contract`
+
+The only writer of contract data into the customer graph. Creates the Contract subgraph and derives Preference nodes from both-agreed slots.
+
+#### graph_reader_service
+
+`apps/api/services/graph_reader_service.py::read_customer_graph`
+
+Reads customer and catalog graphs into {nodes, edges} for the UI's Graphs tab.
+
+#### MongoDB
+
+`apps/api/db/mongo.py::db`
+
+chats, messages, summaries. The pending draft and the message window both live here.
+
+#### FalkorDB
+
+`apps/api/db/falkor.py::graph`
+
+Read for grounding on every draft; written only on approve.
+
+#### core.llm_client
+
+`core/llm_client.py::call_llm`
+
+Schema-coerced LLM calls: AgentDecision, ProductMatchResult, SOExtractContractList.
+
+
+## Agent internals
+
+How a draft gets made, and what gates a commit.
+
+```mermaid
+flowchart LR
+  subgraph Draft_pipeline["Draft pipeline"]
+    agent_invoke["invoke()"]
+    agent_ensure_chat["ensure_active_chat"]
+    agent_window["messages_since(watermark)"]
+    agent_gate_empty{{"GATE · empty window"}}
+    agent_match["resolve_products"]
+    agent_gate_unresolved{{"GATE · unresolved products"}}
+    agent_context["assemble context"]
+    agent_previous["load pending draft"]
+    agent_decide(["decide() → AgentDecision"])
+    agent_gate_clarify{{"GATE · mode == clarify"}}
+    agent_draft["upsert draft + post card"]
+  end
+  subgraph Commit_pipeline["Commit pipeline"]
+    agent_approve["approve()"]
+    agent_gate_nodraft{{"GATE · no pending draft"}}
+    agent_gate_ready{{"GATE · is_ready(slots)"}}
+    agent_write["write_contract"]
+    agent_persist["persist + final card"]
+    agent_branch["_finish_and_branch"]
+  end
+  agent_invoke --> agent_ensure_chat
+  agent_ensure_chat --> agent_window
+  agent_window -.->|"no new messages"| agent_gate_empty
+  agent_window --> agent_match
+  agent_match -.->|"ambiguous / no_match"| agent_gate_unresolved
+  agent_match -->|"all confident"| agent_context
+  agent_context --> agent_previous
+  agent_previous --> agent_decide
+  agent_decide -.->|"needs answers"| agent_gate_clarify
+  agent_decide -->|"draft | finalize"| agent_draft
+  agent_draft -->|"@agent confirm (separate request)"| agent_approve
+  agent_approve -.->|"no pending summary"| agent_gate_nodraft
+  agent_approve --> agent_gate_ready
+  agent_gate_ready -->|"all critical slots agreed"| agent_write
+  agent_write --> agent_persist
+  agent_persist --> agent_branch
+  classDef gate stroke:#f43f5e,stroke-dasharray:5 4,fill:#fff1f2;
+  class agent_gate_empty,agent_gate_unresolved,agent_gate_clarify,agent_gate_nodraft,agent_gate_ready gate;
+```
+
+### Components
+
+#### invoke()
+
+`apps/api/services/agent_service.py::invoke`
+
+Entry to the draft loop. Every dependency (decider, context_fn, graph_fn, matcher_fn) is injectable.
+
+#### ensure_active_chat
+
+`apps/api/services/chat_service.py::ensure_active_chat`
+
+Reuses the non-finished chat, or opens "Chat N".
+
+#### messages_since(watermark)
+
+`apps/api/services/chat_service.py::messages_since`
+
+Slices messages after last_contract_seq, limited to kinds chat, question, draft, final.
+
+> **Invariant:** last_contract_seq is the watermark — after finalize it advances, so the next order reasons over a clean window.
+
+#### GATE · empty window
+
+`apps/api/services/agent_service.py::invoke`
+
+No new messages since the last contract → post a plain chat message and return.
+
+#### resolve_products
+
+`apps/api/services/product_matcher_service.py::resolve_products`
+
+Pins every product mention to a catalog SKU before any drafting happens.
+
+#### GATE · unresolved products
+
+`apps/api/services/agent_service.py::_match_question`
+
+Any ambiguous or unmatched mention → post a question card asking which SKU, and return.
+
+> **Invariant:** The agent will not draft until products are pinned down.
+
+#### assemble context
+
+`apps/api/services/summary_context_service.py::assemble`
+
+profile_block from graph attributes, history_block from Preference nodes, product_block overwritten with the resolved SKUs.
+
+#### load pending draft
+
+`apps/api/services/agent_service.py::_pending`
+
+An existing pending summary is passed back to the model as previous_json so drafts revise rather than restart.
+
+#### decide() → AgentDecision
+
+`apps/api/services/agent_service.py::decide`
+
+The LLM call. Returns mode, message, questions, contract, ledger, ready_to_finalize. Questions are capped at 3 with critical slots first.
+
+> **Invariant:** mode=="finalize" without readiness is downgraded to "draft".
+
+#### GATE · mode == clarify
+
+`apps/api/services/agent_service.py::invoke`
+
+The model needs answers → post a question card, write no summary, and return.
+
+#### upsert draft + post card
+
+`apps/api/models.py::render_summary_markdown`
+
+Renders the contract to markdown, upserts the pending summary with slots and product_matches, bumps revision, posts a draft card.
+
+> **Invariant:** A ready decision still only drafts — it appends "Ready to finalize" and waits for @agent confirm.
+
+#### approve()
+
+`apps/api/services/agent_service.py::approve`
+
+The only path that writes a contract to the graph.
+
+#### GATE · no pending draft
+
+`apps/api/services/agent_service.py::approve`
+
+Nothing to finalize → reply telling the user to run @agent create sales order first.
+
+#### GATE · is_ready(slots)
+
+`apps/api/models.py::is_ready`
+
+The hard commit gate. Every critical slot (description, quantity, unit_price, ship_term) must be agreed by BOTH seller and customer. Otherwise reply listing what is missing and stop.
+
+> **Invariant:** This is the single gate preventing an unagreed contract from reaching the graph.
+
+#### write_contract
+
+`apps/api/services/chat_graph_service.py::write_contract`
+
+Creates Contract, one LineItem per item, Term nodes, MessageRef provenance, and SUPERSEDES to the prior revision. Derives a Preference node for every both-agreed slot.
+
+> **Invariant:** Preferences are the feedback loop — they reappear as history_block grounding on the next draft.
+
+#### persist + final card
+
+`apps/api/services/agent_service.py::_persist_final`
+
+Flips the summary to approved and advances chat.last_contract_seq to the draft's to_seq.
+
+#### _finish_and_branch
+
+`apps/api/services/agent_service.py::_finish_and_branch`
+
+Marks the chat finished, opens "Chat N+1", and links newChat -CONTINUES-> oldChat. Renders in the UI as the contract-finalized checkpoint divider.
+

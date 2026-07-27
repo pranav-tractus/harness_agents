@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChatPage } from "@/pages/ChatPage";
 import { ProductsPage } from "@/pages/ProductsPage";
 import { GraphsPage } from "@/pages/GraphsPage";
+import { ArchitecturePage } from "@/pages/ArchitecturePage";
 
 type GraphNav = { customerId: string; seq: number };
 
@@ -30,6 +31,7 @@ export default function App() {
             <TabsTrigger value="chat" className="h-full rounded-none px-5 text-sm">Chat</TabsTrigger>
             <TabsTrigger value="products" className="h-full rounded-none px-5 text-sm">Products</TabsTrigger>
             <TabsTrigger value="graphs" className="h-full rounded-none px-5 text-sm">Graphs</TabsTrigger>
+            <TabsTrigger value="architecture" className="h-full rounded-none px-5 text-sm">Architecture</TabsTrigger>
           </TabsList>
         </header>
         <main className="flex-1 overflow-hidden">
@@ -41,6 +43,9 @@ export default function App() {
           </TabsContent>
           <TabsContent value="graphs" className="mt-0">
             <GraphsPage onNavigateToMessage={handleNavigateToMessage} />
+          </TabsContent>
+          <TabsContent value="architecture" className="mt-0">
+            <ArchitecturePage />
           </TabsContent>
         </main>
       </Tabs>
