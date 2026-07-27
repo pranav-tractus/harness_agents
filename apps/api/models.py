@@ -68,6 +68,7 @@ class ProductUpdate(BaseModel):
 class MessageIn(BaseModel):
     role: str  # "me" | "customer"
     body: str
+    model_key: str | None = None  # only read when the body tags @agent
 
 
 class MessageOut(BaseModel):
