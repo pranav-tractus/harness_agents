@@ -3,7 +3,8 @@ import pytest
 from fastapi.testclient import TestClient
 
 from apps.api.db import mongo
-from apps.api.services import command_service
+from apps.api.models import AgentDecision
+from apps.api.services import agent_service
 from tests.api._factories import make_extract, make_item
 
 
@@ -37,9 +38,13 @@ def client(monkeypatch):
     _seed_fixture_data()
     monkeypatch.setattr("apps.api.services.agent_service.chat_graph_service.write_contract",
                         lambda *a, **k: "contract-id")
-    monkeypatch.setattr(command_service.summary_service, "generate",
-                        lambda *a, **k: make_extract(items=[make_item(description="TG-BPPC")]))
-    monkeypatch.setattr(command_service.summary_context_service, "assemble",
+    monkeypatch.setattr(agent_service, "decide",
+                        lambda *a, **k: AgentDecision(
+                            mode="draft",
+                            message="Draft ready.",
+                            contract=make_extract(items=[make_item(description="TG-BPPC")]),
+                        ))
+    monkeypatch.setattr(agent_service.summary_context_service, "assemble",
                         lambda *a, **k: {"profile_block": None, "history_block": None,
                                          "product_block": None})
     from apps.api.main import create_app
@@ -80,10 +85,11 @@ def test_models(client):
     assert any(m["key"] == "sonnet-4-6" for m in rows)
 
 
-def test_post_message_then_create_order(client):
+def test_post_message_then_tag_agent_creates_pending_draft(client):
     client.post("/api/customers/dummy-01/messages", json={"role": "me", "body": "10MT TG-BPPC"})
-    r = client.post("/api/customers/dummy-01/commands",
-                    json={"command": "create-sales-order", "model_key": "sonnet-4-6"})
+    r = client.post("/api/customers/dummy-01/messages",
+                    json={"role": "me", "body": "@agent create sales order",
+                          "model_key": "sonnet-4-6"})
     assert r.status_code == 200
     assert r.json()["summary"]["status"] == "pending"
 

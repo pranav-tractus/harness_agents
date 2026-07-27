@@ -83,12 +83,6 @@ class MessageOut(BaseModel):
     created_at: str
 
 
-class CommandIn(BaseModel):
-    command: str            # "create-sales-order" | "approve" | "edit"
-    args: str | None = None
-    model_key: str
-
-
 class ModelOption(BaseModel):
     key: str
     display_name: str
@@ -176,11 +170,6 @@ def cap_questions(decision: AgentDecision, limit: int = 3) -> AgentDecision:
     ordered = sorted(decision.questions, key=lambda q: q.slot not in CRITICAL_SLOTS)
     decision.questions = ordered[:limit]
     return decision
-
-
-class AgentInvokeIn(BaseModel):
-    model_key: str
-    action: str = "ask"     # "ask" | "approve"
 
 
 class ChatOut(BaseModel):
