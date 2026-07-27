@@ -8,8 +8,7 @@ vi.mock("@/api/client", () => {
       listCustomers: vi.fn(async () => customers),
       listMessages: vi.fn(async () => []),
       listModels: vi.fn(async () => [{ key: "sonnet-4-6", display_name: "Sonnet", provider: "anthropic" }]),
-      postMessage: vi.fn(async () => ({})),
-      invokeAgent: vi.fn(async () => ({ messages: [], summary: null })),
+      postMessage: vi.fn(async () => ({ messages: [], summary: null })),
       getCustomer: vi.fn(async () => customers[0]),
     },
   };
@@ -30,21 +29,20 @@ async function type(text: string) {
   fireEvent.click(screen.getByRole("button", { name: /send/i }));
 }
 
-describe("ChatPage @agent routing", () => {
-  it("posts a normal message without invoking the agent", async () => {
+describe("ChatPage message posting", () => {
+  it("posts an ordinary message with the selected model key", async () => {
     await type("just chatting");
-    await waitFor(() => expect(api.postMessage).toHaveBeenCalledWith("c1", "seller", "just chatting"));
-    expect(api.invokeAgent).not.toHaveBeenCalled();
+    await waitFor(() =>
+      expect(api.postMessage).toHaveBeenCalledWith("c1", "seller", "just chatting", "sonnet-4-6"),
+    );
   });
 
-  it("posts then asks the agent when tagged", async () => {
+  it("posts a tagged message the same way — the server decides", async () => {
     await type("@agent create sales order");
-    await waitFor(() => expect(api.invokeAgent).toHaveBeenCalledWith("c1", "sonnet-4-6", "ask"));
-    expect(api.postMessage).toHaveBeenCalledWith("c1", "seller", "@agent create sales order");
-  });
-
-  it("routes @agent confirm to approve", async () => {
-    await type("@agent confirm");
-    await waitFor(() => expect(api.invokeAgent).toHaveBeenCalledWith("c1", "sonnet-4-6", "approve"));
+    await waitFor(() =>
+      expect(api.postMessage).toHaveBeenCalledWith(
+        "c1", "seller", "@agent create sales order", "sonnet-4-6"),
+    );
+    expect(api.postMessage).toHaveBeenCalledTimes(1);
   });
 });

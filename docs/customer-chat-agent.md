@@ -24,10 +24,6 @@ products are being discussed, tracks a per-slot ledger of the deal terms, and:
 It never auto-finalizes. A draft always waits for an explicit `@agent confirm` /
 `approve` action before it is committed to the graph.
 
-There is also a second, simpler **manual command path** (`/create-sales-order`,
-`/edit`, `/approve`) that produces the same kind of summary card without the agent's
-slot-ledger reasoning. Both paths converge on the same finalize/graph-write code.
-
 ---
 
 ## 2. Where everything lives (file map)
@@ -39,18 +35,16 @@ apps/api/
   settings.py                     # env: mongo url, falkordb host/port, web origin
 
   routers/
-    messages.py                   # POST a plain chat message (seller/customer)
-    commands.py                   # POST /commands (manual) and /agent (autonomous)  ← agent entrypoint
+    messages.py                   # POST a chat message; an @agent tag runs the agent  ← the only entrypoint
     chats.py                      # list/create chats, list chat messages
     customers.py, products.py, graphs.py, models_router.py
 
   services/
     agent_service.py              # ★ THE AGENT: invoke() / finalize() / approve()
+    agent_tag.py                  # parses "@agent …" → "ask" | "approve" | None (pure, no I/O)
     product_matcher_service.py    # resolve product mentions → catalog SKUs (LLM + graph pools)
     summary_context_service.py    # assemble grounding context (profile + history + product blocks)
     chat_service.py               # Mongo chats & messages: seq numbers, windows, chat lifecycle
-    command_service.py            # manual /create-sales-order, /edit, /approve dispatch
-    summary_service.py            # LLM summary generate()/revise() for the manual path
     chat_graph_service.py         # ★ write finalized contract into the customer knowledge graph
     graph_reader_service.py       # read customer & product graphs → {nodes, edges} for the UI
     profile_graph_service.py      # customer profile ↔ graph attributes
@@ -66,7 +60,7 @@ core/                             # reused extraction library (NOT app-specific)
   utils.py                        # MODEL_CATALOG, provider clients, model resolution
 
 apps/web/src/
-  api/client.ts                   # typed fetch client (invokeAgent, runCommand, listMessages, …)
+  api/client.ts                   # typed fetch client (postMessage, listMessages, …)
   components/ChatPane.tsx         # renders chat + draft/final/question cards
 ```
 
@@ -91,8 +85,8 @@ understanding the flow.
 | `summaries` | the current draft/approved contract for a chat (`status: pending`/`approved`) |
 | `products`  | catalog product docs                                                  |
 
-Message `kind` values matter: `chat` (real seller/customer text), `command`,
-`question`, `draft`, `final`, `summary`. The agent only reasons over a *window* of
+Message `kind` values matter: `chat` (real seller/customer text), `question`,
+`draft`, `final`, `summary`. The agent only reasons over a *window* of
 `chat`/`question`/`draft`/`final` messages since the last committed contract
 (`_AGENT_WINDOW_KINDS`, `agent_service.py:133`).
 
@@ -117,29 +111,35 @@ chat-only reasoning.
 
 ## 4. Request entry points
 
-All agent traffic goes through **`apps/api/routers/commands.py`**.
+All traffic goes through **`apps/api/routers/messages.py`**. There is exactly one
+entrypoint.
 
-### Autonomous agent — `POST /api/customers/{id}/agent`
+### `POST /api/customers/{id}/messages`
 ```json
-{ "model_key": "…", "action": "ask" | "approve" }
+{ "role": "seller" | "customer", "body": "…", "model_key": "…" }
 ```
-- `action: "ask"` → `command_service.invoke_agent` → **`agent_service.invoke`** (drafts/asks)
-- `action: "approve"` → `command_service.approve` → **`agent_service.approve`** (finalizes the pending draft)
 
-In the UI this is what an `@agent …` mention triggers (see `agentTag`/`invokeAgent`
-in `api/client.ts:118`).
+The body is always appended as a `kind: "chat"` message. Then
+`agent_tag.parse(body)` decides what happens next:
 
-### Manual commands — `POST /api/customers/{id}/commands`
-```json
-{ "command": "create-sales-order" | "edit" | "approve", "args": "...", "model_key": "…" }
-```
-Routed by `command_service.dispatch` (`command_service.py:44`). `create-sales-order`
-and `edit` use `summary_service` (no slot ledger); `approve` delegates to the same
-`agent_service.approve` as the autonomous path.
+| Body                                    | Parse      | Effect                                    |
+|-----------------------------------------|------------|-------------------------------------------|
+| `10MT CIF please`                       | `None`     | appended, nothing else                    |
+| `@agent create sales order`             | `"ask"`    | → **`agent_service.invoke`** (drafts/asks)|
+| `@agent confirm` / `finalize` / `approve` | `"approve"` | → **`agent_service.approve`** (finalizes) |
 
-### Plain messages — `POST /api/customers/{id}/messages`
-Just appends a `kind: "chat"` message (role `me` or `customer`) into the active chat.
-This is how the conversation the agent reads gets built.
+The tag must start the message (`^@agent\b`, case-insensitive), and only the
+*first* word after it is checked against the confirm set — `@agent please confirm`
+is an `ask`. `model_key` is only read when the message is tagged, and falls back
+to `core.utils.DEFAULT_MODEL_KEY`.
+
+The response shape is uniform: `{ "messages": [...], "summary": … | null }`. An
+ordinary message returns a one-element list and a null summary; a tagged one
+returns the user's message followed by whatever the agent posted.
+
+**Why the keyword check is not an LLM call:** finalizing writes the contract
+subgraph, closes the chat, and branches a new one. Routing that through the model
+would let a paraphrase like "@agent looks good to me" commit an order.
 
 ---
 
@@ -244,30 +244,13 @@ the "✓ Contract finalized · new chat started" checkpoint divider
   `Preference {slot}` and bump its `support` count. These feed back into the
   `history_block` grounding on future drafts — the "learning" loop.
 
----
-
-## 7. Manual command path (no ledger)
-
-`command_service.py`. Simpler alternative for driving summaries by hand:
-
-- **`/create-sales-order`** (`_create`, `:70`): refuses if a pending summary exists;
-  otherwise `summary_service.generate` produces an `SOExtractContractList` from the
-  chat window + grounding blocks, stores it as a `pending` summary, posts a `summary`
-  card. No product matching, no slot ledger.
-- **`/edit <instructions>`** (`_edit`, `:122`): `summary_service.revise` applies NL
-  edit instructions to the stored contract (round-trips through
-  `SOExtractContractList`), bumps `revision`.
-- **`/approve`** (`:184`): delegates to `agent_service.approve` — same graph write and
-  readiness gate as the autonomous path (note: the manual `generate` path does not
-  populate `slots`, so `is_ready` treats an empty ledger as *not ready*).
-
-Both paths render through the **same** `render_summary_markdown` (`models.py:97`),
-which handles either `SOExtractContractList` or `SOUpdateContractList` since they share
-a field layout.
+Contracts render through `render_summary_markdown` (`models.py:97`), which handles
+either `SOExtractContractList` or `SOUpdateContractList` since they share a field
+layout.
 
 ---
 
-## 8. LLM plumbing
+## 7. LLM plumbing
 
 Every model call funnels through **`core.llm_client.call_llm(prompt, schema,
 model_key, system_prompt=…)`** which uses `instructor` to coerce the response into the
@@ -287,10 +270,10 @@ matcher_fn=None)`).
 
 ---
 
-## 9. Frontend rendering (`apps/web`)
+## 8. Frontend rendering (`apps/web`)
 
-- `api/client.ts` — `invokeAgent(id, model_key, action)` hits `/agent`;
-  `runCommand(...)` hits `/commands`; `listMessages` polls the merged, chat-ordered
+- `api/client.ts` — `postMessage(id, role, body, model_key)` is the only write;
+  the browser does no tag parsing. `listMessages` polls the merged, chat-ordered
   message list (`chat_service.all_messages`).
 - `ChatPane.tsx` renders by message `kind`:
   - `summary` / `draft` / `final` → a `Card` with badge ("AI Summary" / "Draft
@@ -298,17 +281,17 @@ matcher_fn=None)`).
     model response (JSON)"** (`summary_json` = the pretty-printed decision).
   - `question` → a left-bordered "needs answer" callout.
   - `chat` → normal seller (right) / customer (left) / agent (full-width) bubbles;
-    `@agent` mentions are highlighted (`splitAgentMention`).
+    `@agent` mentions get a highlight chip (`splitAgentMention`, cosmetic only).
   - Between a `finished` chat and the next, the **checkpoint divider** is drawn.
 
 ---
 
-## 10. End-to-end sequence (happy path)
+## 9. End-to-end sequence (happy path)
 
 ```
 Seller & customer exchange messages  ── POST /messages ──▶ Mongo messages (kind=chat)
 
-Seller: "@agent create sales order"  ── POST /agent {action:ask} ──▶ agent_service.invoke
+Seller: "@agent create sales order"  ── POST /messages ─▶ agent_tag → agent_service.invoke
    │
    ├─ product_matcher: all mentions confident
    ├─ context assembled (profile + prefs + resolved products)
@@ -317,7 +300,7 @@ Seller: "@agent create sales order"  ── POST /agent {action:ask} ──▶ a
 
 … more negotiation, seller re-invokes @agent → draft revised (revision++) …
 
-Seller: "@agent confirm"             ── POST /agent {action:approve} ──▶ agent_service.approve
+Seller: "@agent confirm"             ── POST /messages ─▶ agent_tag → agent_service.approve
    │
    ├─ is_ready(slots)? ── no ──▶ "Still need both parties to agree on: …"  (stop)
    └─ yes:
@@ -332,8 +315,11 @@ UI: draft/final cards render in ChatPane; graph view reads via
 
 ---
 
-## 11. Gotchas & invariants
+## 10. Gotchas & invariants
 
+- **The `@agent` tag is the only trigger.** There is no command endpoint. The
+  ask/approve split is a deterministic keyword check in `agent_tag.parse`, never
+  a model decision.
 - **The agent never commits on its own.** Drafting and finalizing are separate calls;
   finalize is gated on both-party agreement of all critical slots.
 - **`last_contract_seq` is the watermark.** Everything the agent reasons over is
@@ -349,4 +335,3 @@ UI: draft/final cards render in ChatPane; graph view reads via
   that reappear as `history_block` grounding on the next draft.
 - **Everything degrades if FalkorDB is down** (`falkor.is_available()` guards): no
   grounding, empty graph views, but chat + drafting still work off Mongo.
-```

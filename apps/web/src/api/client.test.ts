@@ -17,25 +17,26 @@ describe("api client", () => {
     expect(rows[0].id).toBe("dummy-01");
   });
 
-  it("runCommand posts to the commands endpoint", async () => {
-    await api.runCommand("dummy-01", "approve", null, "sonnet-4-6");
-    expect(global.fetch).toHaveBeenCalledWith(
-      "/api/customers/dummy-01/commands",
-      expect.objectContaining({ method: "POST" }),
-    );
+  it("does not expose legacy command or agent write helpers", () => {
+    const legacy = ["run" + "Command", "invoke" + "Agent"] as const;
+    for (const name of legacy) {
+      expect(Object.prototype.hasOwnProperty.call(api, name)).toBe(false);
+    }
   });
 });
 
-describe("invokeAgent", () => {
-  it("posts action and model_key", async () => {
+describe("postMessage", () => {
+  it("posts role, body and model_key to the messages endpoint", async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true, json: async () => ({ messages: [], summary: null }),
     });
     vi.stubGlobal("fetch", fetchMock);
-    await api.invokeAgent("dummy-01", "sonnet-4-6", "ask");
+    await api.postMessage("dummy-01", "seller", "@agent confirm", "sonnet-4-6");
     const [url, init] = fetchMock.mock.calls[0];
-    expect(url).toBe("/api/customers/dummy-01/agent");
-    expect(JSON.parse(init.body)).toEqual({ model_key: "sonnet-4-6", action: "ask" });
+    expect(url).toBe("/api/customers/dummy-01/messages");
+    expect(JSON.parse(init.body)).toEqual({
+      role: "seller", body: "@agent confirm", model_key: "sonnet-4-6",
+    });
     vi.unstubAllGlobals();
   });
 });

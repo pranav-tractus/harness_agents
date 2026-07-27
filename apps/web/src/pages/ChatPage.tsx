@@ -6,7 +6,6 @@ import { CustomerDetails } from "@/components/CustomerDetails";
 import { CustomerSidebar } from "@/components/CustomerSidebar";
 import { MessageComposer } from "@/components/MessageComposer";
 import { ModelPicker } from "@/components/ModelPicker";
-import { parseAgentTag } from "@/lib/agentTag";
 
 type Props = {
   focusMessage?: { customerId: string; seq: number } | null;
@@ -81,11 +80,7 @@ export function ChatPage({ focusMessage, onFocusHandled }: Props) {
   async function handleMessage(body: string) {
     if (!selectedId) return;
     try {
-      await api.postMessage(selectedId, role, body);
-      const { isAgent, action } = parseAgentTag(body);
-      if (isAgent) {
-        await api.invokeAgent(selectedId, modelKey, action);
-      }
+      await api.postMessage(selectedId, role, body, modelKey);
       await loadMessages(selectedId);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to send message");

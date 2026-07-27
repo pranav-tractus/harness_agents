@@ -1,5 +1,5 @@
 export type LayerId = "context" | "flows" | "agent";
-export type FlowId = "autonomous" | "approve" | "manual";
+export type FlowId = "autonomous" | "approve";
 export type NodeKind = "ui" | "router" | "service" | "store" | "external" | "gate";
 export type EdgeKind = "call" | "data" | "gate-fail";
 
@@ -53,5 +53,4 @@ export const LAYERS: { id: LayerId; label: string; blurb: string }[] = [
 export const FLOWS: { id: FlowId; label: string; color: string }[] = [
   { id: "autonomous", label: "Autonomous draft", color: "#6366f1" },
   { id: "approve", label: "Approve / finalize", color: "#10b981" },
-  { id: "manual", label: "Manual command", color: "#f59e0b" },
 ];

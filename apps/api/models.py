@@ -68,6 +68,7 @@ class ProductUpdate(BaseModel):
 class MessageIn(BaseModel):
     role: str  # "me" | "customer"
     body: str
+    model_key: str | None = None  # only read when the body tags @agent
 
 
 class MessageOut(BaseModel):
@@ -80,12 +81,6 @@ class MessageOut(BaseModel):
     summary_id: str | None = None
     summary_json: str | None = None  # raw model response (pretty JSON) for summary cards
     created_at: str
-
-
-class CommandIn(BaseModel):
-    command: str            # "create-sales-order" | "approve" | "edit"
-    args: str | None = None
-    model_key: str
 
 
 class ModelOption(BaseModel):
@@ -175,11 +170,6 @@ def cap_questions(decision: AgentDecision, limit: int = 3) -> AgentDecision:
     ordered = sorted(decision.questions, key=lambda q: q.slot not in CRITICAL_SLOTS)
     decision.questions = ordered[:limit]
     return decision
-
-
-class AgentInvokeIn(BaseModel):
-    model_key: str
-    action: str = "ask"     # "ask" | "approve"
 
 
 class ChatOut(BaseModel):

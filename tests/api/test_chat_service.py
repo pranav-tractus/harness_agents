@@ -33,18 +33,18 @@ def test_seq_is_monotonic_per_chat():
 def test_since_filters_by_kind_and_seq():
     ch = chat_service.ensure_default_chat("dummy-01")
     chat_service.add_message("dummy-01", ch, "me", "old")           # seq 1
-    chat_service.add_message("dummy-01", ch, "me", "/cmd", kind="command")  # seq 2
+    chat_service.add_message("dummy-01", ch, "agent", "qty?", kind="question")  # seq 2
     chat_service.add_message("dummy-01", ch, "customer", "new")     # seq 3
     since = chat_service.chat_messages_since(ch, 1)
     bodies = [m["body"] for m in since]
-    assert bodies == ["new"]  # command excluded, old excluded
+    assert bodies == ["new"]  # question excluded, old excluded
 
 
 def test_messages_since_accepts_kind_filter():
     ch = chat_service.ensure_default_chat("dummy-01")
     chat_service.add_message("dummy-01", ch, "seller", "hi")                    # seq 1 chat
     chat_service.add_message("dummy-01", ch, "agent", "qty?", kind="question")  # seq 2
-    chat_service.add_message("dummy-01", ch, "me", "/cmd", kind="command")      # seq 3
+    chat_service.add_message("dummy-01", ch, "agent", "draft card", kind="draft")  # seq 3
     since = chat_service.messages_since(ch, 0, kinds=["chat", "question"])
     assert [m["kind"] for m in since] == ["chat", "question"]
 

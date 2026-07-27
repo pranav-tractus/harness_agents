@@ -38,7 +38,7 @@ export type Message = {
   created_at: string;
 };
 export type ModelOption = { key: string; display_name: string; provider: string };
-export type CommandResult = { messages: Message[]; summary: unknown | null };
+export type AgentResult = { messages: Message[]; summary: unknown | null };
 export type GraphNode = { id: string; label: string; type: string; properties: Record<string, unknown>; chat_id?: string };
 export type GraphEdge = { id: string; source: string; target: string; type: string; properties: Record<string, unknown> };
 export type GraphData = { nodes: GraphNode[]; edges: GraphEdge[] };
@@ -105,20 +105,10 @@ export const api = {
       if (!r.ok) throw new Error(`${r.status} delete product`);
     }),
   listMessages: (id: string) => req<Message[]>(`/api/customers/${id}/messages`),
-  postMessage: (id: string, role: string, body: string) =>
-    req<Message>(`/api/customers/${id}/messages`, {
+  postMessage: (id: string, role: string, body: string, model_key?: string) =>
+    req<AgentResult>(`/api/customers/${id}/messages`, {
       method: "POST",
-      body: JSON.stringify({ role, body }),
-    }),
-  runCommand: (id: string, command: string, args: string | null, model_key: string) =>
-    req<CommandResult>(`/api/customers/${id}/commands`, {
-      method: "POST",
-      body: JSON.stringify({ command, args, model_key }),
-    }),
-  invokeAgent: (id: string, model_key: string, action: "ask" | "approve") =>
-    req<CommandResult>(`/api/customers/${id}/agent`, {
-      method: "POST",
-      body: JSON.stringify({ model_key, action }),
+      body: JSON.stringify({ role, body, model_key }),
     }),
   listModels: () => req<ModelOption[]>("/api/models"),
   getGraphChat: (customerId: string) =>

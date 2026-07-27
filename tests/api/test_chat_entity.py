@@ -33,7 +33,7 @@ def test_checkpoint_is_per_chat():
 def test_since_filters_by_chat_kind_and_seq():
     ch = chat_service.ensure_default_chat("dummy-01")
     chat_service.add_message("dummy-01", ch, "seller", "old")                 # 1
-    chat_service.add_message("dummy-01", ch, "agent", "/x", kind="command")   # 2
+    chat_service.add_message("dummy-01", ch, "agent", "qty?", kind="question")   # 2
     chat_service.add_message("dummy-01", ch, "customer", "new")               # 3
     since = chat_service.chat_messages_since(ch, 1)
     assert [m["body"] for m in since] == ["new"]
