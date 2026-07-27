@@ -55,7 +55,7 @@ React 19 + Vite single-page app. Tabbed shell: Chat, Products, Graphs, Architect
 
 `apps/api/main.py::app`
 
-Wires every router: messages, commands, chats, customers, products, graphs, models. CORS is restricted to WEB_ORIGIN.
+Wires every router: messages, chats, customers, products, graphs, models. CORS is restricted to WEB_ORIGIN.
 
 #### MongoDB
 

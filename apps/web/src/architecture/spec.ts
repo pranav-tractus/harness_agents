@@ -21,7 +21,7 @@ const CONTEXT_NODES: ArchNode[] = [
     group: "Server",
     anchor: "apps/api/main.py::app",
     summary:
-      "Wires every router: messages, commands, chats, customers, products, graphs, models. CORS is restricted to WEB_ORIGIN.",
+      "Wires every router: messages, chats, customers, products, graphs, models. CORS is restricted to WEB_ORIGIN.",
   },
   {
     id: "ctx.mongo",
