@@ -1,0 +1,136 @@
+import mongomock
+import pytest
+
+from apps.api.db import mongo
+from apps.api.db.vectors import InMemoryIndex
+from apps.api.services import spec_ingest_service as si
+from apps.api.services.spec_ingest_service import ProductSpec
+
+
+@pytest.fixture(autouse=True)
+def _fake_mongo(monkeypatch):
+    monkeypatch.setattr(mongo, "_client", mongomock.MongoClient())
+    monkeypatch.setenv("SPECS_S3_BUCKET", "spec-bucket")
+    from apps.api import settings as settings_mod
+    settings_mod.get_settings.cache_clear()
+    yield
+    settings_mod.get_settings.cache_clear()
+    mongo.reset_client()
+
+
+_SPEC = ProductSpec(
+    code="GIIOFEED-PL5", name="Feed Lecithin PL5",
+    short_description="Soy lecithin for animal feed",
+    long_description="Liquid soy lecithin for feed mills.",
+    spec="AI >= 60%", aliases=["PL5"], metadata={"form": "liquid"})
+
+
+def _fake_llm(spec=_SPEC):
+    return lambda prompt, schema, model_key, system_prompt=None: spec
+
+
+def _fake_embed(texts, *, mode="document"):
+    return [[1.0, 0.0] for _ in texts]
+
+
+def _deps(tmp_path, **over):
+    pdf = tmp_path / "GIIOFEED PL5.pdf"
+    pdf.write_bytes(b"%PDF fake")
+    deps = dict(
+        upload_fn=lambda path, bucket, key: None,
+        textract_fn=lambda bucket, key: "GIIOFEED PL5 spec text",
+        llm=_fake_llm(),
+        embed_fn=_fake_embed,
+        index=InMemoryIndex(),
+    )
+    deps.update(over)
+    return pdf, deps
+
+
+def test_extract_spec_falls_back_to_filename_slug():
+    spec = si.extract_spec("text", "GIIOFINE_L_SF .pdf", llm=_fake_llm(
+        ProductSpec(name="Sunflower Lecithin Liquid", short_description="x")))
+    assert spec.code == "GIIOFINE-L-SF"
+
+
+def test_ingest_writes_product_and_vectors(tmp_path):
+    pdf, deps = _deps(tmp_path)
+    report = si.ingest_pdf(pdf, **deps)
+    assert report.status == "ingested"
+    assert report.code == "GIIOFEED-PL5"
+    doc = mongo.products().find_one({"_id": "GIIOFEED-PL5"})
+    assert doc["name"] == "Feed Lecithin PL5"
+    assert doc["aliases"] == ["PL5"]
+    assert doc["source_pdf"] == "specs/GIIOFEED PL5.pdf"
+    assert doc["source_pdf_hash"]
+    assert doc["embedded_hash"]
+    assert any(k.endswith("#alias#0") for k in deps["index"]._store)
+
+
+def test_ingest_skips_unchanged_pdf(tmp_path):
+    pdf, deps = _deps(tmp_path)
+    si.ingest_pdf(pdf, **deps)
+    called = {"n": 0}
+
+    def _counting_textract(bucket, key):
+        called["n"] += 1
+        return "text"
+
+    report = si.ingest_pdf(pdf, **{**deps, "textract_fn": _counting_textract})
+    assert report.status == "skipped"
+    assert called["n"] == 0
+
+
+def test_force_reingests_unchanged_pdf(tmp_path):
+    pdf, deps = _deps(tmp_path)
+    si.ingest_pdf(pdf, **deps)
+    report = si.ingest_pdf(pdf, force=True, **deps)
+    assert report.status == "ingested"
+
+
+def test_dry_run_extracts_but_writes_nothing(tmp_path):
+    pdf, deps = _deps(tmp_path)
+    report = si.ingest_pdf(pdf, dry_run=True, **deps)
+    assert report.status == "dry-run"
+    assert report.code == "GIIOFEED-PL5"
+    assert mongo.products().count_documents({}) == 0
+    assert deps["index"]._store == {}
+
+
+def test_failure_is_reported_not_raised(tmp_path):
+    def _boom(bucket, key):
+        raise RuntimeError("textract exploded")
+
+    pdf, deps = _deps(tmp_path, textract_fn=_boom)
+    report = si.ingest_pdf(pdf, **deps)
+    assert report.status == "failed"
+    assert "textract exploded" in report.error
+
+
+def test_ingest_folder_sweeps_and_continues(tmp_path):
+    (tmp_path / "a.pdf").write_bytes(b"%PDF a")
+    (tmp_path / "b.pdf").write_bytes(b"%PDF b")
+    calls = []
+
+    def _llm_by_file(prompt, schema, model_key, system_prompt=None):
+        calls.append(1)
+        n = len(calls)
+        return ProductSpec(code=f"P-{n}", name=f"Prod {n}", short_description="s")
+
+    reports = si.ingest_folder(
+        tmp_path,
+        upload_fn=lambda path, bucket, key: None,
+        textract_fn=lambda bucket, key: "text",
+        llm=_llm_by_file, embed_fn=_fake_embed, index=InMemoryIndex())
+    assert [r.status for r in reports] == ["ingested", "ingested"]
+    assert mongo.products().count_documents({}) == 2
+
+
+def test_upsert_preserves_embedding_bookkeeping():
+    mongo.products().insert_one({
+        "_id": "GIIOFEED-PL5", "code": "GIIOFEED-PL5",
+        "short_description": "old", "embedded_hash": "h", "vector_keys": ["k"]})
+    si.upsert_product(_SPEC, source_pdf="specs/x.pdf", pdf_hash="ph")
+    doc = mongo.products().find_one({"_id": "GIIOFEED-PL5"})
+    assert doc["short_description"] == "Soy lecithin for animal feed"
+    assert doc["embedded_hash"] == "h" and doc["vector_keys"] == ["k"]
