@@ -1,7 +1,6 @@
 import { NODE_COLORS } from "@/components/graph/nodes/parts";
 
 const CUSTOMER_TYPES = ["Customer", "Chat", "Contract", "LineItem", "Term", "MessageRef", "Product", "Port"];
-const PRODUCT_TYPES = ["Product", "Category", "Application", "Alias", "SpecAttr"];
 
 const STATUS_GLYPHS: { glyph: string; label: string }[] = [
   { glyph: "✅", label: "agreed by both" },
@@ -11,13 +10,12 @@ const STATUS_GLYPHS: { glyph: string; label: string }[] = [
   { glyph: "✎", label: "draft" },
 ];
 
-export function GraphLegend({ view }: { view: "customer" | "products" }) {
-  const types = view === "products" ? PRODUCT_TYPES : CUSTOMER_TYPES;
+export function GraphLegend() {
   return (
     <div className="pointer-events-none absolute bottom-3 left-3 z-10 max-w-[220px] rounded-md border bg-card/90 p-2.5 text-[11px] shadow-sm backdrop-blur">
       <div className="mb-1.5 font-semibold">Legend</div>
       <div className="flex flex-wrap gap-x-3 gap-y-1">
-        {types.map((t) => (
+        {CUSTOMER_TYPES.map((t) => (
           <span key={t} className="flex items-center gap-1">
             <span
               className="inline-block h-2.5 w-2.5 rounded-sm"
@@ -27,25 +25,20 @@ export function GraphLegend({ view }: { view: "customer" | "products" }) {
           </span>
         ))}
       </div>
-      {view === "customer" && (
-        <div className="mt-2 flex flex-col gap-0.5 text-muted-foreground">
-          {STATUS_GLYPHS.map((s) => (
-            <span key={s.label}>
-              <span className="mr-1">{s.glyph}</span>
-              {s.label}
-            </span>
-          ))}
-          <span>
-            <span className="mr-1 inline-block border border-dashed border-amber-400 px-1 text-amber-600">
-              dashed
-            </span>
-            inferred / unconfirmed
+      <div className="mt-2 flex flex-col gap-0.5 text-muted-foreground">
+        {STATUS_GLYPHS.map((s) => (
+          <span key={s.label}>
+            <span className="mr-1">{s.glyph}</span>
+            {s.label}
           </span>
-        </div>
-      )}
-      {view === "products" && (
-        <div className="mt-2 text-muted-foreground">badges: not built · built · stale</div>
-      )}
+        ))}
+        <span>
+          <span className="mr-1 inline-block border border-dashed border-amber-400 px-1 text-amber-600">
+            dashed
+          </span>
+          inferred / unconfirmed
+        </span>
+      </div>
     </div>
   );
 }

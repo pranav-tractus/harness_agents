@@ -192,36 +192,3 @@ def read_customer_graph(customer_id: str) -> dict:
         _edge(edges, f"Chat::{new_id}", f"Chat::{old_id}", "CONTINUES")
 
     return {"nodes": nodes, "edges": edges}
-
-
-def read_product_graph() -> dict:
-    if not falkor.is_available():
-        return _empty()
-    g = falkor.catalog_graph()
-    nodes, edges = [], []
-    prods = g.query("MATCH (p:Product) RETURN p.code, p.description, p.spec").result_set
-    if not prods:
-        return _empty()
-    for code, desc, spec in prods:
-        nodes.append(
-            _node(
-                f"Product::{code}",
-                code,
-                "Product",
-                {"code": code, "description": desc, "spec": spec},
-            )
-        )
-    for rel, ntype, label_cypher in (
-        ("HAS_ALIAS", "Alias", "a.name"),
-        ("HAS_SPEC", "SpecAttr", "a.key + ': ' + a.value"),
-        ("IN_CATEGORY", "Category", "a.name"),
-        ("USED_FOR", "Application", "a.name"),
-    ):
-        rows = g.query(
-            f"MATCH (p:Product)-[:{rel}]->(a:{ntype}) RETURN p.code, id(a), {label_cypher}"
-        ).result_set
-        for code, aid, label in rows:
-            nid = f"{ntype}::{aid}"
-            nodes.append(_node(nid, label, ntype, {"label": label}))
-            _edge(edges, f"Product::{code}", nid, rel)
-    return {"nodes": nodes, "edges": edges}

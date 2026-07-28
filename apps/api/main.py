@@ -27,7 +27,6 @@ def create_app() -> FastAPI:
     app.include_router(messages.router)
     app.include_router(models_router.router)
     app.include_router(graphs.customer_router)
-    app.include_router(graphs.catalog_router)
     return app
 
 

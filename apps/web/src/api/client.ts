@@ -119,5 +119,4 @@ export const api = {
     req<GraphData>(`/api/customers/${customerId}/graph`),
   buildProduct: (code: string) =>
     req<Product>(`/api/products/${code}/build`, { method: "POST" }),
-  getGraphProducts: () => req<GraphData>("/api/graph/products"),
 };

@@ -31,9 +31,9 @@ def client(monkeypatch):
     monkeypatch.setattr(mongo, "_client", mongomock.MongoClient())
     monkeypatch.setattr("apps.api.routers.customers.profile_graph_service.resync",
                         lambda *a, **k: None)
-    monkeypatch.setattr("apps.api.routers.products.product_graph_service.build",
+    monkeypatch.setattr("apps.api.routers.products.product_embedding_service.build_from_doc",
                         lambda *a, **k: None)
-    monkeypatch.setattr("apps.api.routers.products.product_graph_service.remove_product",
+    monkeypatch.setattr("apps.api.routers.products.product_embedding_service.remove_product",
                         lambda *a, **k: None)
     _seed_fixture_data()
     monkeypatch.setattr("apps.api.services.agent_service.chat_graph_service.write_contract",
@@ -144,49 +144,49 @@ def test_create_product_conflict(client):
     assert r.status_code == 409
 
 
-def test_create_product_does_not_sync_graph(client, monkeypatch):
+def test_create_product_does_not_sync_embeddings(client, monkeypatch):
     calls = []
-    monkeypatch.setattr("apps.api.routers.products.product_graph_service.build_from_doc",
+    monkeypatch.setattr("apps.api.routers.products.product_embedding_service.build_from_doc",
                         lambda doc, **k: calls.append(doc["code"]))
     r = client.post("/api/products", json={"code": "NEW-2", "short_description": "New", "spec": "s"})
     assert r.status_code == 201
     assert calls == []
 
 
-def test_build_product_syncs_graph(client, monkeypatch):
+def test_build_product_syncs_embeddings(client, monkeypatch):
     calls = []
-    monkeypatch.setattr("apps.api.routers.products.product_graph_service.build_from_doc",
+    monkeypatch.setattr("apps.api.routers.products.product_embedding_service.build_from_doc",
                         lambda doc, **k: calls.append(doc["code"]))
-    monkeypatch.setattr("apps.api.routers.products.product_graph_service.status_for_doc",
+    monkeypatch.setattr("apps.api.routers.products.product_embedding_service.status_for_doc",
                         lambda doc: "built")
     r = client.post("/api/products/TG-BPPC/build")
     assert r.status_code == 200
     assert "TG-BPPC" in calls
 
 
-def test_update_product_does_not_sync_graph(client, monkeypatch):
+def test_update_product_does_not_sync_embeddings(client, monkeypatch):
     calls = []
-    monkeypatch.setattr("apps.api.routers.products.product_graph_service.build_from_doc",
+    monkeypatch.setattr("apps.api.routers.products.product_embedding_service.build_from_doc",
                         lambda doc, **k: calls.append(doc["code"]))
     r = client.put("/api/products/TG-BPPC", json={"short_description": "Updated", "spec": "v2"})
     assert r.status_code == 200
     assert calls == []
 
 
-def test_delete_product_removes_from_graph(client, monkeypatch):
+def test_delete_product_removes_from_vector_index(client, monkeypatch):
     calls = []
-    monkeypatch.setattr("apps.api.routers.products.product_graph_service.remove_product",
+    monkeypatch.setattr("apps.api.routers.products.product_embedding_service.remove_product",
                         lambda code, *a, **k: calls.append(code))
     r = client.delete("/api/products/TG-MGL8")
     assert r.status_code == 204
     assert "TG-MGL8" in calls
 
 
-def test_delete_product_succeeds_when_graph_sync_fails(client, monkeypatch):
+def test_delete_product_succeeds_when_embedding_sync_fails(client, monkeypatch):
     def raise_remove_error(*args, **kwargs):
-        raise RuntimeError("graph unavailable")
+        raise RuntimeError("vector index unavailable")
 
-    monkeypatch.setattr("apps.api.routers.products.product_graph_service.remove_product", raise_remove_error)
+    monkeypatch.setattr("apps.api.routers.products.product_embedding_service.remove_product", raise_remove_error)
     r = client.delete("/api/products/TG-MGL8")
     assert r.status_code == 204
 
