@@ -181,6 +181,19 @@ def upsert_product(spec: ProductSpec, *, source_pdf: str, pdf_hash: str) -> dict
 # ---------------------------------------------------------------------------
 
 
+import logging
+import threading
+
+logger = logging.getLogger(__name__)
+
+_print_lock = threading.Lock()
+
+
+def _log(msg: str) -> None:
+    with _print_lock:
+        print(msg, flush=True)
+
+
 def _default_upload(path: Path, bucket: str, key: str) -> None:
     from core.utils import create_boto3_client
 
@@ -204,28 +217,57 @@ def ingest_pdf(
             report.code = existing["code"]
             report.name = existing.get("name") or ""
             report.status = "skipped"
+            _log(f"  [skip]   {path.name} — unchanged")
             return report
+        _log(f"  [upload] {path.name} → s3://{bucket}/{key}")
         (upload_fn or _default_upload)(path, bucket, key)
+        _log(f"  [ocr]    {path.name} — waiting for Textract…")
         text = (textract_fn or textract_text)(bucket, key)
+        _log(f"  [llm]    {path.name} — extracting spec…")
         spec = extract_spec(text, path.name, model_key, llm=llm)
         report.code, report.name, report.aliases = spec.code, spec.name, len(spec.aliases)
         if dry_run:
             report.status = "dry-run"
+            _log(f"  [dry]    {path.name} → {spec.code}  \"{spec.name}\"")
             return report
         doc = upsert_product(spec, source_pdf=key, pdf_hash=pdf_hash)
+        _log(f"  [embed]  {path.name} → {spec.code}  \"{spec.name}\"")
         product_embedding_service.build_from_doc(doc, embed_fn=embed_fn, index=index)
         report.status = "ingested"
+        _log(f"  [done]   {path.name} → {spec.code}  \"{spec.name}\"  ({len(spec.aliases)} aliases)")
         return report
     except Exception as exc:  # per-file isolation: the sweep must continue
         report.status = "failed"
         report.error = str(exc)
+        _log(f"  [fail]   {path.name} — {exc}")
+        logger.debug("ingest_pdf error for %s", path.name, exc_info=True)
         return report
 
 
-def ingest_folder(folder, **kwargs) -> list[IngestReport]:
+def ingest_folder(folder, *, workers: int = 15, **kwargs) -> list[IngestReport]:
+    import concurrent.futures
+
     folder = Path(folder)
+    pdfs = sorted(folder.glob("*.pdf"))
+    if not pdfs:
+        _log(f"No PDFs found in {folder}")
+        return []
+
     if not kwargs.get("dry_run") and kwargs.get("index") is None and vectors.is_available():
         idx = vectors.default_index()
         idx.ensure()
         kwargs["index"] = idx
-    return [ingest_pdf(pdf, **kwargs) for pdf in sorted(folder.glob("*.pdf"))]
+
+    _log(f"Ingesting {len(pdfs)} PDFs with {workers} workers…\n")
+
+    results: dict[Path, IngestReport] = {}
+    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
+        futures = {pool.submit(ingest_pdf, pdf, **kwargs): pdf for pdf in pdfs}
+        for fut in concurrent.futures.as_completed(futures):
+            pdf = futures[fut]
+            try:
+                results[pdf] = fut.result()
+            except Exception as exc:
+                results[pdf] = IngestReport(file=pdf.name, status="failed", error=str(exc))
+
+    return [results[pdf] for pdf in pdfs]
