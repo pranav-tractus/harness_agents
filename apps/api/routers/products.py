@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, Response
 
 from apps.api.db import mongo
 from apps.api.models import ProductCreate, ProductOut, ProductUpdate
-from apps.api.services import product_graph_service
+from apps.api.services import product_embedding_service
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ def _out(doc: dict) -> ProductOut:
                       long_description=doc.get("long_description"),
                       spec=doc.get("spec"),
                       metadata=doc.get("metadata") or {},
-                      build_status=product_graph_service.status_for_doc(doc))
+                      build_status=product_embedding_service.status_for_doc(doc))
 
 
 @router.get("")
@@ -63,7 +63,7 @@ def update_product(product_id: str, body: ProductUpdate) -> ProductOut:
 @router.post("/build-all")
 def build_all() -> list[ProductOut]:
     for doc in mongo.products().find():
-        product_graph_service.build_from_doc(doc)
+        product_embedding_service.build_from_doc(doc)
     return [_out(d) for d in mongo.products().find().sort("_id", 1)]
 
 
@@ -72,7 +72,7 @@ def build_product(product_id: str) -> ProductOut:
     doc = mongo.products().find_one({"_id": product_id})
     if not doc:
         raise HTTPException(404, "product not found")
-    product_graph_service.build_from_doc(doc)
+    product_embedding_service.build_from_doc(doc)
     return _out(mongo.products().find_one({"_id": product_id}))
 
 
@@ -82,7 +82,7 @@ def delete_product(product_id: str) -> Response:
     if res.deleted_count == 0:
         raise HTTPException(404, "product not found")
     try:
-        product_graph_service.remove_product(product_id)
+        product_embedding_service.remove_product(product_id)
     except Exception:
         logger.warning("Failed to remove product graph for %s", product_id, exc_info=True)
     return Response(status_code=204)

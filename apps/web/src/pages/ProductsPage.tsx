@@ -160,14 +160,14 @@ export function ProductsPage() {
     }
   }
 
-  async function buildGraph(product: Product) {
+  async function buildEmbeddings(product: Product) {
     setBuildingCode(product.code);
     try {
       await api.buildProduct(product.code);
       await loadProducts();
-      toast.success(`Built graph for ${product.code}`);
+      toast.success(`Built embeddings for ${product.code}`);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to build graph");
+      toast.error(err instanceof Error ? err.message : "Failed to build embeddings");
     } finally {
       setBuildingCode(null);
     }
@@ -200,7 +200,7 @@ export function ProductsPage() {
             <TableHead>Code</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Short description</TableHead>
-            <TableHead>Graph</TableHead>
+            <TableHead>Embeddings</TableHead>
             <TableHead className="w-[220px]">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -219,13 +219,13 @@ export function ProductsPage() {
                     variant="outline"
                     size="sm"
                     disabled={buildingCode === product.code}
-                    onClick={() => buildGraph(product)}
+                    onClick={() => buildEmbeddings(product)}
                   >
                     {buildingCode === product.code
                       ? "Building…"
                       : product.build_status && product.build_status !== "not built"
                         ? "Rebuild"
-                        : "Build Graph"}
+                        : "Build Embeddings"}
                   </Button>
                   <Button variant="outline" size="sm" onClick={() => openEdit(product)}>
                     Edit

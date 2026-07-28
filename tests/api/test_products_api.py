@@ -9,7 +9,7 @@ from apps.api.routers import products as products_router
 @pytest.fixture(autouse=True)
 def _fake_mongo(monkeypatch):
     monkeypatch.setattr(mongo, "_client", mongomock.MongoClient())
-    # FalkorDB is not available under mongomock; status_for_doc returns "not built"
+    # No embedded_hash on fresh docs; status_for_doc returns "not built"
     yield
     mongo.reset_client()
 

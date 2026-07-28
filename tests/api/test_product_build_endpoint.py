@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 
 from apps.api import seed
 from apps.api.db import mongo
-from apps.api.services import product_graph_service
+from apps.api.services import product_embedding_service
 
 
 @pytest.fixture()
@@ -12,8 +12,10 @@ def client(monkeypatch):
     monkeypatch.setattr(mongo, "_client", mongomock.MongoClient())
     seed.seed_all()
     calls = []
-    monkeypatch.setattr(product_graph_service, "build", lambda *a, **k: calls.append(a[0]))
-    monkeypatch.setattr(product_graph_service, "status", lambda *a, **k: "not built")
+    monkeypatch.setattr(product_embedding_service, "build_from_doc",
+                        lambda doc, **k: calls.append(doc["code"]))
+    monkeypatch.setattr(product_embedding_service, "status_for_doc",
+                        lambda doc: "not built")
     from apps.api.main import create_app
     with TestClient(create_app()) as c:
         c.calls = calls
