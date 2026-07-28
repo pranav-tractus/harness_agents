@@ -49,7 +49,11 @@ def _hash(payloads: list[tuple[str, str, dict]]) -> str:
 
 def build_from_doc(doc: dict, *, embed_fn=None, index=None) -> None:
     embed_fn = embed_fn or embeddings.embed
-    index = index or vectors.default_index()
+    if index is None:
+        if not vectors.is_available():
+            return
+        index = vectors.default_index()
+        index.ensure()
     payloads = _payloads(doc)
     vecs = embed_fn([text for _, text, _ in payloads], mode="document")
     records = [

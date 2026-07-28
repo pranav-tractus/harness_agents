@@ -84,5 +84,5 @@ def delete_product(product_id: str) -> Response:
     try:
         product_embedding_service.remove_product(product_id)
     except Exception:
-        logger.warning("Failed to remove product graph for %s", product_id, exc_info=True)
+        logger.warning("Failed to remove product embeddings for %s", product_id, exc_info=True)
     return Response(status_code=204)

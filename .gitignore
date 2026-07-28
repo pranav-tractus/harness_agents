@@ -36,3 +36,5 @@ graphify-out
 graph_dbs/
 apps/web/node_modules/
 apps/web/dist/
+
+*.pdf
