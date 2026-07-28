@@ -16,7 +16,6 @@ export const nodeTypes: Record<string, ComponentType<GraphNodeProps>> = {
   Category: LeafNode,
   Application: LeafNode,
   Alias: LeafNode,
-  SpecAttr: LeafNode,
   Chat: BranchNode,
   Contract: ContractNode,
   LineItem: LineItemNode,

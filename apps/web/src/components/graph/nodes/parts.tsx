@@ -17,7 +17,7 @@ export const NODE_COLORS: Record<string, string> = {
   Category: "#ef4444",
   Application: "#0891b2",
   Alias: "#0ea5e9",
-  SpecAttr: "#f43f5e",
+
 };
 
 export function agreementLevel(agreedBy: unknown): "both" | "one" | "none" {
