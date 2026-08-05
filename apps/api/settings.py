@@ -32,6 +32,6 @@ def get_settings() -> Settings:
         falkordb_port=int(os.environ.get("FALKORDB_PORT", "6379")),
         specs_s3_bucket=os.environ.get("SPECS_S3_BUCKET", ""),
         vector_bucket=os.environ.get("S3_VECTOR_BUCKET", ""),
-        vector_index=os.environ.get("S3_VECTOR_INDEX", "product-catalog"),
+        vector_index=os.environ.get("S3_VECTOR_INDEX", "product-catalog-openai"),
         aws_region=os.environ.get("AWS_REGION", "us-east-1"),
     )
