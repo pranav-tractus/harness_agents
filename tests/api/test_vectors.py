@@ -1,5 +1,7 @@
 import pytest
 
+from core.embeddings import DIMENSION
+
 from apps.api.db import vectors
 from apps.api.db.vectors import InMemoryIndex, S3VectorsIndex, VectorRecord
 
@@ -75,7 +77,7 @@ def test_s3_ensure_creates_bucket_and_index_when_missing():
     names = [c[0] for c in client.calls]
     assert names == ["get_index", "create_vector_bucket", "create_index"]
     _, kw = client.calls[-1]
-    assert kw["dimension"] == 1536
+    assert kw["dimension"] == DIMENSION
     assert kw["distanceMetric"] == "cosine"
     assert kw["metadataConfiguration"] == {"nonFilterableMetadataKeys": ["snippet"]}
 

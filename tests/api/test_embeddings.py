@@ -57,6 +57,8 @@ def test_mode_does_not_affect_the_request(seen):
 
 def test_settings_expose_vector_config(monkeypatch):
     from apps.api import settings as settings_mod
+    monkeypatch.delenv("S3_VECTOR_INDEX", raising=False)
+    monkeypatch.delenv("AWS_REGION", raising=False)
     monkeypatch.setenv("S3_VECTOR_BUCKET", "vec-bucket")
     monkeypatch.setenv("SPECS_S3_BUCKET", "spec-bucket")
     settings_mod.get_settings.cache_clear()
