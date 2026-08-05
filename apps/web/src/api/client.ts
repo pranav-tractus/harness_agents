@@ -23,6 +23,7 @@ export type Product = {
   spec: string | null;
   metadata: Record<string, string>;
   build_status?: string;
+  source_label?: string | null;
 };
 export type Message = {
   id: string;

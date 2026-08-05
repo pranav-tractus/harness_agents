@@ -75,6 +75,16 @@ export function BuildBadge({ status }: { status: string }) {
   );
 }
 
+export function SourceBadge({ label }: { label?: string | null }) {
+  if (!label) return null;
+  const cls = label === "Test Files" ? "text-sky-600 border-sky-300" : "text-muted-foreground";
+  return (
+    <Badge variant="outline" className={cn("text-[10px]", cls)}>
+      {label}
+    </Badge>
+  );
+}
+
 export function ChatStatusChip({ status }: { status?: string }) {
   const s = status || "active";
   return (

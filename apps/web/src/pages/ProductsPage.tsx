@@ -2,7 +2,14 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { api, type Product } from "@/api/client";
 import { Button } from "@/components/ui/button";
-import { BuildBadge } from "@/components/graph/nodes/parts";
+import { BuildBadge, SourceBadge } from "@/components/graph/nodes/parts";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -63,6 +70,9 @@ function MetaEditor({
 
 export function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [sourceFilter, setSourceFilter] = useState("all");
+  const visibleProducts =
+    sourceFilter === "all" ? products : products.filter((p) => p.source_label === sourceFilter);
   const [editProduct, setEditProduct] = useState<Product | null>(null);
   const [deleteProduct, setDeleteProduct] = useState<Product | null>(null);
   const [addOpen, setAddOpen] = useState(false);
@@ -192,7 +202,19 @@ export function ProductsPage() {
     <div className="p-6">
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-xl font-semibold">Products</h1>
-        <Button onClick={() => setAddOpen(true)}>Add Product</Button>
+        <div className="flex items-center gap-3">
+          <Select value={sourceFilter} onValueChange={(v) => v && setSourceFilter(v)}>
+            <SelectTrigger id="source-filter" aria-label="Source" className="w-[160px]">
+              <SelectValue placeholder="Source" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All sources</SelectItem>
+              <SelectItem value="OG Files">OG Files</SelectItem>
+              <SelectItem value="Test Files">Test Files</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button onClick={() => setAddOpen(true)}>Add Product</Button>
+        </div>
       </div>
       <Table>
         <TableHeader>
@@ -201,17 +223,21 @@ export function ProductsPage() {
             <TableHead>Name</TableHead>
             <TableHead>Short description</TableHead>
             <TableHead>Embeddings</TableHead>
+            <TableHead>Source</TableHead>
             <TableHead className="w-[220px]">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {products.map((product) => (
+          {visibleProducts.map((product) => (
             <TableRow key={product.id}>
               <TableCell className="font-medium">{product.code}</TableCell>
               <TableCell>{product.name ?? "—"}</TableCell>
               <TableCell>{product.short_description}</TableCell>
               <TableCell>
                 <BuildBadge status={product.build_status ?? "not built"} />
+              </TableCell>
+              <TableCell>
+                <SourceBadge label={product.source_label} />
               </TableCell>
               <TableCell>
                 <div className="flex gap-2">
