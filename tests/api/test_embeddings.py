@@ -1,58 +1,58 @@
-import math
-
 import pytest
 
 from core import embeddings
 
 
-class _FakeEmbedding:
+class _FakeEmbeddingObj:
     def __init__(self, values):
-        self.values = values
+        self.embedding = values
 
 
 class _FakeResponse:
     def __init__(self, vectors):
-        self.embeddings = [_FakeEmbedding(v) for v in vectors]
+        self.data = [_FakeEmbeddingObj(v) for v in vectors]
 
 
-class _FakeModels:
+class _FakeEmbeddings:
     def __init__(self, vectors, seen):
         self._vectors = vectors
         self._seen = seen
 
-    def embed_content(self, *, model, contents, config):
-        self._seen.update(model=model, contents=list(contents), config=config)
+    def create(self, *, model, input, dimensions):
+        self._seen.update(model=model, input=list(input), dimensions=dimensions)
         return _FakeResponse(self._vectors)
 
 
 class _FakeClient:
     def __init__(self, vectors, seen):
-        self.models = _FakeModels(vectors, seen)
+        self.embeddings = _FakeEmbeddings(vectors, seen)
 
 
 @pytest.fixture()
 def seen(monkeypatch):
     seen = {}
-    monkeypatch.setattr(embeddings, "_client", _FakeClient([[3.0, 4.0]], seen))
+    monkeypatch.setattr(embeddings, "_client", _FakeClient([[0.6, 0.8]], seen))
     return seen
 
 
-def test_embed_normalizes_vectors(seen):
+def test_embed_returns_vectors_unmodified(seen):
     [vec] = embeddings.embed(["hello"])
-    assert vec == pytest.approx([0.6, 0.8])
-    assert math.isclose(sum(x * x for x in vec), 1.0, rel_tol=1e-6)
+    assert vec == [0.6, 0.8]
 
 
-def test_document_mode_uses_retrieval_document_task(seen):
+def test_embed_uses_model_and_dimension(seen):
+    embeddings.embed(["a"])
+    assert seen["model"] == "text-embedding-3-large"
+    assert seen["dimensions"] == 3072
+    assert seen["input"] == ["a"]
+
+
+def test_mode_does_not_affect_the_request(seen):
     embeddings.embed(["a"], mode="document")
-    assert seen["config"].task_type == "RETRIEVAL_DOCUMENT"
-    assert seen["config"].output_dimensionality == 1536
-    assert seen["model"] == "gemini-embedding-001"
-
-
-def test_query_mode_uses_retrieval_query_task(seen):
+    doc_call = dict(seen)
     embeddings.embed(["a"], mode="query")
-    assert seen["config"].task_type == "RETRIEVAL_QUERY"
+    assert doc_call["model"] == seen["model"]
+    assert doc_call["dimensions"] == seen["dimensions"]
 
 
 def test_settings_expose_vector_config(monkeypatch):
@@ -63,6 +63,6 @@ def test_settings_expose_vector_config(monkeypatch):
     s = settings_mod.get_settings()
     assert s.vector_bucket == "vec-bucket"
     assert s.specs_s3_bucket == "spec-bucket"
-    assert s.vector_index == "product-catalog"
+    assert s.vector_index == "product-catalog-openai"
     assert s.aws_region == "us-east-1"
     settings_mod.get_settings.cache_clear()

@@ -1,7 +1,5 @@
-import numpy as np
-
-MODEL = "gemini-embedding-001"
-DIMENSION = 1536
+MODEL = "text-embedding-3-large"
+DIMENSION = 3072
 
 _client = None
 
@@ -9,32 +7,23 @@ _client = None
 def _get_client():
     global _client
     if _client is None:
-        from google import genai  # reads GEMINI_API_KEY / GOOGLE_API_KEY
+        from openai import OpenAI
 
-        _client = genai.Client()
+        from core.utils import OPENAI_API_KEY
+
+        _client = OpenAI(api_key=OPENAI_API_KEY)
     return _client
 
 
-def _normalize(values: list[float]) -> list[float]:
-    arr = np.asarray(values, dtype=np.float32)
-    norm = float(np.linalg.norm(arr))
-    return (arr / norm).tolist() if norm else arr.tolist()
-
-
 def embed(texts: list[str], *, mode: str = "document") -> list[list[float]]:
-    """Embed texts with gemini-embedding-001 at 1536 dims, L2-normalized.
+    """Embed texts with text-embedding-3-large at 3072 dims.
 
-    Gemini only returns unit-norm vectors at 3072 dims; at 1536 we must
-    normalize ourselves for cosine distance to be meaningful.
+    text-embedding-3 models return unit-norm vectors natively, so no
+    manual normalization is needed (unlike the previous Gemini client).
+    `mode` is kept for interface compatibility with callers — OpenAI has
+    no document/query task-type distinction, so it has no effect here.
     """
-    from google.genai import types
-
-    task = "RETRIEVAL_DOCUMENT" if mode == "document" else "RETRIEVAL_QUERY"
-    resp = _get_client().models.embed_content(
-        model=MODEL,
-        contents=list(texts),
-        config=types.EmbedContentConfig(
-            task_type=task, output_dimensionality=DIMENSION
-        ),
+    resp = _get_client().embeddings.create(
+        model=MODEL, input=list(texts), dimensions=DIMENSION
     )
-    return [_normalize(e.values) for e in resp.embeddings]
+    return [d.embedding for d in resp.data]
