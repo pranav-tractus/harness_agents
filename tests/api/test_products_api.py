@@ -56,3 +56,16 @@ def test_migrate_products_renames_description_and_defaults_fields():
     # idempotent: a second run does not clobber
     seed.migrate_products()
     assert mongo.products().find_one({"_id": "OLD-2"})["short_description"] == "legacy"
+
+
+def test_out_exposes_source_label():
+    mongo.products().insert_one({
+        "_id": "SL-1", "code": "SL-1", "short_description": "d", "source_label": "Test Files"})
+    out = products_router.get_product("SL-1")
+    assert out.source_label == "Test Files"
+
+
+def test_out_defaults_source_label_to_none_when_absent():
+    mongo.products().insert_one({"_id": "SL-2", "code": "SL-2", "short_description": "d"})
+    out = products_router.get_product("SL-2")
+    assert out.source_label is None

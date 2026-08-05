@@ -160,7 +160,9 @@ def extract_spec(text: str, filename: str, model_key: str = "openai:5.5", llm=No
 # ---------------------------------------------------------------------------
 
 
-def upsert_product(spec: ProductSpec, *, source_pdf: str, pdf_hash: str) -> dict:
+def upsert_product(
+    spec: ProductSpec, *, source_pdf: str, pdf_hash: str, source_label: str = "OG Files"
+) -> dict:
     fields = {
         "code": spec.code,
         "name": spec.name or None,
@@ -171,6 +173,7 @@ def upsert_product(spec: ProductSpec, *, source_pdf: str, pdf_hash: str) -> dict
         "aliases": spec.aliases,
         "source_pdf": source_pdf,
         "source_pdf_hash": pdf_hash,
+        "source_label": source_label,
     }
     mongo.products().update_one({"_id": spec.code}, {"$set": fields}, upsert=True)
     return mongo.products().find_one({"_id": spec.code})

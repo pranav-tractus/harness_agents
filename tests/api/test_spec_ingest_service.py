@@ -64,6 +64,7 @@ def test_ingest_writes_product_and_vectors(tmp_path):
     assert doc["source_pdf"] == "specs/GIIOFEED PL5.pdf"
     assert doc["source_pdf_hash"]
     assert doc["embedded_hash"]
+    assert doc["source_label"] == "OG Files"
     assert any(k.endswith("#alias#0") for k in deps["index"]._store)
 
 
@@ -134,3 +135,15 @@ def test_upsert_preserves_embedding_bookkeeping():
     doc = mongo.products().find_one({"_id": "GIIOFEED-PL5"})
     assert doc["short_description"] == "Soy lecithin for animal feed"
     assert doc["embedded_hash"] == "h" and doc["vector_keys"] == ["k"]
+
+
+def test_upsert_defaults_source_label_to_og_files():
+    si.upsert_product(_SPEC, source_pdf="specs/x.pdf", pdf_hash="ph")
+    doc = mongo.products().find_one({"_id": "GIIOFEED-PL5"})
+    assert doc["source_label"] == "OG Files"
+
+
+def test_upsert_accepts_explicit_source_label():
+    si.upsert_product(_SPEC, source_pdf="s3://ext-bucket/x.pdf", pdf_hash="ph", source_label="Test Files")
+    doc = mongo.products().find_one({"_id": "GIIOFEED-PL5"})
+    assert doc["source_label"] == "Test Files"

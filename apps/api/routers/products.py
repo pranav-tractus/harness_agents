@@ -18,7 +18,8 @@ def _out(doc: dict) -> ProductOut:
                       long_description=doc.get("long_description"),
                       spec=doc.get("spec"),
                       metadata=doc.get("metadata") or {},
-                      build_status=product_embedding_service.status_for_doc(doc))
+                      build_status=product_embedding_service.status_for_doc(doc),
+                      source_label=doc.get("source_label"))
 
 
 @router.get("")
