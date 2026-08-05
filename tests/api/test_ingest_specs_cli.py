@@ -43,3 +43,9 @@ def test_main_returns_one_on_failure(monkeypatch, capsys):
     out = capsys.readouterr().out
     assert code == 1
     assert "boom" in out
+
+
+def test_main_passes_s3_uri_through_unparsed(monkeypatch, capsys):
+    code, seen = _run(monkeypatch, [], ["s3://ext-bucket/incoming/"])
+    assert code == 0
+    assert seen["folder"] == "s3://ext-bucket/incoming/"

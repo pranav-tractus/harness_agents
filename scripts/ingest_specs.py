@@ -2,18 +2,22 @@
 
 Usage:
     python -m scripts.ingest_specs prod_specs/ [--model openai:5.5] [--dry-run] [--force] [--workers 15]
+    python -m scripts.ingest_specs s3://external-bucket/prefix/ [--model openai:5.5] [--dry-run] [--force]
+
+An `s3://bucket/prefix` folder argument sweeps that bucket directly
+(Textract reads the PDFs in place; nothing is copied into SPECS_S3_BUCKET).
+Any other value is treated as a local folder, uploaded per-file as before.
 """
 import argparse
 import sys
 from collections import Counter
-from pathlib import Path
 
 from apps.api.services import spec_ingest_service
 
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("folder", type=Path, help="Folder containing *.pdf spec sheets")
+    parser.add_argument("folder", help="Local folder of *.pdf files, or an s3://bucket/prefix URI")
     parser.add_argument("--model", default="openai:5.5", help="model_key for extraction")
     parser.add_argument("--dry-run", action="store_true",
                         help="extract and print, write nothing to Mongo/vectors")

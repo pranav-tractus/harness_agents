@@ -204,6 +204,29 @@ def _default_upload(path: Path, bucket: str, key: str) -> None:
     client.put_object(Bucket=bucket, Key=key, Body=path.read_bytes())
 
 
+def _finish_ingest(
+    report: IngestReport, source_pdf: str, pdf_hash: str, *, model_key: str, dry_run: bool,
+    source_label: str, textract_bucket: str, textract_key: str,
+    textract_fn=None, llm=None, embed_fn=None, index=None,
+) -> None:
+    """Textract -> LLM extract -> (dry-run stop | upsert + embed). Mutates `report` in place."""
+    filename = report.file
+    _log(f"  [ocr]    {filename} — waiting for Textract…")
+    text = (textract_fn or textract_text)(textract_bucket, textract_key)
+    _log(f"  [llm]    {filename} — extracting spec…")
+    spec = extract_spec(text, filename, model_key, llm=llm)
+    report.code, report.name, report.aliases = spec.code, spec.name, len(spec.aliases)
+    if dry_run:
+        report.status = "dry-run"
+        _log(f"  [dry]    {filename} → {spec.code}  \"{spec.name}\"")
+        return
+    doc = upsert_product(spec, source_pdf=source_pdf, pdf_hash=pdf_hash, source_label=source_label)
+    _log(f"  [embed]  {filename} → {spec.code}  \"{spec.name}\"")
+    product_embedding_service.build_from_doc(doc, embed_fn=embed_fn, index=index)
+    report.status = "ingested"
+    _log(f"  [done]   {filename} → {spec.code}  \"{spec.name}\"  ({len(spec.aliases)} aliases)")
+
+
 def ingest_pdf(
     path, *, model_key: str = "openai:5.5", force: bool = False,
     dry_run: bool = False, upload_fn=None, textract_fn=None, llm=None,
@@ -224,20 +247,11 @@ def ingest_pdf(
             return report
         _log(f"  [upload] {path.name} → s3://{bucket}/{key}")
         (upload_fn or _default_upload)(path, bucket, key)
-        _log(f"  [ocr]    {path.name} — waiting for Textract…")
-        text = (textract_fn or textract_text)(bucket, key)
-        _log(f"  [llm]    {path.name} — extracting spec…")
-        spec = extract_spec(text, path.name, model_key, llm=llm)
-        report.code, report.name, report.aliases = spec.code, spec.name, len(spec.aliases)
-        if dry_run:
-            report.status = "dry-run"
-            _log(f"  [dry]    {path.name} → {spec.code}  \"{spec.name}\"")
-            return report
-        doc = upsert_product(spec, source_pdf=key, pdf_hash=pdf_hash)
-        _log(f"  [embed]  {path.name} → {spec.code}  \"{spec.name}\"")
-        product_embedding_service.build_from_doc(doc, embed_fn=embed_fn, index=index)
-        report.status = "ingested"
-        _log(f"  [done]   {path.name} → {spec.code}  \"{spec.name}\"  ({len(spec.aliases)} aliases)")
+        _finish_ingest(
+            report, key, pdf_hash, model_key=model_key, dry_run=dry_run,
+            source_label="OG Files", textract_bucket=bucket, textract_key=key,
+            textract_fn=textract_fn, llm=llm, embed_fn=embed_fn, index=index,
+        )
         return report
     except Exception as exc:  # per-file isolation: the sweep must continue
         report.status = "failed"
@@ -247,19 +261,77 @@ def ingest_pdf(
         return report
 
 
-def ingest_folder(folder, *, workers: int = 15, **kwargs) -> list[IngestReport]:
+def _default_get_bytes(bucket: str, key: str) -> bytes:
+    from core.utils import create_boto3_client
+
+    client = create_boto3_client("s3", region=get_settings().aws_region)
+    return client.get_object(Bucket=bucket, Key=key)["Body"].read()
+
+
+def ingest_pdf_from_s3(
+    bucket: str, key: str, *, model_key: str = "openai:5.5", force: bool = False,
+    dry_run: bool = False, get_bytes_fn=None, textract_fn=None, llm=None,
+    embed_fn=None, index=None,
+) -> IngestReport:
+    """Ingest a PDF already sitting in an external S3 bucket, in place.
+
+    Unlike `ingest_pdf`, this never uploads/copies anything into
+    SPECS_S3_BUCKET — Textract reads directly from `bucket`/`key`, and the
+    dedup hash is computed from the object bytes (not a local file).
+    """
+    filename = key.rsplit("/", 1)[-1]
+    report = IngestReport(file=filename)
+    source_pdf = f"s3://{bucket}/{key}"
+    try:
+        pdf_bytes = (get_bytes_fn or _default_get_bytes)(bucket, key)
+        pdf_hash = hashlib.sha256(pdf_bytes).hexdigest()[:16]
+        existing = mongo.products().find_one({"source_pdf": source_pdf})
+        if existing and existing.get("source_pdf_hash") == pdf_hash and not force:
+            report.code = existing["code"]
+            report.name = existing.get("name") or ""
+            report.status = "skipped"
+            _log(f"  [skip]   {filename} — unchanged")
+            return report
+        _finish_ingest(
+            report, source_pdf, pdf_hash, model_key=model_key, dry_run=dry_run,
+            source_label="Test Files", textract_bucket=bucket, textract_key=key,
+            textract_fn=textract_fn, llm=llm, embed_fn=embed_fn, index=index,
+        )
+        return report
+    except Exception as exc:  # per-file isolation: the sweep must continue
+        report.status = "failed"
+        report.error = str(exc)
+        _log(f"  [fail]   {filename} — {exc}")
+        logger.debug("ingest_pdf_from_s3 error for %s", filename, exc_info=True)
+        return report
+
+
+def _parse_s3_uri(uri: str) -> tuple[str, str]:
+    rest = uri[len("s3://"):]
+    bucket, _, prefix = rest.partition("/")
+    return bucket, prefix
+
+
+def _default_list_s3_keys(bucket: str, prefix: str) -> list[str]:
+    from core.utils import create_boto3_client
+
+    client = create_boto3_client("s3", region=get_settings().aws_region)
+    keys = []
+    paginator = client.get_paginator("list_objects_v2")
+    for page in paginator.paginate(Bucket=bucket, Prefix=prefix):
+        for obj in page.get("Contents", []):
+            if obj["Key"].lower().endswith(".pdf"):
+                keys.append(obj["Key"])
+    return sorted(keys)
+
+
+def _ingest_folder_local(folder: Path, *, workers: int, kwargs: dict) -> list[IngestReport]:
     import concurrent.futures
 
-    folder = Path(folder)
     pdfs = sorted(folder.glob("*.pdf"))
     if not pdfs:
         _log(f"No PDFs found in {folder}")
         return []
-
-    if not kwargs.get("dry_run") and kwargs.get("index") is None and vectors.is_available():
-        idx = vectors.default_index()
-        idx.ensure()
-        kwargs["index"] = idx
 
     _log(f"Ingesting {len(pdfs)} PDFs with {workers} workers…\n")
 
@@ -274,3 +346,39 @@ def ingest_folder(folder, *, workers: int = 15, **kwargs) -> list[IngestReport]:
                 results[pdf] = IngestReport(file=pdf.name, status="failed", error=str(exc))
 
     return [results[pdf] for pdf in pdfs]
+
+
+def _ingest_folder_s3(uri: str, *, workers: int, list_s3_fn, kwargs: dict) -> list[IngestReport]:
+    import concurrent.futures
+
+    bucket, prefix = _parse_s3_uri(uri)
+    keys = (list_s3_fn or _default_list_s3_keys)(bucket, prefix)
+    if not keys:
+        _log(f"No PDFs found in {uri}")
+        return []
+
+    _log(f"Ingesting {len(keys)} PDFs from {uri} with {workers} workers…\n")
+
+    results: dict[str, IngestReport] = {}
+    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
+        futures = {pool.submit(ingest_pdf_from_s3, bucket, key, **kwargs): key for key in keys}
+        for fut in concurrent.futures.as_completed(futures):
+            key = futures[fut]
+            try:
+                results[key] = fut.result()
+            except Exception as exc:
+                results[key] = IngestReport(file=key.rsplit("/", 1)[-1], status="failed", error=str(exc))
+
+    return [results[key] for key in keys]
+
+
+def ingest_folder(folder, *, workers: int = 15, list_s3_fn=None, **kwargs) -> list[IngestReport]:
+    if not kwargs.get("dry_run") and kwargs.get("index") is None and vectors.is_available():
+        idx = vectors.default_index()
+        idx.ensure()
+        kwargs["index"] = idx
+
+    folder_str = str(folder)
+    if folder_str.startswith("s3://"):
+        return _ingest_folder_s3(folder_str, workers=workers, list_s3_fn=list_s3_fn, kwargs=kwargs)
+    return _ingest_folder_local(Path(folder), workers=workers, kwargs=kwargs)

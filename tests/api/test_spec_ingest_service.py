@@ -1,3 +1,5 @@
+import re
+
 import mongomock
 import pytest
 
@@ -147,3 +149,66 @@ def test_upsert_accepts_explicit_source_label():
     si.upsert_product(_SPEC, source_pdf="s3://ext-bucket/x.pdf", pdf_hash="ph", source_label="Test Files")
     doc = mongo.products().find_one({"_id": "GIIOFEED-PL5"})
     assert doc["source_label"] == "Test Files"
+
+
+def _fake_s3_deps(**over):
+    deps = dict(
+        get_bytes_fn=lambda bucket, key: b"%PDF fake",
+        textract_fn=lambda bucket, key: "GIIOFEED PL5 spec text",
+        llm=_fake_llm(),
+        embed_fn=_fake_embed,
+        index=InMemoryIndex(),
+    )
+    deps.update(over)
+    return deps
+
+
+def test_ingest_pdf_from_s3_writes_product_with_test_files_label():
+    deps = _fake_s3_deps()
+    report = si.ingest_pdf_from_s3("ext-bucket", "incoming/GIIOFEED PL5.pdf", **deps)
+    assert report.status == "ingested"
+    assert report.code == "GIIOFEED-PL5"
+    doc = mongo.products().find_one({"_id": "GIIOFEED-PL5"})
+    assert doc["source_pdf"] == "s3://ext-bucket/incoming/GIIOFEED PL5.pdf"
+    assert doc["source_label"] == "Test Files"
+    assert doc["embedded_hash"]
+
+
+def test_ingest_pdf_from_s3_skips_unchanged():
+    deps = _fake_s3_deps()
+    si.ingest_pdf_from_s3("ext-bucket", "incoming/x.pdf", **deps)
+    called = {"n": 0}
+
+    def _counting_textract(bucket, key):
+        called["n"] += 1
+        return "text"
+
+    report = si.ingest_pdf_from_s3("ext-bucket", "incoming/x.pdf", **{**deps, "textract_fn": _counting_textract})
+    assert report.status == "skipped"
+    assert called["n"] == 0
+
+
+def test_ingest_folder_sweeps_s3_uri():
+    calls = []
+
+    def _list_s3(bucket, prefix):
+        calls.append((bucket, prefix))
+        return ["incoming/a.pdf", "incoming/b.pdf"]
+
+    def _llm_by_file(prompt, schema, model_key, system_prompt=None):
+        # extract_spec builds the prompt as "## Document: <filename>\n\n...",
+        # so recover the filename to give each of the two PDFs a distinct code.
+        filename = re.search(r"## Document: (.+)", prompt).group(1)
+        stem = filename.rsplit(".", 1)[0]
+        return ProductSpec(code=f"EXT-{stem}", name=stem, short_description="s")
+
+    reports = si.ingest_folder(
+        "s3://ext-bucket/incoming/",
+        list_s3_fn=_list_s3,
+        get_bytes_fn=lambda bucket, key: b"%PDF fake",
+        textract_fn=lambda bucket, key: "text",
+        llm=_llm_by_file, embed_fn=_fake_embed, index=InMemoryIndex())
+    assert calls == [("ext-bucket", "incoming/")]
+    assert [r.status for r in reports] == ["ingested", "ingested"]
+    assert mongo.products().count_documents({}) == 2
+    assert {d["source_label"] for d in mongo.products().find()} == {"Test Files"}
