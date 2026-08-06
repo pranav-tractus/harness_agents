@@ -2,6 +2,7 @@ import re
 
 import mongomock
 import pytest
+from bson import ObjectId
 
 from apps.api.db import mongo
 from apps.api.db.vectors import InMemoryIndex
@@ -15,6 +16,7 @@ def _fake_mongo(monkeypatch):
     monkeypatch.setenv("SPECS_S3_BUCKET", "spec-bucket")
     from apps.api import settings as settings_mod
     settings_mod.get_settings.cache_clear()
+    mongo.ensure_indexes()
     yield
     settings_mod.get_settings.cache_clear()
     mongo.reset_client()
@@ -92,7 +94,7 @@ def test_ingest_writes_product_and_vectors(tmp_path):
     report = si.ingest_pdf(pdf, **deps)
     assert report.status == "ingested"
     assert report.code == "GIIOFEED-PL5"
-    doc = mongo.products().find_one({"_id": "GIIOFEED-PL5"})
+    doc = mongo.products().find_one({"code": "GIIOFEED-PL5"})
     assert doc["name"] == "Feed Lecithin PL5"
     assert doc["source_pdf"] == "specs/GIIOFEED PL5.pdf"
     assert doc["source_pdf_hash"]
@@ -160,25 +162,58 @@ def test_ingest_folder_sweeps_and_continues(tmp_path):
     assert mongo.products().count_documents({}) == 2
 
 
-def test_upsert_preserves_embedding_bookkeeping():
+def test_upsert_assigns_an_object_id_and_stores_the_code_as_a_field():
+    doc = si.upsert_product(_SPEC, source_pdf="specs/x.pdf", pdf_hash="ph")
+    assert isinstance(doc["_id"], ObjectId)
+    assert doc["code"] == "GIIOFEED-PL5"
+    assert doc["source_pdf_hash"] == "ph"
+
+
+def test_upsert_adopts_an_existing_product_that_has_no_pdf():
+    """A seeded or hand-created product gets claimed by its spec sheet."""
     mongo.products().insert_one({
-        "_id": "GIIOFEED-PL5", "code": "GIIOFEED-PL5",
-        "short_description": "old", "embedded_hash": "h", "vector_keys": ["k"]})
-    si.upsert_product(_SPEC, source_pdf="specs/x.pdf", pdf_hash="ph")
-    doc = mongo.products().find_one({"_id": "GIIOFEED-PL5"})
+        "code": "GIIOFEED-PL5", "short_description": "old",
+        "embedded_hash": "h", "vector_keys": ["k"]})
+    doc = si.upsert_product(_SPEC, source_pdf="specs/x.pdf", pdf_hash="ph")
+    assert mongo.products().count_documents({}) == 1
     assert doc["short_description"] == "Soy lecithin for animal feed"
     assert doc["embedded_hash"] == "h" and doc["vector_keys"] == ["k"]
+    assert doc["source_pdf_hash"] == "ph"
+
+
+def test_same_pdf_with_a_new_code_keeps_the_first_code():
+    si.upsert_product(_SPEC, source_pdf="specs/x.pdf", pdf_hash="ph")
+    changed = ProductSpec(
+        code="TOTALLY-DIFFERENT", name="Feed Lecithin PL5 v2",
+        short_description="Revised description",
+        long_description="Liquid soy lecithin for feed mills.",
+        spec="AI >= 62%", metadata={"form": "liquid"})
+    doc = si.upsert_product(changed, source_pdf="specs/x.pdf", pdf_hash="ph")
+    assert mongo.products().count_documents({}) == 1
+    assert doc["code"] == "GIIOFEED-PL5"           # first code wins
+    assert doc["short_description"] == "Revised description"
+    assert doc["spec"] == "AI >= 62%"
+
+
+def test_a_second_pdf_claiming_an_existing_code_raises_code_collision():
+    si.upsert_product(_SPEC, source_pdf="specs/x.pdf", pdf_hash="ph")
+    with pytest.raises(si.CodeCollision) as exc:
+        si.upsert_product(_SPEC, source_pdf="specs/other.pdf", pdf_hash="ph2")
+    assert exc.value.code == "GIIOFEED-PL5"
+    assert exc.value.incumbent_pdf == "specs/x.pdf"
+    assert mongo.products().count_documents({}) == 1
+    assert mongo.products().find_one({"code": "GIIOFEED-PL5"})["source_pdf"] == "specs/x.pdf"
 
 
 def test_upsert_defaults_source_label_to_og_files():
     si.upsert_product(_SPEC, source_pdf="specs/x.pdf", pdf_hash="ph")
-    doc = mongo.products().find_one({"_id": "GIIOFEED-PL5"})
+    doc = mongo.products().find_one({"code": "GIIOFEED-PL5"})
     assert doc["source_label"] == "OG Files"
 
 
 def test_upsert_accepts_explicit_source_label():
     si.upsert_product(_SPEC, source_pdf="s3://ext-bucket/x.pdf", pdf_hash="ph", source_label="Test Files")
-    doc = mongo.products().find_one({"_id": "GIIOFEED-PL5"})
+    doc = mongo.products().find_one({"code": "GIIOFEED-PL5"})
     assert doc["source_label"] == "Test Files"
 
 
@@ -199,7 +234,7 @@ def test_ingest_pdf_from_s3_writes_product_with_test_files_label():
     report = si.ingest_pdf_from_s3("ext-bucket", "incoming/GIIOFEED PL5.pdf", **deps)
     assert report.status == "ingested"
     assert report.code == "GIIOFEED-PL5"
-    doc = mongo.products().find_one({"_id": "GIIOFEED-PL5"})
+    doc = mongo.products().find_one({"code": "GIIOFEED-PL5"})
     assert doc["source_pdf"] == "s3://ext-bucket/incoming/GIIOFEED PL5.pdf"
     assert doc["source_label"] == "Test Files"
     assert doc["embedded_hash"]

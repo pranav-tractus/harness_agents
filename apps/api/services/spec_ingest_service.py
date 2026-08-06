@@ -4,6 +4,7 @@ import time
 from pathlib import Path
 
 from pydantic import BaseModel, Field
+from pymongo.errors import DuplicateKeyError
 
 from apps.api.db import mongo, vectors
 from apps.api.services import product_embedding_service
@@ -168,9 +169,33 @@ def extract_spec(text: str, filename: str, model_key: str = "openai:5.5", llm=No
 # ---------------------------------------------------------------------------
 
 
+class CodeCollision(Exception):
+    """A different spec sheet already owns this product code."""
+
+    def __init__(self, code: str, incumbent_pdf: str):
+        super().__init__(f"code {code!r} already belongs to {incumbent_pdf}")
+        self.code = code
+        self.incumbent_pdf = incumbent_pdf
+
+
+class DuplicatePdf(Exception):
+    """Another worker ingested these exact bytes first."""
+
+    def __init__(self, pdf_hash: str):
+        super().__init__(f"a product already exists for pdf hash {pdf_hash}")
+        self.pdf_hash = pdf_hash
+
+
 def upsert_product(
     spec: ProductSpec, *, source_pdf: str, pdf_hash: str, source_label: str = "OG Files"
 ) -> dict:
+    """Store a product, keyed on the source PDF's content hash.
+
+    Identity is the PDF, not the extracted code — re-extracting the same
+    sheet must never fork one product into two. When a document already
+    exists for these bytes, its `code` is left exactly as first ingested and
+    only the descriptive fields are refreshed.
+    """
     fields = {
         "code": spec.code,
         "name": spec.name or None,
@@ -182,8 +207,31 @@ def upsert_product(
         "source_pdf_hash": pdf_hash,
         "source_label": source_label,
     }
-    mongo.products().update_one({"_id": spec.code}, {"$set": fields}, upsert=True)
-    return mongo.products().find_one({"_id": spec.code})
+
+    existing = mongo.products().find_one({"source_pdf_hash": pdf_hash})
+    if existing:
+        fields.pop("code")  # first code wins
+        mongo.products().update_one({"_id": existing["_id"]}, {"$set": fields})
+        return mongo.products().find_one({"_id": existing["_id"]})
+
+    clash = mongo.products().find_one({"code": spec.code})
+    if clash and clash.get("source_pdf_hash"):
+        raise CodeCollision(spec.code, clash.get("source_pdf") or "")
+    if clash:
+        # A seeded or hand-created product with no spec sheet: claim it.
+        mongo.products().update_one({"_id": clash["_id"]}, {"$set": fields})
+        return mongo.products().find_one({"_id": clash["_id"]})
+
+    try:
+        inserted = mongo.products().insert_one(fields).inserted_id
+    except DuplicateKeyError:
+        # Lost a race against a parallel worker; re-read to see which index fired.
+        winner = mongo.products().find_one({"source_pdf_hash": pdf_hash})
+        if winner:
+            raise DuplicatePdf(pdf_hash) from None
+        other = mongo.products().find_one({"code": spec.code}) or {}
+        raise CodeCollision(spec.code, other.get("source_pdf") or "") from None
+    return mongo.products().find_one({"_id": inserted})
 
 
 # ---------------------------------------------------------------------------
