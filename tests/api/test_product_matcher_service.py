@@ -158,6 +158,25 @@ def test_vector_error_falls_back(monkeypatch):
     assert [c.code for c in cands] == ["PL5"]
 
 
+def test_vector_candidate_without_code_metadata_is_skipped(monkeypatch):
+    from apps.api.db.vectors import VectorHit
+
+    class _Idx:
+        def query(self, embedding, top_k=5):
+            return [
+                VectorHit(key="000000000000000000000009#main", score=0.9,
+                          metadata={"name": "Nameless"}),
+                VectorHit(key="000000000000000000000009#spec", score=0.8,
+                          metadata={"code": "PL5", "name": "Feed Lecithin"}),
+            ]
+
+    monkeypatch.setattr(pm.vectors, "is_available", lambda: True)
+    monkeypatch.setattr(pm.vectors, "default_index", lambda: _Idx())
+    monkeypatch.setattr(pm.embeddings, "embed", lambda texts, mode="query": [[1.0, 0.0]])
+    cands = pm._vector_candidates(["lecithin"])
+    assert [c.code for c in cands] == ["PL5"]
+
+
 def test_system_prompt_carries_hard_rules():
     assert "Only ever use codes from the provided pool" in pm._SYSTEM
     assert "Empty is a valid answer" in pm._SYSTEM

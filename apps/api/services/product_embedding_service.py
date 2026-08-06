@@ -28,15 +28,16 @@ def _render_spec(doc: dict) -> str:
 
 def _payloads(doc: dict) -> list[tuple[str, str, dict]]:
     """(key, text-to-embed, metadata) for every vector this product owns."""
-    code = doc["code"]
+    pid = str(doc["_id"])
     flat = {k: str(v) for k, v in (doc.get("metadata") or {}).items()}
     # Keep only essential filterable keys; pack product attributes into non-filterable "attrs"
     # to stay within the S3 Vectors 2048-byte filterable metadata limit.
+    code = doc.get("code") or pid
     base = {"code": code, "name": doc.get("name") or code, "attrs": json.dumps(flat)}
-    out = [(f"{code}#main", _render_main(doc), {**base, "kind": "main"})]
+    out = [(f"{pid}#main", _render_main(doc), {**base, "kind": "main"})]
     spec_text = _render_spec(doc)
     if spec_text:
-        out.append((f"{code}#spec", spec_text, {**base, "kind": "spec"}))
+        out.append((f"{pid}#spec", spec_text, {**base, "kind": "spec"}))
     return out
 
 
@@ -66,7 +67,7 @@ def build_from_doc(doc: dict, *, embed_fn=None, index=None) -> None:
         index.delete(stale)
     index.put(records)
     mongo.products().update_one(
-        {"_id": doc["code"]},
+        {"_id": doc["_id"]},
         {"$set": {"embedded_hash": _hash(payloads), "vector_keys": new_keys}},
     )
 
@@ -77,8 +78,13 @@ def status_for_doc(doc: dict) -> str:
     return "built" if doc["embedded_hash"] == _hash(_payloads(doc)) else "stale"
 
 
-def remove_product(code: str, *, index=None) -> None:
-    doc = mongo.products().find_one({"_id": code}) or {}
+def remove_product(product_id, *, index=None) -> None:
+    """Delete a product's vectors. `product_id` is the Mongo `_id`.
+
+    Must be called while the product document still exists — the keys to
+    delete are read from it.
+    """
+    doc = mongo.products().find_one({"_id": product_id}) or {}
     keys = doc.get("vector_keys") or []
     if not keys:
         return

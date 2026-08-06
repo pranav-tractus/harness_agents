@@ -127,7 +127,9 @@ def _vector_candidates(mentions: list[str]) -> list[ProductCandidate]:
         for emb in embeddings.embed(mentions, mode="query"):
             for hit in index.query(emb, top_k=5):
                 md = dict(hit.metadata)
-                code = md.pop("code", hit.key.split("#")[0])
+                code = md.pop("code", "")
+                if not code:
+                    continue
                 name = md.pop("name", "")
                 snippet = md.pop("snippet", "")
                 md.pop("kind", None)
