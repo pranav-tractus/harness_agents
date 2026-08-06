@@ -160,6 +160,22 @@ def _history_pool(customer_id: str) -> list[ProductCandidate]:
     return [ProductCandidate(code=r[0], name=r[0], score=0.0) for r in rows if r[0]]
 
 
+def _live_codes() -> set[str]:
+    """Every code currently in the catalog."""
+    return {d["code"] for d in mongo.products().find({}, {"code": 1}) if d.get("code")}
+
+
+def _filter_history(cands: list[ProductCandidate]) -> list[ProductCandidate]:
+    """Drop history entries that are not catalog codes.
+
+    The graph stores a line item's free-text `description` in
+    `LineItem.product_code`, so strings like "FRUCTOPURE TM 700" come back
+    from `_history_pool` looking like SKUs.
+    """
+    live = _live_codes()
+    return [c for c in cands if c.code in live]
+
+
 def _dedup(cands: list[ProductCandidate]) -> list[ProductCandidate]:
     by_code: dict[str, ProductCandidate] = {}
     for c in cands:
@@ -233,7 +249,7 @@ def resolve_products(
     mentions = mention_fn(text)
     if not mentions:
         return ProductMatchResult(matches=[])
-    history = history_fn(customer_id)
+    history = _filter_history(history_fn(customer_id))
     pool = _dedup(candidate_fn(mentions) + history)
     if not pool:
         return ProductMatchResult(matches=[
@@ -249,4 +265,4 @@ def resolve_products(
         model_key,
         system_prompt=_SYSTEM,
     )
-    return _guard(result, {c.code for c in pool})
+    return _guard(result, _live_codes() & {c.code for c in pool})

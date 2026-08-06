@@ -35,6 +35,7 @@ def _cand(code, score=0.9, **kw):
 
 
 def test_confident_match_passes_through():
+    mongo.products().insert_one({"code": "TG-BPPC", "name": "Bypass Choline"})
     result = ProductMatchResult(matches=[ProductMatch(
         mention="choline", status="confident", resolved_code="TG-BPPC",
         canonical_name="Bypass Choline", confidence=0.95)])
@@ -44,6 +45,41 @@ def test_confident_match_passes_through():
                               history_fn=_hist(), llm=lambda *a, **k: result)
     assert out.resolved()[0].resolved_code == "TG-BPPC"
     assert out.unresolved() == []
+
+
+def test_guard_rejects_a_pool_code_that_is_not_in_mongo():
+    """A product deleted from Mongo can linger in the vector index."""
+    result = ProductMatchResult(matches=[ProductMatch(
+        mention="fructose", status="confident", resolved_code="15100500",
+        canonical_name="FRUCTOPURE 500", confidence=0.93)])
+    out = pm.resolve_products("dummy-01", _window("need fructose"), "m",
+                              mention_fn=_mentions("fructose"),
+                              candidate_fn=_cands(_cand("15100500")),
+                              history_fn=_hist(), llm=lambda *a, **k: result)
+    assert out.matches[0].status == "no_match"
+    assert out.matches[0].resolved_code is None
+
+
+def test_guard_accepts_a_code_that_is_in_mongo():
+    mongo.products().insert_one({"code": "TG-BPPC", "name": "Bypass Choline"})
+    result = ProductMatchResult(matches=[ProductMatch(
+        mention="choline", status="confident", resolved_code="TG-BPPC",
+        canonical_name="Bypass Choline", confidence=0.95)])
+    out = pm.resolve_products("dummy-01", _window("need choline"), "m",
+                              mention_fn=_mentions("choline"),
+                              candidate_fn=_cands(_cand("TG-BPPC")),
+                              history_fn=_hist(), llm=lambda *a, **k: result)
+    assert out.resolved()[0].resolved_code == "TG-BPPC"
+
+
+def test_history_pool_drops_codes_with_no_product():
+    """The graph stores free-text descriptions in LineItem.product_code."""
+    mongo.products().insert_one({"code": "TG-BPPC", "name": "Bypass Choline"})
+    kept = pm._filter_history([
+        ProductCandidate(code="TG-BPPC", name="TG-BPPC"),
+        ProductCandidate(code="FRUCTOPURE TM 700", name="FRUCTOPURE TM 700"),
+    ])
+    assert [c.code for c in kept] == ["TG-BPPC"]
 
 
 def test_guard_downgrades_hallucinated_code_to_no_match():
@@ -89,6 +125,7 @@ def test_mentions_without_candidates_return_no_match_questions():
 
 
 def test_prompt_carries_scores_metadata_snippets_and_history():
+    mongo.products().insert_one({"code": "TG-BPPC", "name": "Bypass Choline"})
     seen = {}
 
     def _fake_llm(prompt, schema, model_key, system_prompt=None):
