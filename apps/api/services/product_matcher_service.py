@@ -1,3 +1,4 @@
+import json
 import logging
 
 from pydantic import BaseModel, Field
@@ -109,7 +110,6 @@ def _fallback_candidates(mentions: list[str]) -> list[ProductCandidate]:
     out = []
     for doc in mongo.products().find():
         terms = [doc.get("code") or "", doc.get("name") or ""]
-        terms += list(doc.get("aliases") or [])
         if any(t and (t.lower() in m or m in t.lower()) for t in terms for m in lows):
             out.append(ProductCandidate(
                 code=doc["code"], name=doc.get("name") or "",
@@ -131,9 +131,14 @@ def _vector_candidates(mentions: list[str]) -> list[ProductCandidate]:
                 name = md.pop("name", "")
                 snippet = md.pop("snippet", "")
                 md.pop("kind", None)
+                attrs_raw = md.pop("attrs", None)
+                try:
+                    attrs = json.loads(attrs_raw) if attrs_raw else {}
+                except Exception:
+                    attrs = {}
                 out.append(ProductCandidate(
                     code=code, name=name, score=hit.score, snippet=snippet,
-                    metadata={k: str(v) for k, v in md.items()},
+                    metadata={k: str(v) for k, v in attrs.items()},
                 ))
         return out
     except Exception:

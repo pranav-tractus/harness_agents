@@ -17,7 +17,7 @@ def _run(monkeypatch, reports, argv):
 
 def test_main_prints_table_and_returns_zero(monkeypatch, capsys):
     reports = [
-        IngestReport(file="a.pdf", code="A-1", name="Alpha", status="ingested", aliases=2),
+        IngestReport(file="a.pdf", code="A-1", name="Alpha", status="ingested"),
         IngestReport(file="b.pdf", code="B-1", name="Beta", status="skipped"),
     ]
     code, seen = _run(monkeypatch, reports, ["prod_specs"])

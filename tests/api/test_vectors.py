@@ -79,7 +79,7 @@ def test_s3_ensure_creates_bucket_and_index_when_missing():
     _, kw = client.calls[-1]
     assert kw["dimension"] == DIMENSION
     assert kw["distanceMetric"] == "cosine"
-    assert kw["metadataConfiguration"] == {"nonFilterableMetadataKeys": ["snippet"]}
+    assert kw["metadataConfiguration"] == {"nonFilterableMetadataKeys": ["snippet", "attrs"]}
 
 
 def test_s3_ensure_noop_when_index_exists():

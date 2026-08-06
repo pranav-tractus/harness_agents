@@ -30,15 +30,13 @@ def _payloads(doc: dict) -> list[tuple[str, str, dict]]:
     """(key, text-to-embed, metadata) for every vector this product owns."""
     code = doc["code"]
     flat = {k: str(v) for k, v in (doc.get("metadata") or {}).items()}
-    base = {"code": code, "name": doc.get("name") or code, **flat}
+    # Keep only essential filterable keys; pack product attributes into non-filterable "attrs"
+    # to stay within the S3 Vectors 2048-byte filterable metadata limit.
+    base = {"code": code, "name": doc.get("name") or code, "attrs": json.dumps(flat)}
     out = [(f"{code}#main", _render_main(doc), {**base, "kind": "main"})]
     spec_text = _render_spec(doc)
     if spec_text:
         out.append((f"{code}#spec", spec_text, {**base, "kind": "spec"}))
-    aliases = [a for a in dict.fromkeys(doc.get("aliases") or []) if a]
-    for i, alias in enumerate(aliases):
-        text = f"{alias} — {doc.get('name') or code}"
-        out.append((f"{code}#alias#{i}", text, {**base, "kind": "alias"}))
     return out
 
 

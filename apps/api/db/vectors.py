@@ -78,7 +78,7 @@ class S3VectorsIndex:
             dataType="float32",
             dimension=dimension,
             distanceMetric="cosine",
-            metadataConfiguration={"nonFilterableMetadataKeys": ["snippet"]},
+            metadataConfiguration={"nonFilterableMetadataKeys": ["snippet", "attrs"]},
         )
 
     def put(self, records: list[VectorRecord]) -> None:

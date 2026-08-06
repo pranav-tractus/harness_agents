@@ -24,7 +24,7 @@ _SPEC = ProductSpec(
     code="GIIOFEED-PL5", name="Feed Lecithin PL5",
     short_description="Soy lecithin for animal feed",
     long_description="Liquid soy lecithin for feed mills.",
-    spec="AI >= 60%", aliases=["PL5"], metadata={"form": "liquid"})
+    spec="AI >= 60%", metadata={"form": "liquid"})
 
 
 def _fake_llm(spec=_SPEC):
@@ -62,12 +62,11 @@ def test_ingest_writes_product_and_vectors(tmp_path):
     assert report.code == "GIIOFEED-PL5"
     doc = mongo.products().find_one({"_id": "GIIOFEED-PL5"})
     assert doc["name"] == "Feed Lecithin PL5"
-    assert doc["aliases"] == ["PL5"]
     assert doc["source_pdf"] == "specs/GIIOFEED PL5.pdf"
     assert doc["source_pdf_hash"]
     assert doc["embedded_hash"]
     assert doc["source_label"] == "OG Files"
-    assert any(k.endswith("#alias#0") for k in deps["index"]._store)
+    assert not any("#alias" in k for k in deps["index"]._store)
 
 
 def test_ingest_skips_unchanged_pdf(tmp_path):

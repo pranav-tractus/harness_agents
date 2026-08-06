@@ -139,7 +139,7 @@ def test_dedup_keeps_best_score_and_fills_snippet():
 def test_fallback_candidates_substring_scan(monkeypatch):
     mongo.products().insert_one({
         "_id": "PL5", "code": "PL5", "name": "Feed Lecithin",
-        "aliases": ["GIIOFEED PL5"], "metadata": {"form": "liquid"}})
+        "metadata": {"form": "liquid"}})
     monkeypatch.setattr(pm.vectors, "is_available", lambda: False)
     cands = pm._vector_candidates(["need the giiofeed pl5 drums"])
     assert [c.code for c in cands] == ["PL5"]

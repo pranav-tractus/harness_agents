@@ -96,7 +96,6 @@ class ProductSpec(BaseModel):
     short_description: str = ""
     long_description: str = ""
     spec: str = ""
-    aliases: list[str] = Field(default_factory=list)
     metadata: dict[str, str] = Field(default_factory=dict)
 
 
@@ -105,7 +104,6 @@ class IngestReport(BaseModel):
     code: str = ""
     name: str = ""
     status: str = ""  # ingested | skipped | dry-run | failed
-    aliases: int = 0
     error: str = ""
 
 
@@ -124,9 +122,7 @@ _EXTRACT_SYSTEM = (
     "properties, and applications.\n"
     "5. `spec`: a condensed one-line spec string of the key technical "
     "attributes (e.g. 'AI >= 95%, moisture <= 2%').\n"
-    "6. `aliases`: alternate names a customer might use in chat (trade "
-    "names, abbreviations, line codes). Do not repeat `code` or `name`.\n"
-    "7. `metadata`: normalized key/values with lowercase snake_case keys "
+    "6. `metadata`: normalized key/values with lowercase snake_case keys "
     "(form, packing, storage, density, origin, category, application, "
     "shelf_life, ...). Values verbatim from the document.\n"
     "Never invent values not present in the document."
@@ -170,7 +166,6 @@ def upsert_product(
         "long_description": spec.long_description or None,
         "spec": spec.spec or None,
         "metadata": spec.metadata,
-        "aliases": spec.aliases,
         "source_pdf": source_pdf,
         "source_pdf_hash": pdf_hash,
         "source_label": source_label,
@@ -215,7 +210,7 @@ def _finish_ingest(
     text = (textract_fn or textract_text)(textract_bucket, textract_key)
     _log(f"  [llm]    {filename} — extracting spec…")
     spec = extract_spec(text, filename, model_key, llm=llm)
-    report.code, report.name, report.aliases = spec.code, spec.name, len(spec.aliases)
+    report.code, report.name = spec.code, spec.name
     if dry_run:
         report.status = "dry-run"
         _log(f"  [dry]    {filename} → {spec.code}  \"{spec.name}\"")
@@ -224,7 +219,7 @@ def _finish_ingest(
     _log(f"  [embed]  {filename} → {spec.code}  \"{spec.name}\"")
     product_embedding_service.build_from_doc(doc, embed_fn=embed_fn, index=index)
     report.status = "ingested"
-    _log(f"  [done]   {filename} → {spec.code}  \"{spec.name}\"  ({len(spec.aliases)} aliases)")
+    _log(f"  [done]   {filename} → {spec.code}  \"{spec.name}\"")
 
 
 def ingest_pdf(
