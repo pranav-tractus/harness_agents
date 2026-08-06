@@ -43,7 +43,7 @@ def main(argv=None) -> int:
         print(line)
     counts = Counter(r.status for r in reports)
     print("\n" + ", ".join(f"{n} {status}" for status, n in sorted(counts.items())))
-    return 1 if counts.get("failed") else 0
+    return 1 if counts.get("failed") or counts.get("conflict") else 0
 
 
 if __name__ == "__main__":

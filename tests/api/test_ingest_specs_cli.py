@@ -45,6 +45,26 @@ def test_main_returns_one_on_failure(monkeypatch, capsys):
     assert "boom" in out
 
 
+def test_main_returns_one_on_conflict(monkeypatch, capsys):
+    reports = [
+        IngestReport(file="a.pdf", code="A-1", name="Alpha", status="ingested"),
+        IngestReport(file="b.pdf", code="A-1", name="Beta", status="conflict",
+                     error="code 'A-1' already belongs to specs/a.pdf"),
+    ]
+    code, _ = _run(monkeypatch, reports, ["prod_specs"])
+    out = capsys.readouterr().out
+    assert code == 1
+    assert "conflict" in out
+    assert "already belongs to" in out
+
+
+def test_main_returns_zero_on_duplicate(monkeypatch, capsys):
+    reports = [IngestReport(file="a.pdf", code="A-1", name="Alpha", status="duplicate")]
+    code, _ = _run(monkeypatch, reports, ["prod_specs"])
+    assert code == 0
+    assert "duplicate" in capsys.readouterr().out
+
+
 def test_main_passes_s3_uri_through_unparsed(monkeypatch, capsys):
     code, seen = _run(monkeypatch, [], ["s3://ext-bucket/incoming/"])
     assert code == 0

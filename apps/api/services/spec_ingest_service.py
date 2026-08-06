@@ -275,7 +275,20 @@ def _finish_ingest(
         report.status = "dry-run"
         _log(f"  [dry]    {filename} → {spec.code}  \"{spec.name}\"")
         return
-    doc = upsert_product(spec, source_pdf=source_pdf, pdf_hash=pdf_hash, source_label=source_label)
+    try:
+        doc = upsert_product(
+            spec, source_pdf=source_pdf, pdf_hash=pdf_hash, source_label=source_label
+        )
+    except CodeCollision as exc:
+        report.status = "conflict"
+        report.error = str(exc)
+        _log(f"  [clash]  {filename} — {exc}")
+        return
+    except DuplicatePdf as exc:
+        report.status = "duplicate"
+        report.error = str(exc)
+        _log(f"  [dup]    {filename} — {exc}")
+        return
     _log(f"  [embed]  {filename} → {spec.code}  \"{spec.name}\"")
     product_embedding_service.build_from_doc(doc, embed_fn=embed_fn, index=index)
     report.status = "ingested"

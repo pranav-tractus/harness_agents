@@ -254,6 +254,29 @@ def test_ingest_pdf_from_s3_skips_unchanged():
     assert called["n"] == 0
 
 
+def test_code_collision_is_reported_not_raised(tmp_path):
+    pdf, deps = _deps(tmp_path)
+    si.ingest_pdf(pdf, **deps)
+    other = tmp_path / "OTHER.pdf"
+    other.write_bytes(b"%PDF different bytes")
+    report = si.ingest_pdf(other, **deps)
+    assert report.status == "conflict"
+    assert "GIIOFEED-PL5" in report.error
+    assert mongo.products().count_documents({}) == 1
+
+
+def test_duplicate_pdf_is_reported_not_raised(tmp_path, monkeypatch):
+    pdf, deps = _deps(tmp_path)
+    si.ingest_pdf(pdf, **deps)
+
+    def _racing_upsert(spec, *, source_pdf, pdf_hash, source_label="OG Files"):
+        raise si.DuplicatePdf(pdf_hash)
+
+    monkeypatch.setattr(si, "upsert_product", _racing_upsert)
+    report = si.ingest_pdf(pdf, force=True, **deps)
+    assert report.status == "duplicate"
+
+
 def test_ingest_folder_sweeps_s3_uri():
     calls = []
 
