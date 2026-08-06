@@ -184,7 +184,7 @@ def test_upsert_accepts_explicit_source_label():
 
 def _fake_s3_deps(**over):
     deps = dict(
-        get_bytes_fn=lambda bucket, key: b"%PDF fake",
+        get_bytes_fn=lambda bucket, key: b"%PDF " + key.encode(),
         textract_fn=lambda bucket, key: "GIIOFEED PL5 spec text",
         llm=_fake_llm(),
         embed_fn=_fake_embed,
@@ -236,7 +236,7 @@ def test_ingest_folder_sweeps_s3_uri():
     reports = si.ingest_folder(
         "s3://ext-bucket/incoming/",
         list_s3_fn=_list_s3,
-        get_bytes_fn=lambda bucket, key: b"%PDF fake",
+        get_bytes_fn=lambda bucket, key: b"%PDF " + key.encode(),
         textract_fn=lambda bucket, key: "text",
         llm=_llm_by_file, embed_fn=_fake_embed, index=InMemoryIndex())
     assert calls == [("ext-bucket", "incoming/")]
