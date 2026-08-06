@@ -1,5 +1,7 @@
 import logging
 
+from bson import ObjectId
+from bson.errors import InvalidId
 from fastapi import APIRouter, HTTPException, Response
 
 from apps.api.db import mongo
@@ -11,8 +13,15 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/products", tags=["products"])
 
 
+def _oid(product_id: str) -> ObjectId:
+    try:
+        return ObjectId(product_id)
+    except (InvalidId, TypeError):
+        raise HTTPException(404, "product not found") from None
+
+
 def _out(doc: dict) -> ProductOut:
-    return ProductOut(id=doc["_id"], code=doc["code"],
+    return ProductOut(id=str(doc["_id"]), code=doc["code"],
                       name=doc.get("name"),
                       short_description=doc.get("short_description") or doc.get("description") or "",
                       long_description=doc.get("long_description"),
@@ -24,7 +33,7 @@ def _out(doc: dict) -> ProductOut:
 
 @router.get("")
 def list_products() -> list[ProductOut]:
-    return [_out(d) for d in mongo.products().find().sort("_id", 1)]
+    return [_out(d) for d in mongo.products().find().sort("code", 1)]
 
 
 @router.post("", status_code=201)
@@ -32,18 +41,18 @@ def create_product(body: ProductCreate) -> ProductOut:
     code = body.code.strip()
     if not code:
         raise HTTPException(422, "code is required")
-    if mongo.products().find_one({"_id": code}):
+    if mongo.products().find_one({"code": code}):
         raise HTTPException(409, "product already exists")
-    doc = {"_id": code, "code": code, "name": body.name,
+    doc = {"code": code, "name": body.name,
            "short_description": body.short_description, "long_description": body.long_description,
            "spec": body.spec, "metadata": body.metadata or {}}
-    mongo.products().insert_one(doc)
-    return _out(mongo.products().find_one({"_id": code}))
+    inserted = mongo.products().insert_one(doc).inserted_id
+    return _out(mongo.products().find_one({"_id": inserted}))
 
 
 @router.get("/{product_id}")
 def get_product(product_id: str) -> ProductOut:
-    doc = mongo.products().find_one({"_id": product_id})
+    doc = mongo.products().find_one({"_id": _oid(product_id)})
     if not doc:
         raise HTTPException(404, "product not found")
     return _out(doc)
@@ -51,13 +60,14 @@ def get_product(product_id: str) -> ProductOut:
 
 @router.put("/{product_id}")
 def update_product(product_id: str, body: ProductUpdate) -> ProductOut:
-    doc = mongo.products().find_one({"_id": product_id})
+    oid = _oid(product_id)
+    doc = mongo.products().find_one({"_id": oid})
     if not doc:
         raise HTTPException(404, "product not found")
     changes = {k: v for k, v in body.model_dump(exclude_unset=True).items()}
     if changes:
-        mongo.products().update_one({"_id": product_id}, {"$set": changes})
-    updated = mongo.products().find_one({"_id": product_id})
+        mongo.products().update_one({"_id": oid}, {"$set": changes})
+    updated = mongo.products().find_one({"_id": oid})
     return _out(updated)
 
 
@@ -65,25 +75,29 @@ def update_product(product_id: str, body: ProductUpdate) -> ProductOut:
 def build_all() -> list[ProductOut]:
     for doc in mongo.products().find():
         product_embedding_service.build_from_doc(doc)
-    return [_out(d) for d in mongo.products().find().sort("_id", 1)]
+    return [_out(d) for d in mongo.products().find().sort("code", 1)]
 
 
 @router.post("/{product_id}/build")
 def build_product(product_id: str) -> ProductOut:
-    doc = mongo.products().find_one({"_id": product_id})
+    oid = _oid(product_id)
+    doc = mongo.products().find_one({"_id": oid})
     if not doc:
         raise HTTPException(404, "product not found")
     product_embedding_service.build_from_doc(doc)
-    return _out(mongo.products().find_one({"_id": product_id}))
+    return _out(mongo.products().find_one({"_id": oid}))
 
 
 @router.delete("/{product_id}", status_code=204)
 def delete_product(product_id: str) -> Response:
-    res = mongo.products().delete_one({"_id": product_id})
-    if res.deleted_count == 0:
+    oid = _oid(product_id)
+    if not mongo.products().find_one({"_id": oid}):
         raise HTTPException(404, "product not found")
+    # Vectors first: remove_product reads vector_keys off the document, so
+    # deleting the document first would silently orphan every vector.
     try:
-        product_embedding_service.remove_product(product_id)
+        product_embedding_service.remove_product(oid)
     except Exception:
         logger.warning("Failed to remove product embeddings for %s", product_id, exc_info=True)
+    mongo.products().delete_one({"_id": oid})
     return Response(status_code=204)

@@ -173,7 +173,7 @@ export function ProductsPage() {
   async function buildEmbeddings(product: Product) {
     setBuildingCode(product.code);
     try {
-      await api.buildProduct(product.code);
+      await api.buildProduct(product.id);
       await loadProducts();
       toast.success(`Built embeddings for ${product.code}`);
     } catch (err) {

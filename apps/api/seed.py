@@ -278,10 +278,9 @@ def seed_all() -> None:
         )
     for p in _PRODUCTS:
         mongo.products().update_one(
-            {"_id": p["code"]},
+            {"code": p["code"]},
             {
                 "$setOnInsert": {
-                    "_id": p["code"],
                     "code": p["code"],
                     "name": p.get("name"),
                     "short_description": p["short_description"],

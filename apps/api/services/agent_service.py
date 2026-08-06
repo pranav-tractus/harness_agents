@@ -177,7 +177,7 @@ _AGENT_WINDOW_KINDS = ("chat", "question", "draft", "final")
 def _resolved_product_block(matches) -> str:
     lines = []
     for m in matches:
-        doc = mongo.products().find_one({"_id": m.resolved_code}) or {}
+        doc = mongo.products().find_one({"code": m.resolved_code}) or {}
         name = m.canonical_name or doc.get("name") or m.resolved_code
         short = doc.get("short_description") or doc.get("description") or ""
         meta = doc.get("metadata") or {}

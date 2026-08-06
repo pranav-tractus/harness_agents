@@ -23,7 +23,7 @@ def _seed_fixture_data() -> None:
             {"_id": cid, "name": name, "profile": {}, "last_contract_seq": 0, "updated_at": "now"}
         )
     for code, desc in _PRODUCTS:
-        mongo.products().insert_one({"_id": code, "code": code, "description": desc, "spec": None})
+        mongo.products().insert_one({"code": code, "description": desc, "spec": None})
 
 
 @pytest.fixture()
@@ -63,18 +63,42 @@ def test_products(client):
     assert len(r.json()) == 4
 
 
+def _product_id(client, code):
+    return next(p["id"] for p in client.get("/api/products").json() if p["code"] == code)
+
+
 def test_edit_product(client):
-    r = client.put("/api/products/TG-BPPC", json={"short_description": "Updated choline", "spec": "v2"})
+    pid = _product_id(client, "TG-BPPC")
+    r = client.put(f"/api/products/{pid}", json={"short_description": "Updated choline", "spec": "v2"})
     assert r.status_code == 200
     assert r.json()["short_description"] == "Updated choline"
     assert r.json()["spec"] == "v2"
+    assert r.json()["code"] == "TG-BPPC"
 
 
 def test_delete_product(client):
-    r = client.delete("/api/products/TG-MGL8")
+    pid = _product_id(client, "TG-MGL8")
+    r = client.delete(f"/api/products/{pid}")
     assert r.status_code == 204
-    assert client.get("/api/products/TG-MGL8").status_code == 404
+    assert client.get(f"/api/products/{pid}").status_code == 404
     assert len(client.get("/api/products").json()) == 3
+
+
+def test_delete_removes_vectors_before_the_document(client, monkeypatch):
+    """remove_product reads vector_keys off the document, so it must run first."""
+    seen = {}
+
+    def _record(product_id, **kwargs):
+        seen["doc_existed"] = mongo.products().find_one({"_id": product_id}) is not None
+
+    monkeypatch.setattr("apps.api.routers.products.product_embedding_service.remove_product", _record)
+    pid = _product_id(client, "TG-MGL8")
+    assert client.delete(f"/api/products/{pid}").status_code == 204
+    assert seen["doc_existed"] is True
+
+
+def test_get_product_with_a_malformed_id_is_404(client):
+    assert client.get("/api/products/not-an-object-id").status_code == 404
 
 
 def test_models(client):
@@ -135,8 +159,8 @@ def test_delete_missing_customer_404(client):
 def test_create_product(client):
     r = client.post("/api/products", json={"code": "NEW-1", "short_description": "New product", "spec": "s1"})
     assert r.status_code == 201
-    assert r.json()["id"] == "NEW-1"
-    assert len(client.get("/api/products").json()) == 5
+    assert r.json()["code"] == "NEW-1"
+    assert r.json()["id"] != "NEW-1"
 
 
 def test_create_product_conflict(client):
@@ -159,7 +183,8 @@ def test_build_product_syncs_embeddings(client, monkeypatch):
                         lambda doc, **k: calls.append(doc["code"]))
     monkeypatch.setattr("apps.api.routers.products.product_embedding_service.status_for_doc",
                         lambda doc: "built")
-    r = client.post("/api/products/TG-BPPC/build")
+    pid = _product_id(client, "TG-BPPC")
+    r = client.post(f"/api/products/{pid}/build")
     assert r.status_code == 200
     assert "TG-BPPC" in calls
 
@@ -168,7 +193,8 @@ def test_update_product_does_not_sync_embeddings(client, monkeypatch):
     calls = []
     monkeypatch.setattr("apps.api.routers.products.product_embedding_service.build_from_doc",
                         lambda doc, **k: calls.append(doc["code"]))
-    r = client.put("/api/products/TG-BPPC", json={"short_description": "Updated", "spec": "v2"})
+    pid = _product_id(client, "TG-BPPC")
+    r = client.put(f"/api/products/{pid}", json={"short_description": "Updated", "spec": "v2"})
     assert r.status_code == 200
     assert calls == []
 
@@ -176,10 +202,12 @@ def test_update_product_does_not_sync_embeddings(client, monkeypatch):
 def test_delete_product_removes_from_vector_index(client, monkeypatch):
     calls = []
     monkeypatch.setattr("apps.api.routers.products.product_embedding_service.remove_product",
-                        lambda code, *a, **k: calls.append(code))
-    r = client.delete("/api/products/TG-MGL8")
+                        lambda product_id, *a, **k: calls.append(product_id))
+    pid = _product_id(client, "TG-MGL8")
+    r = client.delete(f"/api/products/{pid}")
     assert r.status_code == 204
-    assert "TG-MGL8" in calls
+    assert len(calls) == 1
+    assert str(calls[0]) == pid
 
 
 def test_delete_product_succeeds_when_embedding_sync_fails(client, monkeypatch):
@@ -187,7 +215,8 @@ def test_delete_product_succeeds_when_embedding_sync_fails(client, monkeypatch):
         raise RuntimeError("vector index unavailable")
 
     monkeypatch.setattr("apps.api.routers.products.product_embedding_service.remove_product", raise_remove_error)
-    r = client.delete("/api/products/TG-MGL8")
+    pid = _product_id(client, "TG-MGL8")
+    r = client.delete(f"/api/products/{pid}")
     assert r.status_code == 204
 
 

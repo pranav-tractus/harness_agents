@@ -22,8 +22,13 @@ def client(monkeypatch):
         yield c
 
 
+def _product_id(client, code):
+    return next(p["id"] for p in client.get("/api/products").json() if p["code"] == code)
+
+
 def test_build_single(client):
-    r = client.post("/api/products/TG-BPPC/build")
+    pid = _product_id(client, "TG-BPPC")
+    r = client.post(f"/api/products/{pid}/build")
     assert r.status_code == 200
     assert "TG-BPPC" in client.calls
 
