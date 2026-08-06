@@ -129,6 +129,21 @@ _EXTRACT_SYSTEM = (
 )
 
 
+def _canonical_code(raw: str) -> str:
+    """One SKU code from a possibly multi-code string.
+
+    Spec sheets often print a pack-size table, and the extractor returns
+    every code at once ("1510010515022, 15100105"). The shortest code is
+    the base SKU — the longer siblings are pack-suffixed extensions of it —
+    so that one wins, ties going to the first printed.
+    """
+    parts = [p.strip() for p in re.split(r"[;,]", raw or "")]
+    codes = [p for p in parts if p]
+    if not codes:
+        return ""
+    return min(codes, key=lambda c: (len(c), codes.index(c)))
+
+
 def _slug(filename: str) -> str:
     stem = Path(filename).stem
     return re.sub(r"-{2,}", "-", re.sub(r"[^A-Za-z0-9]+", "-", stem)).strip("-").upper()
@@ -144,10 +159,7 @@ def extract_spec(text: str, filename: str, model_key: str = "openai:5.5", llm=No
         model_key,
         system_prompt=_EXTRACT_SYSTEM,
     )
-    if not spec.code.strip():
-        spec.code = _slug(filename)
-    else:
-        spec.code = spec.code.strip()
+    spec.code = _canonical_code(spec.code) or _slug(filename)
     return spec
 
 

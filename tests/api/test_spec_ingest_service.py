@@ -55,6 +55,38 @@ def test_extract_spec_falls_back_to_filename_slug():
     assert spec.code == "GIIOFINE-L-SF"
 
 
+@pytest.mark.parametrize("raw,expected", [
+    ("15100105", "15100105"),
+    ("  15100105  ", "15100105"),
+    ("1510010515022, 15100105", "15100105"),
+    ("1510011525700, 1510011590600, 15100115", "15100115"),
+    ("100087401; 100087402", "100087401"),
+    ("110028323 ; 110034824", "110028323"),
+    ("A-1,,A-22", "A-1"),
+])
+def test_canonical_code_reduces_to_one_code(raw, expected):
+    assert si._canonical_code(raw) == expected
+
+
+def test_canonical_code_of_blank_is_blank():
+    assert si._canonical_code("   ") == ""
+    assert si._canonical_code(",  ;") == ""
+
+
+def test_extract_spec_canonicalizes_a_multi_code_sheet():
+    spec = si.extract_spec("text", "Krystar450.pdf", llm=_fake_llm(
+        ProductSpec(code="1510010515022, 15100105", name="KRYSTAR 450",
+                    short_description="x")))
+    assert spec.code == "15100105"
+
+
+def test_extract_spec_falls_back_to_slug_when_codes_are_all_blank():
+    spec = si.extract_spec("text", "GIIOFINE_L_SF .pdf", llm=_fake_llm(
+        ProductSpec(code=" , ; ", name="Sunflower Lecithin Liquid",
+                    short_description="x")))
+    assert spec.code == "GIIOFINE-L-SF"
+
+
 def test_ingest_writes_product_and_vectors(tmp_path):
     pdf, deps = _deps(tmp_path)
     report = si.ingest_pdf(pdf, **deps)
