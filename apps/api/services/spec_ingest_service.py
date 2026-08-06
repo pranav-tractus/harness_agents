@@ -380,6 +380,7 @@ def _ingest_folder_s3(uri: str, *, workers: int, list_s3_fn, kwargs: dict) -> li
 
 
 def ingest_folder(folder, *, workers: int = 15, list_s3_fn=None, **kwargs) -> list[IngestReport]:
+    mongo.ensure_indexes()
     if not kwargs.get("dry_run") and kwargs.get("index") is None and vectors.is_available():
         idx = vectors.default_index()
         idx.ensure()
