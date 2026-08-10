@@ -157,7 +157,7 @@ Chat lifecycle and the message window. Assigns per-chat monotonic seq numbers, r
 
 `apps/api/services/product_matcher_service.py::resolve_products`
 
-Resolves product mentions to catalog SKUs. Builds a candidate pool from the catalog graph plus this customer's prior orders, then has the LLM classify each mention as confident, ambiguous, or no_match.
+Resolves product mentions to catalog SKUs. Builds a candidate pool from the customer's organization S3-Vectors index plus this customer's prior orders, then has the LLM classify each mention as confident, ambiguous, or no_match.
 
 > **Invariant:** _guard() drops any resolved_code outside the pool — product codes are never invented.
 

@@ -5,7 +5,10 @@ lecithin") to catalog SKUs using embeddings in Amazon S3 Vectors. This
 replaced the FalkorDB product catalog graph; customer/chat graphs are
 unaffected.
 
-There are two independent flows sharing one vector index:
+There are two independent flows, each using per-organization vector indexes.
+`S3_VECTOR_INDEX` is a **prefix** — the real index for an org is
+`{S3_VECTOR_INDEX}-{slug}`, stored on the org document as `vector_index`.
+The agent queries only the index that belongs to the customer's org:
 
 1. **Ingestion** (offline CLI) — spec PDFs become product records and vectors.
 2. **Matching** (runtime) — chat text becomes queries against those vectors.
@@ -207,7 +210,7 @@ flowchart TB
 |---|---|---|
 | `SPECS_S3_BUCKET` | — (required to ingest) | PDF uploads / Textract input |
 | `S3_VECTOR_BUCKET` | — (required for vector search) | S3 Vectors bucket; unset ⇒ fallback matching |
-| `S3_VECTOR_INDEX` | `product-catalog` | index name inside the vector bucket |
+| `S3_VECTOR_INDEX` | `product-catalog` | prefix for per-org indexes; each org's index is `{S3_VECTOR_INDEX}-{slug}` |
 | `AWS_REGION` | `us-east-1` | Textract, S3, S3 Vectors clients |
 | `GEMINI_API_KEY` / `GOOGLE_API_KEY` | — | `gemini-embedding-001` embeddings |
 
