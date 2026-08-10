@@ -35,10 +35,6 @@ def customer_graph(customer_id: str):
     return g
 
 
-def catalog_graph():
-    return get_client().select_graph("catalog")
-
-
 def is_available() -> bool:
     try:
         get_client().connection.ping()

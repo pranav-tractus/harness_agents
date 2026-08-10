@@ -4,6 +4,7 @@
 # Env
 .env
 .env.*
+!.env.example
 
 # Virtual Environment
 venv/
@@ -36,3 +37,5 @@ graphify-out
 graph_dbs/
 apps/web/node_modules/
 apps/web/dist/
+
+*.pdf

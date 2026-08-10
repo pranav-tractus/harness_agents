@@ -16,6 +16,12 @@ class Settings:
     web_origin: str
     falkordb_host: str
     falkordb_port: int
+    specs_s3_bucket: str
+    vector_bucket: str
+    vector_index: str
+    aws_region: str
+    ingest_s3_bucket: str
+    ingest_s3_prefix: str
 
 
 @lru_cache(maxsize=1)
@@ -26,4 +32,10 @@ def get_settings() -> Settings:
         web_origin=os.environ.get("WEB_ORIGIN", "http://localhost:5173"),
         falkordb_host=os.environ.get("FALKORDB_HOST", "localhost"),
         falkordb_port=int(os.environ.get("FALKORDB_PORT", "6379")),
+        specs_s3_bucket=os.environ.get("SPECS_S3_BUCKET", ""),
+        vector_bucket=os.environ.get("S3_VECTOR_BUCKET", ""),
+        vector_index=os.environ.get("S3_VECTOR_INDEX", "product-catalog-openai"),
+        aws_region=os.environ.get("AWS_REGION", "us-east-1"),
+        ingest_s3_bucket=os.environ.get("INGEST_S3_BUCKET", ""),
+        ingest_s3_prefix=os.environ.get("INGEST_S3_PREFIX", ""),
     )

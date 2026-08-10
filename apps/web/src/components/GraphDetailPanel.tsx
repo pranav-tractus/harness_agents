@@ -1,9 +1,8 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import type { GraphData, GraphEdge, GraphNode } from "@/api/client";
 import { provenanceFor, supersedesChain } from "@/components/graph/hierarchy";
-import { BuildBadge, agreementLevel } from "@/components/graph/nodes/parts";
+import { agreementLevel } from "@/components/graph/nodes/parts";
 
 export type SelectedElement =
   | { kind: "node"; element: GraphNode }
@@ -15,8 +14,6 @@ type Props = {
   graph: GraphData;
   onClose: () => void;
   onNavigateToMessage?: (seq: number) => void;
-  onRebuild?: (code: string) => void;
-  rebuilding?: boolean;
 };
 
 function AgreementRow({ agreedBy }: { agreedBy: unknown }) {
@@ -43,8 +40,6 @@ export function GraphDetailPanel({
   graph,
   onClose,
   onNavigateToMessage,
-  onRebuild,
-  rebuilding,
 }: Props) {
   const node = selected?.kind === "node" ? selected.element : null;
   const element = selected?.element ?? null;
@@ -61,8 +56,6 @@ export function GraphDetailPanel({
   const provenance = node ? provenanceFor(node, graph) : [];
   const lineage = node?.type === "Contract" ? supersedesChain(node.id, graph) : [];
   const showAgreement = node ? Array.isArray(node.properties.agreed_by) : false;
-  const buildStatus = node?.type === "Product" ? node.properties.build_status : undefined;
-  const productCode = node?.type === "Product" ? String(node.properties.code ?? node.label) : "";
 
   return (
     <Sheet open={selected !== null} onOpenChange={(open) => { if (!open) onClose(); }}>
@@ -75,25 +68,6 @@ export function GraphDetailPanel({
         </SheetHeader>
 
         {showAgreement && <AgreementRow agreedBy={node?.properties.agreed_by} />}
-
-        {buildStatus !== undefined && (
-          <div className="mb-4">
-            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              Build
-            </div>
-            <div className="flex items-center gap-2">
-              <BuildBadge status={String(buildStatus)} />
-              <Button
-                size="xs"
-                variant="outline"
-                disabled={rebuilding}
-                onClick={() => onRebuild?.(productCode)}
-              >
-                {rebuilding ? "Rebuilding…" : "Rebuild"}
-              </Button>
-            </div>
-          </div>
-        )}
 
         {lineage.length > 0 && (
           <div className="mb-4">

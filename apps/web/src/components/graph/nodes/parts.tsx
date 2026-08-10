@@ -17,7 +17,7 @@ export const NODE_COLORS: Record<string, string> = {
   Category: "#ef4444",
   Application: "#0891b2",
   Alias: "#0ea5e9",
-  SpecAttr: "#f43f5e",
+
 };
 
 export function agreementLevel(agreedBy: unknown): "both" | "one" | "none" {
@@ -71,6 +71,16 @@ export function BuildBadge({ status }: { status: string }) {
   return (
     <Badge variant="outline" className={cn("text-[10px]", cls)}>
       {status}
+    </Badge>
+  );
+}
+
+export function SourceBadge({ label }: { label?: string | null }) {
+  if (!label) return null;
+  const cls = label === "Test Files" ? "text-sky-600 border-sky-300" : "text-muted-foreground";
+  return (
+    <Badge variant="outline" className={cn("text-[10px]", cls)}>
+      {label}
     </Badge>
   );
 }

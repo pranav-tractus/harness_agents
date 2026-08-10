@@ -1,6 +1,9 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from apps.api.db import mongo
 from apps.api.routers import (
     chats,
     customers,
@@ -12,8 +15,14 @@ from apps.api.routers import (
 from apps.api.settings import get_settings
 
 
+@asynccontextmanager
+async def _lifespan(app: FastAPI):
+    mongo.ensure_indexes()
+    yield
+
+
 def create_app() -> FastAPI:
-    app = FastAPI(title="Chat Simulation API")
+    app = FastAPI(title="Chat Simulation API", lifespan=_lifespan)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=[get_settings().web_origin],
@@ -27,7 +36,6 @@ def create_app() -> FastAPI:
     app.include_router(messages.router)
     app.include_router(models_router.router)
     app.include_router(graphs.customer_router)
-    app.include_router(graphs.catalog_router)
     return app
 
 

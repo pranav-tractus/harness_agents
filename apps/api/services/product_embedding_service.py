@@ -1,0 +1,95 @@
+import hashlib
+import json
+
+from apps.api.db import mongo, vectors
+from core import embeddings
+
+_SNIPPET_LEN = 300
+
+
+def _meta_text(metadata: dict) -> str:
+    return " · ".join(f"{k}: {v}" for k, v in sorted((metadata or {}).items()))
+
+
+def _render_main(doc: dict) -> str:
+    parts = [
+        doc.get("name") or doc["code"],
+        doc.get("short_description") or doc.get("description") or "",
+        doc.get("long_description") or "",
+        _meta_text(doc.get("metadata") or {}),
+    ]
+    return "\n".join(p for p in parts if p)
+
+
+def _render_spec(doc: dict) -> str:
+    parts = [doc.get("spec") or "", _meta_text(doc.get("metadata") or {})]
+    return "\n".join(p for p in parts if p)
+
+
+def _payloads(doc: dict) -> list[tuple[str, str, dict]]:
+    """(key, text-to-embed, metadata) for every vector this product owns."""
+    pid = str(doc["_id"])
+    flat = {k: str(v) for k, v in (doc.get("metadata") or {}).items()}
+    # Keep only essential filterable keys; pack product attributes into non-filterable "attrs"
+    # to stay within the S3 Vectors 2048-byte filterable metadata limit.
+    code = doc.get("code") or pid
+    base = {"code": code, "name": doc.get("name") or code, "attrs": json.dumps(flat)}
+    out = [(f"{pid}#main", _render_main(doc), {**base, "kind": "main"})]
+    spec_text = _render_spec(doc)
+    if spec_text:
+        out.append((f"{pid}#spec", spec_text, {**base, "kind": "spec"}))
+    return out
+
+
+def _hash(payloads: list[tuple[str, str, dict]]) -> str:
+    blob = json.dumps([(k, t) for k, t, _ in payloads], ensure_ascii=False)
+    return hashlib.sha256(blob.encode()).hexdigest()[:16]
+
+
+def build_from_doc(doc: dict, *, embed_fn=None, index=None) -> None:
+    embed_fn = embed_fn or embeddings.embed
+    if index is None:
+        if not vectors.is_available():
+            return
+        index = vectors.default_index()
+        index.ensure()
+    payloads = _payloads(doc)
+    vecs = embed_fn([text for _, text, _ in payloads], mode="document")
+    records = [
+        vectors.VectorRecord(
+            key=key, embedding=vec, metadata={**meta, "snippet": text[:_SNIPPET_LEN]}
+        )
+        for (key, text, meta), vec in zip(payloads, vecs)
+    ]
+    new_keys = [r.key for r in records]
+    stale = [k for k in (doc.get("vector_keys") or []) if k not in set(new_keys)]
+    if stale:
+        index.delete(stale)
+    index.put(records)
+    mongo.products().update_one(
+        {"_id": doc["_id"]},
+        {"$set": {"embedded_hash": _hash(payloads), "vector_keys": new_keys}},
+    )
+
+
+def status_for_doc(doc: dict) -> str:
+    if not doc.get("embedded_hash"):
+        return "not built"
+    return "built" if doc["embedded_hash"] == _hash(_payloads(doc)) else "stale"
+
+
+def remove_product(product_id, *, index=None) -> None:
+    """Delete a product's vectors. `product_id` is the Mongo `_id`.
+
+    Must be called while the product document still exists — the keys to
+    delete are read from it.
+    """
+    doc = mongo.products().find_one({"_id": product_id}) or {}
+    keys = doc.get("vector_keys") or []
+    if not keys:
+        return
+    if index is None:
+        if not vectors.is_available():
+            return
+        index = vectors.default_index()
+    index.delete(keys)

@@ -46,6 +46,7 @@ class ProductOut(BaseModel):
     spec: str | None = None
     metadata: dict[str, str] = Field(default_factory=dict)
     build_status: str = "not built"
+    source_label: str | None = None
 
 
 class ProductCreate(BaseModel):

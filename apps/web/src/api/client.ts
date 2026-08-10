@@ -23,6 +23,7 @@ export type Product = {
   spec: string | null;
   metadata: Record<string, string>;
   build_status?: string;
+  source_label?: string | null;
 };
 export type Message = {
   id: string;
@@ -119,5 +120,4 @@ export const api = {
     req<GraphData>(`/api/customers/${customerId}/graph`),
   buildProduct: (code: string) =>
     req<Product>(`/api/products/${code}/build`, { method: "POST" }),
-  getGraphProducts: () => req<GraphData>("/api/graph/products"),
 };

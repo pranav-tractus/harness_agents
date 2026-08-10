@@ -13,7 +13,6 @@ export const CONTAINMENT_EDGE_TYPES = new Set<string>([
   "DERIVED_FROM",
   "OF_PRODUCT",
   "SHIP_TO",
-  "HAS_ALIAS",
   "HAS_SPEC",
   "IN_CATEGORY",
   "USED_FOR",

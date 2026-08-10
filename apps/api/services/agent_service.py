@@ -177,7 +177,7 @@ _AGENT_WINDOW_KINDS = ("chat", "question", "draft", "final")
 def _resolved_product_block(matches) -> str:
     lines = []
     for m in matches:
-        doc = mongo.products().find_one({"_id": m.resolved_code}) or {}
+        doc = mongo.products().find_one({"code": m.resolved_code}) or {}
         name = m.canonical_name or doc.get("name") or m.resolved_code
         short = doc.get("short_description") or doc.get("description") or ""
         meta = doc.get("metadata") or {}
@@ -190,13 +190,26 @@ def _resolved_product_block(matches) -> str:
     return "Resolved products for this order:\n" + "\n".join(lines) if lines else ""
 
 
+def _cand_label(c) -> str:
+    label = f"{c.name} ({c.code}"
+    if c.score:
+        label += f", {c.score:.2f}"
+    label += ")"
+    if c.snippet:
+        label += f' — "{c.snippet[:100]}"'
+    return label
+
+
 def _match_question(unresolved) -> str:
     parts = ["I need to pin down the product before drafting:"]
     for m in unresolved:
         if m.question:
             parts.append(f"- {m.question}")
+            if m.candidates:
+                for c in m.candidates:
+                    parts.append(f"  - {_cand_label(c)}")
         elif m.candidates:
-            opts = " or ".join(f"{c.name} ({c.code})" for c in m.candidates)
+            opts = " or ".join(_cand_label(c) for c in m.candidates)
             parts.append(f'- For "{m.mention}": did you mean {opts}?')
         else:
             parts.append(

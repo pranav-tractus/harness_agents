@@ -11,6 +11,7 @@ const NEAR_BOTTOM_PX = 80;
 type Props = {
   messages: Message[];
   scrollToSeq?: number | null;
+  isAgentThinking?: boolean;
 };
 
 function roleLabel(role: string) {
@@ -57,6 +58,29 @@ function MessageText({ body }: { body: string }) {
   );
 }
 
+function ThinkingIndicator() {
+  return (
+    <div
+      role="status"
+      aria-label="Agent is thinking"
+      className="mx-auto w-full max-w-full rounded-lg border-l-2 border-primary/40 bg-primary/5 px-4 py-2.5"
+    >
+      <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+        Agent
+      </div>
+      <div className="flex items-center gap-1.5">
+        {[0, 1, 2].map((i) => (
+          <span
+            key={i}
+            className="h-1.5 w-1.5 rounded-full bg-primary/50 animate-pulse motion-reduce:animate-none"
+            style={{ animationDelay: `${i * 200}ms` }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function CheckpointDivider() {
   return (
     <div data-testid="chat-checkpoint" className="flex items-center gap-3 py-2">
@@ -69,7 +93,7 @@ function CheckpointDivider() {
   );
 }
 
-export function ChatPane({ messages, scrollToSeq }: Props) {
+export function ChatPane({ messages, scrollToSeq, isAgentThinking }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const stickToBottom = useRef(true);
@@ -85,7 +109,7 @@ export function ChatPane({ messages, scrollToSeq }: Props) {
     if (stickToBottom.current) {
       bottomRef.current?.scrollIntoView({ behavior: "instant" });
     }
-  }, [messages]);
+  }, [messages, isAgentThinking]);
 
   // Depends on scrollToSeq only (not messages): ChatPage sets scrollToSeq after
   // the target message is already loaded, so re-scrolling on later message
@@ -192,6 +216,7 @@ export function ChatPane({ messages, scrollToSeq }: Props) {
           </Fragment>
         );
       })}
+      {isAgentThinking && <ThinkingIndicator />}
       <div ref={bottomRef} />
     </div>
   );

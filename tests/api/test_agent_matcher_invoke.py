@@ -90,3 +90,27 @@ def test_confident_match_narrows_product_block_for_decider():
     agent_service.invoke("dummy-01", "m", decider=_capture, context_fn=_ctx,
                          matcher_fn=_matcher(result))
     assert "TG-BPPC" in (seen["product_block"] or "")
+
+
+def test_match_question_renders_scores_and_snippets():
+    from apps.api.services.agent_service import _match_question
+    from apps.api.services.product_matcher_service import ProductCandidate, ProductMatch
+    m = ProductMatch(mention="lecithin", status="ambiguous", candidates=[
+        ProductCandidate(code="GIIOFINE-UP-SF", name="Sunflower Lecithin Powder",
+                         score=0.87, snippet="de-oiled sunflower lecithin powder"),
+        ProductCandidate(code="GIIOFINE_L_SF", name="Sunflower Lecithin Liquid",
+                         score=0.84),
+    ])
+    q = _match_question([m])
+    assert "(GIIOFINE-UP-SF, 0.87" in q
+    assert 'de-oiled sunflower lecithin powder' in q
+    assert "(GIIOFINE_L_SF, 0.84)" in q
+
+
+def test_match_question_without_scores_stays_clean():
+    from apps.api.services.agent_service import _match_question
+    from apps.api.services.product_matcher_service import ProductCandidate, ProductMatch
+    m = ProductMatch(mention="x", status="ambiguous", candidates=[
+        ProductCandidate(code="A", name="Alpha")])
+    q = _match_question([m])
+    assert "(A)" in q and "0.00" not in q
