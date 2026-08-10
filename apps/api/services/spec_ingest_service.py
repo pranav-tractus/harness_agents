@@ -224,6 +224,9 @@ def upsert_product(
         raise CodeCollision(spec.code, clash.get("source_pdf") or "")
     if clash:
         # A seeded or hand-created product with no spec sheet: claim it.
+        # Do NOT overwrite org_id here — org assignment must be done explicitly
+        # via PUT /api/products/{id} (which calls move_org and re-indexes vectors).
+        fields.pop("org_id", None)
         mongo.products().update_one({"_id": clash["_id"]}, {"$set": fields})
         return mongo.products().find_one({"_id": clash["_id"]})
 

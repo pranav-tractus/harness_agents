@@ -77,13 +77,15 @@ def update_profile(customer_id: str, body: ProfileUpdate) -> CustomerOut:
     if not doc:
         raise HTTPException(404, "customer not found")
     profile = body.profile.model_dump()
+    # Validate org BEFORE writing anything so a bad org_id never causes partial writes.
+    if body.org_id and body.org_id != doc.get("org_id"):
+        if not org_service.exists(body.org_id):
+            raise HTTPException(422, f"unknown organization {body.org_id!r}")
     mongo.customers().update_one(
         {"_id": customer_id},
         {"$set": {"profile": profile, "updated_at": datetime.now(timezone.utc).isoformat()}},
     )
     if body.org_id and body.org_id != doc.get("org_id"):
-        if not org_service.exists(body.org_id):
-            raise HTTPException(422, f"unknown organization {body.org_id!r}")
         mongo.customers().update_one({"_id": customer_id}, {"$set": {"org_id": body.org_id}})
     updated = mongo.customers().find_one({"_id": customer_id})
     try:

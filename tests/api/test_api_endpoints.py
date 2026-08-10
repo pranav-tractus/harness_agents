@@ -25,7 +25,7 @@ def _seed_fixture_data() -> None:
             {"_id": cid, "name": name, "profile": {}, "last_contract_seq": 0, "updated_at": "now"}
         )
     for code, desc in _PRODUCTS:
-        mongo.products().insert_one({"code": code, "description": desc, "spec": None})
+        mongo.products().insert_one({"code": code, "description": desc, "spec": None, "org_id": "pym"})
 
 
 @pytest.fixture()

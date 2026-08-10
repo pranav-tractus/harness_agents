@@ -74,10 +74,12 @@ def update_product(product_id: str, body: ProductUpdate) -> ProductOut:
         raise HTTPException(404, "product not found")
     changes = {k: v for k, v in body.model_dump(exclude_unset=True).items()}
     new_org = changes.pop("org_id", None)
+    # Validate org BEFORE writing anything so a bad org_id never causes partial writes.
+    if new_org and new_org != doc.get("org_id"):
+        _require_org(new_org)
     if changes:
         mongo.products().update_one({"_id": oid}, {"$set": changes})
     if new_org and new_org != doc.get("org_id"):
-        _require_org(new_org)
         product_embedding_service.move_org(mongo.products().find_one({"_id": oid}), new_org)
     return _out(mongo.products().find_one({"_id": oid}))
 
@@ -98,6 +100,8 @@ def build_product(product_id: str) -> ProductOut:
     doc = mongo.products().find_one({"_id": oid})
     if not doc:
         raise HTTPException(404, "product not found")
+    if not doc.get("org_id"):
+        raise HTTPException(422, "product has no organization; run scripts/assign_orgs.py")
     product_embedding_service.build_from_doc(doc)
     return _out(mongo.products().find_one({"_id": oid}))
 
