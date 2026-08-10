@@ -121,6 +121,10 @@ class S3VectorsIndex:
         ]
 
 
+def index_named(name: str) -> S3VectorsIndex:
+    return S3VectorsIndex(get_settings().vector_bucket, name)
+
+
 def default_index() -> S3VectorsIndex:
     s = get_settings()
     return S3VectorsIndex(s.vector_bucket, s.vector_index)

@@ -31,6 +31,10 @@ def products() -> Collection:
     return get_db()["products"]
 
 
+def organizations() -> Collection:
+    return get_db()["organizations"]
+
+
 def messages() -> Collection:
     return get_db()["messages"]
 
@@ -51,5 +55,7 @@ def ensure_indexes() -> None:
     seeded by `apps/api/seed.py` have no source PDF, and a sparse index
     skips documents that lack the field entirely.
     """
+    products().create_index("org_id")
+    customers().create_index("org_id")
     products().create_index("code", unique=True)
     products().create_index("source_pdf_hash", unique=True, sparse=True)

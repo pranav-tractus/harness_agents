@@ -39,3 +39,13 @@ def test_ensure_indexes_is_idempotent():
     mongo.ensure_indexes()
     mongo.products().insert_one({"code": "A"})
     assert mongo.products().count_documents({}) == 1
+
+
+def test_ensure_indexes_creates_org_id_indexes():
+    mongo.ensure_indexes()
+    product_keys = [k for ix in mongo.products().index_information().values()
+                    for k, _ in ix["key"]]
+    customer_keys = [k for ix in mongo.customers().index_information().values()
+                     for k, _ in ix["key"]]
+    assert "org_id" in product_keys
+    assert "org_id" in customer_keys
