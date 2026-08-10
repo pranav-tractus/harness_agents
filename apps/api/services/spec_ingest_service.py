@@ -6,7 +6,7 @@ from pathlib import Path
 from pydantic import BaseModel, Field
 from pymongo.errors import DuplicateKeyError
 
-from apps.api.db import mongo, vectors
+from apps.api.db import mongo
 from apps.api.services import product_embedding_service
 from apps.api.settings import get_settings
 from core.llm_client import call_llm
@@ -442,10 +442,6 @@ def _ingest_folder_s3(uri: str, *, workers: int, list_s3_fn, kwargs: dict) -> li
 
 def ingest_folder(folder, *, workers: int = 15, list_s3_fn=None, **kwargs) -> list[IngestReport]:
     mongo.ensure_indexes()
-    if not kwargs.get("dry_run") and kwargs.get("index") is None and vectors.is_available():
-        idx = vectors.default_index()
-        idx.ensure()
-        kwargs["index"] = idx
 
     folder_str = str(folder)
     if folder_str.startswith("s3://"):

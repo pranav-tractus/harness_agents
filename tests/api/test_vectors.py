@@ -123,3 +123,14 @@ def test_is_available_tracks_settings(monkeypatch):
     settings_mod.get_settings.cache_clear()
     assert vectors.is_available() is True
     settings_mod.get_settings.cache_clear()
+
+
+def test_index_named_uses_the_configured_bucket(monkeypatch):
+    from apps.api.db import vectors
+    idx = vectors.index_named("catalog-roxxon")
+    assert idx._index == "catalog-roxxon"
+
+
+def test_default_index_is_gone():
+    from apps.api.db import vectors
+    assert not hasattr(vectors, "default_index")
