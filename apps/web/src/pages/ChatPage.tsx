@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router";
 import { toast } from "sonner";
-import { api, type Customer, type Message } from "@/api/client";
+import { api, type Customer, type Message, type Org } from "@/api/client";
 import { ChatPane } from "@/components/ChatPane";
 import { CustomerDetails } from "@/components/CustomerDetails";
 import { CustomerSidebar } from "@/components/CustomerSidebar";
@@ -16,6 +16,7 @@ export function ChatPage() {
   const focusSeq = searchParams.get("seq");
 
   const [customers, setCustomers] = useState<Customer[]>([]);
+  const [orgs, setOrgs] = useState<Org[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [modelKey, setModelKey] = useState("sonnet-4-6");
   const [role, setRole] = useState<"seller" | "customer">("seller");
@@ -40,6 +41,10 @@ export function ChatPage() {
   useEffect(() => {
     loadCustomers().catch(console.error);
   }, [loadCustomers]);
+
+  useEffect(() => {
+    api.listOrgs().then(setOrgs).catch(console.error);
+  }, []);
 
   useEffect(() => {
     if (selectedId) {
@@ -83,9 +88,9 @@ export function ChatPage() {
     setCustomers((rows) => rows.map((c) => (c.id === updated.id ? updated : c)));
   }
 
-  async function handleAddCustomer(name: string) {
+  async function handleAddCustomer(name: string, orgId: string) {
     try {
-      const created = await api.createCustomer(name);
+      const created = await api.createCustomer(name, orgId);
       await loadCustomers();
       navigate(`/chat/${created.id}`);
       toast.success(`Added ${created.name}`);
@@ -115,6 +120,7 @@ export function ChatPage() {
     <div className="flex h-[calc(100vh-3.5rem)]">
       <CustomerSidebar
         customers={customers}
+        orgs={orgs}
         selectedId={selectedId}
         onSelect={(id) => navigate(`/chat/${id}`)}
         onAdd={handleAddCustomer}
@@ -130,7 +136,7 @@ export function ChatPage() {
         <ChatPane key={selectedId} messages={messages} scrollToSeq={scrollToSeq} isAgentThinking={isAgentThinking} />
         <MessageComposer role={role} onRoleChange={setRole} onMessage={handleMessage} />
       </div>
-      <CustomerDetails customer={selectedCustomer} onUpdated={handleCustomerUpdated} />
+      <CustomerDetails customer={selectedCustomer} orgs={orgs} onUpdated={handleCustomerUpdated} />
     </div>
   );
 }

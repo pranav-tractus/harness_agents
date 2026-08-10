@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api, type Customer, type Profile } from "@/api/client";
+import { api, type Customer, type Org, type Profile } from "@/api/client";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,9 +10,17 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type Props = {
   customer: Customer | null;
+  orgs: Org[];
   onUpdated: (customer: Customer) => void;
 };
 
@@ -31,13 +39,17 @@ function display(value: string | null) {
   return value?.trim() ? value : "—";
 }
 
-export function CustomerDetails({ customer, onUpdated }: Props) {
+export function CustomerDetails({ customer, orgs, onUpdated }: Props) {
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState<Profile | null>(null);
+  const [draftOrgId, setDraftOrgId] = useState("");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (customer) setDraft({ ...customer.profile });
+    if (customer) {
+      setDraft({ ...customer.profile });
+      setDraftOrgId(customer.org_id ?? "");
+    }
   }, [customer]);
 
   if (!customer || !draft) {
@@ -52,7 +64,7 @@ export function CustomerDetails({ customer, onUpdated }: Props) {
     if (!customer || !draft) return;
     setSaving(true);
     try {
-      const updated = await api.updateProfile(customer.id, draft);
+      const updated = await api.updateProfile(customer.id, draft, draftOrgId || undefined);
       onUpdated(updated);
       setOpen(false);
     } catch (err) {
@@ -75,6 +87,10 @@ export function CustomerDetails({ customer, onUpdated }: Props) {
         <div>
           <div className="text-xs text-muted-foreground">Name</div>
           <div>{customer.name}</div>
+        </div>
+        <div>
+          <div className="text-xs text-muted-foreground">Organization</div>
+          <div>{orgs.find((o) => o.id === customer.org_id)?.name ?? "—"}</div>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
@@ -120,6 +136,21 @@ export function CustomerDetails({ customer, onUpdated }: Props) {
             <DialogTitle>Edit Profile — {customer.name}</DialogTitle>
           </DialogHeader>
           <div className="grid gap-3 py-2">
+            <div className="grid gap-1">
+              <Label htmlFor="edit-org">Organization</Label>
+              <Select value={draftOrgId} onValueChange={(v) => v && setDraftOrgId(v)}>
+                <SelectTrigger id="edit-org" aria-label="Organization">
+                  <SelectValue placeholder="Select an organization" />
+                </SelectTrigger>
+                <SelectContent>
+                  {orgs.map((o) => (
+                    <SelectItem key={o.id} value={o.id}>
+                      {o.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             {PROFILE_FIELDS.map(({ key, label }) => (
               <div key={key} className="grid gap-1">
                 <Label htmlFor={key}>{label}</Label>
