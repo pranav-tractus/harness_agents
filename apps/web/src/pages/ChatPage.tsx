@@ -20,6 +20,7 @@ export function ChatPage({ focusMessage, onFocusHandled }: Props) {
   const [role, setRole] = useState<"seller" | "customer">("seller");
   const [scrollToSeq, setScrollToSeq] = useState<number | null>(null);
   const [loadedMessagesCustomerId, setLoadedMessagesCustomerId] = useState<string | null>(null);
+  const [isAgentThinking, setIsAgentThinking] = useState(false);
 
   const selectedCustomer = customers.find((c) => c.id === selectedId) ?? null;
 
@@ -79,11 +80,14 @@ export function ChatPage({ focusMessage, onFocusHandled }: Props) {
 
   async function handleMessage(body: string) {
     if (!selectedId) return;
+    setIsAgentThinking(true);
     try {
       await api.postMessage(selectedId, role, body, modelKey);
       await loadMessages(selectedId);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to send message");
+    } finally {
+      setIsAgentThinking(false);
     }
   }
 
@@ -135,7 +139,7 @@ export function ChatPage({ focusMessage, onFocusHandled }: Props) {
           </h1>
           <ModelPicker value={modelKey} onChange={setModelKey} />
         </div>
-        <ChatPane key={selectedId} messages={messages} scrollToSeq={scrollToSeq} />
+        <ChatPane key={selectedId} messages={messages} scrollToSeq={scrollToSeq} isAgentThinking={isAgentThinking} />
         <MessageComposer role={role} onRoleChange={setRole} onMessage={handleMessage} />
       </div>
       <CustomerDetails customer={selectedCustomer} onUpdated={handleCustomerUpdated} />

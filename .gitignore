@@ -4,6 +4,7 @@
 # Env
 .env
 .env.*
+!.env.example
 
 # Virtual Environment
 venv/
