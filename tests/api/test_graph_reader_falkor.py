@@ -50,6 +50,17 @@ def test_reader_emits_supersedes_edge(cid):
     assert contracts[supersedes[0]["target"]]["properties"]["revision"] == 0
 
 
+def test_reader_emits_the_organization_node_and_edge(cid):
+    _skip()
+    pg.resync(cid, "T", {}, org={"id": "pym", "name": "Pym Technologies"})
+    data = gr.read_customer_graph(cid)
+    node = next(n for n in data["nodes"] if n["type"] == "Organization")
+    assert node["id"] == "Organization::pym"
+    assert node["label"] == "Pym Technologies"
+    assert any(e["type"] == "BELONGS_TO" and e["target"] == "Organization::pym"
+               for e in data["edges"])
+
+
 def test_empty_customer_graph(cid):
     _skip()
     assert gr.read_customer_graph("no-such") == {"nodes": [], "edges": []}

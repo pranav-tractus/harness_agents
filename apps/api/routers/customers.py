@@ -13,6 +13,11 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/customers", tags=["customers"])
 
 
+def _org_for_graph(org_id: str | None) -> dict | None:
+    org = org_service.get_org(org_id) if org_id else None
+    return {"id": org["_id"], "name": org["name"]} if org else None
+
+
 def _out(doc: dict) -> CustomerOut:
     return CustomerOut(id=doc["_id"], name=doc["name"], profile=doc["profile"],
                        last_contract_seq=doc["last_contract_seq"],
@@ -52,7 +57,7 @@ def create_customer(body: CustomerCreate) -> CustomerOut:
     }
     mongo.customers().insert_one(doc)
     try:
-        profile_graph_service.resync(cid, name, {})
+        profile_graph_service.resync(cid, name, {}, org=_org_for_graph(body.org_id))
     except Exception:
         logger.warning("Failed to resync profile graph for %s", cid, exc_info=True)
     return _out(mongo.customers().find_one({"_id": cid}))
@@ -80,11 +85,13 @@ def update_profile(customer_id: str, body: ProfileUpdate) -> CustomerOut:
         if not org_service.exists(body.org_id):
             raise HTTPException(422, f"unknown organization {body.org_id!r}")
         mongo.customers().update_one({"_id": customer_id}, {"$set": {"org_id": body.org_id}})
+    updated = mongo.customers().find_one({"_id": customer_id})
     try:
-        profile_graph_service.resync(customer_id, doc["name"], profile)
+        profile_graph_service.resync(customer_id, doc["name"], profile,
+                                     org=_org_for_graph(updated.get("org_id")))
     except Exception:
         logger.warning("Failed to resync profile graph for %s", customer_id, exc_info=True)
-    return _out(mongo.customers().find_one({"_id": customer_id}))
+    return _out(updated)
 
 
 @router.delete("/{customer_id}", status_code=204)

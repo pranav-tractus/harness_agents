@@ -42,6 +42,16 @@ def read_customer_graph(customer_id: str) -> dict:
         _node(f"Customer::{cid}", cname or cid, "Customer", {"id": cid, "name": cname})
     )
 
+    for oid, oname in g.query(
+        "MATCH (:Customer {id:$id})-[:BELONGS_TO]->(o:Organization) RETURN o.id, o.name",
+        {"id": customer_id},
+    ).result_set:
+        nodes.append(
+            _node(f"Organization::{oid}", oname or oid, "Organization",
+                  {"id": oid, "name": oname})
+        )
+        _edge(edges, f"Customer::{cid}", f"Organization::{oid}", "BELONGS_TO")
+
     for key, value in g.query(
         "MATCH (:Customer {id:$id})-[:HAS_ATTRIBUTE]->(a:Attribute) "
         "RETURN a.key, a.value",
