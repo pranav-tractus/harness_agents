@@ -94,15 +94,3 @@
   }
 }
 
-@layer components {
-  /* Nav-level line tabs: primary-colored underline flush with bar bottom */
-  .nav-tabs [data-slot="tabs-trigger"]::after {
-    background-color: hsl(var(--primary)) !important;
-    bottom: -1px !important;
-    height: 2px !important;
-  }
-  .nav-tabs [data-slot="tabs-trigger"][data-active] {
-    color: hsl(var(--primary));
-    font-weight: 500;
-  }
-}
