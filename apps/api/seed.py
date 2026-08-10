@@ -1,6 +1,8 @@
 from datetime import datetime, timezone
 
 from apps.api.db import mongo
+from apps.api.orgs import CATCHALL_ID
+from apps.api.services import org_classifier_service, org_service
 
 _CUSTOMERS = ["dummy-01", "dummy-02", "dummy-03"]
 
@@ -261,7 +263,31 @@ def migrate_products() -> None:
         )
 
 
+_CUSTOMER_ORGS = {
+    "dummy-01": "roxxon",
+    "dummy-02": "pym",
+    "dummy-03": "alchemax",
+}
+
+
+def migrate_orgs() -> None:
+    """Seed the org roster and give every org-less customer an organization.
+
+    Idempotent and cheap — four upserts plus one pass over org-less customers —
+    so it is safe to run on every boot. Products are deliberately NOT classified
+    here: classification can call an LLM, so it lives in
+    `scripts/assign_orgs.py` where it is explicit and reviewable.
+    """
+    org_service.seed_roster()
+    for doc in mongo.customers().find({"org_id": {"$exists": False}}, {"_id": 1}):
+        mongo.customers().update_one(
+            {"_id": doc["_id"]},
+            {"$set": {"org_id": _CUSTOMER_ORGS.get(doc["_id"], CATCHALL_ID)}},
+        )
+
+
 def seed_all() -> None:
+    org_service.seed_roster()      # roster first: the classifier reads it
     for cid in _CUSTOMERS:
         mongo.customers().update_one(
             {"_id": cid},
@@ -287,8 +313,10 @@ def seed_all() -> None:
                     "long_description": p.get("long_description"),
                     "spec": p.get("spec"),
                     "metadata": p.get("metadata", {}),
+                    "org_id": org_classifier_service.classify(p).org_id,
                 }
             },
             upsert=True,
         )
     migrate_products()
+    migrate_orgs()                 # last: assigns the customers just created
