@@ -31,6 +31,7 @@ def _doc(**over):
         "long_description": "Free-flowing powder.",
         "spec": "AI >= 95%, moisture <= 2%",
         "metadata": {"form": "powder", "packing": "25kg bag"},
+        "org_id": "pym",
     }
     doc.update(over)
     return doc

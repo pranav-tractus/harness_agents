@@ -6,7 +6,7 @@ from fastapi import APIRouter, HTTPException, Response
 
 from apps.api.db import falkor, mongo
 from apps.api.models import CustomerCreate, CustomerOut, ProfileUpdate
-from apps.api.services import profile_graph_service
+from apps.api.services import org_service, profile_graph_service
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +15,8 @@ router = APIRouter(prefix="/api/customers", tags=["customers"])
 
 def _out(doc: dict) -> CustomerOut:
     return CustomerOut(id=doc["_id"], name=doc["name"], profile=doc["profile"],
-                       last_contract_seq=doc["last_contract_seq"])
+                       last_contract_seq=doc["last_contract_seq"],
+                       org_id=doc.get("org_id"))
 
 
 def _slug(name: str) -> str:
@@ -38,6 +39,8 @@ def create_customer(body: CustomerCreate) -> CustomerOut:
     name = body.name.strip()
     if not name:
         raise HTTPException(422, "name is required")
+    if not org_service.exists(body.org_id):
+        raise HTTPException(422, f"unknown organization {body.org_id!r}")
     cid = _slug(name)
     doc = {
         "_id": cid,
@@ -45,6 +48,7 @@ def create_customer(body: CustomerCreate) -> CustomerOut:
         "profile": {},
         "last_contract_seq": 0,
         "updated_at": datetime.now(timezone.utc).isoformat(),
+        "org_id": body.org_id,
     }
     mongo.customers().insert_one(doc)
     try:
@@ -72,6 +76,10 @@ def update_profile(customer_id: str, body: ProfileUpdate) -> CustomerOut:
         {"_id": customer_id},
         {"$set": {"profile": profile, "updated_at": datetime.now(timezone.utc).isoformat()}},
     )
+    if body.org_id and body.org_id != doc.get("org_id"):
+        if not org_service.exists(body.org_id):
+            raise HTTPException(422, f"unknown organization {body.org_id!r}")
+        mongo.customers().update_one({"_id": customer_id}, {"$set": {"org_id": body.org_id}})
     try:
         profile_graph_service.resync(customer_id, doc["name"], profile)
     except Exception:

@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 from pymongo.errors import DuplicateKeyError
 
 from apps.api.db import mongo
-from apps.api.services import product_embedding_service
+from apps.api.services import org_classifier_service, product_embedding_service
 from apps.api.settings import get_settings
 from core.llm_client import call_llm
 
@@ -187,7 +187,8 @@ class DuplicatePdf(Exception):
 
 
 def upsert_product(
-    spec: ProductSpec, *, source_pdf: str, pdf_hash: str, source_label: str = "OG Files"
+    spec: ProductSpec, *, source_pdf: str, pdf_hash: str, source_label: str = "OG Files",
+    classify_fn=None,
 ) -> dict:
     """Store a product, keyed on the source PDF's content hash.
 
@@ -208,9 +209,13 @@ def upsert_product(
         "source_label": source_label,
     }
 
+    _classify = classify_fn or (lambda d: org_classifier_service.classify(d).org_id)
+    fields["org_id"] = _classify(fields)
+
     existing = mongo.products().find_one({"source_pdf_hash": pdf_hash})
     if existing:
         fields.pop("code")  # first code wins
+        fields.pop("org_id")  # first org wins
         mongo.products().update_one({"_id": existing["_id"]}, {"$set": fields})
         return mongo.products().find_one({"_id": existing["_id"]})
 
