@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -10,31 +11,23 @@ import { api, type Customer, type GraphData, type GraphEdge, type GraphNode } fr
 
 const EMPTY_GRAPH: GraphData = { nodes: [], edges: [] };
 
-type Props = {
-  onNavigateToMessage?: (customerId: string, seq: number) => void;
-};
+export function GraphsPage() {
+  const { customerId = "" } = useParams();
+  const navigate = useNavigate();
 
-export function GraphsPage({ onNavigateToMessage }: Props) {
   const [customers, setCustomers] = useState<Customer[]>([]);
-  const [selectedCustomerId, setSelectedCustomerId] = useState<string>("");
   const [chatFilter, setChatFilter] = useState<string>("all");
   const [graphData, setGraphData] = useState<GraphData>(EMPTY_GRAPH);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [selected, setSelected] = useState<SelectedElement>(null);
 
   useEffect(() => {
-    api
-      .listCustomers()
-      .then((rows) => {
-        setCustomers(rows);
-        if (rows.length > 0) setSelectedCustomerId((curr) => curr || rows[0].id);
-      })
-      .catch(console.error);
+    api.listCustomers().then(setCustomers).catch(console.error);
   }, []);
 
-  const loadGraph = useCallback(async (customerId: string) => {
+  const loadGraph = useCallback(async (cid: string) => {
     try {
-      const data = await api.getCustomerGraph(customerId);
+      const data = await api.getCustomerGraph(cid);
       setGraphData(data);
       setSelected(null);
       setExpanded(new Set());
@@ -46,8 +39,8 @@ export function GraphsPage({ onNavigateToMessage }: Props) {
   }, []);
 
   useEffect(() => {
-    if (selectedCustomerId) loadGraph(selectedCustomerId);
-  }, [selectedCustomerId, loadGraph]);
+    if (customerId) loadGraph(customerId);
+  }, [customerId, loadGraph]);
 
   const chatOptions = useMemo(() => {
     const seen = new Map<string, string>();
@@ -95,14 +88,14 @@ export function GraphsPage({ onNavigateToMessage }: Props) {
   }
 
   function handleRefresh() {
-    if (selectedCustomerId) loadGraph(selectedCustomerId);
+    if (customerId) loadGraph(customerId);
   }
 
   return (
     <div className="flex flex-col" style={{ height: "calc(100vh - 3.5rem)" }}>
       <div className="flex items-center gap-4 border-b px-6 py-3 shrink-0">
-        <Select value={selectedCustomerId} onValueChange={(v) => v && setSelectedCustomerId(v)}>
-          <SelectTrigger className="w-48">
+        <Select value={customerId} onValueChange={(v) => v && navigate(`/graphs/${v}`)}>
+          <SelectTrigger className="w-48" aria-label="Customer">
             <SelectValue placeholder="Select customer" />
           </SelectTrigger>
           <SelectContent>
@@ -150,7 +143,7 @@ export function GraphsPage({ onNavigateToMessage }: Props) {
         selected={selected}
         graph={graphData}
         onClose={() => setSelected(null)}
-        onNavigateToMessage={(seq) => onNavigateToMessage?.(selectedCustomerId, seq)}
+        onNavigateToMessage={(seq) => navigate(`/chat/${customerId}?seq=${seq}`)}
       />
     </div>
   );

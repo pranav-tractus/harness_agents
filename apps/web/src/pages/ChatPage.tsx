@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 import { toast } from "sonner";
 import { api, type Customer, type Message } from "@/api/client";
 import { ChatPane } from "@/components/ChatPane";
@@ -7,14 +8,14 @@ import { CustomerSidebar } from "@/components/CustomerSidebar";
 import { MessageComposer } from "@/components/MessageComposer";
 import { ModelPicker } from "@/components/ModelPicker";
 
-type Props = {
-  focusMessage?: { customerId: string; seq: number } | null;
-  onFocusHandled?: () => void;
-};
+export function ChatPage() {
+  const { customerId = "" } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const selectedId = customerId;
+  const focusSeq = searchParams.get("seq");
 
-export function ChatPage({ focusMessage, onFocusHandled }: Props) {
   const [customers, setCustomers] = useState<Customer[]>([]);
-  const [selectedId, setSelectedId] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [modelKey, setModelKey] = useState("sonnet-4-6");
   const [role, setRole] = useState<"seller" | "customer">("seller");
@@ -24,10 +25,10 @@ export function ChatPage({ focusMessage, onFocusHandled }: Props) {
 
   const selectedCustomer = customers.find((c) => c.id === selectedId) ?? null;
 
-  const loadMessages = useCallback(async (customerId: string) => {
-    const rows = await api.listMessages(customerId);
+  const loadMessages = useCallback(async (cid: string) => {
+    const rows = await api.listMessages(cid);
     setMessages(rows);
-    setLoadedMessagesCustomerId(customerId);
+    setLoadedMessagesCustomerId(cid);
   }, []);
 
   const loadCustomers = useCallback(async () => {
@@ -37,11 +38,7 @@ export function ChatPage({ focusMessage, onFocusHandled }: Props) {
   }, []);
 
   useEffect(() => {
-    loadCustomers()
-      .then((rows) => {
-        if (rows.length > 0) setSelectedId((current) => current || rows[0].id);
-      })
-      .catch(console.error);
+    loadCustomers().catch(console.error);
   }, [loadCustomers]);
 
   useEffect(() => {
@@ -49,10 +46,6 @@ export function ChatPage({ focusMessage, onFocusHandled }: Props) {
       loadMessages(selectedId).catch(console.error);
     }
   }, [selectedId, loadMessages]);
-
-  useEffect(() => {
-    if (focusMessage) setSelectedId(focusMessage.customerId);
-  }, [focusMessage]);
 
   useEffect(() => {
     setScrollToSeq(null);
@@ -65,18 +58,13 @@ export function ChatPage({ focusMessage, onFocusHandled }: Props) {
   }, [scrollToSeq]);
 
   useEffect(() => {
-    if (!focusMessage) return;
-    if (loadedMessagesCustomerId !== focusMessage.customerId) return;
-    if (messages.length === 0) {
-      toast.error("Message not found");
-      onFocusHandled?.();
-      return;
-    }
-    const found = messages.some((m) => m.seq === focusMessage.seq);
-    if (found) setScrollToSeq(focusMessage.seq);
+    if (focusSeq == null) return;
+    if (loadedMessagesCustomerId !== selectedId) return;
+    const seq = Number(focusSeq);
+    if (messages.some((m) => m.seq === seq)) setScrollToSeq(seq);
     else toast.error("Message not found");
-    onFocusHandled?.();
-  }, [focusMessage, messages, loadedMessagesCustomerId, onFocusHandled]);
+    setSearchParams({}, { replace: true });
+  }, [focusSeq, messages, loadedMessagesCustomerId, selectedId, setSearchParams]);
 
   async function handleMessage(body: string) {
     if (!selectedId) return;
@@ -99,7 +87,7 @@ export function ChatPage({ focusMessage, onFocusHandled }: Props) {
     try {
       const created = await api.createCustomer(name);
       await loadCustomers();
-      setSelectedId(created.id);
+      navigate(`/chat/${created.id}`);
       toast.success(`Added ${created.name}`);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to add customer");
@@ -111,7 +99,7 @@ export function ChatPage({ focusMessage, onFocusHandled }: Props) {
       await api.deleteCustomer(id);
       const rows = await loadCustomers();
       if (id === selectedId) {
-        setSelectedId(rows.length > 0 ? rows[0].id : "");
+        navigate(rows.length > 0 ? `/chat/${rows[0].id}` : "/chat");
         if (rows.length === 0) {
           setMessages([]);
           setLoadedMessagesCustomerId(null);
@@ -128,7 +116,7 @@ export function ChatPage({ focusMessage, onFocusHandled }: Props) {
       <CustomerSidebar
         customers={customers}
         selectedId={selectedId}
-        onSelect={setSelectedId}
+        onSelect={(id) => navigate(`/chat/${id}`)}
         onAdd={handleAddCustomer}
         onDelete={handleDeleteCustomer}
       />
