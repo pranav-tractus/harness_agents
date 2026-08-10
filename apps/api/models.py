@@ -66,6 +66,26 @@ class ProductUpdate(BaseModel):
     metadata: dict[str, str] | None = None
 
 
+class OrgOut(BaseModel):
+    id: str
+    name: str
+    tagline: str | None = None
+    is_catchall: bool = False
+    product_count: int = 0
+    customer_count: int = 0
+    unbuilt_count: int = 0
+
+
+class OrgCreate(BaseModel):
+    name: str
+    tagline: str | None = None
+
+
+class OrgUpdate(BaseModel):
+    name: str | None = None
+    tagline: str | None = None
+
+
 class MessageIn(BaseModel):
     role: str  # "me" | "customer"
     body: str

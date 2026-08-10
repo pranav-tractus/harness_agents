@@ -10,6 +10,7 @@ from apps.api.routers import (
     graphs,
     messages,
     models_router,
+    organizations,
     products,
 )
 from apps.api.settings import get_settings
@@ -35,6 +36,7 @@ def create_app() -> FastAPI:
     app.include_router(chats.router)
     app.include_router(messages.router)
     app.include_router(models_router.router)
+    app.include_router(organizations.router)
     app.include_router(graphs.customer_router)
     return app
 
