@@ -13,6 +13,7 @@ from apps.api.models import (
 from apps.api.services import (
     chat_graph_service,
     chat_service,
+    org_service,
     product_matcher_service,
     summary_context_service,
 )
@@ -174,10 +175,10 @@ def _agent_msg(customer_id, chat_id, body, kind, summary_id=None, summary_json=N
 _AGENT_WINDOW_KINDS = ("chat", "question", "draft", "final")
 
 
-def _resolved_product_block(matches) -> str:
+def _resolved_product_block(matches, org_id: str) -> str:
     lines = []
     for m in matches:
-        doc = mongo.products().find_one({"code": m.resolved_code}) or {}
+        doc = mongo.products().find_one({"code": m.resolved_code, "org_id": org_id}) or {}
         name = m.canonical_name or doc.get("name") or m.resolved_code
         short = doc.get("short_description") or doc.get("description") or ""
         meta = doc.get("metadata") or {}
@@ -252,7 +253,22 @@ def invoke(
             "summary": None,
         }
 
-    match_result = matcher_fn(customer_id, window, model_key)
+    try:
+        org_id = org_service.org_id_for_customer(customer_id)
+        match_result = matcher_fn(customer_id, window, model_key)
+    except org_service.MissingOrg:
+        return {
+            "messages": [
+                _agent_msg(
+                    customer_id,
+                    chat_id,
+                    "This customer isn't attached to an organization, so I can't "
+                    "look up products. Assign one on the Organizations page.",
+                    "question",
+                )
+            ],
+            "summary": None,
+        }
     unresolved = match_result.unresolved()
     if unresolved:
         msg = _agent_msg(
@@ -265,7 +281,7 @@ def invoke(
         return {"messages": [msg], "summary": None}
 
     ctx = context_fn(customer_id)
-    resolved_block = _resolved_product_block(match_result.resolved())
+    resolved_block = _resolved_product_block(match_result.resolved(), org_id)
     if resolved_block:
         ctx["product_block"] = resolved_block
     _match_docs = [m.model_dump() for m in match_result.matches]

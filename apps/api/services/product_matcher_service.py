@@ -4,6 +4,7 @@ import logging
 from pydantic import BaseModel, Field
 
 from apps.api.db import falkor, mongo, vectors
+from apps.api.services import org_service
 from core import embeddings
 from core.llm_client import call_llm
 
@@ -104,11 +105,11 @@ def _extract_mentions(text: str, model_key, llm) -> list[str]:
     return [m.strip() for m in result.mentions if m and m.strip()]
 
 
-def _fallback_candidates(mentions: list[str]) -> list[ProductCandidate]:
-    """Substring scan over Mongo products; keeps the app working offline."""
+def _fallback_candidates(mentions: list[str], org_id: str) -> list[ProductCandidate]:
+    """Substring scan over the org's products; keeps the app working offline."""
     lows = [m.lower() for m in mentions]
     out = []
-    for doc in mongo.products().find():
+    for doc in mongo.products().find({"org_id": org_id}):
         terms = [doc.get("code") or "", doc.get("name") or ""]
         if any(t and (t.lower() in m or m in t.lower()) for t in terms for m in lows):
             out.append(ProductCandidate(
@@ -118,11 +119,11 @@ def _fallback_candidates(mentions: list[str]) -> list[ProductCandidate]:
     return out
 
 
-def _vector_candidates(mentions: list[str]) -> list[ProductCandidate]:
+def _vector_candidates(mentions: list[str], org_id: str) -> list[ProductCandidate]:
     if not vectors.is_available():
-        return _fallback_candidates(mentions)
+        return _fallback_candidates(mentions, org_id)
     try:
-        index = vectors.default_index()
+        index = org_service.vector_index_for(org_id)
         out = []
         for emb in embeddings.embed(mentions, mode="query"):
             for hit in index.query(emb, top_k=5):
@@ -145,7 +146,7 @@ def _vector_candidates(mentions: list[str]) -> list[ProductCandidate]:
         return out
     except Exception:
         logger.warning("vector search failed; using substring fallback", exc_info=True)
-        return _fallback_candidates(mentions)
+        return _fallback_candidates(mentions, org_id)
 
 
 def _history_pool(customer_id: str) -> list[ProductCandidate]:
@@ -160,19 +161,22 @@ def _history_pool(customer_id: str) -> list[ProductCandidate]:
     return [ProductCandidate(code=r[0], name=r[0], score=0.0) for r in rows if r[0]]
 
 
-def _live_codes() -> set[str]:
-    """Every code currently in the catalog."""
-    return {d["code"] for d in mongo.products().find({}, {"code": 1}) if d.get("code")}
+def _live_codes(org_id: str) -> set[str]:
+    """Every code in this organization's catalog."""
+    return {d["code"] for d in mongo.products().find({"org_id": org_id}, {"code": 1})
+            if d.get("code")}
 
 
-def _filter_history(cands: list[ProductCandidate]) -> list[ProductCandidate]:
-    """Drop history entries that are not catalog codes.
+def _filter_history(cands: list[ProductCandidate], org_id: str) -> list[ProductCandidate]:
+    """Drop history entries that are not codes in this organization's catalog.
 
     The graph stores a line item's free-text `description` in
     `LineItem.product_code`, so strings like "FRUCTOPURE TM 700" come back
-    from `_history_pool` looking like SKUs.
+    from `_history_pool` looking like SKUs. Codes belonging to another
+    organization are dropped for the same reason: this customer cannot buy
+    them here.
     """
-    live = _live_codes()
+    live = _live_codes(org_id)
     return [c for c in cands if c.code in live]
 
 
@@ -238,9 +242,10 @@ def _guard(result: ProductMatchResult, valid_codes: set[str]) -> ProductMatchRes
 
 
 def resolve_products(
-    customer_id, window, model_key, *,
+    customer_id, window, model_key, *, org_id=None,
     mention_fn=None, candidate_fn=None, history_fn=None, llm=None,
 ) -> ProductMatchResult:
+    org_id = org_id or org_service.org_id_for_customer(customer_id)
     llm = llm or call_llm
     mention_fn = mention_fn or (lambda text: _extract_mentions(text, model_key, llm))
     candidate_fn = candidate_fn or _vector_candidates
@@ -249,8 +254,8 @@ def resolve_products(
     mentions = mention_fn(text)
     if not mentions:
         return ProductMatchResult(matches=[])
-    history = _filter_history(history_fn(customer_id))
-    pool = _dedup(candidate_fn(mentions) + history)
+    history = _filter_history(history_fn(customer_id), org_id)
+    pool = _dedup(candidate_fn(mentions, org_id) + history)
     if not pool:
         return ProductMatchResult(matches=[
             ProductMatch(
@@ -265,4 +270,4 @@ def resolve_products(
         model_key,
         system_prompt=_SYSTEM,
     )
-    return _guard(result, _live_codes() & {c.code for c in pool})
+    return _guard(result, _live_codes(org_id) & {c.code for c in pool})
