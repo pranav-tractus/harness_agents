@@ -6,6 +6,7 @@ from fastapi.testclient import TestClient
 from apps.api.db import mongo
 from apps.api.models import AgentDecision
 from apps.api.services import agent_service, org_service
+from apps.api.services.product_matcher_service import ProductMatchResult
 from tests.api._factories import make_extract, make_item
 
 
@@ -22,7 +23,8 @@ def _seed_fixture_data() -> None:
     org_service.seed_roster()
     for cid, name in _CUSTOMERS:
         mongo.customers().insert_one(
-            {"_id": cid, "name": name, "profile": {}, "last_contract_seq": 0, "updated_at": "now"}
+            {"_id": cid, "name": name, "profile": {}, "last_contract_seq": 0,
+             "updated_at": "now", "org_id": "pym"}
         )
     for code, desc in _PRODUCTS:
         mongo.products().insert_one({"code": code, "description": desc, "spec": None, "org_id": "pym"})
@@ -46,6 +48,8 @@ def client(monkeypatch):
                             message="Draft ready.",
                             contract=make_extract(items=[make_item(description="TG-BPPC")]),
                         ))
+    monkeypatch.setattr(agent_service.product_matcher_service, "resolve_products",
+                        lambda *a, **k: ProductMatchResult(matches=[]))
     monkeypatch.setattr(agent_service.summary_context_service, "assemble",
                         lambda *a, **k: {"profile_block": None, "history_block": None,
                                          "product_block": None})
