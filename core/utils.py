@@ -37,7 +37,8 @@ ANTHROPIC_DIRECT_MODELS = {
     "opus-4-6": "claude-opus-4-6",
     "opus-4-7": "claude-opus-4-7",
     "opus-4-8": "claude-opus-4-8",
-    "fable-5": "claude-fable-5",
+    "opus-5": "claude-opus-5",
+    # "fable-5": "claude-fable-5",
 }
 
 GEMINI_MODELS = {
