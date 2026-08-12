@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Token Usage · 20260812T103606Z</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+
+:root {
+  --bg: #f5f1e8;
+  --bg-card: #faf7ef;
+  --bg-elevated: #fffdf6;
+  --ink: #1a1a1a;
+  --ink-soft: #4a4a4a;
+  --ink-mute: #7a7a7a;
+  --line: #d6cfbe;
+  --line-soft: #e8e2d2;
+  --accent: #b8341c;
+  --accent-soft: #f4d9d2;
+  --warn: #c4761c;
+  --good: #2d6b3f;
+  --good-soft: #d4e3d8;
+  --display: 'Instrument Serif', Georgia, serif;
+  --sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.55;
+  font-size: 15px;
+  padding: 0;
+}
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+.masthead {
+  border-bottom: 2px solid var(--ink);
+  padding: 28px 0 20px;
+  margin-bottom: 32px;
+}
+.masthead-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 14px;
+}
+.masthead-top .dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  background: var(--good);
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+h1 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+h1 em { font-style: italic; color: var(--ink-soft); }
+.dek {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 21px;
+  color: var(--ink-soft);
+  max-width: 720px;
+  line-height: 1.4;
+}
+.findings {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 1px solid var(--ink);
+  margin: 40px 0;
+  background: var(--bg-card);
+}
+.finding {
+  padding: 24px 22px;
+  border-right: 1px solid var(--line);
+  position: relative;
+}
+.finding:last-child { border-right: none; }
+.finding .label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 12px;
+}
+.finding .label.critical { color: var(--accent); }
+.finding .label.critical::before { content: "▲ "; }
+.finding .big {
+  font-family: var(--display);
+  font-size: 42px;
+  line-height: 1;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+.finding .big.bad { color: var(--accent); }
+.finding .big.good { color: var(--good); }
+.finding .desc {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+.finding .desc strong { color: var(--ink); }
+section { margin: 56px 0; scroll-margin-top: 20px; }
+.section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 6px;
+}
+.section-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+}
+h2 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  flex: 1;
+}
+.section-intro {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 17px;
+  color: var(--ink-soft);
+  margin: 12px 0 24px;
+  max-width: 760px;
+  line-height: 1.45;
+}
+.alert {
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent);
+  padding: 18px 22px;
+  margin: 20px 0;
+  font-size: 14.5px;
+}
+.alert strong { color: var(--accent); font-weight: 600; }
+.dataset-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 24px 0;
+}
+.dataset-card {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  padding: 20px 18px;
+  position: relative;
+}
+.dataset-card.broken {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+.dataset-card .name {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  margin-bottom: 14px;
+  letter-spacing: 0.02em;
+}
+.dataset-card.broken .name { color: var(--accent); font-weight: 600; }
+.dataset-card .score {
+  font-family: var(--display);
+  font-size: 56px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.dataset-card.broken .score { color: var(--accent); }
+.dataset-card .score-label {
+  font-size: 11px;
+  color: var(--ink-mute);
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.dataset-card .meta {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-soft);
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.dataset-card .bar-track {
+  height: 6px;
+  background: var(--line-soft);
+  margin-bottom: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.dataset-card .bar-fill {
+  height: 100%;
+  background: var(--good);
+}
+.dataset-card.broken .bar-fill { background: var(--accent); }
+.chart-wrap {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  padding: 24px;
+  margin: 20px 0;
+}
+.chart-title {
+  font-family: var(--display);
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+.chart-sub {
+  font-size: 13px;
+  color: var(--ink-mute);
+  margin-bottom: 20px;
+}
+.chart-canvas-wrap {
+  position: relative;
+  height: 440px;
+}
+.table-controls {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.control label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
+.control select, .control input {
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 5px 9px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  border-radius: 0;
+}
+.control select:focus, .control input:focus {
+  outline: none;
+  border-color: var(--ink);
+}
+.table-scroll { overflow-x: auto; border: 1px solid var(--line); background: var(--bg-card); }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+thead th {
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--ink);
+  text-align: left;
+  padding: 11px 14px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  cursor: pointer;
+  user-select: none;
+  position: sticky;
+  top: 0;
+  white-space: nowrap;
+}
+thead th:hover { color: var(--ink); }
+thead th.sort-asc::after { content: " ↑"; color: var(--accent); }
+thead th.sort-desc::after { content: " ↓"; color: var(--accent); }
+tbody td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--line-soft);
+  font-family: var(--mono);
+  font-size: 12.5px;
+}
+tbody td:first-child { font-family: var(--sans); font-weight: 500; }
+tbody tr:hover td { background: var(--bg-elevated); }
+tbody tr.top-quartile td:first-child { color: var(--good); }
+tbody tr.top-quartile td:first-child::before { content: "● "; }
+tbody tr.bottom-quartile td:first-child { color: var(--accent); }
+tbody tr.bottom-quartile td:first-child::before { content: "○ "; }
+.numeric { text-align: right; }
+.match-cell { position: relative; }
+.match-bar {
+  display: inline-block;
+  width: 50px;
+  height: 5px;
+  background: var(--line-soft);
+  margin-right: 8px;
+  vertical-align: middle;
+  position: relative;
+}
+.match-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: var(--w);
+  background: var(--good);
+}
+.match-bar.low::after { background: var(--accent); }
+.match-bar.mid::after { background: var(--warn); }
+.fs-rollup {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  padding: 24px;
+  margin: 20px 0;
+}
+.fs-rollup-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+.fs-cell {
+  text-align: center;
+  padding: 14px 6px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--line-soft);
+}
+.fs-cell .fs-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+.fs-cell .fs-val {
+  font-family: var(--display);
+  font-size: 24px;
+}
+.fs-takeaway {
+  margin-top: 18px;
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ink-soft);
+}
+details {
+  border: 1px solid var(--line);
+  background: var(--bg-card);
+  margin: 20px 0;
+}
+details summary {
+  padding: 14px 22px;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+details summary::-webkit-details-marker { display: none; }
+details summary::after {
+  content: "+";
+  font-family: var(--display);
+  font-size: 22px;
+  color: var(--ink-soft);
+}
+details[open] summary::after { content: "−"; }
+details summary:hover { color: var(--ink); }
+details .details-content { padding: 0 22px 22px; }
+details pre {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--line-soft);
+  padding: 16px;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+.action-grid {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 14px 18px;
+  margin-top: 20px;
+}
+.action-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  padding-top: 3px;
+}
+.action-title {
+  font-family: var(--display);
+  font-size: 19px;
+  font-weight: 400;
+}
+.action-body { color: var(--ink-soft); margin-top: 4px; }
+footer {
+  margin-top: 80px;
+  padding: 24px 0 60px;
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.04em;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 820px) {
+  .wrap { padding: 0 18px; }
+  .findings { grid-template-columns: 1fr; }
+  .finding { border-right: none; border-bottom: 1px solid var(--line); }
+  .finding:last-child { border-bottom: none; }
+  .dataset-grid { grid-template-columns: 1fr; }
+  h1 { font-size: 36px; }
+  h2 { font-size: 28px; }
+  .chart-canvas-wrap { height: 360px; }
+}
+.badge { display:inline-block; padding:2px 7px; border-radius:10px; font-family:var(--mono); font-size:10px; margin-right:4px; border:1px solid var(--line); }
+.badge-warn { background:#fff3df; color:#7a4310; border-color:#e6c47a; }
+.badge-err  { background:#fde6e1; color:#7a160a; border-color:#e6928a; }
+.badge-info { background:#e7eef7; color:#1f3d70; border-color:#9bb4d4; }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="masthead">
+  <div class="masthead-top">
+    <span><span class="dot"></span>Token Usage Report</span>
+    <span>20260812T103606Z &nbsp;·&nbsp; Generated 2026-08-12T10:39:02.799270+00:00</span>
+  </div>
+  <h1>Token Usage</h1>
+</div>
+<section id="token-summary" style="padding:32px 40px;">
+  <div class="section-head"><span class="section-num">Sec. 1</span><h2>Token Usage</h2></div>
+  
+  <div class="dataset-grid"><div class="dataset-card"><div class="name">Input Tokens</div><div class="score">1,015,972</div></div><div class="dataset-card"><div class="name">Output Tokens</div><div class="score">92,790</div></div><div class="dataset-card"><div class="name">Cache Read</div><div class="score">0</div></div><div class="dataset-card"><div class="name">Cache Write</div><div class="score">0</div></div><div class="dataset-card"><div class="name">Total Tokens (excl. cache)</div><div class="score">1,108,762</div></div></div>
+  <p class="section-intro" style="margin-top:12px;">Total tokens = input + output. Cache tokens (read/write) are tracked separately and reflect Anthropic prompt caching activity.</p>
+  <div class="chart-wrap" style="margin-top:24px;"><div class="chart-title">Token Distribution by Model</div><div class="chart-canvas-wrap" style="height:320px;"><canvas id="tokenChart"></canvas></div></div>
+  <div class='chart-wrap' style='margin-top:24px;'><div class='chart-title'>By Model</div><table class='leaderboard'><thead><tr><th>Model</th><th>Runs</th><th>Input</th><th>Output</th><th>Total</th></tr></thead><tbody><tr><td>anthropic:opus-5</td><td>21</td><td>317,123</td><td>27,010</td><td>344,133</td></tr><tr><td>anthropic:sonnet-5</td><td>21</td><td>303,427</td><td>19,262</td><td>322,689</td></tr><tr><td>gemini:gemini-2.5-pro</td><td>21</td><td>0</td><td>0</td><td>0</td></tr><tr><td>openai:5.5</td><td>21</td><td>162,378</td><td>27,886</td><td>190,264</td></tr><tr><td>opus-4-8</td><td>21</td><td>0</td><td>0</td><td>0</td></tr><tr><td>sonnet-4-6</td><td>21</td><td>233,044</td><td>18,632</td><td>251,676</td></tr></tbody></table></div>
+  <div class='chart-wrap' style='margin-top:24px;'><div class='chart-title'>Per Chat</div><table class='leaderboard'><thead><tr><th>Chat</th><th>Model</th><th>Input</th><th>Output</th><th>Cache Read</th><th>Total</th></tr></thead><tbody><tr><td>01__2025-07-12__120363400604184610_g_us__c53c0007-bbd6-4474-8348-b011992829f8.json</td><td>anthropic:opus-5</td><td>14,339</td><td>1,264</td><td>0</td><td>15,603</td></tr><tr><td>01__2025-07-12__120363400604184610_g_us__c53c0007-bbd6-4474-8348-b011992829f8.json</td><td>anthropic:sonnet-5</td><td>14,477</td><td>812</td><td>0</td><td>15,289</td></tr><tr><td>01__2025-07-12__120363400604184610_g_us__c53c0007-bbd6-4474-8348-b011992829f8.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>01__2025-07-12__120363400604184610_g_us__c53c0007-bbd6-4474-8348-b011992829f8.json</td><td>openai:5.5</td><td>7,775</td><td>1,462</td><td>0</td><td>9,237</td></tr><tr><td>01__2025-07-12__120363400604184610_g_us__c53c0007-bbd6-4474-8348-b011992829f8.json</td><td>opus-4-8</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>01__2025-07-12__120363400604184610_g_us__c53c0007-bbd6-4474-8348-b011992829f8.json</td><td>sonnet-4-6</td><td>11,119</td><td>863</td><td>0</td><td>11,982</td></tr><tr><td>02__2025-07-14__120363403809993004_g_us__cb0945e9-65a0-488f-99f7-a2f9ab857033.json</td><td>anthropic:opus-5</td><td>14,540</td><td>945</td><td>0</td><td>15,485</td></tr><tr><td>02__2025-07-14__120363403809993004_g_us__cb0945e9-65a0-488f-99f7-a2f9ab857033.json</td><td>anthropic:sonnet-5</td><td>14,676</td><td>801</td><td>0</td><td>15,477</td></tr><tr><td>02__2025-07-14__120363403809993004_g_us__cb0945e9-65a0-488f-99f7-a2f9ab857033.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>02__2025-07-14__120363403809993004_g_us__cb0945e9-65a0-488f-99f7-a2f9ab857033.json</td><td>openai:5.5</td><td>7,919</td><td>892</td><td>0</td><td>8,811</td></tr><tr><td>02__2025-07-14__120363403809993004_g_us__cb0945e9-65a0-488f-99f7-a2f9ab857033.json</td><td>opus-4-8</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>02__2025-07-14__120363403809993004_g_us__cb0945e9-65a0-488f-99f7-a2f9ab857033.json</td><td>sonnet-4-6</td><td>11,303</td><td>663</td><td>0</td><td>11,966</td></tr><tr><td>03__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>anthropic:opus-5</td><td>14,328</td><td>1,098</td><td>0</td><td>15,426</td></tr><tr><td>03__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>anthropic:sonnet-5</td><td>14,470</td><td>783</td><td>0</td><td>15,253</td></tr><tr><td>03__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>03__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>openai:5.5</td><td>7,846</td><td>1,466</td><td>0</td><td>9,312</td></tr><tr><td>03__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-8</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>03__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-6</td><td>11,172</td><td>728</td><td>0</td><td>11,900</td></tr><tr><td>04__2025-07-22__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>anthropic:opus-5</td><td>14,219</td><td>1,219</td><td>0</td><td>15,438</td></tr><tr><td>04__2025-07-22__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>anthropic:sonnet-5</td><td>14,346</td><td>774</td><td>0</td><td>15,120</td></tr><tr><td>04__2025-07-22__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>04__2025-07-22__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>openai:5.5</td><td>7,661</td><td>898</td><td>0</td><td>8,559</td></tr><tr><td>04__2025-07-22__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>opus-4-8</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>04__2025-07-22__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>sonnet-4-6</td><td>10,987</td><td>772</td><td>0</td><td>11,759</td></tr><tr><td>05__2025-08-01__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>anthropic:opus-5</td><td>14,161</td><td>1,177</td><td>0</td><td>15,338</td></tr><tr><td>05__2025-08-01__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>anthropic:sonnet-5</td><td>14,302</td><td>828</td><td>0</td><td>15,130</td></tr><tr><td>05__2025-08-01__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>05__2025-08-01__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>openai:5.5</td><td>7,608</td><td>1,059</td><td>0</td><td>8,667</td></tr><tr><td>05__2025-08-01__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>opus-4-8</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>05__2025-08-01__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>sonnet-4-6</td><td>10,952</td><td>771</td><td>0</td><td>11,723</td></tr><tr><td>07__2025-09-27__120363420980882745_g_us__fc1a5131-1287-4c0b-98c6-40d0d5012d72.json</td><td>anthropic:opus-5</td><td>23,647</td><td>2,505</td><td>0</td><td>26,152</td></tr><tr><td>07__2025-09-27__120363420980882745_g_us__fc1a5131-1287-4c0b-98c6-40d0d5012d72.json</td><td>anthropic:sonnet-5</td><td>14,922</td><td>1,103</td><td>0</td><td>16,025</td></tr><tr><td>07__2025-09-27__120363420980882745_g_us__fc1a5131-1287-4c0b-98c6-40d0d5012d72.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>07__2025-09-27__120363420980882745_g_us__fc1a5131-1287-4c0b-98c6-40d0d5012d72.json</td><td>openai:5.5</td><td>7,999</td><td>1,477</td><td>0</td><td>9,476</td></tr><tr><td>07__2025-09-27__120363420980882745_g_us__fc1a5131-1287-4c0b-98c6-40d0d5012d72.json</td><td>opus-4-8</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>07__2025-09-27__120363420980882745_g_us__fc1a5131-1287-4c0b-98c6-40d0d5012d72.json</td><td>sonnet-4-6</td><td>11,531</td><td>2,044</td><td>0</td><td>13,575</td></tr><tr><td>09__2025-10-26__120363403571614155_g_us__64e00925-1a11-47da-bf00-9a015a992148.json</td><td>anthropic:opus-5</td><td>14,180</td><td>1,339</td><td>0</td><td>15,519</td></tr><tr><td>09__2025-10-26__120363403571614155_g_us__64e00925-1a11-47da-bf00-9a015a992148.json</td><td>anthropic:sonnet-5</td><td>14,440</td><td>1,179</td><td>0</td><td>15,619</td></tr><tr><td>09__2025-10-26__120363403571614155_g_us__64e00925-1a11-47da-bf00-9a015a992148.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>09__2025-10-26__120363403571614155_g_us__64e00925-1a11-47da-bf00-9a015a992148.json</td><td>openai:5.5</td><td>7,382</td><td>1,562</td><td>0</td><td>8,944</td></tr><tr><td>09__2025-10-26__120363403571614155_g_us__64e00925-1a11-47da-bf00-9a015a992148.json</td><td>opus-4-8</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>09__2025-10-26__120363403571614155_g_us__64e00925-1a11-47da-bf00-9a015a992148.json</td><td>sonnet-4-6</td><td>10,633</td><td>1,024</td><td>0</td><td>11,657</td></tr><tr><td>10__2025-07-15__120363402282420119_g_us__7314e5d3-3439-43f2-be98-8023d8c6c168.json</td><td>anthropic:opus-5</td><td>14,789</td><td>1,129</td><td>0</td><td>15,918</td></tr><tr><td>10__2025-07-15__120363402282420119_g_us__7314e5d3-3439-43f2-be98-8023d8c6c168.json</td><td>anthropic:sonnet-5</td><td>14,912</td><td>1,067</td><td>0</td><td>15,979</td></tr><tr><td>10__2025-07-15__120363402282420119_g_us__7314e5d3-3439-43f2-be98-8023d8c6c168.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>10__2025-07-15__120363402282420119_g_us__7314e5d3-3439-43f2-be98-8023d8c6c168.json</td><td>openai:5.5</td><td>8,069</td><td>1,458</td><td>0</td><td>9,527</td></tr><tr><td>10__2025-07-15__120363402282420119_g_us__7314e5d3-3439-43f2-be98-8023d8c6c168.json</td><td>opus-4-8</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>10__2025-07-15__120363402282420119_g_us__7314e5d3-3439-43f2-be98-8023d8c6c168.json</td><td>sonnet-4-6</td><td>11,489</td><td>677</td><td>0</td><td>12,166</td></tr><tr><td>11__2025-07-15__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>anthropic:opus-5</td><td>14,405</td><td>1,025</td><td>0</td><td>15,430</td></tr><tr><td>11__2025-07-15__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>anthropic:sonnet-5</td><td>14,541</td><td>770</td><td>0</td><td>15,311</td></tr><tr><td>11__2025-07-15__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>11__2025-07-15__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>openai:5.5</td><td>7,842</td><td>1,363</td><td>0</td><td>9,205</td></tr><tr><td>11__2025-07-15__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>opus-4-8</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>11__2025-07-15__120363400722326052_g_us__18965853-110b-40a3-9a9c-f6c29582e7b6.json</td><td>sonnet-4-6</td><td>11,198</td><td>647</td><td>0</td><td>11,845</td></tr><tr><td>13__2025-07-18__120363420625598220_g_us__f081da35-3b14-4328-86f6-0f569bc63b43.json</td><td>anthropic:opus-5</td><td>14,446</td><td>1,047</td><td>0</td><td>15,493</td></tr><tr><td>13__2025-07-18__120363420625598220_g_us__f081da35-3b14-4328-86f6-0f569bc63b43.json</td><td>anthropic:sonnet-5</td><td>14,589</td><td>911</td><td>0</td><td>15,500</td></tr><tr><td>13__2025-07-18__120363420625598220_g_us__f081da35-3b14-4328-86f6-0f569bc63b43.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>13__2025-07-18__120363420625598220_g_us__f081da35-3b14-4328-86f6-0f569bc63b43.json</td><td>openai:5.5</td><td>7,848</td><td>1,552</td><td>0</td><td>9,400</td></tr><tr><td>13__2025-07-18__120363420625598220_g_us__f081da35-3b14-4328-86f6-0f569bc63b43.json</td><td>opus-4-8</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>13__2025-07-18__120363420625598220_g_us__f081da35-3b14-4328-86f6-0f569bc63b43.json</td><td>sonnet-4-6</td><td>11,215</td><td>654</td><td>0</td><td>11,869</td></tr><tr><td>17__2025-07-19__120363420625598220_g_us__f081da35-3b14-4328-86f6-0f569bc63b43.json</td><td>anthropic:opus-5</td><td>14,329</td><td>1,463</td><td>0</td><td>15,792</td></tr><tr><td>17__2025-07-19__120363420625598220_g_us__f081da35-3b14-4328-86f6-0f569bc63b43.json</td><td>anthropic:sonnet-5</td><td>14,465</td><td>919</td><td>0</td><td>15,384</td></tr><tr><td>17__2025-07-19__120363420625598220_g_us__f081da35-3b14-4328-86f6-0f569bc63b43.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>17__2025-07-19__120363420625598220_g_us__f081da35-3b14-4328-86f6-0f569bc63b43.json</td><td>openai:5.5</td><td>7,737</td><td>1,153</td><td>0</td><td>8,890</td></tr><tr><td>17__2025-07-19__120363420625598220_g_us__f081da35-3b14-4328-86f6-0f569bc63b43.json</td><td>opus-4-8</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>17__2025-07-19__120363420625598220_g_us__f081da35-3b14-4328-86f6-0f569bc63b43.json</td><td>sonnet-4-6</td><td>11,102</td><td>832</td><td>0</td><td>11,934</td></tr><tr><td>18__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>anthropic:opus-5</td><td>14,480</td><td>894</td><td>0</td><td>15,374</td></tr><tr><td>18__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>anthropic:sonnet-5</td><td>14,601</td><td>962</td><td>0</td><td>15,563</td></tr><tr><td>18__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>18__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>openai:5.5</td><td>7,947</td><td>1,314</td><td>0</td><td>9,261</td></tr><tr><td>18__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>opus-4-8</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>18__2025-09-29__120363403592950429_g_us__d586d853-694c-42f9-93be-bc7ba5b2110c.json</td><td>sonnet-4-6</td><td>11,273</td><td>759</td><td>0</td><td>12,032</td></tr><tr><td>19__2025-10-01__120363422613115487_g_us__31b110ba-8007-4099-b171-e58e35c97bfc.json</td><td>anthropic:opus-5</td><td>14,947</td><td>1,209</td><td>0</td><td>16,156</td></tr><tr><td>19__2025-10-01__120363422613115487_g_us__31b110ba-8007-4099-b171-e58e35c97bfc.json</td><td>anthropic:sonnet-5</td><td>15,083</td><td>978</td><td>0</td><td>16,061</td></tr><tr><td>19__2025-10-01__120363422613115487_g_us__31b110ba-8007-4099-b171-e58e35c97bfc.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>19__2025-10-01__120363422613115487_g_us__31b110ba-8007-4099-b171-e58e35c97bfc.json</td><td>openai:5.5</td><td>8,161</td><td>827</td><td>0</td><td>8,988</td></tr><tr><td>19__2025-10-01__120363422613115487_g_us__31b110ba-8007-4099-b171-e58e35c97bfc.json</td><td>opus-4-8</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>19__2025-10-01__120363422613115487_g_us__31b110ba-8007-4099-b171-e58e35c97bfc.json</td><td>sonnet-4-6</td><td>11,546</td><td>848</td><td>0</td><td>12,394</td></tr><tr><td>20__2025-11-27__120363423137841545_g_us__13749097-9559-4fce-bd61-cdd1d978dc00.json</td><td>anthropic:opus-5</td><td>14,323</td><td>1,608</td><td>0</td><td>15,931</td></tr><tr><td>20__2025-11-27__120363423137841545_g_us__13749097-9559-4fce-bd61-cdd1d978dc00.json</td><td>anthropic:sonnet-5</td><td>14,456</td><td>898</td><td>0</td><td>15,354</td></tr><tr><td>20__2025-11-27__120363423137841545_g_us__13749097-9559-4fce-bd61-cdd1d978dc00.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>20__2025-11-27__120363423137841545_g_us__13749097-9559-4fce-bd61-cdd1d978dc00.json</td><td>openai:5.5</td><td>7,738</td><td>1,340</td><td>0</td><td>9,078</td></tr><tr><td>20__2025-11-27__120363423137841545_g_us__13749097-9559-4fce-bd61-cdd1d978dc00.json</td><td>opus-4-8</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>20__2025-11-27__120363423137841545_g_us__13749097-9559-4fce-bd61-cdd1d978dc00.json</td><td>sonnet-4-6</td><td>11,107</td><td>823</td><td>0</td><td>11,930</td></tr><tr><td>22__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>anthropic:opus-5</td><td>22,190</td><td>1,557</td><td>0</td><td>23,747</td></tr><tr><td>22__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>anthropic:sonnet-5</td><td>14,547</td><td>871</td><td>0</td><td>15,418</td></tr><tr><td>22__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>22__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>openai:5.5</td><td>7,922</td><td>1,228</td><td>0</td><td>9,150</td></tr><tr><td>22__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-8</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>22__2026-01-06__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-6</td><td>11,231</td><td>587</td><td>0</td><td>11,818</td></tr><tr><td>23__2026-01-07__120363403571614155_g_us__c21c86dd-475b-49f4-8799-49743702a286.json</td><td>anthropic:opus-5</td><td>13,520</td><td>964</td><td>0</td><td>14,484</td></tr><tr><td>23__2026-01-07__120363403571614155_g_us__c21c86dd-475b-49f4-8799-49743702a286.json</td><td>anthropic:sonnet-5</td><td>13,663</td><td>590</td><td>0</td><td>14,253</td></tr><tr><td>23__2026-01-07__120363403571614155_g_us__c21c86dd-475b-49f4-8799-49743702a286.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>23__2026-01-07__120363403571614155_g_us__c21c86dd-475b-49f4-8799-49743702a286.json</td><td>openai:5.5</td><td>7,062</td><td>1,212</td><td>0</td><td>8,274</td></tr><tr><td>23__2026-01-07__120363403571614155_g_us__c21c86dd-475b-49f4-8799-49743702a286.json</td><td>opus-4-8</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>23__2026-01-07__120363403571614155_g_us__c21c86dd-475b-49f4-8799-49743702a286.json</td><td>sonnet-4-6</td><td>10,511</td><td>942</td><td>0</td><td>11,453</td></tr><tr><td>24__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>anthropic:opus-5</td><td>13,632</td><td>1,121</td><td>0</td><td>14,753</td></tr><tr><td>24__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>anthropic:sonnet-5</td><td>13,762</td><td>776</td><td>0</td><td>14,538</td></tr><tr><td>24__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>24__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>openai:5.5</td><td>7,306</td><td>1,379</td><td>0</td><td>8,685</td></tr><tr><td>24__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-8</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>24__2026-01-20__120363407382355715_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-6</td><td>10,598</td><td>658</td><td>0</td><td>11,256</td></tr><tr><td>25__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>anthropic:opus-5</td><td>14,959</td><td>2,226</td><td>0</td><td>17,185</td></tr><tr><td>25__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>anthropic:sonnet-5</td><td>15,073</td><td>1,784</td><td>0</td><td>16,857</td></tr><tr><td>25__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>25__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>openai:5.5</td><td>8,041</td><td>1,956</td><td>0</td><td>9,997</td></tr><tr><td>25__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>opus-4-8</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>25__2026-01-30__120363403074656566_g_us__8f477a8f-2a60-4e0a-bf0e-8cc3cdf1dc9f.json</td><td>sonnet-4-6</td><td>11,695</td><td>1,902</td><td>0</td><td>13,597</td></tr><tr><td>26__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>anthropic:opus-5</td><td>13,796</td><td>1,091</td><td>0</td><td>14,887</td></tr><tr><td>26__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>anthropic:sonnet-5</td><td>13,943</td><td>864</td><td>0</td><td>14,807</td></tr><tr><td>26__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>26__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>openai:5.5</td><td>7,458</td><td>1,582</td><td>0</td><td>9,040</td></tr><tr><td>26__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>opus-4-8</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>26__2026-01-29__120363408498669191_g_us__4b9c2faa-94dd-4236-abcc-398807051f21.json</td><td>sonnet-4-6</td><td>10,727</td><td>788</td><td>0</td><td>11,515</td></tr><tr><td>27__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>anthropic:opus-5</td><td>14,081</td><td>1,131</td><td>0</td><td>15,212</td></tr><tr><td>27__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>anthropic:sonnet-5</td><td>14,211</td><td>776</td><td>0</td><td>14,987</td></tr><tr><td>27__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>27__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>openai:5.5</td><td>7,593</td><td>1,349</td><td>0</td><td>8,942</td></tr><tr><td>27__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>opus-4-8</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>27__2026-02-09__120363426578757754_g_us__12a4f3a7-d506-4d32-ae06-3f76508c6abd.json</td><td>sonnet-4-6</td><td>10,919</td><td>906</td><td>0</td><td>11,825</td></tr><tr><td>28__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>anthropic:opus-5</td><td>13,812</td><td>998</td><td>0</td><td>14,810</td></tr><tr><td>28__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>anthropic:sonnet-5</td><td>13,948</td><td>816</td><td>0</td><td>14,764</td></tr><tr><td>28__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>gemini:gemini-2.5-pro</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>28__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>openai:5.5</td><td>7,464</td><td>1,357</td><td>0</td><td>8,821</td></tr><tr><td>28__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>opus-4-8</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>28__2026-02-24__120363421131250401_g_us__e05574ec-b110-4554-9fc3-3abb4f9011a8.json</td><td>sonnet-4-6</td><td>10,736</td><td>744</td><td>0</td><td>11,480</td></tr></tbody></table></div>
+</section>
+</div>
+<script>
+
+const tkData = [{"label": "anthropic:opus-5", "input": 317123, "output": 27010, "cache": 0}, {"label": "anthropic:sonnet-5", "input": 303427, "output": 19262, "cache": 0}, {"label": "gemini:gemini-2.5-pro", "input": 0, "output": 0, "cache": 0}, {"label": "openai:5.5", "input": 162378, "output": 27886, "cache": 0}, {"label": "opus-4-8", "input": 0, "output": 0, "cache": 0}, {"label": "sonnet-4-6", "input": 233044, "output": 18632, "cache": 0}];
+if (tkData.length && document.getElementById("tokenChart")) {
+  new Chart(document.getElementById("tokenChart").getContext("2d"), {
+    type: "bar",
+    data: {
+      labels: tkData.map((d) => d.label),
+      datasets: [
+        { label: "Input", data: tkData.map((d) => d.input), backgroundColor: "#7a8aa8cc" },
+        { label: "Output", data: tkData.map((d) => d.output), backgroundColor: "#2d6b3fcc" },
+        { label: "Cache", data: tkData.map((d) => d.cache), backgroundColor: "#b9543fcc" },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: "bottom" } },
+      scales: { x: { stacked: true }, y: { stacked: true } },
+    },
+  });
+}
+
+</script>
+</body>
+</html>
