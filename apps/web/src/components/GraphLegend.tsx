@@ -1,6 +1,6 @@
 import { NODE_COLORS } from "@/components/graph/nodes/parts";
 
-const CUSTOMER_TYPES = ["Customer", "Chat", "Contract", "LineItem", "Term", "MessageRef", "Product", "Port"];
+const CUSTOMER_TYPES = ["Customer", "Organization", "Chat", "Contract", "LineItem", "Term", "MessageRef", "Product", "Port"];
 
 const STATUS_GLYPHS: { glyph: string; label: string }[] = [
   { glyph: "✅", label: "agreed by both" },

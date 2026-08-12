@@ -6,8 +6,8 @@ from pathlib import Path
 from pydantic import BaseModel, Field
 from pymongo.errors import DuplicateKeyError
 
-from apps.api.db import mongo, vectors
-from apps.api.services import product_embedding_service
+from apps.api.db import mongo
+from apps.api.services import org_classifier_service, product_embedding_service
 from apps.api.settings import get_settings
 from core.llm_client import call_llm
 
@@ -187,7 +187,8 @@ class DuplicatePdf(Exception):
 
 
 def upsert_product(
-    spec: ProductSpec, *, source_pdf: str, pdf_hash: str, source_label: str = "OG Files"
+    spec: ProductSpec, *, source_pdf: str, pdf_hash: str, source_label: str = "OG Files",
+    classify_fn=None,
 ) -> dict:
     """Store a product, keyed on the source PDF's content hash.
 
@@ -208,9 +209,13 @@ def upsert_product(
         "source_label": source_label,
     }
 
+    _classify = classify_fn or (lambda d: org_classifier_service.classify(d).org_id)
+    fields["org_id"] = _classify(fields)
+
     existing = mongo.products().find_one({"source_pdf_hash": pdf_hash})
     if existing:
         fields.pop("code")  # first code wins
+        fields.pop("org_id")  # first org wins
         mongo.products().update_one({"_id": existing["_id"]}, {"$set": fields})
         return mongo.products().find_one({"_id": existing["_id"]})
 
@@ -219,6 +224,9 @@ def upsert_product(
         raise CodeCollision(spec.code, clash.get("source_pdf") or "")
     if clash:
         # A seeded or hand-created product with no spec sheet: claim it.
+        # Do NOT overwrite org_id here — org assignment must be done explicitly
+        # via PUT /api/products/{id} (which calls move_org and re-indexes vectors).
+        fields.pop("org_id", None)
         mongo.products().update_one({"_id": clash["_id"]}, {"$set": fields})
         return mongo.products().find_one({"_id": clash["_id"]})
 
@@ -442,10 +450,6 @@ def _ingest_folder_s3(uri: str, *, workers: int, list_s3_fn, kwargs: dict) -> li
 
 def ingest_folder(folder, *, workers: int = 15, list_s3_fn=None, **kwargs) -> list[IngestReport]:
     mongo.ensure_indexes()
-    if not kwargs.get("dry_run") and kwargs.get("index") is None and vectors.is_available():
-        idx = vectors.default_index()
-        idx.ensure()
-        kwargs["index"] = idx
 
     folder_str = str(folder)
     if folder_str.startswith("s3://"):

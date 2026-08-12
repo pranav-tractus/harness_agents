@@ -6,7 +6,7 @@ from bson import ObjectId
 
 from apps.api.db import mongo
 from apps.api.db.vectors import InMemoryIndex
-from apps.api.services import spec_ingest_service as si
+from apps.api.services import org_service, spec_ingest_service as si
 from apps.api.services.spec_ingest_service import ProductSpec
 
 
@@ -301,3 +301,24 @@ def test_ingest_folder_sweeps_s3_uri():
     assert [r.status for r in reports] == ["ingested", "ingested"]
     assert mongo.products().count_documents({}) == 2
     assert {d["source_label"] for d in mongo.products().find()} == {"Test Files"}
+
+
+def test_upsert_classifies_the_product_into_an_org():
+    org_service.seed_roster()
+    doc = si.upsert_product(_SPEC, source_pdf="specs/lec.pdf", pdf_hash="ph-org-1")
+    assert doc["org_id"] == "roxxon"  # _SPEC is a soy lecithin
+
+
+def test_upsert_uses_the_injected_classifier():
+    org_service.seed_roster()
+    doc = si.upsert_product(_SPEC, source_pdf="specs/lec2.pdf", pdf_hash="ph-org-2",
+                            classify_fn=lambda d: "alchemax")
+    assert doc["org_id"] == "alchemax"
+
+
+def test_reingesting_the_same_pdf_does_not_move_the_product():
+    org_service.seed_roster()
+    si.upsert_product(_SPEC, source_pdf="specs/lec3.pdf", pdf_hash="ph-org-3")
+    mongo.products().update_one({"code": _SPEC.code}, {"$set": {"org_id": "alchemax"}})
+    doc = si.upsert_product(_SPEC, source_pdf="specs/lec3.pdf", pdf_hash="ph-org-3")
+    assert doc["org_id"] == "alchemax"

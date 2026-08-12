@@ -2,6 +2,7 @@ import mongomock
 import pytest
 
 from apps.api.db import mongo
+from apps.api.services import org_service
 from apps.api.services import product_matcher_service as pm
 from apps.api.services.product_matcher_service import (
     MentionList, ProductCandidate, ProductMatch, ProductMatchResult)
@@ -10,6 +11,7 @@ from apps.api.services.product_matcher_service import (
 @pytest.fixture(autouse=True)
 def _fake_mongo(monkeypatch):
     monkeypatch.setattr(mongo, "_client", mongomock.MongoClient())
+    mongo.customers().insert_one({"_id": "dummy-01", "name": "Dummy", "org_id": "pym"})
     yield
     mongo.reset_client()
 
@@ -23,7 +25,7 @@ def _mentions(*ms):
 
 
 def _cands(*cands):
-    return lambda mentions: list(cands)
+    return lambda mentions, org_id: list(cands)
 
 
 def _hist(*codes):
@@ -35,7 +37,7 @@ def _cand(code, score=0.9, **kw):
 
 
 def test_confident_match_passes_through():
-    mongo.products().insert_one({"code": "TG-BPPC", "name": "Bypass Choline"})
+    mongo.products().insert_one({"code": "TG-BPPC", "name": "Bypass Choline", "org_id": "pym"})
     result = ProductMatchResult(matches=[ProductMatch(
         mention="choline", status="confident", resolved_code="TG-BPPC",
         canonical_name="Bypass Choline", confidence=0.95)])
@@ -61,7 +63,7 @@ def test_guard_rejects_a_pool_code_that_is_not_in_mongo():
 
 
 def test_guard_accepts_a_code_that_is_in_mongo():
-    mongo.products().insert_one({"code": "TG-BPPC", "name": "Bypass Choline"})
+    mongo.products().insert_one({"code": "TG-BPPC", "name": "Bypass Choline", "org_id": "pym"})
     result = ProductMatchResult(matches=[ProductMatch(
         mention="choline", status="confident", resolved_code="TG-BPPC",
         canonical_name="Bypass Choline", confidence=0.95)])
@@ -74,11 +76,11 @@ def test_guard_accepts_a_code_that_is_in_mongo():
 
 def test_history_pool_drops_codes_with_no_product():
     """The graph stores free-text descriptions in LineItem.product_code."""
-    mongo.products().insert_one({"code": "TG-BPPC", "name": "Bypass Choline"})
+    mongo.products().insert_one({"code": "TG-BPPC", "name": "Bypass Choline", "org_id": "pym"})
     kept = pm._filter_history([
         ProductCandidate(code="TG-BPPC", name="TG-BPPC"),
         ProductCandidate(code="FRUCTOPURE TM 700", name="FRUCTOPURE TM 700"),
-    ])
+    ], "pym")
     assert [c.code for c in kept] == ["TG-BPPC"]
 
 
@@ -101,7 +103,7 @@ def test_empty_mentions_short_circuits_llm_and_candidates():
         called["llm"] += 1
         return ProductMatchResult(matches=[])
 
-    def _fake_cands(mentions):
+    def _fake_cands(mentions, org_id):
         called["cands"] += 1
         return []
 
@@ -125,7 +127,7 @@ def test_mentions_without_candidates_return_no_match_questions():
 
 
 def test_prompt_carries_scores_metadata_snippets_and_history():
-    mongo.products().insert_one({"code": "TG-BPPC", "name": "Bypass Choline"})
+    mongo.products().insert_one({"code": "TG-BPPC", "name": "Bypass Choline", "org_id": "pym"})
     seen = {}
 
     def _fake_llm(prompt, schema, model_key, system_prompt=None):
@@ -176,22 +178,23 @@ def test_dedup_keeps_best_score_and_fills_snippet():
 def test_fallback_candidates_substring_scan(monkeypatch):
     mongo.products().insert_one({
         "_id": "PL5", "code": "PL5", "name": "Feed Lecithin",
-        "metadata": {"form": "liquid"}})
+        "org_id": "pym", "metadata": {"form": "liquid"}})
     monkeypatch.setattr(pm.vectors, "is_available", lambda: False)
-    cands = pm._vector_candidates(["need the giiofeed pl5 drums"])
+    cands = pm._vector_candidates(["need the giiofeed pl5 drums"], "pym")
     assert [c.code for c in cands] == ["PL5"]
     assert cands[0].metadata == {"form": "liquid"}
 
 
 def test_vector_error_falls_back(monkeypatch):
-    mongo.products().insert_one({"_id": "PL5", "code": "PL5", "name": "Feed Lecithin"})
+    mongo.products().insert_one({"_id": "PL5", "code": "PL5", "name": "Feed Lecithin",
+                                 "org_id": "pym"})
     monkeypatch.setattr(pm.vectors, "is_available", lambda: True)
 
     def _boom(*a, **k):
         raise RuntimeError("aws down")
 
     monkeypatch.setattr(pm.embeddings, "embed", _boom)
-    cands = pm._vector_candidates(["pl5 please"])
+    cands = pm._vector_candidates(["pl5 please"], "pym")
     assert [c.code for c in cands] == ["PL5"]
 
 
@@ -208,12 +211,100 @@ def test_vector_candidate_without_code_metadata_is_skipped(monkeypatch):
             ]
 
     monkeypatch.setattr(pm.vectors, "is_available", lambda: True)
-    monkeypatch.setattr(pm.vectors, "default_index", lambda: _Idx())
+    monkeypatch.setattr(pm.org_service, "vector_index_for", lambda org_id: _Idx())
     monkeypatch.setattr(pm.embeddings, "embed", lambda texts, mode="query": [[1.0, 0.0]])
-    cands = pm._vector_candidates(["lecithin"])
+    cands = pm._vector_candidates(["lecithin"], "pym")
     assert [c.code for c in cands] == ["PL5"]
 
 
 def test_system_prompt_carries_hard_rules():
     assert "Only ever use codes from the provided pool" in pm._SYSTEM
     assert "Empty is a valid answer" in pm._SYSTEM
+
+
+def test_fallback_candidates_only_scan_the_orgs_products():
+    mongo.products().insert_many([
+        {"code": "PL5", "name": "Feed Lecithin", "org_id": "roxxon"},
+        {"code": "PL6", "name": "Feed Lecithin Plus", "org_id": "pym"},
+    ])
+    cands = pm._fallback_candidates(["feed lecithin please"], "roxxon")
+    assert [c.code for c in cands] == ["PL5"]
+
+
+def test_vector_candidates_query_the_orgs_index(monkeypatch):
+    from apps.api.db.vectors import VectorHit
+
+    asked = {}
+
+    class _Idx:
+        def query(self, embedding, top_k=5):
+            return [VectorHit(key="k#main", score=0.9,
+                              metadata={"code": "PL5", "name": "Feed Lecithin"})]
+
+    def _index_for(org_id):
+        asked["org_id"] = org_id
+        return _Idx()
+
+    monkeypatch.setattr(pm.vectors, "is_available", lambda: True)
+    monkeypatch.setattr(pm.org_service, "vector_index_for", _index_for)
+    monkeypatch.setattr(pm.embeddings, "embed", lambda texts, mode="query": [[1.0, 0.0]])
+    cands = pm._vector_candidates(["lecithin"], "roxxon")
+    assert asked["org_id"] == "roxxon"
+    assert [c.code for c in cands] == ["PL5"]
+
+
+def test_live_codes_are_scoped_to_the_org():
+    mongo.products().insert_many([
+        {"code": "IN", "org_id": "pym"},
+        {"code": "OUT", "org_id": "roxxon"},
+    ])
+    assert pm._live_codes("pym") == {"IN"}
+
+
+def test_guard_rejects_a_code_belonging_to_another_org():
+    mongo.products().insert_one({"code": "OUT", "name": "Other Org SKU", "org_id": "roxxon"})
+    result = ProductMatchResult(matches=[ProductMatch(
+        mention="that thing", status="confident", resolved_code="OUT",
+        canonical_name="Other Org SKU", confidence=0.99)])
+    out = pm.resolve_products("dummy-01", _window("send that thing"), "m",
+                              mention_fn=_mentions("that thing"),
+                              candidate_fn=lambda mentions, org_id: [_cand("OUT")],
+                              history_fn=_hist(), llm=lambda *a, **k: result)
+    assert out.matches[0].status == "no_match"
+
+
+def test_history_from_another_org_is_dropped():
+    mongo.products().insert_many([
+        {"code": "MINE", "org_id": "pym"},
+        {"code": "THEIRS", "org_id": "roxxon"},
+    ])
+    kept = pm._filter_history(
+        [ProductCandidate(code="MINE", name="MINE"),
+         ProductCandidate(code="THEIRS", name="THEIRS")],
+        "pym",
+    )
+    assert [c.code for c in kept] == ["MINE"]
+
+
+def test_resolve_reads_the_org_off_the_customer():
+    seen = {}
+    mongo.products().insert_one({"code": "TG-BPPC", "org_id": "pym"})
+
+    def _cands_recording(mentions, org_id):
+        seen["org"] = org_id
+        return []
+
+    pm.resolve_products("dummy-01", _window("need choline"), "m",
+                        mention_fn=_mentions("choline"),
+                        candidate_fn=_cands_recording,
+                        history_fn=_hist(), llm=lambda *a, **k: ProductMatchResult())
+    assert seen["org"] == "pym"
+
+
+def test_resolve_raises_for_a_customer_with_no_org():
+    mongo.customers().insert_one({"_id": "orphan", "name": "Orphan"})
+    with pytest.raises(org_service.MissingOrg):
+        pm.resolve_products("orphan", _window("need choline"), "m",
+                            mention_fn=_mentions("choline"),
+                            candidate_fn=lambda mentions, org_id: [],
+                            history_fn=_hist(), llm=lambda *a, **k: ProductMatchResult())

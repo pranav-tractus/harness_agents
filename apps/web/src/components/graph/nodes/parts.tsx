@@ -5,6 +5,7 @@ import type { GraphNode } from "@/api/client";
 
 export const NODE_COLORS: Record<string, string> = {
   Customer: "#6366f1",
+  Organization: "#e11d48",
   Chat: "#0ea5e9",
   Contract: "#8b5cf6",
   LineItem: "#10b981",

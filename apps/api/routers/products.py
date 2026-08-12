@@ -6,7 +6,7 @@ from fastapi import APIRouter, HTTPException, Response
 
 from apps.api.db import mongo
 from apps.api.models import ProductCreate, ProductOut, ProductUpdate
-from apps.api.services import product_embedding_service
+from apps.api.services import org_service, product_embedding_service
 
 logger = logging.getLogger(__name__)
 
@@ -28,12 +28,19 @@ def _out(doc: dict) -> ProductOut:
                       spec=doc.get("spec"),
                       metadata=doc.get("metadata") or {},
                       build_status=product_embedding_service.status_for_doc(doc),
-                      source_label=doc.get("source_label"))
+                      source_label=doc.get("source_label"),
+                      org_id=doc.get("org_id"))
+
+
+def _require_org(org_id: str) -> None:
+    if not org_service.exists(org_id):
+        raise HTTPException(422, f"unknown organization {org_id!r}")
 
 
 @router.get("")
-def list_products() -> list[ProductOut]:
-    return [_out(d) for d in mongo.products().find().sort("code", 1)]
+def list_products(org_id: str | None = None) -> list[ProductOut]:
+    query = {"org_id": org_id} if org_id else {}
+    return [_out(d) for d in mongo.products().find(query).sort("code", 1)]
 
 
 @router.post("", status_code=201)
@@ -41,11 +48,12 @@ def create_product(body: ProductCreate) -> ProductOut:
     code = body.code.strip()
     if not code:
         raise HTTPException(422, "code is required")
+    _require_org(body.org_id)
     if mongo.products().find_one({"code": code}):
         raise HTTPException(409, "product already exists")
     doc = {"code": code, "name": body.name,
            "short_description": body.short_description, "long_description": body.long_description,
-           "spec": body.spec, "metadata": body.metadata or {}}
+           "spec": body.spec, "metadata": body.metadata or {}, "org_id": body.org_id}
     inserted = mongo.products().insert_one(doc).inserted_id
     return _out(mongo.products().find_one({"_id": inserted}))
 
@@ -65,15 +73,23 @@ def update_product(product_id: str, body: ProductUpdate) -> ProductOut:
     if not doc:
         raise HTTPException(404, "product not found")
     changes = {k: v for k, v in body.model_dump(exclude_unset=True).items()}
+    new_org = changes.pop("org_id", None)
+    # Validate org BEFORE writing anything so a bad org_id never causes partial writes.
+    if new_org and new_org != doc.get("org_id"):
+        _require_org(new_org)
     if changes:
         mongo.products().update_one({"_id": oid}, {"$set": changes})
-    updated = mongo.products().find_one({"_id": oid})
-    return _out(updated)
+    if new_org and new_org != doc.get("org_id"):
+        product_embedding_service.move_org(mongo.products().find_one({"_id": oid}), new_org)
+    return _out(mongo.products().find_one({"_id": oid}))
 
 
 @router.post("/build-all")
 def build_all() -> list[ProductOut]:
-    for doc in mongo.products().find():
+    for doc in mongo.products().find().sort("code", 1):
+        if not doc.get("org_id"):
+            logger.warning("skipping %s: no organization", doc.get("code"))
+            continue
         product_embedding_service.build_from_doc(doc)
     return [_out(d) for d in mongo.products().find().sort("code", 1)]
 
@@ -84,6 +100,8 @@ def build_product(product_id: str) -> ProductOut:
     doc = mongo.products().find_one({"_id": oid})
     if not doc:
         raise HTTPException(404, "product not found")
+    if not doc.get("org_id"):
+        raise HTTPException(422, "product has no organization; run scripts/assign_orgs.py")
     product_embedding_service.build_from_doc(doc)
     return _out(mongo.products().find_one({"_id": oid}))
 

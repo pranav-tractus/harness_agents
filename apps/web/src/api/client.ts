@@ -3,6 +3,7 @@ export type Customer = {
   name: string;
   profile: Profile;
   last_contract_seq: number;
+  org_id: string | null;
 };
 export type Profile = {
   email: string | null;
@@ -24,6 +25,16 @@ export type Product = {
   metadata: Record<string, string>;
   build_status?: string;
   source_label?: string | null;
+  org_id: string | null;
+};
+export type Org = {
+  id: string;
+  name: string;
+  tagline: string | null;
+  is_catchall: boolean;
+  product_count: number;
+  customer_count: number;
+  unbuilt_count: number;
 };
 export type Message = {
   id: string;
@@ -60,21 +71,22 @@ async function req<T>(url: string, init?: RequestInit): Promise<T> {
 export const api = {
   listCustomers: () => req<Customer[]>("/api/customers"),
   getCustomer: (id: string) => req<Customer>(`/api/customers/${id}`),
-  createCustomer: (name: string) =>
+  createCustomer: (name: string, orgId: string) =>
     req<Customer>("/api/customers", {
       method: "POST",
-      body: JSON.stringify({ name }),
+      body: JSON.stringify({ name, org_id: orgId }),
     }),
   deleteCustomer: (id: string) =>
     fetch(`/api/customers/${id}`, { method: "DELETE" }).then((r) => {
       if (!r.ok) throw new Error(`${r.status} delete customer`);
     }),
-  updateProfile: (id: string, profile: Profile) =>
+  updateProfile: (id: string, profile: Profile, orgId?: string) =>
     req<Customer>(`/api/customers/${id}`, {
       method: "PUT",
-      body: JSON.stringify({ profile }),
+      body: JSON.stringify({ profile, org_id: orgId }),
     }),
-  listProducts: () => req<Product[]>("/api/products"),
+  listProducts: (orgId?: string) =>
+    req<Product[]>(orgId ? `/api/products?org_id=${encodeURIComponent(orgId)}` : "/api/products"),
   createProduct: (payload: {
     code: string;
     name?: string | null;
@@ -82,6 +94,7 @@ export const api = {
     long_description?: string | null;
     spec?: string | null;
     metadata?: Record<string, string>;
+    org_id: string;
   }) =>
     req<Product>("/api/products", {
       method: "POST",
@@ -95,6 +108,7 @@ export const api = {
       long_description?: string | null;
       spec?: string | null;
       metadata?: Record<string, string>;
+      org_id?: string;
     },
   ) =>
     req<Product>(`/api/products/${id}`, {
@@ -120,4 +134,16 @@ export const api = {
     req<GraphData>(`/api/customers/${customerId}/graph`),
   buildProduct: (code: string) =>
     req<Product>(`/api/products/${code}/build`, { method: "POST" }),
+  listOrgs: () => req<Org[]>("/api/orgs"),
+  createOrg: (name: string, tagline: string) =>
+    req<Org>("/api/orgs", { method: "POST", body: JSON.stringify({ name, tagline }) }),
+  updateOrg: (id: string, patch: { name?: string; tagline?: string }) =>
+    req<Org>(`/api/orgs/${id}`, { method: "PUT", body: JSON.stringify(patch) }),
+  deleteOrg: (id: string) =>
+    fetch(`/api/orgs/${id}`, { method: "DELETE" }).then(async (r) => {
+      if (r.ok) return;
+      const detail = await r.json().catch(() => null);
+      throw new Error(detail?.detail?.message ?? `${r.status} delete organization`);
+    }),
+  buildOrg: (id: string) => req<Org>(`/api/orgs/${id}/build`, { method: "POST" }),
 };

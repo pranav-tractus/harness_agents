@@ -1,10 +1,12 @@
 import mongomock
 import pytest
+from fastapi import HTTPException
 from fastapi.testclient import TestClient
 
 from apps.api.db import mongo
 from apps.api.models import AgentDecision
-from apps.api.services import agent_service
+from apps.api.services import agent_service, org_service
+from apps.api.services.product_matcher_service import ProductMatchResult
 from tests.api._factories import make_extract, make_item
 
 
@@ -18,12 +20,14 @@ _PRODUCTS = [
 
 
 def _seed_fixture_data() -> None:
+    org_service.seed_roster()
     for cid, name in _CUSTOMERS:
         mongo.customers().insert_one(
-            {"_id": cid, "name": name, "profile": {}, "last_contract_seq": 0, "updated_at": "now"}
+            {"_id": cid, "name": name, "profile": {}, "last_contract_seq": 0,
+             "updated_at": "now", "org_id": "pym"}
         )
     for code, desc in _PRODUCTS:
-        mongo.products().insert_one({"code": code, "description": desc, "spec": None})
+        mongo.products().insert_one({"code": code, "description": desc, "spec": None, "org_id": "pym"})
 
 
 @pytest.fixture()
@@ -44,6 +48,8 @@ def client(monkeypatch):
                             message="Draft ready.",
                             contract=make_extract(items=[make_item(description="TG-BPPC")]),
                         ))
+    monkeypatch.setattr(agent_service.product_matcher_service, "resolve_products",
+                        lambda *a, **k: ProductMatchResult(matches=[]))
     monkeypatch.setattr(agent_service.summary_context_service, "assemble",
                         lambda *a, **k: {"profile_block": None, "history_block": None,
                                          "product_block": None})
@@ -126,7 +132,7 @@ def test_put_profile_updates_and_returns(client, monkeypatch):
 
 
 def test_create_customer_generates_slug_id(client):
-    r = client.post("/api/customers", json={"name": "Acme Corp"})
+    r = client.post("/api/customers", json={"name": "Acme Corp", "org_id": "pym"})
     assert r.status_code == 201
     body = r.json()
     assert body["id"] == "acme-corp"
@@ -136,7 +142,7 @@ def test_create_customer_generates_slug_id(client):
 
 
 def test_create_customer_slug_collision(client):
-    first = client.post("/api/customers", json={"name": "Dummy 01"}).json()
+    first = client.post("/api/customers", json={"name": "Dummy 01", "org_id": "pym"}).json()
     assert first["id"] == "dummy-01-2"
 
 
@@ -157,14 +163,14 @@ def test_delete_missing_customer_404(client):
 
 
 def test_create_product(client):
-    r = client.post("/api/products", json={"code": "NEW-1", "short_description": "New product", "spec": "s1"})
+    r = client.post("/api/products", json={"code": "NEW-1", "short_description": "New product", "spec": "s1", "org_id": "pym"})
     assert r.status_code == 201
     assert r.json()["code"] == "NEW-1"
     assert r.json()["id"] != "NEW-1"
 
 
 def test_create_product_conflict(client):
-    r = client.post("/api/products", json={"code": "TG-BPPC", "short_description": "dup"})
+    r = client.post("/api/products", json={"code": "TG-BPPC", "short_description": "dup", "org_id": "pym"})
     assert r.status_code == 409
 
 
@@ -172,7 +178,7 @@ def test_create_product_does_not_sync_embeddings(client, monkeypatch):
     calls = []
     monkeypatch.setattr("apps.api.routers.products.product_embedding_service.build_from_doc",
                         lambda doc, **k: calls.append(doc["code"]))
-    r = client.post("/api/products", json={"code": "NEW-2", "short_description": "New", "spec": "s"})
+    r = client.post("/api/products", json={"code": "NEW-2", "short_description": "New", "spec": "s", "org_id": "pym"})
     assert r.status_code == 201
     assert calls == []
 
@@ -225,3 +231,18 @@ def test_messages_include_chat_id_and_status(client):
     rows = client.get("/api/customers/dummy-01/messages").json()
     assert rows[-1]["chat_id"]
     assert rows[-1]["chat_status"] == "active"
+
+
+def test_create_customer_requires_a_known_org(client):
+    from apps.api.models import CustomerCreate
+    from apps.api.routers import customers as customers_router
+    with pytest.raises(HTTPException) as exc:
+        customers_router.create_customer(CustomerCreate(name="Acme", org_id="hydra"))
+    assert exc.value.status_code == 422
+
+
+def test_create_customer_stores_and_returns_the_org(client):
+    from apps.api.models import CustomerCreate
+    from apps.api.routers import customers as customers_router
+    out = customers_router.create_customer(CustomerCreate(name="Acme", org_id="pym"))
+    assert out.org_id == "pym"

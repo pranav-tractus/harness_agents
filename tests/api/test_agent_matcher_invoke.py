@@ -14,6 +14,7 @@ from core.models import SOExtractContractList
 def _fake_mongo(monkeypatch):
     monkeypatch.setattr(mongo, "_client", mongomock.MongoClient())
     seed.seed_all()
+    mongo.customers().update_one({"_id": "dummy-01"}, {"$set": {"org_id": "pym"}})
     yield
     mongo.reset_client()
 
@@ -114,3 +115,17 @@ def test_match_question_without_scores_stays_clean():
         ProductCandidate(code="A", name="Alpha")])
     q = _match_question([m])
     assert "(A)" in q and "0.00" not in q
+
+
+def test_invoke_explains_when_the_customer_has_no_organization():
+    from apps.api.services import agent_service, org_service
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "seller", "need choline")
+    mongo.customers().update_one({"_id": "dummy-01"}, {"$unset": {"org_id": ""}})
+
+    def _matcher(*a, **k):
+        raise org_service.MissingOrg("no org")
+
+    out = agent_service.invoke("dummy-01", "m", matcher_fn=_matcher)
+    assert out["summary"] is None
+    assert "organization" in out["messages"][0]["body"].lower()

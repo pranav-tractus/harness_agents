@@ -27,14 +27,17 @@ class CustomerOut(BaseModel):
     name: str
     profile: CustomerProfile
     last_contract_seq: int
+    org_id: str | None = None
 
 
 class ProfileUpdate(BaseModel):
     profile: CustomerProfile
+    org_id: str | None = None
 
 
 class CustomerCreate(BaseModel):
     name: str
+    org_id: str
 
 
 class ProductOut(BaseModel):
@@ -47,6 +50,7 @@ class ProductOut(BaseModel):
     metadata: dict[str, str] = Field(default_factory=dict)
     build_status: str = "not built"
     source_label: str | None = None
+    org_id: str | None = None
 
 
 class ProductCreate(BaseModel):
@@ -56,6 +60,7 @@ class ProductCreate(BaseModel):
     long_description: str | None = None
     spec: str | None = None
     metadata: dict[str, str] = Field(default_factory=dict)
+    org_id: str
 
 
 class ProductUpdate(BaseModel):
@@ -64,6 +69,27 @@ class ProductUpdate(BaseModel):
     long_description: str | None = None
     spec: str | None = None
     metadata: dict[str, str] | None = None
+    org_id: str | None = None
+
+
+class OrgOut(BaseModel):
+    id: str
+    name: str
+    tagline: str | None = None
+    is_catchall: bool = False
+    product_count: int = 0
+    customer_count: int = 0
+    unbuilt_count: int = 0
+
+
+class OrgCreate(BaseModel):
+    name: str
+    tagline: str | None = None
+
+
+class OrgUpdate(BaseModel):
+    name: str | None = None
+    tagline: str | None = None
 
 
 class MessageIn(BaseModel):

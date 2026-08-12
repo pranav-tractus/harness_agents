@@ -138,9 +138,31 @@ One Ctrl+C stops both servers.
 3. `@agent create sales order` (or any `@agent …` that is not a confirm word) — builds the chat-facts graph and generates a pending summary (ask/draft). The `@agent` tag must start the message.
 4. `@agent confirm` / `finalize` / `approve` — finalizes the summary and advances the contract checkpoint. The confirm word must be the first word after the tag.
 5. Edit customer profile fields in the details panel (updates Mongo profile and resyncs FalkorDB attribute nodes).
-6. Use the **Products** tab to edit or delete catalog entries.
+6. Browse **Organizations** (`/orgs`) to see each selling org, its catalog size and
+   embedding health. `/orgs/<slug>/products` is that org's catalog; `/products`
+   shows every product with an Organization column.
 
 Each customer gets an isolated FalkorDB graph (`customer:<id>`); the product catalog lives in a shared `catalog` graph. Profile attributes are stored in FalkorDB alongside chat-derived contract data.
+
+### Organizations
+
+The catalog is divided across four fictional organizations — Roxxon Energy
+Corporation (lecithins, phospholipids, fats), Pym Technologies (amino acids,
+enzymes, probiotics), Alchemax (vitamins, minerals, organic acids) and Damage
+Control (catch-all). Every customer belongs to exactly one, and the agent only
+searches that org's catalog: each org owns its own S3-Vectors index.
+
+Customers are assigned an org automatically on API startup. Products are not —
+classification can call an LLM, so it is an explicit step:
+
+```bash
+python -m scripts.assign_orgs --dry-run      # preview code → org
+python -m scripts.assign_orgs                # write org_id
+python -m scripts.assign_orgs --rebuild-vectors   # and re-embed per org
+```
+
+Products with no `org_id` are invisible to every customer's agent and are
+skipped by `POST /api/products/build-all`.
 
 ### Tests
 
@@ -154,7 +176,7 @@ cd apps/web && npm run test
 | Area | Path |
 |------|------|
 | Chat API | [`apps/api/main.py`](apps/api/main.py) |
-| Chat web | [`apps/web/src/App.tsx`](apps/web/src/App.tsx) |
+| Chat web | [`apps/web/src/App.tsx`](apps/web/src/App.tsx) — route table for the SPA |
 | Dev launcher | [`run.py`](run.py) |
 | Schemas | [`core/models.py`](core/models.py), [`core/validation_models.py`](core/validation_models.py) |
 | Post-process | [`core/postprocess_pipeline.py`](core/postprocess_pipeline.py) |

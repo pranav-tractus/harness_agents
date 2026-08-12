@@ -56,3 +56,13 @@ describe("buildProduct", () => {
     vi.unstubAllGlobals();
   });
 });
+
+it("passes org_id as a query param when listing products", async () => {
+  const fetchMock = vi.fn(async () => new Response("[]", { status: 200 }));
+  vi.stubGlobal("fetch", fetchMock);
+  await api.listProducts("pym");
+  expect(fetchMock.mock.calls[0][0]).toBe("/api/products?org_id=pym");
+  await api.listProducts();
+  expect(fetchMock.mock.calls[1][0]).toBe("/api/products");
+  vi.unstubAllGlobals();
+});
