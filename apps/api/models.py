@@ -176,6 +176,8 @@ class SlotBelief(BaseModel):
     source: str = "unknown"        # chat | last_order | profile | inferred | unknown
     confidence: str = "low"        # high | med | low
     agreed_by: list[str] = Field(default_factory=list)   # subset of {seller, customer}
+    source_seqs: list[int] = Field(default_factory=list)  # message seqs that justify `value`
+    evidence: str | None = None                            # verbatim snippet backing `value`
 
 
 class AgentQuestion(BaseModel):

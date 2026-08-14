@@ -26,3 +26,16 @@ def test_ledger_and_agreement_roundtrip():
         ready_to_finalize=False,
     )
     assert d.ledger[0].agreed_by == ["seller", "customer"]
+
+
+def test_slot_belief_provenance_defaults():
+    s = SlotBelief(slot="quantity", value="10", source="chat")
+    assert s.source_seqs == []
+    assert s.evidence is None
+
+
+def test_slot_belief_carries_source_seqs_and_evidence():
+    s = SlotBelief(slot="quantity", value="10", source="chat",
+                   source_seqs=[42, 43], evidence="10 MT")
+    assert s.source_seqs == [42, 43]
+    assert s.evidence == "10 MT"
