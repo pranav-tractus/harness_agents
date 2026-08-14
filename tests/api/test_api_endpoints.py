@@ -6,7 +6,7 @@ from fastapi.testclient import TestClient
 from apps.api.db import mongo
 from apps.api.models import AgentDecision
 from apps.api.services import agent_service, org_service
-from apps.api.services.product_matcher_service import ProductMatchResult
+from apps.api.services.product_matcher_service import ProductMatch, ProductMatchResult
 from tests.api._factories import make_extract, make_item
 
 
@@ -49,7 +49,8 @@ def client(monkeypatch):
                             contract=make_extract(items=[make_item(description="TG-BPPC")]),
                         ))
     monkeypatch.setattr(agent_service.product_matcher_service, "resolve_products",
-                        lambda *a, **k: ProductMatchResult(matches=[]))
+                        lambda *a, **k: ProductMatchResult(matches=[ProductMatch(
+                            mention="thing", status="confident", resolved_code="TG-BPPC")]))
     monkeypatch.setattr(agent_service.summary_context_service, "assemble",
                         lambda *a, **k: {"profile_block": None, "history_block": None,
                                          "product_block": None})
