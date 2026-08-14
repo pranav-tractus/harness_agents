@@ -1,4 +1,6 @@
-from apps.api.models import AgentDecision, AgentQuestion, SlotBelief, cap_questions
+from apps.api.models import (
+    AgentDecision, AgentQuestion, SlotBelief, cap_questions, is_ready, missing_agreement,
+)
 
 
 def _q(slot):
@@ -39,3 +41,29 @@ def test_slot_belief_carries_source_seqs_and_evidence():
                    source_seqs=[42, 43], evidence="10 MT")
     assert s.source_seqs == [42, 43]
     assert s.evidence == "10 MT"
+
+
+def test_slot_belief_line_defaults_none_and_roundtrips():
+    assert SlotBelief(slot="quantity").line is None
+    assert SlotBelief(slot="quantity", value="5", line=2).line == 2
+
+
+def test_missing_agreement_flags_any_unagreed_line_entry():
+    both = ["seller", "customer"]
+    slots = [
+        {"slot": "description", "agreed_by": both},
+        {"slot": "quantity", "line": 1, "agreed_by": both},
+        {"slot": "quantity", "line": 2, "agreed_by": ["seller"]},
+        {"slot": "unit_price", "agreed_by": both},
+        {"slot": "ship_term", "agreed_by": both},
+    ]
+    assert "quantity" in missing_agreement(slots)
+    assert not is_ready(slots)
+
+
+def test_missing_agreement_single_entry_unchanged():
+    both = ["seller", "customer"]
+    slots = [{"slot": s, "agreed_by": both}
+             for s in ["description", "quantity", "unit_price", "ship_term"]]
+    assert missing_agreement(slots) == []
+    assert is_ready(slots)

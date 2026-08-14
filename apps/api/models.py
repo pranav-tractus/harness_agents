@@ -157,13 +157,16 @@ CRITICAL_SLOTS_ORDER = ["description", "quantity", "unit_price", "ship_term"]
 CRITICAL_SLOTS = set(CRITICAL_SLOTS_ORDER)
 
 
-def _agreed_by_both(slots: list[dict]) -> dict[str, set[str]]:
-    return {s["slot"]: set(s.get("agreed_by", [])) for s in slots}
-
-
 def missing_agreement(slots: list[dict]) -> list[str]:
-    by_slot = _agreed_by_both(slots)
-    return [s for s in CRITICAL_SLOTS_ORDER if not {"seller", "customer"} <= by_slot.get(s, set())]
+    out: list[str] = []
+    for slot in CRITICAL_SLOTS_ORDER:
+        entries = [entry for entry in slots if entry.get("slot") == slot]
+        if not entries or any(
+            not {"seller", "customer"} <= set(entry.get("agreed_by", []))
+            for entry in entries
+        ):
+            out.append(slot)
+    return out
 
 
 def is_ready(slots: list[dict]) -> bool:
@@ -178,6 +181,7 @@ class SlotBelief(BaseModel):
     agreed_by: list[str] = Field(default_factory=list)   # subset of {seller, customer}
     source_seqs: list[int] = Field(default_factory=list)  # message seqs that justify `value`
     evidence: str | None = None                            # verbatim snippet backing `value`
+    line: int | None = None        # contract item sr_no for line-scoped slots; None = order-level
 
 
 class AgentQuestion(BaseModel):

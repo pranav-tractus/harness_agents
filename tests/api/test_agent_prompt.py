@@ -36,6 +36,12 @@ def test_system_prompt_requests_provenance():
     assert "evidence" in system
 
 
+def test_system_prompt_requests_line_scoping():
+    system = agent_service.SYSTEM
+    assert "sr_no" in system
+    assert "line-scoped" in system
+
+
 def test_chat_block_includes_message_seqs():
     msgs = [{"role": "seller", "body": "10MT", "seq": 3},
             {"role": "customer", "body": "CIF", "seq": 4}]

@@ -58,12 +58,30 @@ def write_contract(
         )
 
     agreed = {s["slot"]: s.get("agreed_by", []) for s in slots}
-    slot_seqs = {s["slot"]: [int(q) for q in (s.get("source_seqs") or [])] for s in slots}
-    slot_evidence = {s["slot"]: s.get("evidence") for s in slots}
 
-    def _link(node_var: str, node_id: str, slot_key: str) -> None:
-        ev = slot_evidence.get(slot_key)
-        for seq in slot_seqs.get(slot_key, []):
+    # Provenance maps. A ledger entry is line-scoped when it carries a `line`
+    # (== the contract item's sr_no); otherwise it is order-level. Line-scoped
+    # entries win for their line; order-level entries are the fallback and also
+    # cover legacy drafts written before the `line` field existed.
+    line_prov: dict[tuple[int, str], tuple[list[int], str | None]] = {}
+    flat_prov: dict[str, tuple[list[int], str | None]] = {}
+    for s in slots:
+        entry = ([int(q) for q in (s.get("source_seqs") or [])], s.get("evidence"))
+        if s.get("line") is not None:
+            line_prov[(int(s["line"]), s["slot"])] = entry
+        else:
+            flat_prov[s["slot"]] = entry
+
+    def _link(
+        node_var: str, node_id: str, slot_key: str, line: int | None = None
+    ) -> None:
+        prov = line_prov.get((line, slot_key)) if line is not None else None
+        if prov is None:
+            prov = flat_prov.get(slot_key)
+        if not prov:
+            return
+        seqs, ev = prov
+        for seq in seqs:
             g.query(
                 f"MATCH (n:{node_var} {{id:$nid}}) "
                 "MERGE (m:MessageRef {contract_id:$cid, seq:$seq}) "
@@ -104,7 +122,7 @@ def write_contract(
                 {"li": li, "name": port},
             )
         for slot_key in ("description", "quantity", "unit_price", "ship_term"):
-            _link("LineItem", li, slot_key)
+            _link("LineItem", li, slot_key, line=it.get("sr_no"))
 
     for kind, value in (
         ("payment", contract.get("payment_date")),
