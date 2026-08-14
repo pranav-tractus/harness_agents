@@ -195,10 +195,12 @@ Each step lists **what the agent does** and **the harness attached**.
   - **ship_term** ∈ {EXW, FOB, CIF, DDP} (blocking `bad_ship_term`);
   - **critical-slot source** — a critical slot with a value but `source="unknown"`
     (blocking `critical_unknown_source`);
+  - **provenance** — a chat-sourced critical slot that cites no message
+    (blocking `missing_provenance`), so a drafted critical value must be traceable
+    to a message;
   - **arithmetic** — `total == quantity × unit_price` (warn `total_mismatch`);
   - **dates** — ISO `YYYY-MM-DD` (warn `bad_date_format`);
-  - **provenance** — a chat-sourced critical slot that cites no message
-    (warn `missing_provenance`) or cites a message outside the window
+  - **stale citation** — a slot citing a message outside the reasoning window
     (warn `stale_citation`).
 
   **Blocking** violations turn into a question and write no draft; **warnings**
@@ -262,12 +264,16 @@ two linked records:
 
 - **At draft time** — `SlotBelief` (`apps/api/models.py`) carries `value`,
   `source` (`chat|last_order|profile|inferred|unknown`), `confidence`,
-  `agreed_by`, **`source_seqs`** (the message seqs that justify the value) and
-  **`evidence`** (the verbatim snippet). The verifier enforces that a chat-sourced
-  critical slot actually cites a message.
+  `agreed_by`, **`source_seqs`** (the message seqs that justify the value),
+  **`evidence`** (the verbatim snippet) and **`line`** (the contract item's
+  `sr_no` for line-scoped slots, so a two-item order keeps each item's provenance
+  separate). The verifier *blocks* a chat-sourced critical slot that cites no
+  message.
 - **At commit time** — `write_contract` turns those `source_seqs` into graph
-  edges: `LineItem`/`Term -[:DERIVED_FROM]-> MessageRef {seq}`. Provenance is
-  produced *as a byproduct of production*, not documented after the fact.
+  edges: `LineItem`/`Term -[:DERIVED_FROM]-> MessageRef {seq}`, scoped per line so
+  a `LineItem` links only to the messages its own line cited. `evidence` is stored
+  on the `MessageRef`. Provenance is produced *as a byproduct of production*, not
+  documented after the fact.
 
 ```mermaid
 %%{init: {'theme':'dark'}}%%
@@ -289,8 +295,8 @@ flowchart LR
 | `cap_questions` | ≤3 questions, criticals first | `models.py` |
 | finalize→draft downgrade | model can't self-authorize commit | `services/agent_service.py::decide` |
 | `verify` / `has_blocking` / `Violation` | deterministic correctness checks (draft + commit) | `apps/api/verification.py` |
-| `SlotBelief.source_seqs` / `evidence` | per-value provenance | `models.py` |
-| `DERIVED_FROM` per-slot edges | provenance in the graph | `services/chat_graph_service.py` |
+| `SlotBelief.source_seqs` / `evidence` / `line` | per-value, per-line provenance | `models.py` |
+| `DERIVED_FROM` per-line-item edges | provenance in the graph | `services/chat_graph_service.py` |
 | `is_ready` / `missing_agreement` | both-party agreement gate | `models.py` |
 | `@agent confirm` | human-in-the-loop commit | `services/agent_tag.py` |
 | `falkor.is_available()` guards | graceful degradation | throughout |

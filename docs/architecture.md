@@ -359,7 +359,7 @@ The LLM call. Returns mode, message, questions, contract, ledger, ready_to_final
 
 Deterministic verification gate over the model's decision before anything is drafted. Checks product-code grounding (a line item's description must be a matcher-resolved SKU or name), ship_term ∈ {EXW,FOB,CIF,DDP}, total == quantity×unit_price, ISO dates, and per-slot provenance (source, source_seqs). Blocking violations become a question; warnings are stored on the draft.
 
-> **Invariant:** Blocking codes (unknown_product_code, bad_ship_term, critical_unknown_source) stop a draft; warnings (total_mismatch, bad_date_format, missing_provenance, stale_citation) are recorded, not fatal.
+> **Invariant:** Blocking codes (unknown_product_code, bad_ship_term, critical_unknown_source, missing_provenance) stop a draft; warnings (total_mismatch, bad_date_format, stale_citation) are recorded, not fatal.
 
 #### GATE · blocking violation
 
@@ -419,7 +419,7 @@ The pending draft failed verification → reply listing the blocking problems an
 
 `apps/api/services/chat_graph_service.py::write_contract`
 
-Creates Contract, one LineItem per item, Term nodes, and SUPERSEDES to the prior revision. Writes per-slot MessageRef provenance: each LineItem/Term gets DERIVED_FROM edges to the exact messages its slots cite (source_seqs). Derives a Preference node for every both-agreed slot.
+Creates Contract, one LineItem per item, Term nodes, and SUPERSEDES to the prior revision. Writes per-line MessageRef provenance: each LineItem/Term gets DERIVED_FROM edges to the exact messages its own line's slots cite (source_seqs, scoped by the slot's line == item sr_no), with evidence stored on the MessageRef. Derives a Preference node for every both-agreed slot.
 
 > **Invariant:** Preferences are the feedback loop — they reappear as history_block grounding on the next draft.
 
