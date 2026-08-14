@@ -87,7 +87,8 @@ def test_write_contract_links_per_slot_provenance(graph_name):
         "shipping_address": "", "packing": "", "loading": "", "total": 1000}],
         "vendor_name": "", "payment_date": "Net 30"}
     slots = [{"slot": "ship_term", "value": "CIF", "source": "chat",
-              "confidence": "high", "agreed_by": ["seller", "customer"], "source_seqs": [42]},
+              "confidence": "high", "agreed_by": ["seller", "customer"],
+              "source_seqs": [42], "evidence": "CIF Busan"},
              {"slot": "quantity", "value": "10", "source": "chat",
               "confidence": "high", "agreed_by": ["seller"], "source_seqs": [40]},
              {"slot": "payment_date", "value": "Net 30", "source": "chat",
@@ -102,3 +103,6 @@ def test_write_contract_links_per_slot_provenance(graph_name):
         "MATCH (:Term {kind:'payment'})-[:DERIVED_FROM]->(m:MessageRef) RETURN DISTINCT m.seq"
     ).result_set}
     assert 44 in term_seqs
+    evidence = {r[0] for r in g.query(
+        "MATCH (m:MessageRef {seq:42}) RETURN m.evidence").result_set}
+    assert "CIF Busan" in evidence

@@ -59,14 +59,17 @@ def write_contract(
 
     agreed = {s["slot"]: s.get("agreed_by", []) for s in slots}
     slot_seqs = {s["slot"]: [int(q) for q in (s.get("source_seqs") or [])] for s in slots}
+    slot_evidence = {s["slot"]: s.get("evidence") for s in slots}
 
     def _link(node_var: str, node_id: str, slot_key: str) -> None:
+        ev = slot_evidence.get(slot_key)
         for seq in slot_seqs.get(slot_key, []):
             g.query(
                 f"MATCH (n:{node_var} {{id:$nid}}) "
                 "MERGE (m:MessageRef {contract_id:$cid, seq:$seq}) "
+                "SET m.evidence = coalesce($ev, m.evidence) "
                 "MERGE (n)-[:DERIVED_FROM]->(m)",
-                {"nid": node_id, "cid": contract_id, "seq": seq},
+                {"nid": node_id, "cid": contract_id, "seq": seq, "ev": ev},
             )
 
     for it in contract.get("items", []):

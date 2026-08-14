@@ -89,6 +89,24 @@ def test_approve_finalizes_ready_draft_and_branches():
     assert cs.active_chat("dummy-01")["_id"].__str__() != ch
 
 
+def test_approve_blocks_on_unresolved_sku():
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "seller", "buy GHOST-1")  # seq 1
+    contract = make_extract(items=[make_item(description="GHOST-1")]).model_dump()
+    mongo.summaries().insert_one({
+        "customer_id": "dummy-01", "chat_id": ch, "status": "pending",
+        "model_key": "sonnet-4-6", "from_seq": 1, "to_seq": 1, "revision": 0,
+        "content": contract, "rendered_markdown": "draft", "slots": _ready_slots(),
+        "product_matches": [{"mention": "tg", "status": "confident",
+                             "resolved_code": "TG-BPPC", "canonical_name": "TG-BPPC"}],
+        "created_at": "t", "approved_at": None})
+    out = agent_service.approve("dummy-01", graph_fn=_graph([]),
+                                branch_fn=lambda *a, **k: None)
+    assert out["summary"] is None
+    assert mongo.summaries().count_documents({"status": "approved"}) == 0
+    assert "GHOST-1" in out["messages"][-1]["body"]
+
+
 def test_approve_blocks_on_verification_failure():
     ch = _chat()
     chat_service.add_message("dummy-01", ch, "seller", "10MT CIF")  # seq 1

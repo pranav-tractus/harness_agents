@@ -66,7 +66,11 @@ _SYSTEM_BASE = (
     "`unit_price`, `ship_term`, `shipping_address`, `packing`, `loading`, "
     "`payment_date`. For each slot record value, source "
     "(`chat|last_order|profile|inferred|unknown`), confidence, and "
-    "`agreed_by` (which of seller/customer explicitly agreed).\n"
+    "`agreed_by` (which of seller/customer explicitly agreed). Each "
+    "conversation line is prefixed with its message number as `[N]`. For "
+    "every slot with `source='chat'`, set `source_seqs` to the `[N]` "
+    "number(s) of the message(s) that state the value and `evidence` to the "
+    "verbatim snippet from those message(s) that supports it.\n"
     "- Resolve soft slots (`shipping_address`, `packing`, `loading`, "
     "`payment_date`) silently from last orders / profile and mark them "
     "`source='inferred'`. Only ASK about critical slots (`description`, "
@@ -89,7 +93,9 @@ SYSTEM = _SYSTEM_BASE.format(today=date.today().isoformat())
 
 
 def _chat_block(messages: list[dict]) -> str:
-    return "\n".join(f"{m['role']}: {m['body']}" for m in messages)
+    return "\n".join(
+        f"[{m.get('seq', '?')}] {m['role']}: {m['body']}" for m in messages
+    )
 
 
 def _section(label: str, block: str | None) -> str:
@@ -106,7 +112,8 @@ def build_prompt(customer_name, messages, ctx, previous_json=None) -> str:
     if previous_json:
         prompt += f"## Previous draft (JSON)\n{previous_json}\n\n"
     prompt += (
-        f"## Conversation\n{_chat_block(messages)}\n\n"
+        "## Conversation (each line starts with its message number [N])\n"
+        f"{_chat_block(messages)}\n\n"
         "---\n\n"
         "Slots to track: description, quantity, unit_price, ship_term, "
         "shipping_address, packing, loading, payment_date.\n"
@@ -256,6 +263,22 @@ def _resolved_identifiers(matches, org_id: str) -> set[str]:
         if doc and doc.get("name"):
             ids.add(doc["name"])
     return ids
+
+
+def _pending_resolved_identifiers(pending: dict, org_id: str | None) -> set[str] | None:
+    """Rebuild the accepted-identifier set from the matcher output persisted on
+    the pending draft, so the commit gate re-grounds product codes instead of
+    trusting them blindly. Returns ``None`` for legacy summaries with no stored
+    matches (there the draft-time grounding is trusted, as before)."""
+    raw = pending.get("product_matches")
+    if not raw:
+        return None
+    matches = [
+        product_matcher_service.ProductMatch(**m)
+        for m in raw
+        if m.get("status") == "confident"
+    ]
+    return _resolved_identifiers(matches, org_id or "")
 
 
 def invoke(
@@ -536,8 +559,15 @@ def approve(customer_id, *, graph_fn=None, branch_fn=None) -> dict:
     window = chat_service.chat_messages_since(chat_id, pending["from_seq"] - 1)
     contract = SOExtractContractList(**pending["content"])
     slots = pending.get("slots", [])
+    try:
+        org_id = org_service.org_id_for_customer(customer_id)
+    except org_service.MissingOrg:
+        org_id = None
     approve_violations = verify(
-        contract, slots, resolved_codes=None, window_seqs={m["seq"] for m in window}
+        contract,
+        slots,
+        resolved_codes=_pending_resolved_identifiers(pending, org_id),
+        window_seqs={m["seq"] for m in window},
     )
     if has_blocking(approve_violations):
         body = "Can't finalize — the draft failed verification:\n" + "\n".join(
