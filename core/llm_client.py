@@ -7,7 +7,6 @@ from pydantic import BaseModel
 from core.token_usage import TokenUsage
 from core.utils import (
     _gemini_model_for_api,
-    _get_anthropic_client,
     _get_gemini_client,
     _get_openai_client,
     create_boto3_client,

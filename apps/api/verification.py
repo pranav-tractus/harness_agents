@@ -31,9 +31,11 @@ def verify(
 ) -> list[Violation]:
     """Deterministic checks over a drafted/pending contract.
 
-    ``resolved_codes`` is the set of catalog SKUs the matcher pinned for this
-    turn; pass ``None`` to skip product-grounding (e.g. at approve time, where
-    the matcher is not re-run and grounding was already enforced at draft).
+    ``resolved_codes`` is the set of accepted identifiers for products the
+    matcher pinned this turn — each product's SKU code *and* its name, since
+    the draft agent writes the product name (not the code) into
+    ``description``. Pass ``None`` to skip product-grounding (e.g. at approve
+    time, where the matcher is not re-run and grounding was enforced at draft).
     ``window_seqs`` is the set of message seqs the agent reasoned over.
     """
     out: list[Violation] = []

@@ -22,34 +22,9 @@ from core.postprocess_stages import (
     PostprocessStage,
     StageContext,
     StageResult,
-    ValidationLLMStage,
 )
 
 logger = logging.getLogger(__name__)
-
-
-def run_validation_llm(
-    *,
-    source_text: str,
-    contract: dict[str, Any],
-    validation_model_key: str,
-    organization_info: dict | None = None,
-    customer_info: dict | None = None,
-) -> tuple[dict[str, Any], list[dict[str, Any]], str]:
-    """Convenience wrapper around the validation stage (kept for back-compat)."""
-    ctx = StageContext(
-        source_text=source_text,
-        reference_iso_date="",
-        raw_contract=contract,
-        extraction_model_key="",
-        validation_model_key=validation_model_key,
-        organization_info=organization_info,
-        customer_info=customer_info,
-    )
-    result = ValidationLLMStage().run(contract, ctx)
-    if result.status == "failed":
-        raise RuntimeError(result.error or "validation LLM failed")
-    return result.contract, result.issues, result.notes
 
 
 def _stage_enabled(stage: PostprocessStage, flags: dict[str, bool]) -> bool:

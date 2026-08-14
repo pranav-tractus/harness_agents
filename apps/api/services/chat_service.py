@@ -79,11 +79,6 @@ def all_messages(customer_id: str) -> list[dict]:
     return out
 
 
-def list_chats(customer_id: str) -> list[dict]:
-    cur = mongo.chats().find({"customer_id": customer_id}).sort("created_at", 1)
-    return [_chat_out(d) for d in cur]
-
-
 def _next_seq(chat_id: str) -> int:
     last = mongo.messages().find_one(
         {"chat_id": chat_id}, sort=[("seq", -1)], projection={"seq": 1}
@@ -116,11 +111,6 @@ def add_message(
         {"_id": ObjectId(chat_id)}, {"$set": {"last_activity": _now()}}
     )
     return _to_out(doc)
-
-
-def list_messages(customer_id, chat_id) -> list[dict]:
-    cur = mongo.messages().find({"chat_id": chat_id}).sort("seq", 1)
-    return [_to_out(d) for d in cur]
 
 
 def messages_since(chat_id, seq, kinds=None) -> list[dict]:

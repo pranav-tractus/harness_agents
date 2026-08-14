@@ -16,7 +16,6 @@ from __future__ import annotations
 import json
 import logging
 import pprint
-import re
 import subprocess
 import sys
 from pathlib import Path
@@ -31,9 +30,8 @@ if str(ROOT_DIR) not in sys.path:
 
 from agents.base import RunOptions
 from agents.config import load_config
-from agents.so_extraction.agent import ChatInput
 from core.chat_loader import labeled_chat_paths_for_globs, load_chat_file
-from core.db import SavedSummary, get_history, get_summary_chain, init_db, save_summary
+from core.db import SavedSummary, get_history, init_db, save_summary
 from core.utils import DEFAULT_MODEL_KEY, MODEL_CATALOG, setup_streamlit_console_logfile
 from harness import artifacts
 from harness.report_summary import narrative_to_markdown, summarize_brief
@@ -66,7 +64,7 @@ def _config():
 def _agent_pool_labels(agent_id: str) -> list[tuple[str, str]]:
     cfg = _config()
     agent = cfg.get_agent(agent_id)
-    pairs = labeled_chat_paths_for_globs([str(p) for p in []] if False else list(agent._few_shot_globs), agent.repo_root)
+    pairs = labeled_chat_paths_for_globs(list(agent._few_shot_globs), agent.repo_root)
     return [(label, str(path)) for label, path in pairs]
 
 
@@ -164,10 +162,6 @@ def _load_run_records(run_dir: Path) -> list[dict[str, Any]]:
 
 def _safe_mean(values: list[float]) -> float | None:
     return mean(values) if values else None
-
-
-def _coerce_paths(strs: list[str]) -> list[Path]:
-    return [Path(s) for s in strs if s]
 
 
 st.set_page_config(page_title="Agent Harness", layout="wide", initial_sidebar_state="expanded")

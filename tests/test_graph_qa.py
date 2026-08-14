@@ -1,5 +1,4 @@
 import pytest
-from unittest.mock import patch
 from graph.kuzu_backend import KuzuBackend
 from graph.qa import answer_question
 

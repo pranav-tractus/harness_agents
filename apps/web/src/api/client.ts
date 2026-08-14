@@ -54,10 +54,6 @@ export type AgentResult = { messages: Message[]; summary: unknown | null };
 export type GraphNode = { id: string; label: string; type: string; properties: Record<string, unknown>; chat_id?: string };
 export type GraphEdge = { id: string; source: string; target: string; type: string; properties: Record<string, unknown> };
 export type GraphData = { nodes: GraphNode[]; edges: GraphEdge[] };
-export type Slot = {
-  slot: string; value: string | null; source: string;
-  confidence: string; agreed_by: string[];
-};
 
 async function req<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, {
@@ -126,10 +122,6 @@ export const api = {
       body: JSON.stringify({ role, body, model_key }),
     }),
   listModels: () => req<ModelOption[]>("/api/models"),
-  getGraphChat: (customerId: string) =>
-    req<GraphData>(`/api/customers/${customerId}/graph`),
-  getGraphProfile: (customerId: string) =>
-    req<GraphData>(`/api/customers/${customerId}/graph`),
   getCustomerGraph: (customerId: string) =>
     req<GraphData>(`/api/customers/${customerId}/graph`),
   buildProduct: (code: string) =>

@@ -39,7 +39,6 @@ class ProductRetrievalAgent(BaseAgent[SummaryInput, list[dict[str, Any]]]):
     - extend ``expected_for`` to return the curated relevant-doc list per chat
     """
 
-    input_type = SummaryInput
     output_type = list
 
     def load_input(self, source_path: Any) -> SummaryInput:

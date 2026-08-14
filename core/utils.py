@@ -10,8 +10,6 @@ import boto3
 import instructor
 from openai import OpenAI
 
-from core.models import SOExtractContractList, SOUpdateContractList
-
 AWS_REGION = "us-east-1"
 S3_BUCKET = "tractuslabs-data-sources"
 
@@ -131,15 +129,6 @@ def setup_streamlit_console_logfile() -> Path:
     return logfile
 
 
-def _normalize_gemini_model(name: str) -> str:
-    name = (name or "").strip()
-    if not name:
-        return DEFAULT_GEMINI_MODEL
-    if not name.startswith("google/"):
-        return f"google/{name}"
-    return name
-
-
 def _gemini_model_for_api(instructor_model: str) -> str:
     if not instructor_model:
         return DEFAULT_GEMINI_MODEL.split("/", 1)[-1]
@@ -152,38 +141,6 @@ def _gemini_model_for_api(instructor_model: str) -> str:
 
 def _get_gemini_client(model: str):
     return instructor.from_provider(model)
-
-
-def get_gemini_response(
-    prompt: str | None = None,
-    messages: list[dict] | None = None,
-    is_update: bool = False,
-    model: str | None = None,
-) -> SOExtractContractList | SOUpdateContractList:
-    model = _normalize_gemini_model(model or DEFAULT_GEMINI_MODEL)
-    api_model = _gemini_model_for_api(model)
-    gemini_api = _get_gemini_client(model)
-    if messages is None:
-        messages = [{"role": "user", "content": prompt or ""}]
-    try:
-        logger.info(
-            "get_gemini_response::0:: Sending messages (count=%s), model=%s",
-            len(messages),
-            api_model,
-        )
-        response = gemini_api.chat.completions.create(
-            model=api_model,
-            response_model=SOExtractContractList
-            if not is_update
-            else SOUpdateContractList,
-            messages=messages,
-        )
-        return response
-    except Exception as e:
-        logger.exception(
-            "get_gemini_response::3:: Error during Gemini processing %s", e
-        )
-        raise ValueError(e) from e
 
 
 def _get_openai_client():

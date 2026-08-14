@@ -171,6 +171,16 @@ PYTHONPATH=. pytest tests/api -v
 cd apps/web && npm run test
 ```
 
+## Documentation
+
+| Doc | Covers |
+|-----|--------|
+| [`docs/harness-architecture.md`](docs/harness-architecture.md) | **Diagrams** — the benchmark harness end to end, and how it relates to `apps/` |
+| [`docs/multi_customer_harness.md`](docs/multi_customer_harness.md) | Configuring agents, CLI recipes, few-shot modes |
+| [`docs/architecture.md`](docs/architecture.md) | Diagrams for the chat-simulation app (generated from `apps/web/src/architecture/spec.ts`) |
+| [`docs/customer-chat-agent.md`](docs/customer-chat-agent.md) | **Start here for `apps/`** — system-at-a-glance diagram + developer guide |
+| [`docs/embeddings-and-vector-search.md`](docs/embeddings-and-vector-search.md) | Spec-PDF ingestion, per-org embeddings, product matching |
+
 ## Key files
 
 | Area | Path |

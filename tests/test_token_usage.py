@@ -52,7 +52,7 @@ class TestTokenUsage(unittest.TestCase):
 
 class TestCallLlmWithUsage(unittest.TestCase):
     def test_returns_tuple_of_model_and_usage(self):
-        from unittest.mock import MagicMock, patch
+        from unittest.mock import patch
 
         from core.llm_client import call_llm_with_usage
         from core.models import SOExtractContractList
@@ -91,7 +91,7 @@ class TestCallLlmWithUsage(unittest.TestCase):
 class TestExtractorTokenPropagation(unittest.TestCase):
     def test_extraction_engine_run_stores_token_usage(self):
         from pathlib import Path
-        from unittest.mock import MagicMock, patch
+        from unittest.mock import patch
 
         from core.extractor import ExtractionEngine
         from core.models import SOExtractContractList

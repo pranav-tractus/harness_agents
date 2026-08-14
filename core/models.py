@@ -1,6 +1,5 @@
 from typing import List, Optional
 from pydantic import BaseModel, Field
-from pydantic.type_adapter import TypeAdapter
 
 
 class LLMExtractContractProductItem(BaseModel):
@@ -27,8 +26,13 @@ class LLMExtractContractProductItem(BaseModel):
     )
     unit_price: Optional[float] = Field(
         description=(
-            "Final agreed unit price as a float. Use only the mutually accepted "
-            "price — not initial quotes or unaccepted counter-offers. null if not stated."
+            "Final agreed PER-UNIT price as a float (price for one "
+            "quantity_unit). Use only the mutually accepted price — not "
+            "initial quotes or unaccepted counter-offers. If the chat agrees "
+            "only a lump-sum price for the whole order (e.g. '$2400 for the "
+            "whole'), put that amount in `total`, not here — set unit_price "
+            "only to a stated per-unit figure or to total ÷ quantity when the "
+            "quantity is known. null if no per-unit price is stated or derivable."
         )
     )
     pricing_unit: str = Field(
@@ -76,8 +80,10 @@ class LLMExtractContractProductItem(BaseModel):
     )
     total: Optional[float] = Field(
         description=(
-            "quantity x unit_price. Only set when both values are present and share "
-            "the same unit basis. null if either is missing or units differ."
+            "Total price for this line. Set to quantity x unit_price when both "
+            "are present and share the same unit basis, OR to a lump-sum price "
+            "agreed for the whole order in the chat (e.g. '$2400 for the "
+            "whole'). null if no total is stated or derivable."
         )
     )
 
@@ -195,13 +201,3 @@ class SOUpdateContractList(BaseModel):
     data: List[SalesOrderUpdateContractKeyDetails] = Field(
         description="List of contracts, one entry per distinct purchase order."
     )
-
-
-def dict_to_items_type(items: List[dict]):
-    ExtractedListAdapter = TypeAdapter(List[LLMExtractContractProductItem])
-    return ExtractedListAdapter.validate_python(items)
-
-
-def dict_to_llm_details(details: dict):
-    ExtractedListAdapter = TypeAdapter(SalesOrderExtractContractKeyDetails)
-    return ExtractedListAdapter.validate_python(details)

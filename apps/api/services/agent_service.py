@@ -49,7 +49,16 @@ _SYSTEM_BASE = (
     "6. **Preserve units and currencies exactly.** No conversion (MT↔KG, "
     "USD↔INR, etc.). If the chat says \"USD 3.5 per KG\", record "
     "`unit_price=3.5, pricing_unit=\"USD/KG\"`.\n"
-    "7. **`payment_date` is a date or an explicit payment-term phrase "
+    "7. **Whole-order (lump-sum) prices go in `total`, not `unit_price`.** "
+    "When a price is quoted for the entire lot rather than per unit "
+    "(\"$2400 for the whole\", \"lot price\", \"all-in for the order\"), set "
+    "`total` to that amount. Derive `unit_price = total ÷ quantity` only when "
+    "the quantity is known — exact arithmetic in the same currency, not a "
+    "unit conversion — and set `pricing_unit` to CURRENCY/quantity_unit; "
+    "otherwise leave `unit_price` empty. Whenever both `quantity` and "
+    "`unit_price` are set, also fill `total = quantity × unit_price` so the "
+    "figures stay internally consistent.\n"
+    "8. **`payment_date` is a date or an explicit payment-term phrase "
     "only** (e.g. \"Net 30 from delivery\", \"2026-03-15\"). Never copy "
     "shipping or document-handling notes into this field.\n\n"
     "## Agent-specific behavior (slot ledger + mode)\n"
@@ -225,6 +234,30 @@ def _draft_to_seq(window: list[dict]) -> int:
     return chat_seqs[-1] if chat_seqs else window[-1]["seq"]
 
 
+def _resolved_identifiers(matches, org_id: str) -> set[str]:
+    """Every string that may legitimately appear as a line-item description
+    for a resolved product: its SKU code, the matcher's canonical name, and
+    the catalog name the agent was shown.
+
+    The draft agent copies the product *name* into `description` verbatim
+    (system Hard rule 4), not the SKU code, so grounding on codes alone
+    rejects every real order in a catalog where code != name.
+    """
+    ids: set[str] = set()
+    for m in matches:
+        if not m.resolved_code:
+            continue
+        ids.add(m.resolved_code)
+        if m.canonical_name:
+            ids.add(m.canonical_name)
+        doc = mongo.products().find_one(
+            {"code": m.resolved_code, "org_id": org_id}, {"name": 1}
+        )
+        if doc and doc.get("name"):
+            ids.add(doc["name"])
+    return ids
+
+
 def invoke(
     customer_id,
     model_key,
@@ -311,7 +344,7 @@ def invoke(
     violations = verify(
         _contract,
         [s.model_dump() for s in decision.ledger],
-        resolved_codes={m.resolved_code for m in match_result.resolved() if m.resolved_code},
+        resolved_codes=_resolved_identifiers(match_result.resolved(), org_id),
         window_seqs={m["seq"] for m in window},
     )
     if has_blocking(violations):

@@ -1,5 +1,4 @@
 # tests/test_prompt_strategy.py
-import pytest
 from core.prompt_strategy import PromptStrategy, provider_family
 
 
@@ -42,7 +41,6 @@ def test_provider_family_unknown():
 
 
 from core.prompt_builder import build_prompt, build_validation_system_prompt, build_validation_user_prompt
-from core.prompt_strategy import PromptStrategy
 
 
 def test_build_prompt_current_strategy_contains_extraction_rules():
@@ -152,7 +150,6 @@ def test_contract_field_descriptions_encode_rules():
 
 
 from core.extractor import ExtractionEngine
-from core.prompt_strategy import PromptStrategy
 
 
 def test_extraction_engine_accepts_strategy():

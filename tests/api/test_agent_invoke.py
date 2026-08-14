@@ -101,11 +101,29 @@ def test_agent_messages_carry_decision_json():
     assert '"mode": "clarify"' in out["messages"][-1]["summary_json"]
 
 
-def _confident_matcher(code="TG-BPPC"):
+def _confident_matcher(code="TG-BPPC", name=None):
     def _fn(_customer_id=None, _window=None, _model_key=None):
         return ProductMatchResult(matches=[ProductMatch(
-            mention="thing", status="confident", resolved_code=code)])
+            mention="thing", status="confident", resolved_code=code,
+            canonical_name=name)])
     return _fn
+
+
+def test_invoke_grounds_draft_by_resolved_product_name():
+    # The matcher pins a numeric SKU (5030823) whose catalog name is the
+    # human string the draft agent copies into `description`. Grounding on
+    # codes alone would wrongly reject this legitimate draft.
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "customer", "I want the granule 350 one")
+    contract = make_extract(items=[make_item(
+        description="PUREPRO SOY 70T - GRANULE 350", ship_term="")])
+    dec = AgentDecision(mode="draft", message="draft", contract=contract, ledger=[])
+    out = agent_service.invoke(
+        "dummy-01", "sonnet-4-6", decider=_decider(dec), context_fn=_ctx,
+        matcher_fn=_confident_matcher("5030823", "PUREPRO SOY 70T - GRANULE 350"))
+    assert out["summary"] is not None
+    assert out["summary"]["status"] == "pending"
+    assert out["messages"][-1]["kind"] == "draft"
 
 
 def test_invoke_blocks_draft_on_ungrounded_product_code():

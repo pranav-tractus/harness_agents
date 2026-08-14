@@ -16,7 +16,6 @@ from core.postprocess_pipeline import run_postprocess_pipeline
 from core.postprocess_stages import (
     FreezeDatesStage,
     NormalizeUnitsStage,
-    RecomputeTotalsStage,
     StageContext,
     StructuralAuditStage,
     ValidationLLMStage,

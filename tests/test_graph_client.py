@@ -1,4 +1,3 @@
-import pytest
 from graph.client import GraphitiMemoryClient
 
 
