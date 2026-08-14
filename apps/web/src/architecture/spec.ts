@@ -9,8 +9,15 @@ const CONTEXT_NODES: ArchNode[] = [
     group: "Client",
     anchor: "apps/web/src/App.tsx::App",
     summary:
-      "React 19 + Vite single-page app. Tabbed shell: Chat, Products, Graphs, Architecture. Polls the API for messages and renders draft/final contract cards.",
-    reads: ["GET /api/customers", "GET /api/customers/{id}/messages", "GET /api/models"],
+      "React 19 + Vite single-page app. Routed shell: Chat, Organizations, Products, Graphs, Architecture. Refetches the message list after every send (no background polling) and renders draft/final contract cards.",
+    reads: [
+      "GET /api/customers",
+      "GET /api/customers/{id}/messages",
+      "GET /api/customers/{id}/graph",
+      "GET /api/orgs",
+      "GET /api/products",
+      "GET /api/models",
+    ],
     writes: ["POST /api/customers/{id}/messages"],
   },
   {
@@ -21,7 +28,7 @@ const CONTEXT_NODES: ArchNode[] = [
     group: "Server",
     anchor: "apps/api/main.py::app",
     summary:
-      "Wires every router: messages, chats, customers, products, graphs, models. CORS is restricted to WEB_ORIGIN.",
+      "Wires every router: customers, products, chats, messages, models, organizations, graphs. CORS is restricted to WEB_ORIGIN. On startup a lifespan hook ensures the Mongo indexes and seeds the org roster.",
   },
   {
     id: "ctx.mongo",
@@ -31,7 +38,7 @@ const CONTEXT_NODES: ArchNode[] = [
     group: "Stores",
     anchor: "apps/api/db/mongo.py::db",
     summary:
-      "Live mutable state. Collections: customers, chats, messages, summaries, products. The current draft contract lives here as a pending summary until it is approved.",
+      "Live mutable state. Collections: customers, organizations, chats, messages, summaries, products. The current draft contract lives here as a pending summary until it is approved.",
     invariant: "Everything before finalize lives in Mongo, not the graph.",
   },
   {
@@ -40,11 +47,23 @@ const CONTEXT_NODES: ArchNode[] = [
     kind: "store",
     layer: "context",
     group: "Stores",
-    anchor: "apps/api/db/falkor.py::graph",
+    anchor: "apps/api/db/falkor.py::customer_graph",
     summary:
-      "The knowledge graph — committed truth only. One graph per customer (customer:<id>) plus a shared catalog graph. Written only at finalize time.",
+      "The knowledge graph — committed truth only. One graph per customer (customer:<id>); there is no shared catalog graph, the catalog lives in S3 Vectors. Contract data is written only at finalize time.",
     invariant:
       "Guarded by falkor.is_available() everywhere; if it is down, grounding is empty and the agent degrades to chat-only reasoning rather than erroring.",
+  },
+  {
+    id: "ctx.vectors",
+    label: "S3 Vectors",
+    kind: "store",
+    layer: "context",
+    group: "Stores",
+    anchor: "apps/api/db/vectors.py::S3VectorsIndex",
+    summary:
+      "The product catalog as embeddings — one index per organization, named {S3_VECTOR_INDEX}-{slug} and stored on the org document. The agent only ever queries the index belonging to the customer's org.",
+    invariant:
+      "is_available() is just \"is S3_VECTOR_BUCKET set\"; when it is not, the matcher falls back to a substring scan over Mongo so the app still works offline.",
   },
   {
     id: "ctx.llm",
@@ -60,8 +79,9 @@ const CONTEXT_NODES: ArchNode[] = [
 
 const CONTEXT_EDGES: ArchEdge[] = [
   { id: "ctx.e1", source: "ctx.web", target: "ctx.api", label: "HTTP /api", layer: "context", kind: "call" },
-  { id: "ctx.e2", source: "ctx.api", target: "ctx.mongo", label: "chats · messages · summaries", layer: "context", kind: "data" },
+  { id: "ctx.e2", source: "ctx.api", target: "ctx.mongo", label: "orgs · chats · messages · summaries", layer: "context", kind: "data" },
   { id: "ctx.e3", source: "ctx.api", target: "ctx.falkor", label: "read graph · write contract", layer: "context", kind: "data" },
+  { id: "ctx.e5", source: "ctx.api", target: "ctx.vectors", label: "build · query per-org index", layer: "context", kind: "data" },
   { id: "ctx.e4", source: "ctx.api", target: "ctx.llm", label: "structured calls", layer: "context", kind: "call" },
 ];
 
@@ -113,6 +133,19 @@ const FLOW_NODES: ArchNode[] = [
       "Chat lifecycle and the message window. Assigns per-chat monotonic seq numbers, reuses or opens the active chat, and slices messages since the last contract watermark.",
   },
   {
+    id: "flow.org_service",
+    label: "org_service",
+    kind: "service",
+    layer: "flows",
+    group: "Services",
+    flows: ["autonomous"],
+    anchor: "apps/api/services/org_service.py::org_id_for_customer",
+    summary:
+      "Organization lookups: the roster, slugs, and which vector index an org owns. Raises MissingOrg when a customer or product reaches org-scoped code without an org_id.",
+    invariant:
+      "vector_index_name() reads the name stored on the org document, so changing S3_VECTOR_INDEX later cannot orphan existing vectors.",
+  },
+  {
     id: "flow.matcher",
     label: "product_matcher_service",
     kind: "service",
@@ -121,7 +154,7 @@ const FLOW_NODES: ArchNode[] = [
     flows: ["autonomous"],
     anchor: "apps/api/services/product_matcher_service.py::resolve_products",
     summary:
-      "Resolves product mentions to catalog SKUs. Builds a candidate pool from the customer's organization S3-Vectors index plus this customer's prior orders, then has the LLM classify each mention as confident, ambiguous, or no_match.",
+      "Resolves product mentions to catalog SKUs in two LLM calls: one extracts distinct mentions, one resolves them. The candidate pool is the customer's organization S3-Vectors index plus this customer's prior orders, and each mention comes back confident, ambiguous, or no_match.",
     invariant: "_guard() drops any resolved_code outside the pool — product codes are never invented.",
   },
   {
@@ -133,7 +166,7 @@ const FLOW_NODES: ArchNode[] = [
     flows: ["autonomous"],
     anchor: "apps/api/services/summary_context_service.py::assemble",
     summary:
-      "Assembles grounding context: profile block, preference history block, and product block. Any block is None when FalkorDB is unavailable.",
+      "Assembles grounding from FalkorDB: profile_block from Attribute nodes and history_block from Preference nodes, both None when FalkorDB is unavailable. product_block is left empty here — agent_service overwrites it with the resolved SKUs.",
   },
   {
     id: "flow.chat_graph",
@@ -153,7 +186,7 @@ const FLOW_NODES: ArchNode[] = [
     layer: "flows",
     group: "Services",
     anchor: "apps/api/services/graph_reader_service.py::read_customer_graph",
-    summary: "Reads customer and catalog graphs into {nodes, edges} for the UI's Graphs tab.",
+    summary: "Reads one customer's graph into {nodes, edges} for the UI's Graphs tab. Returns an empty graph when FalkorDB is unreachable.",
   },
   {
     id: "flow.mongo",
@@ -163,7 +196,7 @@ const FLOW_NODES: ArchNode[] = [
     group: "Stores",
     flows: ["autonomous", "approve"],
     anchor: "apps/api/db/mongo.py::db",
-    summary: "chats, messages, summaries. The pending draft and the message window both live here.",
+    summary: "customers, organizations, products, chats, messages, summaries. The pending draft and the message window both live here.",
   },
   {
     id: "flow.falkor",
@@ -172,8 +205,18 @@ const FLOW_NODES: ArchNode[] = [
     layer: "flows",
     group: "Stores",
     flows: ["autonomous", "approve"],
-    anchor: "apps/api/db/falkor.py::graph",
+    anchor: "apps/api/db/falkor.py::customer_graph",
     summary: "Read for grounding on every draft; written only on approve.",
+  },
+  {
+    id: "flow.vectors",
+    label: "S3 Vectors",
+    kind: "store",
+    layer: "flows",
+    group: "Stores",
+    flows: ["autonomous"],
+    anchor: "apps/api/db/vectors.py::S3VectorsIndex",
+    summary: "Per-org product embeddings. Queried top-5 per mention; falls back to a Mongo substring scan when unset or erroring.",
   },
   {
     id: "flow.llm",
@@ -183,7 +226,7 @@ const FLOW_NODES: ArchNode[] = [
     group: "External",
     flows: ["autonomous"],
     anchor: "core/llm_client.py::call_llm",
-    summary: "Schema-coerced LLM calls: AgentDecision, ProductMatchResult, SOExtractContractList.",
+    summary: "Schema-coerced LLM calls: MentionList and ProductMatchResult for matching, AgentDecision for drafting, plus OrgChoice and ProductSpec off the request path.",
   },
 ];
 
@@ -192,13 +235,17 @@ const FLOW_EDGES: ArchEdge[] = [
   { id: "flow.e2", source: "flow.messages", target: "flow.agent_tag", label: "@agent …", layer: "flows", flows: ["autonomous", "approve"], kind: "call" },
   { id: "flow.e3", source: "flow.agent_tag", target: "flow.agent_service", label: "ask | approve", layer: "flows", flows: ["autonomous", "approve"], kind: "call" },
   { id: "flow.e7", source: "flow.agent_service", target: "flow.chat_service", label: "window", layer: "flows", flows: ["autonomous", "approve"], kind: "call" },
+  { id: "flow.e20", source: "flow.agent_service", target: "flow.org_service", label: "org_id_for_customer", layer: "flows", flows: ["autonomous"], kind: "call" },
   { id: "flow.e8", source: "flow.agent_service", target: "flow.matcher", label: "resolve products", layer: "flows", flows: ["autonomous"], kind: "call" },
   { id: "flow.e9", source: "flow.agent_service", target: "flow.context_service", label: "grounding", layer: "flows", flows: ["autonomous"], kind: "call" },
   { id: "flow.e10", source: "flow.agent_service", target: "flow.llm", label: "decide()", layer: "flows", flows: ["autonomous"], kind: "call" },
   { id: "flow.e11", source: "flow.agent_service", target: "flow.chat_graph", label: "write_contract", layer: "flows", flows: ["approve"], kind: "call" },
   { id: "flow.e14", source: "flow.chat_service", target: "flow.mongo", label: "chats · messages", layer: "flows", kind: "data" },
   { id: "flow.e15", source: "flow.agent_service", target: "flow.mongo", label: "upsert pending summary", layer: "flows", flows: ["autonomous", "approve"], kind: "data" },
-  { id: "flow.e16", source: "flow.matcher", target: "flow.falkor", label: "catalog + prior orders", layer: "flows", flows: ["autonomous"], kind: "data" },
+  { id: "flow.e16", source: "flow.matcher", target: "flow.falkor", label: "prior orders", layer: "flows", flows: ["autonomous"], kind: "data" },
+  { id: "flow.e21", source: "flow.matcher", target: "flow.vectors", label: "top-5 per mention", layer: "flows", flows: ["autonomous"], kind: "data" },
+  { id: "flow.e22", source: "flow.matcher", target: "flow.mongo", label: "live codes · fallback scan", layer: "flows", flows: ["autonomous"], kind: "data" },
+  { id: "flow.e23", source: "flow.org_service", target: "flow.mongo", label: "org roster", layer: "flows", flows: ["autonomous"], kind: "data" },
   { id: "flow.e17", source: "flow.context_service", target: "flow.falkor", label: "profile + preferences", layer: "flows", flows: ["autonomous"], kind: "data" },
   { id: "flow.e18", source: "flow.chat_graph", target: "flow.falkor", label: "Contract subgraph", layer: "flows", flows: ["approve"], kind: "data" },
   { id: "flow.e19", source: "flow.graph_reader", target: "flow.falkor", label: "read", layer: "flows", kind: "data" },
@@ -248,6 +295,17 @@ const AGENT_NODES: ArchNode[] = [
     summary: "No new messages since the last contract → post a plain chat message and return.",
   },
   {
+    id: "agent.gate_noorg",
+    label: "GATE · customer has no org",
+    kind: "gate",
+    layer: "agent",
+    group: "Draft pipeline",
+    flows: ["autonomous"],
+    anchor: "apps/api/services/org_service.py::MissingOrg",
+    summary:
+      "org_id_for_customer raises MissingOrg → post a question telling the user to assign an organization on the Organizations page, and return. Product lookup is org-scoped, so there is no catalog to search without one.",
+  },
+  {
     id: "agent.match",
     label: "resolve_products",
     kind: "service",
@@ -255,7 +313,8 @@ const AGENT_NODES: ArchNode[] = [
     group: "Draft pipeline",
     flows: ["autonomous"],
     anchor: "apps/api/services/product_matcher_service.py::resolve_products",
-    summary: "Pins every product mention to a catalog SKU before any drafting happens.",
+    summary:
+      "Pins every product mention to a SKU in the customer's own organization catalog before any drafting happens. Prior-order codes from the graph are filtered to that org's live codes first, so another org's SKUs can never enter the pool.",
   },
   {
     id: "agent.gate_unresolved",
@@ -277,7 +336,7 @@ const AGENT_NODES: ArchNode[] = [
     flows: ["autonomous"],
     anchor: "apps/api/services/summary_context_service.py::assemble",
     summary:
-      "profile_block from graph attributes, history_block from Preference nodes, product_block overwritten with the resolved SKUs.",
+      "profile_block from graph Attribute nodes, history_block from Preference nodes. agent_service then overwrites product_block with the resolved SKUs, so the model sees the pinned catalog rows rather than the whole catalog.",
   },
   {
     id: "agent.previous",
@@ -302,6 +361,30 @@ const AGENT_NODES: ArchNode[] = [
     invariant: "mode==\"finalize\" without readiness is downgraded to \"draft\".",
   },
   {
+    id: "agent.verify",
+    label: "verify(decision)",
+    kind: "service",
+    layer: "agent",
+    group: "Draft pipeline",
+    flows: ["autonomous"],
+    anchor: "apps/api/verification.py::verify",
+    summary:
+      "Deterministic verification gate over the model's decision before anything is drafted. Checks product-code grounding (a line item's description must be a matcher-resolved SKU or name), ship_term ∈ {EXW,FOB,CIF,DDP}, total == quantity×unit_price, ISO dates, and per-slot provenance (source, source_seqs). Blocking violations become a question; warnings are stored on the draft.",
+    invariant:
+      "Blocking codes (unknown_product_code, bad_ship_term, critical_unknown_source) stop a draft; warnings (total_mismatch, bad_date_format, missing_provenance, stale_citation) are recorded, not fatal.",
+  },
+  {
+    id: "agent.gate_verify",
+    label: "GATE · blocking violation",
+    kind: "gate",
+    layer: "agent",
+    group: "Draft pipeline",
+    flows: ["autonomous"],
+    anchor: "apps/api/verification.py::has_blocking",
+    summary:
+      "A blocking violation (ungrounded product, bad incoterm, or a critical slot with source='unknown') → post a question listing the problems, write no summary, and return.",
+  },
+  {
     id: "agent.gate_clarify",
     label: "GATE · mode == clarify",
     kind: "gate",
@@ -320,7 +403,7 @@ const AGENT_NODES: ArchNode[] = [
     flows: ["autonomous"],
     anchor: "apps/api/models.py::render_summary_markdown",
     summary:
-      "Renders the contract to markdown, upserts the pending summary with slots and product_matches, bumps revision, posts a draft card.",
+      "Renders the contract to markdown, upserts the pending summary with slots, product_matches and any verification warnings, bumps revision, posts a draft card.",
     invariant: "A ready decision still only drafts — it appends \"Ready to finalize\" and waits for @agent confirm.",
   },
   {
@@ -356,6 +439,29 @@ const AGENT_NODES: ArchNode[] = [
     invariant: "This is the single gate preventing an unagreed contract from reaching the graph.",
   },
   {
+    id: "agent.verify_commit",
+    label: "verify(pending)",
+    kind: "service",
+    layer: "agent",
+    group: "Commit pipeline",
+    flows: ["approve"],
+    anchor: "apps/api/verification.py::verify",
+    summary:
+      "The same deterministic verifier, re-run on the stored pending draft at commit time (resolved_codes=None, so product grounding is trusted from draft time). A blocking violation refuses the finalize.",
+    invariant: "is_ready proves both parties agreed; verify proves the contract is well-formed. Both must pass before write_contract.",
+  },
+  {
+    id: "agent.gate_verify_commit",
+    label: "GATE · failed verification",
+    kind: "gate",
+    layer: "agent",
+    group: "Commit pipeline",
+    flows: ["approve"],
+    anchor: "apps/api/verification.py::has_blocking",
+    summary:
+      "The pending draft failed verification → reply listing the blocking problems and stop, without writing the graph.",
+  },
+  {
     id: "agent.write",
     label: "write_contract",
     kind: "service",
@@ -364,7 +470,7 @@ const AGENT_NODES: ArchNode[] = [
     flows: ["approve"],
     anchor: "apps/api/services/chat_graph_service.py::write_contract",
     summary:
-      "Creates Contract, one LineItem per item, Term nodes, MessageRef provenance, and SUPERSEDES to the prior revision. Derives a Preference node for every both-agreed slot.",
+      "Creates Contract, one LineItem per item, Term nodes, and SUPERSEDES to the prior revision. Writes per-slot MessageRef provenance: each LineItem/Term gets DERIVED_FROM edges to the exact messages its slots cite (source_seqs). Derives a Preference node for every both-agreed slot.",
     invariant: "Preferences are the feedback loop — they reappear as history_block grounding on the next draft.",
   },
   {
@@ -394,17 +500,22 @@ const AGENT_EDGES: ArchEdge[] = [
   { id: "agent.e1", source: "agent.invoke", target: "agent.ensure_chat", layer: "agent", flows: ["autonomous"], kind: "call" },
   { id: "agent.e2", source: "agent.ensure_chat", target: "agent.window", layer: "agent", flows: ["autonomous"], kind: "call" },
   { id: "agent.e3", source: "agent.window", target: "agent.gate_empty", label: "no new messages", layer: "agent", flows: ["autonomous"], kind: "gate-fail" },
+  { id: "agent.e17", source: "agent.window", target: "agent.gate_noorg", label: "customer has no org_id", layer: "agent", flows: ["autonomous"], kind: "gate-fail" },
   { id: "agent.e4", source: "agent.window", target: "agent.match", layer: "agent", flows: ["autonomous"], kind: "call" },
   { id: "agent.e5", source: "agent.match", target: "agent.gate_unresolved", label: "ambiguous / no_match", layer: "agent", flows: ["autonomous"], kind: "gate-fail" },
   { id: "agent.e6", source: "agent.match", target: "agent.context", label: "all confident", layer: "agent", flows: ["autonomous"], kind: "call" },
   { id: "agent.e7", source: "agent.context", target: "agent.previous", layer: "agent", flows: ["autonomous"], kind: "call" },
   { id: "agent.e8", source: "agent.previous", target: "agent.decide", layer: "agent", flows: ["autonomous"], kind: "call" },
   { id: "agent.e9", source: "agent.decide", target: "agent.gate_clarify", label: "needs answers", layer: "agent", flows: ["autonomous"], kind: "gate-fail" },
-  { id: "agent.e10", source: "agent.decide", target: "agent.draft", label: "draft | finalize", layer: "agent", flows: ["autonomous"], kind: "call" },
+  { id: "agent.e10", source: "agent.decide", target: "agent.verify", label: "draft | finalize", layer: "agent", flows: ["autonomous"], kind: "call" },
+  { id: "agent.e18", source: "agent.verify", target: "agent.gate_verify", label: "ungrounded / malformed", layer: "agent", flows: ["autonomous"], kind: "gate-fail" },
+  { id: "agent.e19", source: "agent.verify", target: "agent.draft", label: "clean / warnings stored", layer: "agent", flows: ["autonomous"], kind: "call" },
   { id: "agent.e11", source: "agent.draft", target: "agent.approve", label: "@agent confirm (separate request)", layer: "agent", flows: ["approve"], kind: "data" },
   { id: "agent.e12", source: "agent.approve", target: "agent.gate_nodraft", label: "no pending summary", layer: "agent", flows: ["approve"], kind: "gate-fail" },
   { id: "agent.e13", source: "agent.approve", target: "agent.gate_ready", layer: "agent", flows: ["approve"], kind: "call" },
-  { id: "agent.e14", source: "agent.gate_ready", target: "agent.write", label: "all critical slots agreed", layer: "agent", flows: ["approve"], kind: "call" },
+  { id: "agent.e14", source: "agent.gate_ready", target: "agent.verify_commit", label: "all critical slots agreed", layer: "agent", flows: ["approve"], kind: "call" },
+  { id: "agent.e20", source: "agent.verify_commit", target: "agent.gate_verify_commit", label: "failed verification", layer: "agent", flows: ["approve"], kind: "gate-fail" },
+  { id: "agent.e21", source: "agent.verify_commit", target: "agent.write", label: "verified", layer: "agent", flows: ["approve"], kind: "call" },
   { id: "agent.e15", source: "agent.write", target: "agent.persist", layer: "agent", flows: ["approve"], kind: "call" },
   { id: "agent.e16", source: "agent.persist", target: "agent.branch", layer: "agent", flows: ["approve"], kind: "call" },
 ];
