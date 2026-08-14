@@ -297,6 +297,16 @@ def invoke(
     )
     decision_json = decision.model_dump_json(indent=2)
 
+    if decision.mode == "clarify":
+        msg = _agent_msg(
+            customer_id,
+            chat_id,
+            decision.message,
+            "question",
+            summary_json=decision_json,
+        )
+        return {"messages": [msg], "summary": None}
+
     _contract = decision.contract or SOExtractContractList(data=[])
     violations = verify(
         _contract,
@@ -310,16 +320,6 @@ def invoke(
         msg = _agent_msg(customer_id, chat_id, body, "question", summary_json=decision_json)
         return {"messages": [msg], "summary": None}
     violation_docs = [v.model_dump() for v in violations]
-
-    if decision.mode == "clarify":
-        msg = _agent_msg(
-            customer_id,
-            chat_id,
-            decision.message,
-            "question",
-            summary_json=decision_json,
-        )
-        return {"messages": [msg], "summary": None}
 
     # draft — the agent NEVER auto-finalizes; a ready decision still drafts.
     contract = decision.contract or SOExtractContractList(data=[])

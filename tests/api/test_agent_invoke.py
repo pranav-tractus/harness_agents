@@ -130,3 +130,22 @@ def test_invoke_stores_warnings_on_draft():
                                context_fn=_ctx, matcher_fn=_confident_matcher("TG-BPPC"))
     assert out["summary"]["status"] == "pending"
     assert "total_mismatch" in [v["code"] for v in out["summary"]["violations"]]
+
+
+def test_invoke_clarify_not_blocked_by_verification():
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "seller", "need choline")
+    # Partial ledger with source=unknown would block if verify ran before clarify
+    dec = AgentDecision(
+        mode="clarify",
+        message="What quantity and incoterm?",
+        questions=[AgentQuestion(slot="quantity", directed_to="customer", text="qty?")],
+        ledger=[SlotBelief(slot="quantity", value="10", source="unknown")],
+        contract=make_extract(items=[make_item(description="GHOST-1", ship_term="CIFF")]),
+    )
+    out = agent_service.invoke("dummy-01", "sonnet-4-6",
+                               decider=_decider(dec), context_fn=_ctx, matcher_fn=_matcher)
+    assert out["summary"] is None
+    assert out["messages"][-1]["kind"] == "question"
+    assert out["messages"][-1]["body"] == "What quantity and incoterm?"
+    assert "can't draft" not in out["messages"][-1]["body"].lower()
