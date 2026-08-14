@@ -58,6 +58,17 @@ def write_contract(
         )
 
     agreed = {s["slot"]: s.get("agreed_by", []) for s in slots}
+    slot_seqs = {s["slot"]: [int(q) for q in (s.get("source_seqs") or [])] for s in slots}
+
+    def _link(node_var: str, node_id: str, slot_key: str) -> None:
+        for seq in slot_seqs.get(slot_key, []):
+            g.query(
+                f"MATCH (n:{node_var} {{id:$nid}}) "
+                "MERGE (m:MessageRef {contract_id:$cid, seq:$seq}) "
+                "MERGE (n)-[:DERIVED_FROM]->(m)",
+                {"nid": node_id, "cid": contract_id, "seq": seq},
+            )
+
     for it in contract.get("items", []):
         li = uuid.uuid4().hex
         g.query(
@@ -89,6 +100,8 @@ def write_contract(
                 "MATCH (li:LineItem {id:$li}) MERGE (po:Port {name:$name}) MERGE (li)-[:SHIP_TO]->(po)",
                 {"li": li, "name": port},
             )
+        for slot_key in ("description", "quantity", "unit_price", "ship_term"):
+            _link("LineItem", li, slot_key)
 
     for kind, value in (
         ("payment", contract.get("payment_date")),
@@ -97,22 +110,26 @@ def write_contract(
     ):
         if value:
             slot_key = _TERM_KIND_TO_SLOT.get(kind, kind)
+            tid = uuid.uuid4().hex
             g.query(
                 "MATCH (ct:Contract {id:$cid}) "
-                "CREATE (t:Term {kind:$kind, value:$value, agreed_by:$agreed}) "
+                "CREATE (t:Term {id:$tid, kind:$kind, value:$value, agreed_by:$agreed}) "
                 "MERGE (ct)-[:HAS_TERM]->(t)",
                 {
                     "cid": contract_id,
+                    "tid": tid,
                     "kind": kind,
                     "value": str(value),
                     "agreed": agreed.get(slot_key, []),
                 },
             )
+            _link("Term", tid, slot_key)
 
     for ref in source_seqs:
         g.query(
             "MATCH (ct:Contract {id:$cid}) "
-            "CREATE (m:MessageRef {seq:$seq, role:$role, snippet:$snip}) "
+            "MERGE (m:MessageRef {contract_id:$cid, seq:$seq}) "
+            "SET m.role=$role, m.snippet=$snip "
             "MERGE (ct)-[:DERIVED_FROM]->(m)",
             {
                 "cid": contract_id,
