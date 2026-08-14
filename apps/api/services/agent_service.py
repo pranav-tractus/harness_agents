@@ -17,6 +17,7 @@ from apps.api.services import (
     product_matcher_service,
     summary_context_service,
 )
+from apps.api.verification import has_blocking, verify
 from core.llm_client import call_llm
 from core.models import SOExtractContractList
 
@@ -296,6 +297,20 @@ def invoke(
     )
     decision_json = decision.model_dump_json(indent=2)
 
+    _contract = decision.contract or SOExtractContractList(data=[])
+    violations = verify(
+        _contract,
+        [s.model_dump() for s in decision.ledger],
+        resolved_codes={m.resolved_code for m in match_result.resolved() if m.resolved_code},
+        window_seqs={m["seq"] for m in window},
+    )
+    if has_blocking(violations):
+        body = "I can't draft this yet:\n" + "\n".join(
+            f"- {v.message}" for v in violations if v.severity == "block")
+        msg = _agent_msg(customer_id, chat_id, body, "question", summary_json=decision_json)
+        return {"messages": [msg], "summary": None}
+    violation_docs = [v.model_dump() for v in violations]
+
     if decision.mode == "clarify":
         msg = _agent_msg(
             customer_id,
@@ -326,6 +341,7 @@ def invoke(
                     "model_key": model_key,
                     "chat_id": chat_id,
                     "product_matches": _match_docs,
+                    "violations": violation_docs,
                 },
                 "$inc": {"revision": 1},
             },
@@ -344,6 +360,7 @@ def invoke(
             "rendered_markdown": markdown,
             "slots": slots,
             "product_matches": _match_docs,
+            "violations": violation_docs,
             "created_at": _now(),
             "approved_at": None,
         }
