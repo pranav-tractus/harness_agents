@@ -26,6 +26,27 @@ def _ensure_chat(g, customer_id, chat_id, chat_title):
     )
 
 
+def _slot_index(slots: list[dict]) -> dict[tuple[int | None, str], dict]:
+    """Index ledger entries by ``(line, slot)``. ``line`` is ``None`` for
+    order-level entries; a line-scoped entry carries the contract item's
+    ``sr_no``. Callers read ``source_seqs`` / ``evidence`` / ``agreed_by`` from
+    the returned entry with per-line scoping and an order-level fallback
+    (see :func:`_lookup`)."""
+    idx: dict[tuple[int | None, str], dict] = {}
+    for s in slots:
+        line = int(s["line"]) if s.get("line") is not None else None
+        idx[(line, s["slot"])] = s
+    return idx
+
+
+def _lookup(idx: dict, slot: str, line: int | None) -> dict | None:
+    """The line-scoped entry if one exists, else the order-level (``None``)
+    entry. A line-scoped slot has no order-level fallback for other lines."""
+    if line is not None and (line, slot) in idx:
+        return idx[(line, slot)]
+    return idx.get((None, slot))
+
+
 def write_contract(
     customer_id, chat_id, chat_title, contract, slots, source_seqs, to_seq
 ) -> str:
@@ -57,30 +78,22 @@ def write_contract(
             {"new": contract_id, "old": prev[0][0]},
         )
 
-    agreed = {s["slot"]: s.get("agreed_by", []) for s in slots}
+    # Ledger entries indexed by (line, slot). Line items read their own line's
+    # entry (fallback to order-level); terms read order-level. This keeps
+    # provenance AND agreed_by scoped per line item instead of last-write-wins.
+    idx = _slot_index(slots)
 
-    # Provenance maps. A ledger entry is line-scoped when it carries a `line`
-    # (== the contract item's sr_no); otherwise it is order-level. Line-scoped
-    # entries win for their line; order-level entries are the fallback and also
-    # cover legacy drafts written before the `line` field existed.
-    line_prov: dict[tuple[int, str], tuple[list[int], str | None]] = {}
-    flat_prov: dict[str, tuple[list[int], str | None]] = {}
-    for s in slots:
-        entry = ([int(q) for q in (s.get("source_seqs") or [])], s.get("evidence"))
-        if s.get("line") is not None:
-            line_prov[(int(s["line"]), s["slot"])] = entry
-        else:
-            flat_prov[s["slot"]] = entry
+    def _agreed(entry: dict | None) -> list[str]:
+        return list(entry.get("agreed_by", [])) if entry else []
 
     def _link(
         node_var: str, node_id: str, slot_key: str, line: int | None = None
     ) -> None:
-        prov = line_prov.get((line, slot_key)) if line is not None else None
-        if prov is None:
-            prov = flat_prov.get(slot_key)
-        if not prov:
+        entry = _lookup(idx, slot_key, line)
+        if not entry:
             return
-        seqs, ev = prov
+        seqs = [int(q) for q in (entry.get("source_seqs") or [])]
+        ev = entry.get("evidence")
         for seq in seqs:
             g.query(
                 f"MATCH (n:{node_var} {{id:$nid}}) "
@@ -106,7 +119,7 @@ def write_contract(
                 "price": it.get("unit_price"),
                 "punit": it.get("pricing_unit", ""),
                 "inco": it.get("ship_term", ""),
-                "agreed": agreed.get("description", []),
+                "agreed": _agreed(_lookup(idx, "description", it.get("sr_no"))),
             },
         )
         code = it.get("description", "")
@@ -141,7 +154,7 @@ def write_contract(
                     "tid": tid,
                     "kind": kind,
                     "value": str(value),
-                    "agreed": agreed.get(slot_key, []),
+                    "agreed": _agreed(_lookup(idx, slot_key, None)),
                 },
             )
             _link("Term", tid, slot_key)

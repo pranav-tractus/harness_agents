@@ -35,8 +35,9 @@ def verify(
     ``resolved_codes`` is the set of accepted identifiers for products the
     matcher pinned this turn — each product's SKU code *and* its name, since
     the draft agent writes the product name (not the code) into
-    ``description``. Pass ``None`` to skip product-grounding (e.g. at approve
-    time, where the matcher is not re-run and grounding was enforced at draft).
+    ``description``. Pass ``None`` only to skip product-grounding entirely (the
+    internal ``finalize()`` path); ``approve()`` passes the set rebuilt from the
+    pending summary's persisted ``product_matches``.
     ``window_seqs`` is the set of message seqs the agent reasoned over.
     """
     out: list[Violation] = []
@@ -55,7 +56,7 @@ def verify(
                 code="missing_ship_term", slot="ship_term", severity="block",
                 message="Line item has no ship_term — a critical field must be set.",
             ))
-        elif ship_term not in VALID_SHIP_TERMS:
+        elif ship_term.upper() not in VALID_SHIP_TERMS:
             out.append(Violation(
                 code="bad_ship_term", slot="ship_term", severity="block",
                 message=f"ship_term '{it.ship_term}' is not one of EXW/FOB/CIF/DDP.",
@@ -87,7 +88,13 @@ def verify(
                 code="critical_unknown_source", slot=slot, severity="block",
                 message=f"Critical slot '{slot}' has a value but source='unknown'.",
             ))
-        if source == "chat" and not seqs:
+        elif source != "chat":
+            out.append(Violation(
+                code="critical_not_chat_sourced", slot=slot, severity="block",
+                message=(f"Critical slot '{slot}' must be chat-confirmed; "
+                         f"source='{source}' is not allowed for a critical value."),
+            ))
+        elif not seqs:
             out.append(Violation(
                 code="missing_provenance", slot=slot, severity="block",
                 message=f"Critical slot '{slot}' is chat-sourced but cites no message.",

@@ -195,8 +195,11 @@ Each step lists **what the agent does** and **the harness attached**.
   - **ship_term** — a line item must carry a valid incoterm: a blank one is
     blocked (`missing_ship_term`) and a non-empty value outside {EXW, FOB, CIF, DDP}
     is blocked (`bad_ship_term`);
-  - **critical-slot source** — a critical slot with a value but `source="unknown"`
-    (blocking `critical_unknown_source`);
+  - **critical-slot source** — a critical slot's value must be chat-confirmed:
+    a value with `source="unknown"` (blocking `critical_unknown_source`) or with
+    a non-chat source like `last_order`/`profile`/`inferred` (blocking
+    `critical_not_chat_sourced`) is rejected — a deterministic gate must catch a
+    critical value the model didn't take from the conversation;
   - **provenance** — a chat-sourced critical slot that cites no message
     (blocking `missing_provenance`), so a drafted critical value must be traceable
     to a message;

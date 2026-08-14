@@ -371,7 +371,7 @@ const AGENT_NODES: ArchNode[] = [
     summary:
       "Deterministic verification gate over the model's decision before anything is drafted. Checks product-code grounding (a line item's description must be a matcher-resolved SKU or name), ship_term ∈ {EXW,FOB,CIF,DDP}, total == quantity×unit_price, ISO dates, and per-slot provenance (source, source_seqs). Blocking violations become a question; warnings are stored on the draft.",
     invariant:
-      "Blocking codes (unknown_product_code, missing_ship_term, bad_ship_term, critical_unknown_source, missing_provenance) stop a draft; warnings (total_mismatch, bad_date_format, stale_citation) are recorded, not fatal.",
+      "Blocking codes (unknown_product_code, missing_ship_term, bad_ship_term, critical_unknown_source, critical_not_chat_sourced, missing_provenance) stop a draft; warnings (total_mismatch, bad_date_format, stale_citation) are recorded, not fatal.",
   },
   {
     id: "agent.gate_verify",

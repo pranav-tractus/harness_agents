@@ -51,6 +51,19 @@ def test_total_mismatch_warns_but_does_not_block():
     assert not has_blocking(v)
 
 
+def test_non_chat_critical_source_blocks():
+    contract = make_extract(items=[make_item(description="TG-BPPC", ship_term="CIF")])
+    slots = [{"slot": "quantity", "value": "10", "source": "last_order", "source_seqs": []}]
+    v = verify(contract, slots, resolved_codes={"TG-BPPC"}, window_seqs=set())
+    assert any(x.code == "critical_not_chat_sourced" and x.severity == "block" for x in v)
+
+
+def test_ship_term_case_insensitive():
+    contract = make_extract(items=[make_item(description="TG-BPPC", ship_term="cif")])
+    v = verify(contract, [], resolved_codes={"TG-BPPC"}, window_seqs=set())
+    assert not any(x.code in ("bad_ship_term", "missing_ship_term") for x in v)
+
+
 def test_critical_slot_unknown_source_blocks():
     contract = make_extract(items=[make_item(description="TG-BPPC")])
     slots = [{"slot": "quantity", "value": "10", "source": "unknown", "source_seqs": []}]

@@ -413,8 +413,10 @@ Two entry points converge on the graph write.
 
 ### `agent_service.py::finalize` — finalize directly from a decision
 Same graph write + persist, used when a decision object is passed in rather than a
-stored pending draft. Note this path does **not** re-check `is_ready`; it is not
-reachable from the `@agent` route, which always goes through `approve`.
+stored pending draft. It runs the same `verify()` gate as `approve` (blocking
+violations abort the write), but does **not** re-check `is_ready` — agreement is
+assumed to have been established by the caller. It is not reachable from the
+`@agent` route, which always goes through `approve`.
 
 ### `agent_service.py::_finish_and_branch`
 1. `chat_service.finish_chat(chat_id)` → old chat `status: finished`.

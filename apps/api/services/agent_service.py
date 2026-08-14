@@ -40,8 +40,11 @@ _SYSTEM_BASE = (
     "party (\"confirmed\", \"ok\", \"agreed\", \"deal\", \"let's go\", or "
     "explicit acceptance of a counter-offer).\n"
     "4. **Verbatim strings.** Copy `packing`, `loading`, `shipping_method`, "
-    "`shipping_address`, `description`, `ship_term` with the chat's exact "
-    "spacing, casing, punctuation, and word order — no paraphrasing.\n"
+    "`shipping_address`, `ship_term` with the chat's exact spacing, casing, "
+    "punctuation, and word order — no paraphrasing. **Exception — "
+    "`description`:** use the resolved catalog product's name or SKU exactly as "
+    "shown in the Product catalog block, not the chat's nickname, so it matches "
+    "the pinned product.\n"
     "5. **Dates are ISO 8601 (YYYY-MM-DD) or empty.** Never paraphrase a "
     "date as prose. For partial months use the last day of that month. "
     "For omitted years, use the current year unless the chat says "
@@ -275,8 +278,10 @@ def _pending_resolved_identifiers(pending: dict, org_id: str | None) -> set[str]
     trusting them blindly. Returns ``None`` for legacy summaries with no stored
     matches (there the draft-time grounding is trusted, as before)."""
     raw = pending.get("product_matches")
-    if not raw:
-        return None
+    if raw is None:
+        return None  # legacy summary predating this field; trust draft-time grounding
+    # An empty list means the matcher ran and pinned nothing → an empty accepted
+    # set, so any line-item description must fail grounding (not be skipped).
     matches = [
         product_matcher_service.ProductMatch(**m)
         for m in raw
@@ -490,6 +495,14 @@ def finalize(
         data=[]
     )
     slots = [s.model_dump() for s in decision.ledger] if decision else []
+
+    finalize_violations = verify(
+        contract, slots, resolved_codes=None, window_seqs={m["seq"] for m in window}
+    )
+    if has_blocking(finalize_violations):
+        body = "Can't finalize — the draft failed verification:\n" + "\n".join(
+            f"- {v.message}" for v in finalize_violations if v.severity == "block")
+        return {"messages": [_agent_msg(customer_id, chat_id, body, "chat")], "summary": None}
 
     graph_fn(
         customer_id,
