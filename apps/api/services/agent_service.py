@@ -503,6 +503,13 @@ def approve(customer_id, *, graph_fn=None, branch_fn=None) -> dict:
     window = chat_service.chat_messages_since(chat_id, pending["from_seq"] - 1)
     contract = SOExtractContractList(**pending["content"])
     slots = pending.get("slots", [])
+    approve_violations = verify(
+        contract, slots, resolved_codes=None, window_seqs={m["seq"] for m in window}
+    )
+    if has_blocking(approve_violations):
+        body = "Can't finalize — the draft failed verification:\n" + "\n".join(
+            f"- {v.message}" for v in approve_violations if v.severity == "block")
+        return {"messages": [_agent_msg(customer_id, chat_id, body, "chat")], "summary": None}
     graph_fn(
         customer_id,
         chat_id,

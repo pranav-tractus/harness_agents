@@ -6,6 +6,7 @@ from apps.api.db import mongo
 from apps.api.models import AgentDecision, CRITICAL_SLOTS_ORDER, SlotBelief
 from apps.api.services import agent_service, chat_service
 from core.models import SOExtractContractList
+from tests.api._factories import make_extract, make_item
 
 
 @pytest.fixture(autouse=True)
@@ -57,6 +58,14 @@ def _seed_pending(ch, slots):
         "rendered_markdown": "draft", "slots": slots, "created_at": "t", "approved_at": None})
 
 
+def _seed_pending_content(ch, slots, content):
+    mongo.summaries().insert_one({
+        "customer_id": "dummy-01", "chat_id": ch, "status": "pending",
+        "model_key": "sonnet-4-6", "from_seq": 1, "to_seq": 1, "revision": 0,
+        "content": content, "rendered_markdown": "draft", "slots": slots,
+        "created_at": "t", "approved_at": None})
+
+
 def test_approve_refuses_when_not_ready():
     ch = _chat()
     chat_service.add_message("dummy-01", ch, "seller", "x")
@@ -78,6 +87,18 @@ def test_approve_finalizes_ready_draft_and_branches():
     # current chat finished, a fresh active chat now exists
     from apps.api.services import chat_service as cs
     assert cs.active_chat("dummy-01")["_id"].__str__() != ch
+
+
+def test_approve_blocks_on_verification_failure():
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "seller", "10MT CIF")  # seq 1
+    bad = make_extract(items=[make_item(description="TG-BPPC", ship_term="CIFF")]).model_dump()
+    _seed_pending_content(ch, _ready_slots(), bad)
+    out = agent_service.approve("dummy-01", graph_fn=_graph([]), branch_fn=lambda *a, **k: None)
+    assert out["summary"] is None
+    assert mongo.summaries().count_documents({"status": "approved"}) == 0
+    assert chat_service.get_last_contract_seq(ch) == 0
+    assert "finalize" in out["messages"][-1]["body"].lower()
 
 
 def test_finalize_stamps_chat_id_on_approved_summary():
