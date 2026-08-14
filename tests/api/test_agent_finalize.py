@@ -47,7 +47,8 @@ def test_auto_finalize_advances_checkpoint_and_writes_graph():
 
 def _ready_slots():
     return [{"slot": s, "value": "x", "source": "chat", "confidence": "high",
-             "agreed_by": ["seller", "customer"]} for s in CRITICAL_SLOTS_ORDER]
+             "agreed_by": ["seller", "customer"], "source_seqs": [1]}
+            for s in CRITICAL_SLOTS_ORDER]
 
 
 def _seed_pending(ch, slots):
@@ -129,3 +130,17 @@ def test_finalize_stamps_chat_id_on_approved_summary():
                                  model_key="sonnet-4-6", graph_fn=_graph([]))
     assert out["summary"]["chat_id"] == ch
     assert mongo.summaries().find_one({"status": "approved"})["chat_id"] == ch
+
+
+def test_approve_blocks_uncited_critical_slot():
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "seller", "10MT CIF")  # seq 1
+    slots = [{"slot": s, "value": "x", "source": "chat", "confidence": "high",
+              "agreed_by": ["seller", "customer"], "source_seqs": [1]}
+             for s in CRITICAL_SLOTS_ORDER]
+    slots[CRITICAL_SLOTS_ORDER.index("ship_term")]["source_seqs"] = []
+    _seed_pending_content(ch, slots, SOExtractContractList(data=[]).model_dump())
+    out = agent_service.approve("dummy-01", graph_fn=_graph([]),
+                                branch_fn=lambda *a, **k: None)
+    assert out["summary"] is None
+    assert mongo.summaries().count_documents({"status": "approved"}) == 0

@@ -82,7 +82,7 @@ def verify(
             ))
         if source == "chat" and not seqs:
             out.append(Violation(
-                code="missing_provenance", slot=slot, severity="warn",
+                code="missing_provenance", slot=slot, severity="block",
                 message=f"Critical slot '{slot}' is chat-sourced but cites no message.",
             ))
         stale = [q for q in seqs if q not in window_seqs]

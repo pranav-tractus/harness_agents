@@ -52,7 +52,8 @@ def test_draft_upserts_pending_with_ledger():
     contract = SOExtractContractList(data=[])
     dec = AgentDecision(mode="draft", message="Draft ready", contract=contract,
                         ledger=[SlotBelief(slot="ship_term", value="CIF", source="chat",
-                                           confidence="high", agreed_by=["customer"])])
+                                           confidence="high", agreed_by=["customer"],
+                                           source_seqs=[1])])
     out = agent_service.invoke("dummy-01", "sonnet-4-6",
                                decider=_decider(dec), context_fn=_ctx, matcher_fn=_matcher)
     assert out["summary"]["status"] == "pending"
@@ -82,7 +83,8 @@ def test_invoke_never_finalizes_even_when_ready():
     dec = AgentDecision(mode="finalize", message="Both confirmed.",
                         contract=SOExtractContractList(data=[]), ready_to_finalize=True,
                         ledger=[SlotBelief(slot="ship_term", value="CIF", source="chat",
-                                           confidence="high", agreed_by=["seller", "customer"])])
+                                           confidence="high", agreed_by=["seller", "customer"],
+                                           source_seqs=[1])])
     out = agent_service.invoke("dummy-01", "sonnet-4-6",
                                decider=_decider(dec), context_fn=_ctx, matcher_fn=_matcher)
     assert out["messages"][-1]["kind"] == "draft"
@@ -167,3 +169,19 @@ def test_invoke_clarify_not_blocked_by_verification():
     assert out["messages"][-1]["kind"] == "question"
     assert out["messages"][-1]["body"] == "What quantity and incoterm?"
     assert "can't draft" not in out["messages"][-1]["body"].lower()
+
+
+def test_invoke_blocks_chat_slot_without_citation():
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "seller", "10MT TG-BPPC CIF")
+    contract = make_extract(items=[make_item(description="TG-BPPC")])
+    dec = AgentDecision(
+        mode="draft", message="draft", contract=contract,
+        ledger=[SlotBelief(slot="ship_term", value="CIF", source="chat",
+                           agreed_by=["customer"])],
+    )
+    out = agent_service.invoke("dummy-01", "sonnet-4-6", decider=_decider(dec),
+                               context_fn=_ctx, matcher_fn=_confident_matcher("TG-BPPC"))
+    assert out["summary"] is None
+    assert out["messages"][-1]["kind"] == "question"
+    assert mongo.summaries().count_documents({"status": "pending"}) == 0

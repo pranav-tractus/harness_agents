@@ -42,12 +42,12 @@ def test_critical_slot_unknown_source_blocks():
     assert any(x.code == "critical_unknown_source" and x.severity == "block" for x in v)
 
 
-def test_chat_slot_without_citation_warns():
+def test_chat_slot_without_citation_blocks():
     contract = make_extract(items=[make_item(description="TG-BPPC")])
     slots = [{"slot": "unit_price", "value": "100", "source": "chat", "source_seqs": []}]
     v = verify(contract, slots, resolved_codes={"TG-BPPC"}, window_seqs={1})
-    assert any(x.code == "missing_provenance" and x.severity == "warn" for x in v)
-    assert not has_blocking(v)
+    assert any(x.code == "missing_provenance" and x.severity == "block" for x in v)
+    assert has_blocking(v)
 
 
 def test_stale_citation_warns():

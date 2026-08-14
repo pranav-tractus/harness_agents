@@ -63,7 +63,7 @@ def test_confirm_tag_finalizes_the_pending_draft(client, monkeypatch):
         "content": SOExtractContractList(data=[]).model_dump(),
         "rendered_markdown": "draft",
         "slots": [{"slot": s, "value": "x", "source": "chat", "confidence": "high",
-                   "agreed_by": ["seller", "customer"]}
+                   "agreed_by": ["seller", "customer"], "source_seqs": [1]}
                   for s in ["description", "quantity", "unit_price", "ship_term"]],
         "created_at": "t", "approved_at": None,
     }).inserted_id
