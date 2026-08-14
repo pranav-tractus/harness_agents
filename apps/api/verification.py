@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import re
+from typing import Literal
 
 from pydantic import BaseModel
 
 from apps.api.models import CRITICAL_SLOTS
 from core.models import SOExtractContractList
 
-SHIP_TERMS = {"", "EXW", "FOB", "CIF", "DDP"}
+VALID_SHIP_TERMS = {"EXW", "FOB", "CIF", "DDP"}
 _ISO_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
@@ -15,7 +16,7 @@ class Violation(BaseModel):
     code: str
     slot: str | None = None
     message: str
-    severity: str = "warn"  # "block" | "warn"
+    severity: Literal["block", "warn"] = "warn"
 
 
 def has_blocking(violations: list[Violation]) -> bool:
@@ -48,7 +49,13 @@ def verify(
                 code="unknown_product_code", slot="description", severity="block",
                 message=f"Line item '{code}' is not a resolved catalog product.",
             ))
-        if it.ship_term not in SHIP_TERMS:
+        ship_term = (it.ship_term or "").strip()
+        if not ship_term:
+            out.append(Violation(
+                code="missing_ship_term", slot="ship_term", severity="block",
+                message="Line item has no ship_term — a critical field must be set.",
+            ))
+        elif ship_term not in VALID_SHIP_TERMS:
             out.append(Violation(
                 code="bad_ship_term", slot="ship_term", severity="block",
                 message=f"ship_term '{it.ship_term}' is not one of EXW/FOB/CIF/DDP.",

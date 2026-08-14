@@ -192,7 +192,9 @@ Each step lists **what the agent does** and **the harness attached**.
 - **Harness — deterministic verification:** checks
   - **product grounding** — a line item's `description` must be a matcher-resolved
     SKU or name (blocking `unknown_product_code`);
-  - **ship_term** ∈ {EXW, FOB, CIF, DDP} (blocking `bad_ship_term`);
+  - **ship_term** — a line item must carry a valid incoterm: a blank one is
+    blocked (`missing_ship_term`) and a non-empty value outside {EXW, FOB, CIF, DDP}
+    is blocked (`bad_ship_term`);
   - **critical-slot source** — a critical slot with a value but `source="unknown"`
     (blocking `critical_unknown_source`);
   - **provenance** — a chat-sourced critical slot that cites no message

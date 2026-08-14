@@ -118,7 +118,7 @@ def test_invoke_grounds_draft_by_resolved_product_name():
     ch = _chat()
     chat_service.add_message("dummy-01", ch, "customer", "I want the granule 350 one")
     contract = make_extract(items=[make_item(
-        description="PUREPRO SOY 70T - GRANULE 350", ship_term="")])
+        description="PUREPRO SOY 70T - GRANULE 350", ship_term="CIF")])
     dec = AgentDecision(mode="draft", message="draft", contract=contract, ledger=[])
     out = agent_service.invoke(
         "dummy-01", "sonnet-4-6", decider=_decider(dec), context_fn=_ctx,

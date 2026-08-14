@@ -46,7 +46,7 @@ def client(monkeypatch):
                         lambda *a, **k: AgentDecision(
                             mode="draft",
                             message="Draft ready.",
-                            contract=make_extract(items=[make_item(description="TG-BPPC")]),
+                            contract=make_extract(items=[make_item(description="TG-BPPC", ship_term="CIF")]),
                         ))
     monkeypatch.setattr(agent_service.product_matcher_service, "resolve_products",
                         lambda *a, **k: ProductMatchResult(matches=[ProductMatch(
