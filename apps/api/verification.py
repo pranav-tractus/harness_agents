@@ -5,7 +5,7 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-from apps.api.models import CRITICAL_SLOTS
+from apps.api.models import CRITICAL_SLOTS, CRITICAL_SLOTS_ORDER
 from core.models import SOExtractContractList
 
 VALID_SHIP_TERMS = {"EXW", "FOB", "CIF", "DDP"}
@@ -105,4 +105,22 @@ def verify(
                 code="stale_citation", slot=slot, severity="warn",
                 message=f"Slot '{slot}' cites messages not in the window: {stale}.",
             ))
+
+    # Per-item ledger coverage. Only meaningful with >=2 line items: there an
+    # order-level (line-less) critical slot is shared/ambiguous across items, and
+    # an omitted per-line entry silently falls back to that single shared value.
+    if len(items) >= 2:
+        covered = {
+            (int(s["line"]), s["slot"])
+            for s in slots
+            if s.get("line") is not None and s.get("value") is not None
+        }
+        for it in items:
+            for slot in CRITICAL_SLOTS_ORDER:
+                if (it.sr_no, slot) not in covered:
+                    out.append(Violation(
+                        code="missing_line_coverage", slot=slot, severity="block",
+                        message=(f"Line item sr_no={it.sr_no} has no ledger entry "
+                                 f"for critical slot '{slot}'."),
+                    ))
     return out

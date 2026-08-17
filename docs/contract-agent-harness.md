@@ -203,6 +203,10 @@ Each step lists **what the agent does** and **the harness attached**.
   - **provenance** — a chat-sourced critical slot that cites no message
     (blocking `missing_provenance`), so a drafted critical value must be traceable
     to a message;
+  - **per-item coverage** — in a contract with 2+ line items, each item must
+    carry its own `line`-scoped ledger entry for every critical slot
+    (blocking `missing_line_coverage`), so agreement and provenance are never
+    shared across items;
   - **arithmetic** — `total == quantity × unit_price` (warn `total_mismatch`);
   - **dates** — ISO `YYYY-MM-DD` (warn `bad_date_format`);
   - **stale citation** — a slot citing a message outside the reasoning window

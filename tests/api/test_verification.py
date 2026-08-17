@@ -84,3 +84,41 @@ def test_stale_citation_warns():
     slots = [{"slot": "ship_term", "value": "CIF", "source": "chat", "source_seqs": [99]}]
     v = verify(contract, slots, resolved_codes={"TG-BPPC"}, window_seqs={1, 2})
     assert any(x.code == "stale_citation" and x.severity == "warn" for x in v)
+
+
+def _line_slots(sr):
+    return [
+        {"slot": s, "value": "x", "source": "chat", "line": sr, "source_seqs": [1]}
+        for s in ["description", "quantity", "unit_price", "ship_term"]
+    ]
+
+
+def test_multi_item_full_line_coverage_passes():
+    contract = make_extract(items=[
+        make_item(sr_no=1, description="A", ship_term="CIF"),
+        make_item(sr_no=2, description="B", ship_term="FOB"),
+    ])
+    slots = _line_slots(1) + _line_slots(2)
+    v = verify(contract, slots, resolved_codes={"A", "B"}, window_seqs={1})
+    assert not any(x.code == "missing_line_coverage" for x in v)
+
+
+def test_multi_item_missing_line_coverage_blocks():
+    contract = make_extract(items=[
+        make_item(sr_no=1, description="A", ship_term="CIF"),
+        make_item(sr_no=2, description="B", ship_term="FOB"),
+    ])
+    # A single order-level quantity, no per-line entries — the I4 bug.
+    slots = [{"slot": "quantity", "value": "10", "source": "chat", "source_seqs": [1]}]
+    v = verify(contract, slots, resolved_codes={"A", "B"}, window_seqs={1})
+    assert any(x.code == "missing_line_coverage" and x.severity == "block" for x in v)
+
+
+def test_single_item_order_level_ledger_is_allowed():
+    contract = make_extract(items=[make_item(description="A", ship_term="CIF")])
+    slots = [
+        {"slot": s, "value": "x", "source": "chat", "source_seqs": [1]}
+        for s in ["description", "quantity", "unit_price", "ship_term"]
+    ]
+    v = verify(contract, slots, resolved_codes={"A"}, window_seqs={1})
+    assert not any(x.code == "missing_line_coverage" for x in v)
