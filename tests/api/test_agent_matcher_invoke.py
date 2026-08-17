@@ -59,7 +59,8 @@ def test_confident_match_drafts_and_records_provenance():
     dec = AgentDecision(mode="draft", message="Draft ready",
                         contract=SOExtractContractList(data=[]),
                         ledger=[SlotBelief(slot="ship_term", value="CIF", source="chat",
-                                           confidence="high", agreed_by=["customer"])])
+                                           confidence="high", agreed_by=["customer"],
+                                           source_seqs=[1])])
     out = agent_service.invoke("dummy-01", "m", decider=_decider(dec), context_fn=_ctx,
                                matcher_fn=_matcher(result))
     assert out["messages"][-1]["kind"] == "draft"

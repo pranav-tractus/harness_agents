@@ -6,6 +6,7 @@ from apps.api.db import mongo
 from apps.api.models import AgentDecision, CRITICAL_SLOTS_ORDER, SlotBelief
 from apps.api.services import agent_service, chat_service
 from core.models import SOExtractContractList
+from tests.api._factories import make_extract, make_item
 
 
 @pytest.fixture(autouse=True)
@@ -34,7 +35,8 @@ def test_auto_finalize_advances_checkpoint_and_writes_graph():
     dec = AgentDecision(mode="finalize", message="Both confirmed. Finalizing.",
                         contract=SOExtractContractList(data=[]), ready_to_finalize=True,
                         ledger=[SlotBelief(slot="ship_term", value="CIF", source="chat",
-                                           confidence="high", agreed_by=["seller", "customer"])])
+                                           confidence="high", agreed_by=["seller", "customer"],
+                                           source_seqs=[1])])
     window = chat_service.chat_messages_since(ch, 0)
     out = agent_service.finalize("dummy-01", decision=dec, window=window,
                                  model_key="sonnet-4-6", graph_fn=_graph(calls))
@@ -46,7 +48,8 @@ def test_auto_finalize_advances_checkpoint_and_writes_graph():
 
 def _ready_slots():
     return [{"slot": s, "value": "x", "source": "chat", "confidence": "high",
-             "agreed_by": ["seller", "customer"]} for s in CRITICAL_SLOTS_ORDER]
+             "agreed_by": ["seller", "customer"], "source_seqs": [1]}
+            for s in CRITICAL_SLOTS_ORDER]
 
 
 def _seed_pending(ch, slots):
@@ -55,6 +58,14 @@ def _seed_pending(ch, slots):
         "from_seq": 1, "to_seq": 1, "revision": 0,
         "content": SOExtractContractList(data=[]).model_dump(),
         "rendered_markdown": "draft", "slots": slots, "created_at": "t", "approved_at": None})
+
+
+def _seed_pending_content(ch, slots, content):
+    mongo.summaries().insert_one({
+        "customer_id": "dummy-01", "chat_id": ch, "status": "pending",
+        "model_key": "sonnet-4-6", "from_seq": 1, "to_seq": 1, "revision": 0,
+        "content": content, "rendered_markdown": "draft", "slots": slots,
+        "created_at": "t", "approved_at": None})
 
 
 def test_approve_refuses_when_not_ready():
@@ -80,6 +91,54 @@ def test_approve_finalizes_ready_draft_and_branches():
     assert cs.active_chat("dummy-01")["_id"].__str__() != ch
 
 
+def test_approve_blocks_when_product_matches_empty_but_items_present():
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "seller", "10MT CIF")  # seq 1
+    contract = make_extract(
+        items=[make_item(description="TG-BPPC", ship_term="CIF")]).model_dump()
+    mongo.summaries().insert_one({
+        "customer_id": "dummy-01", "chat_id": ch, "status": "pending",
+        "model_key": "sonnet-4-6", "from_seq": 1, "to_seq": 1, "revision": 0,
+        "content": contract, "rendered_markdown": "draft", "slots": _ready_slots(),
+        "product_matches": [],  # matcher pinned nothing → must not be trusted
+        "created_at": "t", "approved_at": None})
+    out = agent_service.approve("dummy-01", graph_fn=_graph([]),
+                                branch_fn=lambda *a, **k: None)
+    assert out["summary"] is None
+    assert mongo.summaries().count_documents({"status": "approved"}) == 0
+    assert "TG-BPPC" in out["messages"][-1]["body"]
+
+
+def test_approve_blocks_on_unresolved_sku():
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "seller", "buy GHOST-1")  # seq 1
+    contract = make_extract(items=[make_item(description="GHOST-1")]).model_dump()
+    mongo.summaries().insert_one({
+        "customer_id": "dummy-01", "chat_id": ch, "status": "pending",
+        "model_key": "sonnet-4-6", "from_seq": 1, "to_seq": 1, "revision": 0,
+        "content": contract, "rendered_markdown": "draft", "slots": _ready_slots(),
+        "product_matches": [{"mention": "tg", "status": "confident",
+                             "resolved_code": "TG-BPPC", "canonical_name": "TG-BPPC"}],
+        "created_at": "t", "approved_at": None})
+    out = agent_service.approve("dummy-01", graph_fn=_graph([]),
+                                branch_fn=lambda *a, **k: None)
+    assert out["summary"] is None
+    assert mongo.summaries().count_documents({"status": "approved"}) == 0
+    assert "GHOST-1" in out["messages"][-1]["body"]
+
+
+def test_approve_blocks_on_verification_failure():
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "seller", "10MT CIF")  # seq 1
+    bad = make_extract(items=[make_item(description="TG-BPPC", ship_term="CIFF")]).model_dump()
+    _seed_pending_content(ch, _ready_slots(), bad)
+    out = agent_service.approve("dummy-01", graph_fn=_graph([]), branch_fn=lambda *a, **k: None)
+    assert out["summary"] is None
+    assert mongo.summaries().count_documents({"status": "approved"}) == 0
+    assert chat_service.get_last_contract_seq(ch) == 0
+    assert "finalize" in out["messages"][-1]["body"].lower()
+
+
 def test_finalize_stamps_chat_id_on_approved_summary():
     ch = _chat()
     chat_service.add_message("dummy-01", ch, "seller", "10MT CIF Busan")
@@ -90,3 +149,17 @@ def test_finalize_stamps_chat_id_on_approved_summary():
                                  model_key="sonnet-4-6", graph_fn=_graph([]))
     assert out["summary"]["chat_id"] == ch
     assert mongo.summaries().find_one({"status": "approved"})["chat_id"] == ch
+
+
+def test_approve_blocks_uncited_critical_slot():
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "seller", "10MT CIF")  # seq 1
+    slots = [{"slot": s, "value": "x", "source": "chat", "confidence": "high",
+              "agreed_by": ["seller", "customer"], "source_seqs": [1]}
+             for s in CRITICAL_SLOTS_ORDER]
+    slots[CRITICAL_SLOTS_ORDER.index("ship_term")]["source_seqs"] = []
+    _seed_pending_content(ch, slots, SOExtractContractList(data=[]).model_dump())
+    out = agent_service.approve("dummy-01", graph_fn=_graph([]),
+                                branch_fn=lambda *a, **k: None)
+    assert out["summary"] is None
+    assert mongo.summaries().count_documents({"status": "approved"}) == 0

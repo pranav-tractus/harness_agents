@@ -5,8 +5,9 @@ from apps.api import seed
 from apps.api.db import mongo
 from apps.api.models import AgentDecision, AgentQuestion, SlotBelief
 from apps.api.services import agent_service, chat_service
-from apps.api.services.product_matcher_service import ProductMatchResult
+from apps.api.services.product_matcher_service import ProductMatch, ProductMatchResult
 from core.models import SOExtractContractList
+from tests.api._factories import make_extract, make_item
 
 
 @pytest.fixture(autouse=True)
@@ -51,7 +52,8 @@ def test_draft_upserts_pending_with_ledger():
     contract = SOExtractContractList(data=[])
     dec = AgentDecision(mode="draft", message="Draft ready", contract=contract,
                         ledger=[SlotBelief(slot="ship_term", value="CIF", source="chat",
-                                           confidence="high", agreed_by=["customer"])])
+                                           confidence="high", agreed_by=["customer"],
+                                           source_seqs=[1])])
     out = agent_service.invoke("dummy-01", "sonnet-4-6",
                                decider=_decider(dec), context_fn=_ctx, matcher_fn=_matcher)
     assert out["summary"]["status"] == "pending"
@@ -81,7 +83,8 @@ def test_invoke_never_finalizes_even_when_ready():
     dec = AgentDecision(mode="finalize", message="Both confirmed.",
                         contract=SOExtractContractList(data=[]), ready_to_finalize=True,
                         ledger=[SlotBelief(slot="ship_term", value="CIF", source="chat",
-                                           confidence="high", agreed_by=["seller", "customer"])])
+                                           confidence="high", agreed_by=["seller", "customer"],
+                                           source_seqs=[1])])
     out = agent_service.invoke("dummy-01", "sonnet-4-6",
                                decider=_decider(dec), context_fn=_ctx, matcher_fn=_matcher)
     assert out["messages"][-1]["kind"] == "draft"
@@ -98,3 +101,87 @@ def test_agent_messages_carry_decision_json():
     out = agent_service.invoke("dummy-01", "sonnet-4-6",
                                decider=_decider(dec), context_fn=_ctx, matcher_fn=_matcher)
     assert '"mode": "clarify"' in out["messages"][-1]["summary_json"]
+
+
+def _confident_matcher(code="TG-BPPC", name=None):
+    def _fn(_customer_id=None, _window=None, _model_key=None):
+        return ProductMatchResult(matches=[ProductMatch(
+            mention="thing", status="confident", resolved_code=code,
+            canonical_name=name)])
+    return _fn
+
+
+def test_invoke_grounds_draft_by_resolved_product_name():
+    # The matcher pins a numeric SKU (5030823) whose catalog name is the
+    # human string the draft agent copies into `description`. Grounding on
+    # codes alone would wrongly reject this legitimate draft.
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "customer", "I want the granule 350 one")
+    contract = make_extract(items=[make_item(
+        description="PUREPRO SOY 70T - GRANULE 350", ship_term="CIF")])
+    dec = AgentDecision(mode="draft", message="draft", contract=contract, ledger=[])
+    out = agent_service.invoke(
+        "dummy-01", "sonnet-4-6", decider=_decider(dec), context_fn=_ctx,
+        matcher_fn=_confident_matcher("5030823", "PUREPRO SOY 70T - GRANULE 350"))
+    assert out["summary"] is not None
+    assert out["summary"]["status"] == "pending"
+    assert out["messages"][-1]["kind"] == "draft"
+
+
+def test_invoke_blocks_draft_on_ungrounded_product_code():
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "seller", "buy GHOST-1")
+    contract = make_extract(items=[make_item(description="GHOST-1")])
+    dec = AgentDecision(mode="draft", message="draft", contract=contract, ledger=[])
+    out = agent_service.invoke("dummy-01", "sonnet-4-6", decider=_decider(dec),
+                               context_fn=_ctx, matcher_fn=_confident_matcher("TG-BPPC"))
+    assert out["summary"] is None
+    assert out["messages"][-1]["kind"] == "question"
+    assert mongo.summaries().count_documents({"status": "pending"}) == 0
+
+
+def test_invoke_stores_warnings_on_draft():
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "seller", "10MT TG-BPPC CIF")
+    contract = make_extract(items=[make_item(
+        description="TG-BPPC", quantity=10.0, unit_price=100.0, total=999.0, ship_term="CIF")])
+    dec = AgentDecision(mode="draft", message="draft", contract=contract, ledger=[])
+    out = agent_service.invoke("dummy-01", "sonnet-4-6", decider=_decider(dec),
+                               context_fn=_ctx, matcher_fn=_confident_matcher("TG-BPPC"))
+    assert out["summary"]["status"] == "pending"
+    assert "total_mismatch" in [v["code"] for v in out["summary"]["violations"]]
+
+
+def test_invoke_clarify_not_blocked_by_verification():
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "seller", "need choline")
+    # Partial ledger with source=unknown would block if verify ran before clarify
+    dec = AgentDecision(
+        mode="clarify",
+        message="What quantity and incoterm?",
+        questions=[AgentQuestion(slot="quantity", directed_to="customer", text="qty?")],
+        ledger=[SlotBelief(slot="quantity", value="10", source="unknown")],
+        contract=make_extract(items=[make_item(description="GHOST-1", ship_term="CIFF")]),
+    )
+    out = agent_service.invoke("dummy-01", "sonnet-4-6",
+                               decider=_decider(dec), context_fn=_ctx, matcher_fn=_matcher)
+    assert out["summary"] is None
+    assert out["messages"][-1]["kind"] == "question"
+    assert out["messages"][-1]["body"] == "What quantity and incoterm?"
+    assert "can't draft" not in out["messages"][-1]["body"].lower()
+
+
+def test_invoke_blocks_chat_slot_without_citation():
+    ch = _chat()
+    chat_service.add_message("dummy-01", ch, "seller", "10MT TG-BPPC CIF")
+    contract = make_extract(items=[make_item(description="TG-BPPC")])
+    dec = AgentDecision(
+        mode="draft", message="draft", contract=contract,
+        ledger=[SlotBelief(slot="ship_term", value="CIF", source="chat",
+                           agreed_by=["customer"])],
+    )
+    out = agent_service.invoke("dummy-01", "sonnet-4-6", decider=_decider(dec),
+                               context_fn=_ctx, matcher_fn=_confident_matcher("TG-BPPC"))
+    assert out["summary"] is None
+    assert out["messages"][-1]["kind"] == "question"
+    assert mongo.summaries().count_documents({"status": "pending"}) == 0

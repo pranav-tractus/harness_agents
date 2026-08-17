@@ -28,3 +28,25 @@ def test_system_prompt_carries_hard_rules_and_date_pin():
     assert "Chat is the only source of truth" in system
     assert "Empty is a valid answer" in system
     assert "Today is" in system
+
+
+def test_system_prompt_requests_provenance():
+    system = agent_service.SYSTEM
+    assert "source_seqs" in system
+    assert "evidence" in system
+
+
+def test_system_prompt_requests_line_scoping():
+    system = agent_service.SYSTEM
+    assert "sr_no" in system
+    assert "line-scoped" in system
+
+
+def test_chat_block_includes_message_seqs():
+    msgs = [{"role": "seller", "body": "10MT", "seq": 3},
+            {"role": "customer", "body": "CIF", "seq": 4}]
+    prompt = agent_service.build_prompt(
+        "Dummy-01", msgs,
+        {"profile_block": None, "history_block": None, "product_block": None})
+    assert "[3] seller: 10MT" in prompt
+    assert "[4] customer: CIF" in prompt

@@ -1,5 +1,4 @@
 import json
-import pathlib
 import pytest
 from unittest.mock import patch
 from graph.extractor import ExtractedFacts, ExtractedProduct

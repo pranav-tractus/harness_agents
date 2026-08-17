@@ -17,6 +17,7 @@ from apps.api.services import (
     product_matcher_service,
     summary_context_service,
 )
+from apps.api.verification import has_blocking, verify
 from core.llm_client import call_llm
 from core.models import SOExtractContractList
 
@@ -39,8 +40,11 @@ _SYSTEM_BASE = (
     "party (\"confirmed\", \"ok\", \"agreed\", \"deal\", \"let's go\", or "
     "explicit acceptance of a counter-offer).\n"
     "4. **Verbatim strings.** Copy `packing`, `loading`, `shipping_method`, "
-    "`shipping_address`, `description`, `ship_term` with the chat's exact "
-    "spacing, casing, punctuation, and word order — no paraphrasing.\n"
+    "`shipping_address`, `ship_term` with the chat's exact spacing, casing, "
+    "punctuation, and word order — no paraphrasing. **Exception — "
+    "`description`:** use the resolved catalog product's name or SKU exactly as "
+    "shown in the Product catalog block, not the chat's nickname, so it matches "
+    "the pinned product.\n"
     "5. **Dates are ISO 8601 (YYYY-MM-DD) or empty.** Never paraphrase a "
     "date as prose. For partial months use the last day of that month. "
     "For omitted years, use the current year unless the chat says "
@@ -48,7 +52,16 @@ _SYSTEM_BASE = (
     "6. **Preserve units and currencies exactly.** No conversion (MT↔KG, "
     "USD↔INR, etc.). If the chat says \"USD 3.5 per KG\", record "
     "`unit_price=3.5, pricing_unit=\"USD/KG\"`.\n"
-    "7. **`payment_date` is a date or an explicit payment-term phrase "
+    "7. **Whole-order (lump-sum) prices go in `total`, not `unit_price`.** "
+    "When a price is quoted for the entire lot rather than per unit "
+    "(\"$2400 for the whole\", \"lot price\", \"all-in for the order\"), set "
+    "`total` to that amount. Derive `unit_price = total ÷ quantity` only when "
+    "the quantity is known — exact arithmetic in the same currency, not a "
+    "unit conversion — and set `pricing_unit` to CURRENCY/quantity_unit; "
+    "otherwise leave `unit_price` empty. Whenever both `quantity` and "
+    "`unit_price` are set, also fill `total = quantity × unit_price` so the "
+    "figures stay internally consistent.\n"
+    "8. **`payment_date` is a date or an explicit payment-term phrase "
     "only** (e.g. \"Net 30 from delivery\", \"2026-03-15\"). Never copy "
     "shipping or document-handling notes into this field.\n\n"
     "## Agent-specific behavior (slot ledger + mode)\n"
@@ -56,7 +69,15 @@ _SYSTEM_BASE = (
     "`unit_price`, `ship_term`, `shipping_address`, `packing`, `loading`, "
     "`payment_date`. For each slot record value, source "
     "(`chat|last_order|profile|inferred|unknown`), confidence, and "
-    "`agreed_by` (which of seller/customer explicitly agreed).\n"
+    "`agreed_by` (which of seller/customer explicitly agreed). Each "
+    "conversation line is prefixed with its message number as `[N]`. For "
+    "every slot with `source='chat'`, set `source_seqs` to the `[N]` "
+    "number(s) of the message(s) that state the value and `evidence` to the "
+    "verbatim snippet from those message(s) that supports it. For "
+    "line-scoped slots (`description`, `quantity`, `unit_price`, "
+    "`ship_term`), also set `line` to the `sr_no` of the contract item the "
+    "value belongs to; leave `line` null for order-level slots like "
+    "`payment_date`.\n"
     "- Resolve soft slots (`shipping_address`, `packing`, `loading`, "
     "`payment_date`) silently from last orders / profile and mark them "
     "`source='inferred'`. Only ASK about critical slots (`description`, "
@@ -79,7 +100,9 @@ SYSTEM = _SYSTEM_BASE.format(today=date.today().isoformat())
 
 
 def _chat_block(messages: list[dict]) -> str:
-    return "\n".join(f"{m['role']}: {m['body']}" for m in messages)
+    return "\n".join(
+        f"[{m.get('seq', '?')}] {m['role']}: {m['body']}" for m in messages
+    )
 
 
 def _section(label: str, block: str | None) -> str:
@@ -96,7 +119,8 @@ def build_prompt(customer_name, messages, ctx, previous_json=None) -> str:
     if previous_json:
         prompt += f"## Previous draft (JSON)\n{previous_json}\n\n"
     prompt += (
-        f"## Conversation\n{_chat_block(messages)}\n\n"
+        "## Conversation (each line starts with its message number [N])\n"
+        f"{_chat_block(messages)}\n\n"
         "---\n\n"
         "Slots to track: description, quantity, unit_price, ship_term, "
         "shipping_address, packing, loading, payment_date.\n"
@@ -224,6 +248,48 @@ def _draft_to_seq(window: list[dict]) -> int:
     return chat_seqs[-1] if chat_seqs else window[-1]["seq"]
 
 
+def _resolved_identifiers(matches, org_id: str) -> set[str]:
+    """Every string that may legitimately appear as a line-item description
+    for a resolved product: its SKU code, the matcher's canonical name, and
+    the catalog name the agent was shown.
+
+    The draft agent copies the product *name* into `description` verbatim
+    (system Hard rule 4), not the SKU code, so grounding on codes alone
+    rejects every real order in a catalog where code != name.
+    """
+    ids: set[str] = set()
+    for m in matches:
+        if not m.resolved_code:
+            continue
+        ids.add(m.resolved_code)
+        if m.canonical_name:
+            ids.add(m.canonical_name)
+        doc = mongo.products().find_one(
+            {"code": m.resolved_code, "org_id": org_id}, {"name": 1}
+        )
+        if doc and doc.get("name"):
+            ids.add(doc["name"])
+    return ids
+
+
+def _pending_resolved_identifiers(pending: dict, org_id: str | None) -> set[str] | None:
+    """Rebuild the accepted-identifier set from the matcher output persisted on
+    the pending draft, so the commit gate re-grounds product codes instead of
+    trusting them blindly. Returns ``None`` for legacy summaries with no stored
+    matches (there the draft-time grounding is trusted, as before)."""
+    raw = pending.get("product_matches")
+    if raw is None:
+        return None  # legacy summary predating this field; trust draft-time grounding
+    # An empty list means the matcher ran and pinned nothing → an empty accepted
+    # set, so any line-item description must fail grounding (not be skipped).
+    matches = [
+        product_matcher_service.ProductMatch(**m)
+        for m in raw
+        if m.get("status") == "confident"
+    ]
+    return _resolved_identifiers(matches, org_id or "")
+
+
 def invoke(
     customer_id,
     model_key,
@@ -306,6 +372,20 @@ def invoke(
         )
         return {"messages": [msg], "summary": None}
 
+    _contract = decision.contract or SOExtractContractList(data=[])
+    violations = verify(
+        _contract,
+        [s.model_dump() for s in decision.ledger],
+        resolved_codes=_resolved_identifiers(match_result.resolved(), org_id),
+        window_seqs={m["seq"] for m in window},
+    )
+    if has_blocking(violations):
+        body = "I can't draft this yet:\n" + "\n".join(
+            f"- {v.message}" for v in violations if v.severity == "block")
+        msg = _agent_msg(customer_id, chat_id, body, "question", summary_json=decision_json)
+        return {"messages": [msg], "summary": None}
+    violation_docs = [v.model_dump() for v in violations]
+
     # draft — the agent NEVER auto-finalizes; a ready decision still drafts.
     contract = decision.contract or SOExtractContractList(data=[])
     markdown = render_summary_markdown(contract, _customer_name(customer_id))
@@ -326,6 +406,7 @@ def invoke(
                     "model_key": model_key,
                     "chat_id": chat_id,
                     "product_matches": _match_docs,
+                    "violations": violation_docs,
                 },
                 "$inc": {"revision": 1},
             },
@@ -344,6 +425,7 @@ def invoke(
             "rendered_markdown": markdown,
             "slots": slots,
             "product_matches": _match_docs,
+            "violations": violation_docs,
             "created_at": _now(),
             "approved_at": None,
         }
@@ -413,6 +495,14 @@ def finalize(
         data=[]
     )
     slots = [s.model_dump() for s in decision.ledger] if decision else []
+
+    finalize_violations = verify(
+        contract, slots, resolved_codes=None, window_seqs={m["seq"] for m in window}
+    )
+    if has_blocking(finalize_violations):
+        body = "Can't finalize — the draft failed verification:\n" + "\n".join(
+            f"- {v.message}" for v in finalize_violations if v.severity == "block")
+        return {"messages": [_agent_msg(customer_id, chat_id, body, "chat")], "summary": None}
 
     graph_fn(
         customer_id,
@@ -486,6 +576,20 @@ def approve(customer_id, *, graph_fn=None, branch_fn=None) -> dict:
     window = chat_service.chat_messages_since(chat_id, pending["from_seq"] - 1)
     contract = SOExtractContractList(**pending["content"])
     slots = pending.get("slots", [])
+    try:
+        org_id = org_service.org_id_for_customer(customer_id)
+    except org_service.MissingOrg:
+        org_id = None
+    approve_violations = verify(
+        contract,
+        slots,
+        resolved_codes=_pending_resolved_identifiers(pending, org_id),
+        window_seqs={m["seq"] for m in window},
+    )
+    if has_blocking(approve_violations):
+        body = "Can't finalize — the draft failed verification:\n" + "\n".join(
+            f"- {v.message}" for v in approve_violations if v.severity == "block")
+        return {"messages": [_agent_msg(customer_id, chat_id, body, "chat")], "summary": None}
     graph_fn(
         customer_id,
         chat_id,

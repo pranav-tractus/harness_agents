@@ -2,6 +2,7 @@ import uuid
 from datetime import datetime, timezone
 
 from apps.api.db import falkor
+from apps.api.models import is_preferable_slot
 
 # Term kind "payment" is backed by the ledger slot "payment_date"
 _TERM_KIND_TO_SLOT = {
@@ -24,6 +25,27 @@ def _ensure_chat(g, customer_id, chat_id, chat_title):
         "MERGE (c)-[:HAS_CHAT]->(ch)",
         {"id": customer_id, "chat": chat_id, "title": chat_title},
     )
+
+
+def _slot_index(slots: list[dict]) -> dict[tuple[int | None, str], dict]:
+    """Index ledger entries by ``(line, slot)``. ``line`` is ``None`` for
+    order-level entries; a line-scoped entry carries the contract item's
+    ``sr_no``. Callers read ``source_seqs`` / ``evidence`` / ``agreed_by`` from
+    the returned entry with per-line scoping and an order-level fallback
+    (see :func:`_lookup`)."""
+    idx: dict[tuple[int | None, str], dict] = {}
+    for s in slots:
+        line = int(s["line"]) if s.get("line") is not None else None
+        idx[(line, s["slot"])] = s
+    return idx
+
+
+def _lookup(idx: dict, slot: str, line: int | None) -> dict | None:
+    """The line-scoped entry if one exists, else the order-level (``None``)
+    entry. A line-scoped slot has no order-level fallback for other lines."""
+    if line is not None and (line, slot) in idx:
+        return idx[(line, slot)]
+    return idx.get((None, slot))
 
 
 def write_contract(
@@ -57,7 +79,31 @@ def write_contract(
             {"new": contract_id, "old": prev[0][0]},
         )
 
-    agreed = {s["slot"]: s.get("agreed_by", []) for s in slots}
+    # Ledger entries indexed by (line, slot). Line items read their own line's
+    # entry (fallback to order-level); terms read order-level. This keeps
+    # provenance AND agreed_by scoped per line item instead of last-write-wins.
+    idx = _slot_index(slots)
+
+    def _agreed(entry: dict | None) -> list[str]:
+        return list(entry.get("agreed_by", [])) if entry else []
+
+    def _link(
+        node_var: str, node_id: str, slot_key: str, line: int | None = None
+    ) -> None:
+        entry = _lookup(idx, slot_key, line)
+        if not entry:
+            return
+        seqs = [int(q) for q in (entry.get("source_seqs") or [])]
+        ev = entry.get("evidence")
+        for seq in seqs:
+            g.query(
+                f"MATCH (n:{node_var} {{id:$nid}}) "
+                "MERGE (m:MessageRef {contract_id:$cid, seq:$seq}) "
+                "SET m.evidence = coalesce($ev, m.evidence) "
+                "MERGE (n)-[:DERIVED_FROM]->(m)",
+                {"nid": node_id, "cid": contract_id, "seq": seq, "ev": ev},
+            )
+
     for it in contract.get("items", []):
         li = uuid.uuid4().hex
         g.query(
@@ -74,7 +120,7 @@ def write_contract(
                 "price": it.get("unit_price"),
                 "punit": it.get("pricing_unit", ""),
                 "inco": it.get("ship_term", ""),
-                "agreed": agreed.get("description", []),
+                "agreed": _agreed(_lookup(idx, "description", it.get("sr_no"))),
             },
         )
         code = it.get("description", "")
@@ -89,6 +135,8 @@ def write_contract(
                 "MATCH (li:LineItem {id:$li}) MERGE (po:Port {name:$name}) MERGE (li)-[:SHIP_TO]->(po)",
                 {"li": li, "name": port},
             )
+        for slot_key in ("description", "quantity", "unit_price", "ship_term"):
+            _link("LineItem", li, slot_key, line=it.get("sr_no"))
 
     for kind, value in (
         ("payment", contract.get("payment_date")),
@@ -97,22 +145,26 @@ def write_contract(
     ):
         if value:
             slot_key = _TERM_KIND_TO_SLOT.get(kind, kind)
+            tid = uuid.uuid4().hex
             g.query(
                 "MATCH (ct:Contract {id:$cid}) "
-                "CREATE (t:Term {kind:$kind, value:$value, agreed_by:$agreed}) "
+                "CREATE (t:Term {id:$tid, kind:$kind, value:$value, agreed_by:$agreed}) "
                 "MERGE (ct)-[:HAS_TERM]->(t)",
                 {
                     "cid": contract_id,
+                    "tid": tid,
                     "kind": kind,
                     "value": str(value),
-                    "agreed": agreed.get(slot_key, []),
+                    "agreed": _agreed(_lookup(idx, slot_key, None)),
                 },
             )
+            _link("Term", tid, slot_key)
 
     for ref in source_seqs:
         g.query(
             "MATCH (ct:Contract {id:$cid}) "
-            "CREATE (m:MessageRef {seq:$seq, role:$role, snippet:$snip}) "
+            "MERGE (m:MessageRef {contract_id:$cid, seq:$seq}) "
+            "SET m.role=$role, m.snippet=$snip "
             "MERGE (ct)-[:DERIVED_FROM]->(m)",
             {
                 "cid": contract_id,
@@ -122,9 +174,14 @@ def write_contract(
             },
         )
 
-    # derived preferences: one per slot agreed by both parties
+    # Derived preferences only retain recurring terms agreed by both parties.
+    # Quantity / description vary per order, so they are never customer defaults.
     for s in slots:
-        if set(s.get("agreed_by", [])) >= {"seller", "customer"} and s.get("value"):
+        if (
+            is_preferable_slot(s["slot"])
+            and set(s.get("agreed_by", [])) >= {"seller", "customer"}
+            and s.get("value")
+        ):
             g.query(
                 "MATCH (c:Customer {id:$id}) "
                 "MERGE (pr:Preference {slot:$slot}) "

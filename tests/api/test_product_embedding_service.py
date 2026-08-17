@@ -104,10 +104,7 @@ def test_aliases_on_a_document_produce_no_vectors():
 # Per-org vector index tests
 # ---------------------------------------------------------------------------
 
-import mongomock
-import pytest
-
-from apps.api.db import mongo, vectors
+from apps.api.db import vectors
 from apps.api.services import org_service, product_embedding_service as pes
 
 

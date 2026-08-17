@@ -120,24 +120,6 @@ def init_db(db_path: Path = DB_PATH) -> None:
     logger.debug("DB initialised at %s", db_path)
 
 
-def save_result(result: ExtractionResult, db_path: Path = DB_PATH) -> int:
-    """Persist a raw ExtractionResult to the legacy ``extractions`` table."""
-    row = asdict(result)
-    with sqlite3.connect(db_path) as conn:
-        cur = conn.execute(
-            """
-            INSERT INTO extractions (input_text, prompt_text, schema_name, output_json, status, error, attempts, model_key, model_provider, created_at)
-            VALUES (:input_text, :prompt_text, :schema_name, :output_json, :status, :error, :attempts, :model_key, :model_provider, :created_at)
-            """,
-            row,
-        )
-        conn.commit()
-    logger.debug("Saved extraction id=%d status=%s", cur.lastrowid, result.status)
-    if cur.lastrowid:
-        return cur.lastrowid
-    raise ValueError("Failed to save extraction result")
-
-
 def save_summary(summary: SavedSummary, db_path: Path = DB_PATH) -> int:
     """Persist a SavedSummary row and return its primary key."""
     row = asdict(summary)
@@ -170,34 +152,6 @@ def get_history(limit: int = 50, db_path: Path = DB_PATH) -> list[dict]:
         conn.row_factory = sqlite3.Row
         rows = conn.execute(
             "SELECT * FROM summaries ORDER BY id DESC LIMIT ?", (limit,)
-        ).fetchall()
-    return [dict(r) for r in rows]
-
-
-def get_by_id(row_id: int, db_path: Path = DB_PATH) -> Optional[dict]:
-    """Fetch a single summary row by primary key."""
-    with sqlite3.connect(db_path) as conn:
-        conn.row_factory = sqlite3.Row
-        row = conn.execute("SELECT * FROM summaries WHERE id = ?", (row_id,)).fetchone()
-    return dict(row) if row else None
-
-
-def get_summary_chain(root_id: int, db_path: Path = DB_PATH) -> list[dict]:
-    """Return the initial summary plus all update revisions, oldest first."""
-    with sqlite3.connect(db_path) as conn:
-        conn.row_factory = sqlite3.Row
-        rows = conn.execute(
-            """
-            WITH RECURSIVE chain(id) AS (
-                SELECT id FROM summaries WHERE id = ?
-                UNION ALL
-                SELECT s.id FROM summaries s JOIN chain c ON s.parent_summary_id = c.id
-            )
-            SELECT s.* FROM summaries s
-            JOIN chain c ON s.id = c.id
-            ORDER BY s.id ASC
-            """,
-            (root_id,),
         ).fetchall()
     return [dict(r) for r in rows]
 

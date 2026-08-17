@@ -5,6 +5,10 @@ its own dataset, few-shot pool, expected-results file, and scoring logic. A
 single **runner** drives single-chat runs, bulk sweeps, and pipelines. A single
 **dashboard** is the Streamlit UI for everything.
 
+> For the diagrams — how a chat file becomes a scored, reported run, and how
+> this harness relates to the live app under `apps/` — see
+> [`harness-architecture.md`](harness-architecture.md).
+
 ## Repo layout
 
 ```

@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import pytest
-from unittest.mock import patch, MagicMock
 from graph.extractor import ExtractedFacts, ExtractedProduct, extract_entities
 
 SAMPLE_CHAT = """(TEAM2): Need 10 MT KISAN Coffee, CIF Busan, USD 500/MT.

@@ -2,7 +2,6 @@ from pathlib import Path
 
 import pytest
 
-from apps.api.services import graph_reader_service
 from graph.kuzu_backend import KuzuBackend
 
 

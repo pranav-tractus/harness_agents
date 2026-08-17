@@ -75,10 +75,6 @@ class PostprocessStage(Protocol):
     def run(self, contract: dict[str, Any], ctx: StageContext) -> StageResult: ...
 
 
-def _timed(name: str, contract: dict[str, Any]) -> tuple[StageResult, float]:
-    return StageResult(name=name, status="ok", contract=contract), time.perf_counter()
-
-
 # ---------------------------------------------------------------------------
 # Stage 1: NormalizeUnits
 # ---------------------------------------------------------------------------

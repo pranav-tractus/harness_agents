@@ -6,7 +6,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from apps.api import seed
 from apps.api.db import mongo
 from apps.api.routers import (
-    chats,
     customers,
     graphs,
     messages,
@@ -35,7 +34,6 @@ def create_app() -> FastAPI:
 
     app.include_router(customers.router)
     app.include_router(products.router)
-    app.include_router(chats.router)
     app.include_router(messages.router)
     app.include_router(models_router.router)
     app.include_router(organizations.router)

@@ -423,19 +423,6 @@ def rewrite_expected_file(path: Path, new_value: dict[str, Any]) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Diff helpers (lightweight; full diff lives in seed_expected.py)
-# ---------------------------------------------------------------------------
-
-
-def _summarize_diff(current: Any, new: Any) -> str:
-    if current is None:
-        return "new"
-    if current == new:
-        return "unchanged"
-    return "changed"
-
-
-# ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
 

@@ -21,52 +21,6 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 RAW_DATA_DIR = REPO_ROOT / "raw_data"
 CHATS_DIR = RAW_DATA_DIR / "chats"
 UPDATES_DIR = CHATS_DIR / "updates"
-DOWNLOADED_CHATS_DIR = RAW_DATA_DIR / "downloaded_chats"
-
-
-def list_chat_files() -> dict[str, list[Path]]:
-    """Return all available chat JSON files grouped by source folder."""
-    result: dict[str, list[Path]] = {"chats": [], "updates": [], "downloaded_chats": []}
-    if CHATS_DIR.exists():
-        result["chats"] = sorted(p for p in CHATS_DIR.glob("*.json"))
-    if UPDATES_DIR.exists():
-        result["updates"] = sorted(UPDATES_DIR.glob("*.json"))
-    if DOWNLOADED_CHATS_DIR.exists():
-        result["downloaded_chats"] = sorted(DOWNLOADED_CHATS_DIR.glob("*.json"))
-    return result
-
-
-def list_chat_files_for_dataset_root(dataset_root: Path) -> dict[str, list[Path]]:
-    """Return chat files under a customer dataset root.
-
-    Expected layout:
-    - ``<root>/chats/*.json``
-    - ``<root>/chats/updates/*.json``
-    - ``<root>/downloaded_chats/*.json``
-    """
-    root = Path(dataset_root).expanduser().resolve()
-    chats_dir = root / "chats"
-    updates_dir = chats_dir / "updates"
-    downloaded_dir = root / "downloaded_chats"
-    result: dict[str, list[Path]] = {"chats": [], "updates": [], "downloaded_chats": []}
-    if chats_dir.exists():
-        result["chats"] = sorted(chats_dir.glob("*.json"))
-    if updates_dir.exists():
-        result["updates"] = sorted(updates_dir.glob("*.json"))
-    if downloaded_dir.exists():
-        result["downloaded_chats"] = sorted(downloaded_dir.glob("*.json"))
-    return result
-
-
-def labeled_raw_chat_paths() -> list[tuple[str, Path]]:
-    """``(label, path)`` pairs for UIs: ``[chats] foo.json``, ``[updates] bar.json``, etc."""
-    out: list[tuple[str, Path]] = []
-    grouped = list_chat_files()
-    for folder in ("chats", "downloaded_chats", "updates"):
-        for p in grouped.get(folder, []):
-            out.append((f"[{folder}] {p.name}", p))
-    out.sort(key=lambda x: x[0].lower())
-    return out
 
 
 def labeled_chat_paths_for_globs(globs: list[str], root: Path | None = None) -> list[tuple[str, Path]]:

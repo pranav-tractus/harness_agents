@@ -4,7 +4,7 @@ from __future__ import annotations
 import pytest
 
 from graph.extractor import ExtractedFacts, ExtractedProduct
-from tests.test_memory_extraction import _score_facts, _score_product, _find_best_product_match
+from tests.test_memory_extraction import _score_facts, _find_best_product_match
 
 
 def test_score_facts_perfect_match():

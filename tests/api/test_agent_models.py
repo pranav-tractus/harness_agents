@@ -1,4 +1,7 @@
-from apps.api.models import AgentDecision, AgentQuestion, SlotBelief, cap_questions
+from apps.api.models import (
+    AgentDecision, AgentQuestion, SlotBelief, cap_questions, is_preferable_slot, is_ready,
+    missing_agreement,
+)
 
 
 def _q(slot):
@@ -26,3 +29,53 @@ def test_ledger_and_agreement_roundtrip():
         ready_to_finalize=False,
     )
     assert d.ledger[0].agreed_by == ["seller", "customer"]
+
+
+def test_slot_belief_provenance_defaults():
+    s = SlotBelief(slot="quantity", value="10", source="chat")
+    assert s.source_seqs == []
+    assert s.evidence is None
+
+
+def test_slot_belief_carries_source_seqs_and_evidence():
+    s = SlotBelief(slot="quantity", value="10", source="chat",
+                   source_seqs=[42, 43], evidence="10 MT")
+    assert s.source_seqs == [42, 43]
+    assert s.evidence == "10 MT"
+
+
+def test_slot_belief_line_defaults_none_and_roundtrips():
+    assert SlotBelief(slot="quantity").line is None
+    assert SlotBelief(slot="quantity", value="5", line=2).line == 2
+
+
+def test_missing_agreement_flags_any_unagreed_line_entry():
+    both = ["seller", "customer"]
+    slots = [
+        {"slot": "description", "agreed_by": both},
+        {"slot": "quantity", "line": 1, "agreed_by": both},
+        {"slot": "quantity", "line": 2, "agreed_by": ["seller"]},
+        {"slot": "unit_price", "agreed_by": both},
+        {"slot": "ship_term", "agreed_by": both},
+    ]
+    assert "quantity" in missing_agreement(slots)
+    assert not is_ready(slots)
+
+
+def test_missing_agreement_single_entry_unchanged():
+    both = ["seller", "customer"]
+    slots = [{"slot": s, "agreed_by": both}
+             for s in ["description", "quantity", "unit_price", "ship_term"]]
+    assert missing_agreement(slots) == []
+    assert is_ready(slots)
+
+
+def test_preferable_slots_are_recurring_terms_only():
+    assert is_preferable_slot("ship_term")
+    assert is_preferable_slot("payment_date")
+    assert is_preferable_slot("packing")
+    assert is_preferable_slot("loading")
+    # Per-order-varying slots are not customer defaults.
+    assert not is_preferable_slot("quantity")
+    assert not is_preferable_slot("description")
+    assert not is_preferable_slot("unit_price")

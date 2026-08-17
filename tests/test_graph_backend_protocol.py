@@ -1,4 +1,3 @@
-import pytest
 from graph.backend import AbstractGraphBackend
 
 

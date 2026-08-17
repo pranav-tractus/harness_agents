@@ -29,13 +29,15 @@ flowchart LR
   subgraph Stores["Stores"]
     ctx_mongo[("MongoDB")]
     ctx_falkor[("FalkorDB")]
+    ctx_vectors[("S3 Vectors")]
   end
   subgraph External["External"]
     ctx_llm(["LLM providers"])
   end
   ctx_web -->|"HTTP /api"| ctx_api
-  ctx_api -->|"chats · messages · summaries"| ctx_mongo
+  ctx_api -->|"orgs · chats · messages · summaries"| ctx_mongo
   ctx_api -->|"read graph · write contract"| ctx_falkor
+  ctx_api -->|"build · query per-org index"| ctx_vectors
   ctx_api -->|"structured calls"| ctx_llm
 ```
 
@@ -45,9 +47,9 @@ flowchart LR
 
 `apps/web/src/App.tsx::App`
 
-React 19 + Vite single-page app. Tabbed shell: Chat, Products, Graphs, Architecture. Polls the API for messages and renders draft/final contract cards.
+React 19 + Vite single-page app. Routed shell: Chat, Organizations, Products, Graphs, Architecture. Refetches the message list after every send (no background polling) and renders draft/final contract cards.
 
-**Reads:** `GET /api/customers`, `GET /api/customers/{id}/messages`, `GET /api/models`
+**Reads:** `GET /api/customers`, `GET /api/customers/{id}/messages`, `GET /api/customers/{id}/graph`, `GET /api/orgs`, `GET /api/products`, `GET /api/models`
 
 **Writes:** `POST /api/customers/{id}/messages`
 
@@ -55,23 +57,31 @@ React 19 + Vite single-page app. Tabbed shell: Chat, Products, Graphs, Architect
 
 `apps/api/main.py::app`
 
-Wires every router: messages, chats, customers, products, graphs, models. CORS is restricted to WEB_ORIGIN.
+Wires every router: customers, products, chats, messages, models, organizations, graphs. CORS is restricted to WEB_ORIGIN. On startup a lifespan hook ensures the Mongo indexes and seeds the org roster.
 
 #### MongoDB
 
 `apps/api/db/mongo.py::db`
 
-Live mutable state. Collections: customers, chats, messages, summaries, products. The current draft contract lives here as a pending summary until it is approved.
+Live mutable state. Collections: customers, organizations, chats, messages, summaries, products. The current draft contract lives here as a pending summary until it is approved.
 
 > **Invariant:** Everything before finalize lives in Mongo, not the graph.
 
 #### FalkorDB
 
-`apps/api/db/falkor.py::graph`
+`apps/api/db/falkor.py::customer_graph`
 
-The knowledge graph — committed truth only. One graph per customer (customer:<id>) plus a shared catalog graph. Written only at finalize time.
+The knowledge graph — committed truth only. One graph per customer (customer:<id>); there is no shared catalog graph, the catalog lives in S3 Vectors. Contract data is written only at finalize time.
 
 > **Invariant:** Guarded by falkor.is_available() everywhere; if it is down, grounding is empty and the agent degrades to chat-only reasoning rather than erroring.
+
+#### S3 Vectors
+
+`apps/api/db/vectors.py::S3VectorsIndex`
+
+The product catalog as embeddings — one index per organization, named {S3_VECTOR_INDEX}-{slug} and stored on the org document. The agent only ever queries the index belonging to the customer's org.
+
+> **Invariant:** is_available() is just "is S3_VECTOR_BUCKET set"; when it is not, the matcher falls back to a substring scan over Mongo so the app still works offline.
 
 #### LLM providers
 
@@ -93,6 +103,7 @@ flowchart LR
   subgraph Services["Services"]
     flow_agent_service["agent_service"]
     flow_chat_service["chat_service"]
+    flow_org_service["org_service"]
     flow_matcher["product_matcher_service"]
     flow_context_service["summary_context_service"]
     flow_chat_graph["chat_graph_service"]
@@ -101,6 +112,7 @@ flowchart LR
   subgraph Stores["Stores"]
     flow_mongo[("MongoDB")]
     flow_falkor[("FalkorDB")]
+    flow_vectors[("S3 Vectors")]
   end
   subgraph External["External"]
     flow_llm(["core.llm_client"])
@@ -109,13 +121,17 @@ flowchart LR
   flow_messages -->|"@agent …"| flow_agent_tag
   flow_agent_tag -->|"ask | approve"| flow_agent_service
   flow_agent_service -->|"window"| flow_chat_service
+  flow_agent_service -->|"org_id_for_customer"| flow_org_service
   flow_agent_service -->|"resolve products"| flow_matcher
   flow_agent_service -->|"grounding"| flow_context_service
   flow_agent_service -->|"decide()"| flow_llm
   flow_agent_service -->|"write_contract"| flow_chat_graph
   flow_chat_service -->|"chats · messages"| flow_mongo
   flow_agent_service -->|"upsert pending summary"| flow_mongo
-  flow_matcher -->|"catalog + prior orders"| flow_falkor
+  flow_matcher -->|"prior orders"| flow_falkor
+  flow_matcher -->|"top-5 per mention"| flow_vectors
+  flow_matcher -->|"live codes · fallback scan"| flow_mongo
+  flow_org_service -->|"org roster"| flow_mongo
   flow_context_service -->|"profile + preferences"| flow_falkor
   flow_chat_graph -->|"Contract subgraph"| flow_falkor
   flow_graph_reader -->|"read"| flow_falkor
@@ -153,11 +169,19 @@ The agent itself: invoke() drafts or asks, approve() finalizes, finalize() commi
 
 Chat lifecycle and the message window. Assigns per-chat monotonic seq numbers, reuses or opens the active chat, and slices messages since the last contract watermark.
 
+#### org_service
+
+`apps/api/services/org_service.py::org_id_for_customer`
+
+Organization lookups: the roster, slugs, and which vector index an org owns. Raises MissingOrg when a customer or product reaches org-scoped code without an org_id.
+
+> **Invariant:** vector_index_name() reads the name stored on the org document, so changing S3_VECTOR_INDEX later cannot orphan existing vectors.
+
 #### product_matcher_service
 
 `apps/api/services/product_matcher_service.py::resolve_products`
 
-Resolves product mentions to catalog SKUs. Builds a candidate pool from the customer's organization S3-Vectors index plus this customer's prior orders, then has the LLM classify each mention as confident, ambiguous, or no_match.
+Resolves product mentions to catalog SKUs in two LLM calls: one extracts distinct mentions, one resolves them. The candidate pool is the customer's organization S3-Vectors index plus this customer's prior orders, and each mention comes back confident, ambiguous, or no_match.
 
 > **Invariant:** _guard() drops any resolved_code outside the pool — product codes are never invented.
 
@@ -165,7 +189,7 @@ Resolves product mentions to catalog SKUs. Builds a candidate pool from the cust
 
 `apps/api/services/summary_context_service.py::assemble`
 
-Assembles grounding context: profile block, preference history block, and product block. Any block is None when FalkorDB is unavailable.
+Assembles grounding from FalkorDB: profile_block from Attribute nodes and history_block from Preference nodes, both None when FalkorDB is unavailable. product_block is left empty here — agent_service overwrites it with the resolved SKUs.
 
 #### chat_graph_service
 
@@ -177,25 +201,31 @@ The only writer of contract data into the customer graph. Creates the Contract s
 
 `apps/api/services/graph_reader_service.py::read_customer_graph`
 
-Reads customer and catalog graphs into {nodes, edges} for the UI's Graphs tab.
+Reads one customer's graph into {nodes, edges} for the UI's Graphs tab. Returns an empty graph when FalkorDB is unreachable.
 
 #### MongoDB
 
 `apps/api/db/mongo.py::db`
 
-chats, messages, summaries. The pending draft and the message window both live here.
+customers, organizations, products, chats, messages, summaries. The pending draft and the message window both live here.
 
 #### FalkorDB
 
-`apps/api/db/falkor.py::graph`
+`apps/api/db/falkor.py::customer_graph`
 
 Read for grounding on every draft; written only on approve.
+
+#### S3 Vectors
+
+`apps/api/db/vectors.py::S3VectorsIndex`
+
+Per-org product embeddings. Queried top-5 per mention; falls back to a Mongo substring scan when unset or erroring.
 
 #### core.llm_client
 
 `core/llm_client.py::call_llm`
 
-Schema-coerced LLM calls: AgentDecision, ProductMatchResult, SOExtractContractList.
+Schema-coerced LLM calls: MentionList and ProductMatchResult for matching, AgentDecision for drafting, plus OrgChoice and ProductSpec off the request path.
 
 
 ## Agent internals
@@ -209,11 +239,14 @@ flowchart LR
     agent_ensure_chat["ensure_active_chat"]
     agent_window["messages_since(watermark)"]
     agent_gate_empty{{"GATE · empty window"}}
+    agent_gate_noorg{{"GATE · customer has no org"}}
     agent_match["resolve_products"]
     agent_gate_unresolved{{"GATE · unresolved products"}}
     agent_context["assemble context"]
     agent_previous["load pending draft"]
     agent_decide(["decide() → AgentDecision"])
+    agent_verify["verify(decision)"]
+    agent_gate_verify{{"GATE · blocking violation"}}
     agent_gate_clarify{{"GATE · mode == clarify"}}
     agent_draft["upsert draft + post card"]
   end
@@ -221,6 +254,8 @@ flowchart LR
     agent_approve["approve()"]
     agent_gate_nodraft{{"GATE · no pending draft"}}
     agent_gate_ready{{"GATE · is_ready(slots)"}}
+    agent_verify_commit["verify(pending)"]
+    agent_gate_verify_commit{{"GATE · failed verification"}}
     agent_write["write_contract"]
     agent_persist["persist + final card"]
     agent_branch["_finish_and_branch"]
@@ -228,21 +263,26 @@ flowchart LR
   agent_invoke --> agent_ensure_chat
   agent_ensure_chat --> agent_window
   agent_window -.->|"no new messages"| agent_gate_empty
+  agent_window -.->|"customer has no org_id"| agent_gate_noorg
   agent_window --> agent_match
   agent_match -.->|"ambiguous / no_match"| agent_gate_unresolved
   agent_match -->|"all confident"| agent_context
   agent_context --> agent_previous
   agent_previous --> agent_decide
   agent_decide -.->|"needs answers"| agent_gate_clarify
-  agent_decide -->|"draft | finalize"| agent_draft
+  agent_decide -->|"draft | finalize"| agent_verify
+  agent_verify -.->|"ungrounded / malformed"| agent_gate_verify
+  agent_verify -->|"clean / warnings stored"| agent_draft
   agent_draft -->|"@agent confirm (separate request)"| agent_approve
   agent_approve -.->|"no pending summary"| agent_gate_nodraft
   agent_approve --> agent_gate_ready
-  agent_gate_ready -->|"all critical slots agreed"| agent_write
+  agent_gate_ready -->|"all critical slots agreed"| agent_verify_commit
+  agent_verify_commit -.->|"failed verification"| agent_gate_verify_commit
+  agent_verify_commit -->|"verified"| agent_write
   agent_write --> agent_persist
   agent_persist --> agent_branch
   classDef gate stroke:#f43f5e,stroke-dasharray:5 4,fill:#fff1f2;
-  class agent_gate_empty,agent_gate_unresolved,agent_gate_clarify,agent_gate_nodraft,agent_gate_ready gate;
+  class agent_gate_empty,agent_gate_noorg,agent_gate_unresolved,agent_gate_verify,agent_gate_clarify,agent_gate_nodraft,agent_gate_ready,agent_gate_verify_commit gate;
 ```
 
 ### Components
@@ -273,11 +313,17 @@ Slices messages after last_contract_seq, limited to kinds chat, question, draft,
 
 No new messages since the last contract → post a plain chat message and return.
 
+#### GATE · customer has no org
+
+`apps/api/services/org_service.py::MissingOrg`
+
+org_id_for_customer raises MissingOrg → post a question telling the user to assign an organization on the Organizations page, and return. Product lookup is org-scoped, so there is no catalog to search without one.
+
 #### resolve_products
 
 `apps/api/services/product_matcher_service.py::resolve_products`
 
-Pins every product mention to a catalog SKU before any drafting happens.
+Pins every product mention to a SKU in the customer's own organization catalog before any drafting happens. Prior-order codes from the graph are filtered to that org's live codes first, so another org's SKUs can never enter the pool.
 
 #### GATE · unresolved products
 
@@ -291,7 +337,7 @@ Any ambiguous or unmatched mention → post a question card asking which SKU, an
 
 `apps/api/services/summary_context_service.py::assemble`
 
-profile_block from graph attributes, history_block from Preference nodes, product_block overwritten with the resolved SKUs.
+profile_block from graph Attribute nodes, history_block from Preference nodes. agent_service then overwrites product_block with the resolved SKUs, so the model sees the pinned catalog rows rather than the whole catalog.
 
 #### load pending draft
 
@@ -307,6 +353,20 @@ The LLM call. Returns mode, message, questions, contract, ledger, ready_to_final
 
 > **Invariant:** mode=="finalize" without readiness is downgraded to "draft".
 
+#### verify(decision)
+
+`apps/api/verification.py::verify`
+
+Deterministic verification gate over the model's decision before anything is drafted. Checks product-code grounding (a line item's description must be a matcher-resolved SKU or name), ship_term ∈ {EXW,FOB,CIF,DDP}, total == quantity×unit_price, ISO dates, and per-slot provenance (source, source_seqs). Blocking violations become a question; warnings are stored on the draft.
+
+> **Invariant:** Blocking codes (unknown_product_code, missing_ship_term, bad_ship_term, critical_unknown_source, critical_not_chat_sourced, missing_provenance, missing_line_coverage) stop a draft; warnings (total_mismatch, bad_date_format, stale_citation) are recorded, not fatal.
+
+#### GATE · blocking violation
+
+`apps/api/verification.py::has_blocking`
+
+A blocking violation (ungrounded product, bad incoterm, or a critical slot with source='unknown') → post a question listing the problems, write no summary, and return.
+
 #### GATE · mode == clarify
 
 `apps/api/services/agent_service.py::invoke`
@@ -317,7 +377,7 @@ The model needs answers → post a question card, write no summary, and return.
 
 `apps/api/models.py::render_summary_markdown`
 
-Renders the contract to markdown, upserts the pending summary with slots and product_matches, bumps revision, posts a draft card.
+Renders the contract to markdown, upserts the pending summary with slots, product_matches and any verification warnings, bumps revision, posts a draft card.
 
 > **Invariant:** A ready decision still only drafts — it appends "Ready to finalize" and waits for @agent confirm.
 
@@ -341,11 +401,25 @@ The hard commit gate. Every critical slot (description, quantity, unit_price, sh
 
 > **Invariant:** This is the single gate preventing an unagreed contract from reaching the graph.
 
+#### verify(pending)
+
+`apps/api/verification.py::verify`
+
+The same deterministic verifier, re-run on the stored pending draft at commit time (resolved_codes=None, so product grounding is trusted from draft time). A blocking violation refuses the finalize.
+
+> **Invariant:** is_ready proves both parties agreed; verify proves the contract is well-formed. Both must pass before write_contract.
+
+#### GATE · failed verification
+
+`apps/api/verification.py::has_blocking`
+
+The pending draft failed verification → reply listing the blocking problems and stop, without writing the graph.
+
 #### write_contract
 
 `apps/api/services/chat_graph_service.py::write_contract`
 
-Creates Contract, one LineItem per item, Term nodes, MessageRef provenance, and SUPERSEDES to the prior revision. Derives a Preference node for every both-agreed slot.
+Creates Contract, one LineItem per item, Term nodes, and SUPERSEDES to the prior revision. Writes per-line MessageRef provenance: each LineItem/Term gets DERIVED_FROM edges to the exact messages its own line's slots cite (source_seqs, scoped by the slot's line == item sr_no), with evidence stored on the MessageRef. Derives a Preference node for every both-agreed slot.
 
 > **Invariant:** Preferences are the feedback loop — they reappear as history_block grounding on the next draft.
 

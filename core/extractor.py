@@ -33,7 +33,7 @@ from tenacity import (
 
 from core.chat_loader import load_synthetic_update_few_shot_examples
 from core.db import DB_PATH, ExtractionResult, init_db
-from core.llm_client import call_llm, call_llm_with_usage
+from core.llm_client import call_llm_with_usage
 from core.models import SOExtractContractList, SOUpdateContractList
 from core.prompt_builder import (
     INITIAL_FEW_SHOT_DB_LIMIT_DEFAULT,

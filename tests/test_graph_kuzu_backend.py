@@ -1,5 +1,3 @@
-import tempfile
-import pathlib
 import pytest
 from graph.kuzu_backend import KuzuBackend
 

@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from agents.base import AgentRunResult, BaseAgent, Dataset, RunOptions, ScoreResult
+from agents.base import AgentRunResult, BaseAgent, RunOptions, ScoreResult
 from core.baseline_extractor import run_baseline
 from core.chat_loader import build_extraction_few_shot_from_paths, load_chat_file
 from core.extractor import ExtractionEngine
@@ -54,7 +54,6 @@ class SOExtractionAgent(BaseAgent[ChatInput, dict]):
     may be corrected. Dual scores compare raw vs final against expected.
     """
 
-    input_type = ChatInput
     output_type = SOExtractContractList
 
     def load_input(self, source_path: Any) -> ChatInput:
@@ -114,7 +113,6 @@ class SOExtractionAgent(BaseAgent[ChatInput, dict]):
         validation_model_key = pp_opts["validation_model_key"]
 
         if raw_dict is not None:
-            t_pp = time.perf_counter()
             final_dict, diagnostics = run_postprocess_pipeline(
                 raw_dict,
                 source_text=input_payload.text,

@@ -1,0 +1,126 @@
+from __future__ import annotations
+
+import re
+from typing import Literal
+
+from pydantic import BaseModel
+
+from apps.api.models import CRITICAL_SLOTS, CRITICAL_SLOTS_ORDER
+from core.models import SOExtractContractList
+
+VALID_SHIP_TERMS = {"EXW", "FOB", "CIF", "DDP"}
+_ISO_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
+class Violation(BaseModel):
+    code: str
+    slot: str | None = None
+    message: str
+    severity: Literal["block", "warn"] = "warn"
+
+
+def has_blocking(violations: list[Violation]) -> bool:
+    return any(v.severity == "block" for v in violations)
+
+
+def verify(
+    contract: SOExtractContractList,
+    slots: list[dict],
+    *,
+    resolved_codes: set[str] | None,
+    window_seqs: set[int],
+) -> list[Violation]:
+    """Deterministic checks over a drafted/pending contract.
+
+    ``resolved_codes`` is the set of accepted identifiers for products the
+    matcher pinned this turn — each product's SKU code *and* its name, since
+    the draft agent writes the product name (not the code) into
+    ``description``. Pass ``None`` only to skip product-grounding entirely (the
+    internal ``finalize()`` path); ``approve()`` passes the set rebuilt from the
+    pending summary's persisted ``product_matches``.
+    ``window_seqs`` is the set of message seqs the agent reasoned over.
+    """
+    out: list[Violation] = []
+    items = contract.data[0].items if contract.data else []
+
+    for it in items:
+        code = (it.description or "").strip()
+        if resolved_codes is not None and code and code not in resolved_codes:
+            out.append(Violation(
+                code="unknown_product_code", slot="description", severity="block",
+                message=f"Line item '{code}' is not a resolved catalog product.",
+            ))
+        ship_term = (it.ship_term or "").strip()
+        if not ship_term:
+            out.append(Violation(
+                code="missing_ship_term", slot="ship_term", severity="block",
+                message="Line item has no ship_term — a critical field must be set.",
+            ))
+        elif ship_term.upper() not in VALID_SHIP_TERMS:
+            out.append(Violation(
+                code="bad_ship_term", slot="ship_term", severity="block",
+                message=f"ship_term '{it.ship_term}' is not one of EXW/FOB/CIF/DDP.",
+            ))
+        if (it.quantity is not None and it.unit_price is not None
+                and it.total is not None
+                and abs(it.total - it.quantity * it.unit_price) > 0.01):
+            out.append(Violation(
+                code="total_mismatch", slot="total", severity="warn",
+                message=(f"total {it.total} != quantity {it.quantity} "
+                         f"x unit_price {it.unit_price}."),
+            ))
+        if it.shipment_date and not _ISO_DATE.match(it.shipment_date):
+            out.append(Violation(
+                code="bad_date_format", slot="shipment_date", severity="warn",
+                message=f"shipment_date '{it.shipment_date}' is not ISO YYYY-MM-DD.",
+            ))
+
+    for s in slots:
+        slot = s.get("slot")
+        if slot not in CRITICAL_SLOTS:
+            continue
+        if s.get("value") is None:
+            continue
+        source = s.get("source", "unknown")
+        seqs = s.get("source_seqs") or []
+        if source == "unknown":
+            out.append(Violation(
+                code="critical_unknown_source", slot=slot, severity="block",
+                message=f"Critical slot '{slot}' has a value but source='unknown'.",
+            ))
+        elif source != "chat":
+            out.append(Violation(
+                code="critical_not_chat_sourced", slot=slot, severity="block",
+                message=(f"Critical slot '{slot}' must be chat-confirmed; "
+                         f"source='{source}' is not allowed for a critical value."),
+            ))
+        elif not seqs:
+            out.append(Violation(
+                code="missing_provenance", slot=slot, severity="block",
+                message=f"Critical slot '{slot}' is chat-sourced but cites no message.",
+            ))
+        stale = [q for q in seqs if q not in window_seqs]
+        if stale:
+            out.append(Violation(
+                code="stale_citation", slot=slot, severity="warn",
+                message=f"Slot '{slot}' cites messages not in the window: {stale}.",
+            ))
+
+    # Per-item ledger coverage. Only meaningful with >=2 line items: there an
+    # order-level (line-less) critical slot is shared/ambiguous across items, and
+    # an omitted per-line entry silently falls back to that single shared value.
+    if len(items) >= 2:
+        covered = {
+            (int(s["line"]), s["slot"])
+            for s in slots
+            if s.get("line") is not None and s.get("value") is not None
+        }
+        for it in items:
+            for slot in CRITICAL_SLOTS_ORDER:
+                if (it.sr_no, slot) not in covered:
+                    out.append(Violation(
+                        code="missing_line_coverage", slot=slot, severity="block",
+                        message=(f"Line item sr_no={it.sr_no} has no ledger entry "
+                                 f"for critical slot '{slot}'."),
+                    ))
+    return out

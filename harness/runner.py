@@ -15,19 +15,17 @@ Every invocation produces one folder under ``results/<run_id>/`` containing
 from __future__ import annotations
 
 import argparse
-import json
 import logging
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from dataclasses import asdict
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-from agents.base import AgentRunResult, BaseAgent, Pipeline, RunOptions
+from agents.base import AgentRunResult, BaseAgent, RunOptions
 from agents.config import HarnessConfig, load_config
 from agents.so_extraction.agent import ChatInput
 from agents.product_retrieval.agent import SummaryInput

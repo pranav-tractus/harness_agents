@@ -25,7 +25,6 @@ from harness.fewshot import (
 class _StubAgent(BaseAgent):
     """Minimal agent whose few-shot pool is a fixed list of paths."""
 
-    input_type = object
     output_type = object
 
     def __init__(self, pool: list[Path]) -> None:

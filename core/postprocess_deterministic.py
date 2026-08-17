@@ -295,8 +295,6 @@ def apply_deterministic_postprocess(
     contract: dict[str, Any],
     *,
     reference_iso_date: str,
-    normalize_units: bool = True,  # noqa: ARG001 - kept for arg compatibility
-    fix_totals: bool = True,       # noqa: ARG001 - kept for arg compatibility
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     """Back-compat shim: normalize_units + recompute_totals + date warnings.
 

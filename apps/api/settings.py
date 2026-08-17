@@ -20,8 +20,6 @@ class Settings:
     vector_bucket: str
     vector_index: str
     aws_region: str
-    ingest_s3_bucket: str
-    ingest_s3_prefix: str
 
 
 @lru_cache(maxsize=1)
@@ -36,6 +34,4 @@ def get_settings() -> Settings:
         vector_bucket=os.environ.get("S3_VECTOR_BUCKET", ""),
         vector_index=os.environ.get("S3_VECTOR_INDEX", "product-catalog-openai"),
         aws_region=os.environ.get("AWS_REGION", "us-east-1"),
-        ingest_s3_bucket=os.environ.get("INGEST_S3_BUCKET", ""),
-        ingest_s3_prefix=os.environ.get("INGEST_S3_PREFIX", ""),
     )

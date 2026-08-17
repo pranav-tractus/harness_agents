@@ -128,7 +128,6 @@ class BaseAgent(Generic[I, O], ABC):
 
     id: str
     display_name: str
-    input_type: type
     output_type: type
 
     def __init__(

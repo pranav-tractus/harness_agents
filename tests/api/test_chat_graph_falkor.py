@@ -43,6 +43,33 @@ def test_write_contract_creates_branch(graph_name):
     assert isinstance(cid, str)
 
 
+def test_preferences_only_for_recurring_terms(graph_name):
+    _skip_if_down()
+    contract = {"items": [{"sr_no": 1, "description": "TG-BPPC", "quantity": 10,
+        "quantity_unit": "MT", "unit_price": 100, "pricing_unit": "USD/MT",
+        "ship_term": "CIF", "delivery_terms": "", "shipment_date": "",
+        "shipping_address": "", "packing": "25kg", "loading": "", "total": 1000}],
+        "vendor_name": "", "payment_date": "Net 30"}
+    both = ["seller", "customer"]
+    slots = [
+        {"slot": "ship_term", "value": "CIF", "agreed_by": both, "source_seqs": [1]},
+        {"slot": "payment_date", "value": "Net 30", "agreed_by": both, "source_seqs": [1]},
+        {"slot": "quantity", "value": "10", "agreed_by": both, "source_seqs": [1]},
+        {"slot": "description", "value": "TG-BPPC", "agreed_by": both, "source_seqs": [1]},
+    ]
+    cg.write_contract(graph_name, "chat-1", "Deal", contract, slots, [], to_seq=1)
+    g = falkor.customer_graph(graph_name)
+    pref_slots = {
+        row[0] for row in g.query(
+            "MATCH (:Customer)-[:PREFERS]->(pr:Preference) RETURN pr.slot"
+        ).result_set
+    }
+    assert "ship_term" in pref_slots
+    assert "payment_date" in pref_slots
+    assert "quantity" not in pref_slots
+    assert "description" not in pref_slots
+
+
 def test_second_write_increments_revision_and_supersedes(graph_name):
     _skip_if_down()
     empty = {"items": []}
@@ -77,3 +104,58 @@ def test_reader_emits_continues_edges(graph_name):
     g = graph_reader_service.read_customer_graph(graph_name)
     cont = [(e["source"], e["target"]) for e in g["edges"] if e["type"] == "CONTINUES"]
     assert ("Chat::chat-2", "Chat::chat-1") in cont
+
+
+def test_write_contract_links_per_slot_provenance(graph_name):
+    _skip_if_down()
+    contract = {"items": [{"sr_no": 1, "description": "TG-BPPC", "quantity": 10,
+        "quantity_unit": "MT", "unit_price": 100, "pricing_unit": "USD/MT",
+        "ship_term": "CIF", "delivery_terms": "", "shipment_date": "",
+        "shipping_address": "", "packing": "", "loading": "", "total": 1000}],
+        "vendor_name": "", "payment_date": "Net 30"}
+    slots = [{"slot": "ship_term", "value": "CIF", "source": "chat",
+              "confidence": "high", "agreed_by": ["seller", "customer"],
+              "source_seqs": [42], "evidence": "CIF Busan"},
+             {"slot": "quantity", "value": "10", "source": "chat",
+              "confidence": "high", "agreed_by": ["seller"], "source_seqs": [40]},
+             {"slot": "payment_date", "value": "Net 30", "source": "chat",
+              "confidence": "high", "agreed_by": ["seller", "customer"], "source_seqs": [44]}]
+    cg.write_contract(graph_name, "chat-1", "Deal A", contract, slots,
+                      [{"seq": 42, "role": "customer", "snippet": "CIF"}], to_seq=42)
+    g = falkor.customer_graph(graph_name)
+    line_seqs = {r[0] for r in g.query(
+        "MATCH (:LineItem)-[:DERIVED_FROM]->(m:MessageRef) RETURN DISTINCT m.seq").result_set}
+    assert {40, 42} <= line_seqs
+    term_seqs = {r[0] for r in g.query(
+        "MATCH (:Term {kind:'payment'})-[:DERIVED_FROM]->(m:MessageRef) RETURN DISTINCT m.seq"
+    ).result_set}
+    assert 44 in term_seqs
+    evidence = {r[0] for r in g.query(
+        "MATCH (m:MessageRef {seq:42}) RETURN m.evidence").result_set}
+    assert "CIF Busan" in evidence
+
+
+def test_per_line_provenance_is_not_shared(graph_name):
+    _skip_if_down()
+    contract = {"items": [
+        {"sr_no": 1, "description": "TG-BPPC", "quantity": 10, "quantity_unit": "MT",
+         "unit_price": 100, "pricing_unit": "USD/MT", "ship_term": "CIF",
+         "delivery_terms": "", "shipment_date": "", "shipping_address": "",
+         "packing": "", "loading": "", "total": 1000},
+        {"sr_no": 2, "description": "TG-XYZ", "quantity": 5, "quantity_unit": "MT",
+         "unit_price": 200, "pricing_unit": "USD/MT", "ship_term": "FOB",
+         "delivery_terms": "", "shipment_date": "", "shipping_address": "",
+         "packing": "", "loading": "", "total": 1000}],
+        "vendor_name": "", "payment_date": ""}
+    slots = [
+        {"slot": "quantity", "value": "10", "source": "chat", "line": 1, "source_seqs": [11]},
+        {"slot": "quantity", "value": "5", "source": "chat", "line": 2, "source_seqs": [22]},
+    ]
+    cg.write_contract(graph_name, "chat-1", "Deal", contract, slots, [], to_seq=22)
+    g = falkor.customer_graph(graph_name)
+    rows = g.query(
+        "MATCH (li:LineItem)-[:DERIVED_FROM]->(m:MessageRef) "
+        "RETURN li.product_code, collect(DISTINCT m.seq)").result_set
+    prov = {r[0]: set(r[1]) for r in rows}
+    assert prov.get("TG-BPPC") == {11}
+    assert prov.get("TG-XYZ") == {22}
