@@ -1,5 +1,6 @@
 from apps.api.models import (
-    AgentDecision, AgentQuestion, SlotBelief, cap_questions, is_ready, missing_agreement,
+    AgentDecision, AgentQuestion, SlotBelief, cap_questions, is_preferable_slot, is_ready,
+    missing_agreement,
 )
 
 
@@ -67,3 +68,14 @@ def test_missing_agreement_single_entry_unchanged():
              for s in ["description", "quantity", "unit_price", "ship_term"]]
     assert missing_agreement(slots) == []
     assert is_ready(slots)
+
+
+def test_preferable_slots_are_recurring_terms_only():
+    assert is_preferable_slot("ship_term")
+    assert is_preferable_slot("payment_date")
+    assert is_preferable_slot("packing")
+    assert is_preferable_slot("loading")
+    # Per-order-varying slots are not customer defaults.
+    assert not is_preferable_slot("quantity")
+    assert not is_preferable_slot("description")
+    assert not is_preferable_slot("unit_price")

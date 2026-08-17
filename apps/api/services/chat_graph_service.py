@@ -2,6 +2,7 @@ import uuid
 from datetime import datetime, timezone
 
 from apps.api.db import falkor
+from apps.api.models import is_preferable_slot
 
 # Term kind "payment" is backed by the ledger slot "payment_date"
 _TERM_KIND_TO_SLOT = {
@@ -173,9 +174,14 @@ def write_contract(
             },
         )
 
-    # derived preferences: one per slot agreed by both parties
+    # Derived preferences only retain recurring terms agreed by both parties.
+    # Quantity / description vary per order, so they are never customer defaults.
     for s in slots:
-        if set(s.get("agreed_by", [])) >= {"seller", "customer"} and s.get("value"):
+        if (
+            is_preferable_slot(s["slot"])
+            and set(s.get("agreed_by", [])) >= {"seller", "customer"}
+            and s.get("value")
+        ):
             g.query(
                 "MATCH (c:Customer {id:$id}) "
                 "MERGE (pr:Preference {slot:$slot}) "

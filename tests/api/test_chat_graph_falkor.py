@@ -43,6 +43,33 @@ def test_write_contract_creates_branch(graph_name):
     assert isinstance(cid, str)
 
 
+def test_preferences_only_for_recurring_terms(graph_name):
+    _skip_if_down()
+    contract = {"items": [{"sr_no": 1, "description": "TG-BPPC", "quantity": 10,
+        "quantity_unit": "MT", "unit_price": 100, "pricing_unit": "USD/MT",
+        "ship_term": "CIF", "delivery_terms": "", "shipment_date": "",
+        "shipping_address": "", "packing": "25kg", "loading": "", "total": 1000}],
+        "vendor_name": "", "payment_date": "Net 30"}
+    both = ["seller", "customer"]
+    slots = [
+        {"slot": "ship_term", "value": "CIF", "agreed_by": both, "source_seqs": [1]},
+        {"slot": "payment_date", "value": "Net 30", "agreed_by": both, "source_seqs": [1]},
+        {"slot": "quantity", "value": "10", "agreed_by": both, "source_seqs": [1]},
+        {"slot": "description", "value": "TG-BPPC", "agreed_by": both, "source_seqs": [1]},
+    ]
+    cg.write_contract(graph_name, "chat-1", "Deal", contract, slots, [], to_seq=1)
+    g = falkor.customer_graph(graph_name)
+    pref_slots = {
+        row[0] for row in g.query(
+            "MATCH (:Customer)-[:PREFERS]->(pr:Preference) RETURN pr.slot"
+        ).result_set
+    }
+    assert "ship_term" in pref_slots
+    assert "payment_date" in pref_slots
+    assert "quantity" not in pref_slots
+    assert "description" not in pref_slots
+
+
 def test_second_write_increments_revision_and_supersedes(graph_name):
     _skip_if_down()
     empty = {"items": []}

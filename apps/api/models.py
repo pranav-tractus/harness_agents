@@ -156,6 +156,14 @@ def render_summary_markdown(summary: SalesOrderSummary, customer_name: str | Non
 CRITICAL_SLOTS_ORDER = ["description", "quantity", "unit_price", "ship_term"]
 CRITICAL_SLOTS = set(CRITICAL_SLOTS_ORDER)
 
+# Slots worth remembering as a customer default (recurring "typical terms").
+# Deliberately excludes quantity / description / unit_price, which vary per order.
+PREFERABLE_SLOTS = {"ship_term", "packing", "loading", "payment_date"}
+
+
+def is_preferable_slot(slot: str) -> bool:
+    return slot in PREFERABLE_SLOTS
+
 
 def missing_agreement(slots: list[dict]) -> list[str]:
     out: list[str] = []
