@@ -1,13 +1,15 @@
 name: Dispatch to Agent
 on:
   issues:
-    types: [assigned]
+    types: [labeled]
   issue_comment:
     types: [created]
 
 jobs:
   dispatch:
-    if: github.event.assignee.login == 'pranavs-agent' || github.event.issue.assignee.login == 'pranavs-agent'
+    if: >
+      github.event.label.name == 'delegate:agent' ||
+      contains(github.event.issue.labels.*.name, 'delegate:agent')
     runs-on: ubuntu-latest
     env:
       COMMENT_BODY: ${{ github.event.comment.body }}
