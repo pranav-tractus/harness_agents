@@ -1,29 +1,117 @@
+# Canonical copy of the dispatch workflow. This file lives in ~/factory for
+# version control, but it only does anything once it is committed to
+# .github/workflows/deploy-agent.yaml in each target repo.
+#
+# Untrusted text (comment bodies, review bodies, diff hunks) is NEVER
+# interpolated into the `script:` block — it goes through `env:` and the SSH
+# action's `envs:` param. ${{ }} interpolation into a shell script is a command
+# injection: anyone who can comment on an issue could run commands on the VM.
 name: Dispatch to Agent
 on:
   issues:
     types: [labeled]
   issue_comment:
     types: [created]
+  # Inline comments on a line of the diff.
+  pull_request_review_comment:
+    types: [created]
+  # Approve / Request changes / Comment — the review's own body.
+  pull_request_review:
+    types: [submitted]
 
 jobs:
   dispatch:
+    # Three separate cases, because a PR does not carry the issue's label:
+    #   1. an issue labelled delegate:agent, or a comment on one
+    #   2. anything said on a PR branch the factory owns (intern/issue-*)
+    #   3. never react to our own comments — that is an infinite loop
     if: >
-      github.event.label.name == 'delegate:agent' ||
-      contains(github.event.issue.labels.*.name, 'delegate:agent')
+      github.event.sender.type != 'Bot' &&
+      (
+        (
+          github.event_name == 'issues' &&
+          github.event.label.name == 'delegate:agent'
+        ) ||
+        (
+          github.event_name == 'issue_comment' &&
+          github.event.issue.pull_request == null &&
+          contains(github.event.issue.labels.*.name, 'delegate:agent')
+        ) ||
+        (
+          github.event_name == 'issue_comment' &&
+          github.event.issue.pull_request != null
+        ) ||
+        github.event_name == 'pull_request_review_comment' ||
+        github.event_name == 'pull_request_review'
+      )
     runs-on: ubuntu-latest
-    env:
-      COMMENT_BODY: ${{ github.event.comment.body }}
+    # One dispatch at a time per conversation, so two quick comments can't race
+    # into two tasks on the same thread.
+    concurrency:
+      group: agent-dispatch-${{ github.event.issue.number || github.event.pull_request.number }}
+      cancel-in-progress: false
     steps:
+      - name: Work out what happened
+        id: ctx
+        env:
+          EVENT: ${{ github.event_name }}
+        run: |
+          case "$EVENT" in
+            issue_comment)
+              # A PR comment arrives as issue_comment; issue.pull_request is
+              # non-null exactly when this "issue" is really a PR.
+              echo "pr=${{ github.event.issue.pull_request && github.event.issue.number || 0 }}" >> "$GITHUB_OUTPUT"
+              echo "number=${{ github.event.issue.number }}" >> "$GITHUB_OUTPUT"
+              echo "author=${{ github.event.comment.user.login }}" >> "$GITHUB_OUTPUT"
+              echo "comment_id=0" >> "$GITHUB_OUTPUT"
+              ;;
+            pull_request_review_comment)
+              echo "pr=${{ github.event.pull_request.number }}" >> "$GITHUB_OUTPUT"
+              echo "number=${{ github.event.pull_request.number }}" >> "$GITHUB_OUTPUT"
+              echo "author=${{ github.event.comment.user.login }}" >> "$GITHUB_OUTPUT"
+              echo "comment_id=${{ github.event.comment.id }}" >> "$GITHUB_OUTPUT"
+              ;;
+            pull_request_review)
+              echo "pr=${{ github.event.pull_request.number }}" >> "$GITHUB_OUTPUT"
+              echo "number=${{ github.event.pull_request.number }}" >> "$GITHUB_OUTPUT"
+              echo "author=${{ github.event.review.user.login }}" >> "$GITHUB_OUTPUT"
+              echo "comment_id=0" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "pr=0" >> "$GITHUB_OUTPUT"
+              echo "number=${{ github.event.issue.number }}" >> "$GITHUB_OUTPUT"
+              echo "author=${{ github.event.sender.login }}" >> "$GITHUB_OUTPUT"
+              echo "comment_id=0" >> "$GITHUB_OUTPUT"
+              ;;
+          esac
+
       - name: SSH and enqueue
         uses: appleboy/ssh-action@v1
+        env:
+          # Every one of these is attacker-controlled text. Passed as env vars,
+          # never interpolated into the script body.
+          COMMENT_BODY: >-
+            ${{ github.event.comment.body || github.event.review.body || '' }}
+          FILE_PATH: ${{ github.event.comment.path || '' }}
+          DIFF_HUNK: ${{ github.event.comment.diff_hunk || '' }}
+          ISSUE_TITLE: ${{ github.event.issue.title || '' }}
+          ISSUE_BODY: ${{ github.event.issue.body || '' }}
+          COMMENT_AUTHOR: ${{ steps.ctx.outputs.author }}
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_SSH_KEY }}
-          envs: COMMENT_BODY
+          envs: COMMENT_BODY,FILE_PATH,DIFF_HUNK,ISSUE_TITLE,ISSUE_BODY,COMMENT_AUTHOR
           script: |
             ~/factory/venv/bin/python3 ~/factory/enqueue.py \
               --repo "${{ github.repository }}" \
-              --issue "${{ github.event.issue.number }}" \
+              --issue "${{ steps.ctx.outputs.number }}" \
+              --pr "${{ steps.ctx.outputs.pr }}" \
               --event "${{ github.event_name }}" \
-              --comment-body "$COMMENT_BODY"
+              --comment-id "${{ steps.ctx.outputs.comment_id }}" \
+              --comment-body "$COMMENT_BODY" \
+              --comment-author "$COMMENT_AUTHOR" \
+              --file-path "$FILE_PATH" \
+              --diff-hunk "$DIFF_HUNK" \
+              --issue-title "$ISSUE_TITLE" \
+              --issue-body "$ISSUE_BODY"
