@@ -9,6 +9,8 @@ jobs:
   dispatch:
     if: github.event.assignee.login == 'pranavs-agent' || github.event.issue.assignee.login == 'pranavs-agent'
     runs-on: ubuntu-latest
+    env:
+      COMMENT_BODY: ${{ github.event.comment.body }}
     steps:
       - name: SSH and enqueue
         uses: appleboy/ssh-action@v1
@@ -16,9 +18,10 @@ jobs:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_SSH_KEY }}
+          envs: COMMENT_BODY
           script: |
-            python3 ~/factory/enqueue.py \
+            ~/factory/venv/bin/python3 ~/factory/enqueue.py \
               --repo "${{ github.repository }}" \
               --issue "${{ github.event.issue.number }}" \
               --event "${{ github.event_name }}" \
-              --comment-body "${{ github.event.comment.body }}"
+              --comment-body "$COMMENT_BODY"
