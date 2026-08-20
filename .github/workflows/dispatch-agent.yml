@@ -1,0 +1,24 @@
+name: Dispatch to Agent
+on:
+  issues:
+    types: [assigned]
+  issue_comment:
+    types: [created]
+
+jobs:
+  dispatch:
+    if: github.event.assignee.login == 'pranavs-agent' || github.event.issue.assignee.login == 'pranavs-agent'
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH and enqueue
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            python3 ~/factory/enqueue.py \
+              --repo "${{ github.repository }}" \
+              --issue "${{ github.event.issue.number }}" \
+              --event "${{ github.event_name }}" \
+              --comment-body "${{ github.event.comment.body }}"
